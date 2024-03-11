@@ -1,0 +1,41 @@
+{% extends 'base.html' %} 
+
+{% load static %} 
+
+{% block title %} MedRegiA || Check More {% endblock title %} 
+
+{% block nav_footer %}{% static 'nav_footer.css' %} {%endblock nav_footer %} 
+
+{% block link %}{% static 'invclc/css/checkmore.css' %} {%endblock link %}
+
+{% block navbar %} 
+    {% include 'nav.html' %} 
+{% endblock navbar%} 
+
+{% block content %}
+    <div class="checkmore-container">
+        <h3> Paid record More details</h3>
+        <table class="checkmoreTable">
+            <thead>
+                <tr>
+                    <th>Pharmacy Name</th>
+                    <th>Invoice Number</th>
+                    <th colspan="2">Status</th>
+                    <th>Records</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in invoices %}
+                    <tr>
+                        <td>{{data.pharmacy_name}}</td>
+                        <td>{{data.invoice_number}}</td>
+                        <td>GP Accepted</td>
+                        <td>AMP</td>
+                        <td><a href="../check/{{data.id}}"><button type="button" class="check_btn">Check</button></a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock content %}

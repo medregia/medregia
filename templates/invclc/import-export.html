@@ -1,0 +1,223 @@
+{% extends 'base.html' %} 
+
+{% load static %} 
+
+{% block title %} MedRegiA || Export/Import {% endblock title %} 
+
+{% block link %}{% static 'invclc/css/import.css' %}{% endblock link %} 
+
+{% block link2 %}{% static 'invclc/css/export.css' %}{% endblock link2 %} 
+
+{% block nav_footer%}{% static 'invclc/css/nav.css' %}{% endblock nav_footer %} 
+
+{% block navbar %}
+  <div class="navbar">
+    {% include "nav.html" %}
+  </div>
+    
+{% endblock navbar %}
+
+{% block content %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+<div class="box-container">
+  <div class="panel">
+    <div class="tab">
+      <button class="tablinks active" onclick="openTab(event, 'Export')">Export</button>
+      <button class="tablinks" onclick="openTab(event, 'Import')">Import</button>
+    </div>
+
+    <div id="Export" class="tabcontent">
+      {% comment %} <h3>EXPORT</h3> {% endcomment %}
+      <div class="box-container1">
+        <div id="print_page">
+          <div class="address-container1">
+            <div class="address-details1">
+              <h2>Admin Address Details</h2>
+              {% for admin in admin_data %}
+              <p> Name : {{admin.username}}</p>
+              <p> City : {{admin_person.City}}</p>
+              <p> PhoneNumber : {{admin.phone_num}}</p>
+              <p> Unique Id : {{admin_person.UniqueId}}</p>
+              {% endfor %}
+            </div>
+            <div class="logo">
+              <!-- add logo -->
+            </div>
+            <div class="address-details2">
+              <h2>User Address Details</h2>
+              <p> Name : {{user.username}}</p>
+              <p> City : {{city}}</p>
+              <p> PhoneNumber : {{user.phone_num}}</p>
+              <p> Unique Id : {{unique_id}}</p>
+            </div>
+          </div>
+          <div class="unique1">
+            <label for="unique_id">UNIQUE ID :</label>
+            <input value="{{unique_id}}" id="unique_id" class="unique" disabled>
+          </div>
+          
+          <div class="export-content">
+            <table>
+              <thead>
+                <tr>
+                  <th>INVOICE No.</th>
+                  <th>TOTAL AMOUNT</th>
+                  <th>LAST PAYMENT DATE</th>
+                  <th>PAYED</th>
+                  <th colspan="2">STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for data in datas %}
+                <tr>
+                  <td>{{data.invoice_number}}</td>
+                  <td>{{data.invoice_amount}}</td>
+                  <td>{{data.today_date}}</td>
+                  <td>{{data.payment_amount}}</td>
+                  {% if data.balance_amount == 0 %}
+                  <td>Paid</td>
+                  {% else %}
+                  <td>Pending</td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>    
+        </div>
+        <div class="print_less_page">
+          <form>
+            <div class="box-print1">
+              <div class="btn csv">
+                <a href="{% url 'exports_to_csv' %}" class="export-link" target="_blank"><button>CSV</button></a>
+              </div>
+              <div class="btn xlsx">
+                <a href="{% url 'exports_to_xlsx' %}" class="export-link" target="_blank"><button>XLSX</button></a>
+              </div>
+              <div class="btn mysql">
+                <a href="{% url 'exports_to_json' %}" class="export-link" target="_blank"><button>JSON</button></a>
+              </div>
+              <div class="btn">
+                <button type="button" onclick="window.print()">Print / PDF</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="Import" class="import-content tabcontent">
+        <div class="panel-container">
+          <div class="box2">
+            <div class="btn csv">
+              <input type="file" name="csv_file" id="csv_file_input" accept=".csv" style="display: none;" onchange="handleFileSelect('csv_file_input')">
+              <button type="button" onclick="document.getElementById('csv_file_input').click()">Choose CSV</button>
+            </div>
+            <div class="btn mysql">
+              <input type="file" name="mysql_dump" id="mysql_file_input" accept=".sql" style="display: none;" onchange="handleFileSelect('mysql_file_input')">
+              <button type="button" onclick="document.getElementById('mysql_file_input').click()">Choose MySQL</button>
+            </div>
+            <div class="btn xlsx">
+              <input type="file" name="excel_file" id="excel_file_input" accept=".xls, .xlsx" style="display: none;" onchange="handleFileSelect('excel_file_input')">
+              <button type="button" onclick="document.getElementById('excel_file_input').click()">Choose Excel</button>
+            </div>
+          </div>
+        </div>
+
+
+          <div class="lastbox">
+            <div class="lastbox-content">
+              <div class="lastbox-center">
+                <div class="lastbox-content-formate">
+                  <label for="user">Choose</label>
+                  <select id="tableSelector">
+                    <option value="table1">Format 1</option>
+                    <option value="table2">Format 2</option>
+                  </select>
+                </div>
+                
+                <div class="lastbox-content-agency">
+                  <label for="user">Store Type</label>
+                  {% if request.user.store_type == 'others' %}
+                    <input type="text" id="user" value="{{ request.user.other_value }}" placeholder="Agencyname" disabled>
+                  {% else %}
+                    <input type="text" id="user" value="{{ request.user.store_type }}" placeholder="Agencyname" disabled>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          
+            <div class="box main-box">
+              <table id="table1">
+                <thead id="file_data">
+                  <!-- Data will be dynamically added here -->
+                </thead>
+              </table>
+              
+              <table id="table2" style="display: none;">
+                <!-- Data for Format 2 -->
+                <thead>
+                  <tr>
+                    <th>Agency name</th>
+                    <th>Invoice Number</th>
+                    <th>Invoice Date</th>
+                    <th>Total</th>
+                    <th>Paid/Pending</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for data in datas %}
+                  <tr>
+                    {% if request.user.store_type == 'others' %}
+                    <td>{{ request.user.other_value }}</td>
+                    {% else %}
+                    <td>{{ request.user.store_type }}</td>
+                    {% endif %}
+                    <td>{{ data.invoice_number }}</td>
+                    <td>{{ data.invoice_date }}</td>
+                    <td>{{ data.invoice_amount }}</td>
+                    {% if data.balance_amount == 0 %}
+                    <td>Paid</td>
+                    {% else %}
+                    <td>Pending</td>
+                    {% endif %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+
+        <div class="print">
+          <h3>Do you want to print :</h3>
+          <button type="button" onclick="window.print()">Print</button>
+        </div>
+    </div>
+    </div>
+     
+    
+  </div>
+</div>
+
+<script>
+  const tablechange =  document.querySelector("#tableSelector");
+  tablechange.addEventListener("change",changeTable)
+  function changeTable() {
+    var selectedOption = document.getElementById("tableSelector").value;
+    if (selectedOption === "table1") {
+      document.getElementById("table1").style.display = "block";
+      document.getElementById("table2").style.display = "none";
+    } else if (selectedOption === "table2") {
+      document.getElementById("table1").style.display = "none";
+      document.getElementById("table2").style.display = "block";
+    }
+    console.log(selectedOption)
+  }
+</script>
+
+
+<script src="{% static 'invclc/js/import-export.js' %}"></script>
+{% endblock content %}

@@ -1,0 +1,45 @@
+body{
+    height: 100vh;
+    width: 100%;
+}
+.checkmore-container{
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+}
+h3{
+    text-align: center;
+    font-size: 25px;
+    
+}
+.checkmoreTable{
+    /* height: 100vh; */
+    width: 100%;
+    position: absolute;
+    border-collapse: collapse;
+}
+
+.checkmoreTable tr{
+    border-bottom: 1px solid #a39f9f ;
+}
+.checkmoreTable th , .checkmoreTable td{
+    padding: 12px 15px;
+    text-align: center;
+    border-right: 1px solid #bdb8b8 ;
+}
+.checkmoreTable th{
+    background-color: #6b6060;
+    color: white;
+}
+.checkmoreTable tr:nth-child(even){
+    background-color: #eeeeee;
+}
+button.check_btn{
+    height: 40px;
+    width: 60px;
+    background-color: blue;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+}

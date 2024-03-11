@@ -1,0 +1,80 @@
+{% extends "base.html" %} 
+{% load static %} 
+
+{% block link %}{% static 'invclc/css/create.css' %} {% endblock link %} 
+{% block link2 %}{% static 'nav_footer.css' %} {% endblock link2 %}
+
+{% block navbar %}
+    {% include 'nav.html' %} 
+ {% endblock navbar %}
+
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+  <div class="inputdetails">
+    <label>Pharmacy name :</label>
+    {{form.pharmacy_name}}
+  </div>
+  <div class="inputdetails">
+    <label>Invoice Number :</label>
+    {{form.invoice_number}}
+  </div>
+  <div class="inputdetails">
+    <label>Invoice Date :</label>
+    {{form.invoice_date}}
+  </div>
+  <div class="inputdetails">
+    <label>invoice Amount :</label>
+    {{form.invoice_amount}}
+  </div>
+
+  <div class="inputdetails">
+    <label>Payment Amount :</label>
+    {{form.payment_amount}}
+  </div>
+
+  <div class="inputdetails">
+    <label>Balance Amount :</label>
+    {{form.balance_amount}}
+  </div>
+    {{form.today_date}}
+  <button type="submit">Save</button>
+  <div class="back_btn">
+    <a href="{% url 'index' %}">Back to Invoice</a>
+  </div>
+</form>
+<script>
+  const invoice_amount = document.querySelector(".invoice_amount");
+  const payment_amount = document.querySelector(".payment_amount");
+  const balance_amount = document.querySelector(".balance_amount");
+  
+  invoice_amount.addEventListener("input", calculate);
+  payment_amount.addEventListener("input", calculate);
+  
+  function calculate() {
+    let invoice = Number(invoice_amount.value);
+    let payment = Number(payment_amount.value);
+    let balance = invoice - payment;
+  
+    if (balance < 0) {
+      balance_amount.value = "Amount Not Valid";
+      balance_amount.style.backgroundColor = "red";
+      balance_amount.style.color = "#FFFF";
+    } else if (
+      Number(invoice_amount.value) !== 0 &&
+      Number(payment_amount.value) !== 0 &&
+      Number(invoice_amount.value) == Number(payment_amount.value)
+    ) {
+      balance_amount.value = "Paying Full Amount ";
+      balance_amount.style.backgroundColor = "green";
+      balance_amount.style.color = "#FFFF";
+    } else {
+      balance_amount.value = `₹ ${balance}`;
+      balance_amount.style.backgroundColor = "#d3d3d3";
+      balance_amount.style.color = "black";
+    }
+  }
+
+</script>
+<script src="{% static 'invclc/js/index.js' %}"></script>
+{% endblock content %}

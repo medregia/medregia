@@ -1,0 +1,175 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+body{
+  min-height:100vh;
+  width:100%;
+  /* background-color:red; */
+}
+ 
+.box-container1{
+  min-height: 100vh;
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  margin-left: 30px;
+  }
+
+.box-container .panel{
+  min-height:100vh;
+  width:100%;
+}
+
+.box-container .panel .tab{
+  height:80px;
+  width:100%;
+  background-color:rgba(197, 197, 197,0.5);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding-left:10px;
+  column-gap:5px;
+}
+
+.box-container .panel .tab button{
+  height:60px;
+  width:20%;
+  /* background-color:blue; */
+  font-size:18px;
+  border-radius:4px;
+  border:none;
+  box-shadow:0px 0px 10px 0px rgb(195, 194, 194);
+  cursor:pointer;
+}
+
+.box-container .panel .tab button:active{
+  box-shadow:0px 0px 15px 0px black;
+}
+
+  .unique{
+    height: 40px;
+    width:260px;
+  }
+  .address-container1{
+  height: 150px;
+  width: 100%;
+  /* background-color: beige; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  }
+  .address-details1 {
+  /* background-color: blue; */
+  max-height: 100vh;
+  max-width: 100%;
+  }
+  .address-details2{
+  /* background-color: bisque; */
+  max-height: 100vh;
+  max-width: 100%;
+  }
+  .unique1{
+  text-align: center;
+  margin-top: 20px;
+  height: 60px;
+  margin-right: 350px;
+  width: 100%;
+
+   /* background-color: red; */
+  }
+  .unique1 label{
+    height: 40px;
+    width:auto;
+    font-weight: 800;
+  }
+  .unique1 input{
+    font-weight: bold;
+  }
+  .export-content table {
+  width: 100%;
+  border-collapse: collapse;
+  }
+  
+  .export-content table th, .export-content table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+  }
+  
+  .export-content table th {
+  background-color: #c7c7c7;;
+  top: 48px;
+  position: sticky;
+  }
+  .export-content table th:hover{
+  background-color: #a8a3a3;
+  }
+  
+  .export-content table tr:nth-child(even) {
+  background-color: #f2f2f2;
+  }
+  
+  .export-content table tr:hover {
+  background-color: #ddd;
+  }
+  form{
+  /* background-color: aqua; */
+  height: 80px;
+  width:100% ;
+  display: flex;
+  align-items: center;
+  margin-top: 40px;
+  background-color: #ccc;
+  }
+  
+  
+  .box-print1 {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly; /* Set the flex direction to column */
+  }
+  
+  .check {
+  display: flex; /* Align items vertically */
+  margin-top: 25px; /* Add some space between each checkbox */
+  }
+  
+  .box-print1 label {
+  margin-right: -70px;
+  margin-top: 3px; /* Add space between label and input */
+  }
+  .box-print1 input{
+  height: 20px;
+  }
+  .box-print1  button{
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  margin-top: 25px;
+  }
+  .box-print1 button:hover {
+  background-color: #0056b3;
+  }
+
+.tabcontent .export-content{
+    min-height:10vh;
+    width:100%;
+    /* background-color:red; */
+  }
+
+
+@media print {
+    .navbar, .btn, .tablinks {
+        display: none; /* Hide the button when printing */
+    }
+   
+}

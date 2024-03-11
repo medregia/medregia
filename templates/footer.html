@@ -1,0 +1,33 @@
+{% load static %}
+<footer>
+        <div class="footer-col">
+            <h4>Contact Us</h4>
+            <ul class="foot">
+                <li><a href="mailto:maarsath@gmail.com"> <i class="fa-regular fa-envelope" style="font-size: 25px;"></i> : maarsath@gmail.com</a></li>
+                <li><a href="https://wa.me/+917092016790"><i class="fab fa-whatsapp" style="font-size: 25px;"></i> : +917092016790</a></li>
+                <li style="color: white; font-weight: 300;"> <i class="fa-solid fa-location-dot"style="font-size: 25px;"></i>  Address : Erasaliayapuram street, Kadayanallur</li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Quick Link</h4>
+            <ul class="foot1">
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'profile' %}">Profile</a></li>
+                <li><a href="{% url 'import-export' %}">Export</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Follow Us</h4>
+            <div class="links">
+                <a href=""><i class="fab fa-facebook fa-bounce"></i></a>
+                <a href=""><i class="fa-brands fa-x-twitter fa-bounce"></i></a>
+                <a href="" id="social-inst"><i class="fab fa-instagram fa-bounce"></i></a>
+                <a href="" id="social-what"><i class="fab fa-whatsapp  fa-bounce"></i></a>
+                
+            </div>
+        </div>
+        <!-- <div class="bottom-bar">
+            <p>&copy; 2024 MedregiA . All rights reserved</p>
+        </div> -->
+    </footer>
+<script src="{% static 'authentication/js/footer.js' %}"></script>

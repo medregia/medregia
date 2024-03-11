@@ -1,0 +1,11 @@
+$color:(
+    "green":#04aa6d,
+    "white":#FFFF,
+    "grey":#bebebe,
+    "grey_hover":#a8a3a3,
+);
+
+$green:map-get($color,"green");
+$whte:map-get($color,"white");
+$grey:map-get($color,"grey");
+$grey_hover:map-get($color,"grey_hover");

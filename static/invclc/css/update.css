@@ -1,0 +1,37 @@
+body{
+  height: 100vh;
+  width: 100%;
+}
+.updateTable-container{
+  height: 100vh;
+  width: 100%;
+  position: absolute;
+}
+h3{
+  text-align: center;
+  font-size: 25px;
+  
+}
+.UpdateTable{
+  /* height: 100vh; */
+  width: 100%;
+  position: absolute;
+  border-collapse: collapse;
+}
+
+.UpdateTable tr{
+  border-bottom: 1px solid #a39f9f ;
+}
+.UpdateTable th , .UpdateTable td{
+  padding: 12px 15px;
+  text-align: left;
+  border-right: 1px solid #bdb8b8 ;
+}
+.UpdateTable th{
+  background-color: #6b6060;
+  color: white;
+
+}
+.UpdateTable tr:nth-child(odd){
+  background-color: #eeeeee;
+}

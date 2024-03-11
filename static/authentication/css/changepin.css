@@ -1,0 +1,112 @@
+h1{
+    text-align: center;
+    margin-top: 50px;
+    text-decoration: underline;
+}
+form{
+    width: 25%;
+    height: 60vh;
+    margin-top: 50px;
+    margin-left: 38%;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    box-shadow: 0px 0px 10px 0px black;
+}
+.pinchange{
+    max-height: 60vh;
+    max-width: 30vw;
+    margin-left: 60px;
+    margin-top: 5px;
+    display: block;
+}
+.pinchange input {
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid black;
+    display: block;
+    width: 70%;
+    padding: 15px 0;
+    font-size: 16px;
+    color: black;
+    padding-left: 10px;
+    margin-left: 10px;
+  }
+  .pinchange input:focus,
+  .pinchange input:valid {
+    outline: 0;
+    border-bottom-color: black;
+  }
+.pinchange label{
+    color: black;
+    font-size: 20px;
+    font-weight: 700;
+}
+.pinchange button{
+    margin-left: 40%;
+    height: 30px;
+    width: 70px;
+    background-color: blue;
+    border: 1px solid black;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.back button{
+    margin-left: 20%;
+    height: 30px;
+    width: 70px;
+    background-color: blue;
+    border: 1px solid black;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+.btn-1 button{
+    margin-left: 41%;
+    height: 30px;
+    width: 70px;
+    background-color: blue;
+    border: 1px solid black;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+   
+
+
+/* @media only screen and (max-width: 600px) {
+    form {
+        width: 80%; 
+    }
+    
+}
+
+@media only screen and (min-width: 601px) and (max-width: 900px) {
+    form {
+        width: 70%; 
+    }
+}
+
+@media only screen and (min-width: 901px) and (max-width: 1200px) {
+    form {
+        width: 60%; 
+    }
+}
+
+@media only screen and (min-width: 1201px) and (max-width: 1600px) {
+    form {
+        width: 50%; 
+    }
+}
+
+@media only screen and (min-width: 1601px) {
+    form {
+        width: 40%; 
+    }
+} */
+
+

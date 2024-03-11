@@ -1,0 +1,22 @@
+ Logic For Partially Paid :-
+ ------------------------
+ 
+ --> Here Get payment_amount from url   
+ --> Then add previous payment_amount + current payment_ammount
+              -----------------------   -----------------------
+ --> save it 
+ 
+ --> Then Check if payment_amount == to Invoice_amount or payment_amount >= invoice_amount 
+                --------------------------------------------------------------------------
+        Then Set payment_amount = invoice_amount
+
+ --> And Check another one 
+    --> if balance_amount == 0 or balance_amount <= 0 
+        ---------------------------------------------
+        --> set balance_amount = 0
+
+
+Logic For Payment List :-
+------------------------
+
+    

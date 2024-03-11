@@ -1,0 +1,55 @@
+{% extends 'base.html' %} 
+
+{% load static %} 
+
+{% block title %} MedRegiA || Check {{user_title}} {% endblock title %} 
+
+{% block nav_footer %}{% static 'nav_footer.css' %} {%endblock nav_footer %} 
+
+{% block link %}{% static 'invclc/css/check.css' %} {%endblock link %}
+
+{% block navbar %} 
+    {% include 'nav.html' %} 
+{% endblock navbar%} 
+
+
+{% block content %}
+<div class="main-container">
+  <h2 class="heading">Check Page</h2>
+  <hr>
+      <form action="">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <th>Pharmacy Name</th>
+                    <th>Agency name</th>
+                    <th>Invoice Number</th>
+                    <th>Invoice Date</th>
+                    <th>Invoice Amount</th>
+                    <th>Due Pay</th>
+                    <th>Balance</th>
+                  </thead>
+
+                  <tbody>
+                    {% for i in invoices %}
+                    <tr>
+                      <td>{{ i.pharmacy_name }}</td>
+                      {% if request.user.store_type == 'others' %}
+                        <td>{{request.user.other_value}}</td>
+                      {% else %}
+                        <td>{{request.user.store_type}}</td>
+                      {% endif %}
+                      <td>{{ i.invoice_number }}</td>
+                      <td>{{ i.invoice_date }}</td>
+                      <td>₹{{ i.invoice_amount }}</td>
+                      <td>₹{{ i.payment_amount }}</td>
+                      <td>₹{{ i.balance_amount }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+            </table>
+        </form>
+    </div>
+{% endblock content %}
+
+

@@ -1,0 +1,62 @@
+{% load static %}
+<nav>
+  <div class="header">
+    <a href="{% url 'index' %}">Home</a>
+  </div>
+
+  <div class="nav-heading">
+    <a href="{% url 'index' %}">MedRegiA</a>
+  </div>
+
+  <div class="nav-links">
+    <ul>
+      <li><i id="bell" class="fa-regular fa-bell"></i></li>
+      {% if request.user.is_superuser %}
+        <li><a href="{% url 'admin:index' %}">Admin</a></li>
+      {% endif %}
+      
+      <li>
+        <a href="{% url 'profile' %}"><span><img src="{% static 'authentication/images/profile.png'%}" class="user-pic" alt="profile" /></span></a>
+      </li>
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+  </div>
+  
+</nav>
+
+
+<div class="notifications hide">
+  {% if request.user.username == Admin_form %}
+    <div class="admin-request">
+      <p>Admin Request </p>
+      <h4>Here Admin User Want to Make
+        You as a Admin {{ admin_user }}</h4>
+
+      <form method="post" action="{% url 'confirm_admin' %}" id="admin_action">
+        {% csrf_token %}
+        <input  class="confirm" type="submit" value="Confirm">
+        <input type="button" value="Cancel">
+      </form>
+
+    </div>
+  {% endif %}
+    <h5> Your Message Notifications Here </h5>
+
+  <div class="notify-me">
+    {% include 'notification_message.html' %}
+  </div>
+  
+</div>
+
+{% comment %} <div class="user-box hide">
+  <img src="{% static 'authentication/images/profile.png'%}" class="user" alt="profile" >
+  <h3>{{request.user}}</h3>
+  <a href="{% url 'profile' %}">Profile</a>
+  <div class="mail">{{user_mail}}</div>
+
+  <div class="content">
+    <a href="{% url 'password_change' %}">Change Password</a>
+    <a href="{% url 'logout' %}">Logout</a>
+  </div>
+</div> {% endcomment %}
+<script src="{% static 'authentication/js/nav.js' %}"></script>

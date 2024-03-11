@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} MedApp || signup {% endblock title %}
+{% block link %} {% static 'authentication/css/signup.css' %} {% endblock link %}
+
+{% block message %}
+  {% include 'message.html' %}
+{% endblock message %}
+
+{% block content %}
+<div class="container">
+  
+  <div class="arrow">
+    <a href="{% url 'login'%}"><span><i class="fa-solid fa-arrow-left"></i></span></a>
+  </div>
+
+    <div class="header">
+      <h1>MedRegiA</h1>
+    </div>
+    <form action="" method="post">
+        {% csrf_token %}
+      <div class="form-group">
+        <label for="id_username">Username</label>
+        {{form.username}}
+        <span>
+            {% if form.errors.username %}
+                {{form.errors.username}}
+            {% endif %}
+        </span>
+      </div>
+      <div class="form-group">
+        <label for="id_email">Email</label>
+        {{form.email}}
+        <span>
+          {% if form.errors.email %}
+              {{form.errors.email}}
+          {% endif %}
+      </span>
+      </div>
+
+      <div class="form-group">
+        <label for="id_password1">Password</label>
+        {{form.password1}}
+        <span>
+          {% if form.errors.password1 %}
+              {{form.errors.password1}}
+          {% endif %}
+      </span>
+      </div>
+
+      <div class="form-group">
+        <label for="id_phone_num">Phone Number</label>
+        {{form.phone_num}}
+        <span>
+          {% if form.errors.phone_num %}
+              {{form.errors.phone_num}}
+          {% endif %}
+      </span>
+      </div>
+
+      
+      <div class="form-group">
+        <label for="id_password2">Confirm Password</label>
+        {{form.password2}}
+        <span>
+          {% if form.errors.password2 %}
+              {{form.errors.password2}}
+          {% endif %}
+      </span>
+      </div>
+
+      <div class="form-group">
+        <label for="id_pin">Pin</label>
+        {{form.pin}}
+        <span>
+          {% if form.errors.pin %}
+              {{form.errors.pin}}
+          {% endif %}
+      </span>
+      </div>
+
+      <div class="form-group selection">
+        <label for="id_store_type">Categories</label>
+        {{form.store_type}}
+        <span>
+          {% if form.errors.store_type %}
+              {{form.errors.stor_type}}
+          {% endif %}
+      </span>
+      </div>
+      <div class="form-group others">
+        <label for="id_other_type" class="label-other">Others</label>
+        {{form.other_value}}
+        <span>
+          {% if form.errors.other_tvalue %}
+              {{form.errors.other_value}}
+          {% endif %} 
+      </span> 
+      </div>
+      <div class="button-submit">
+        <button type="submit" class="btn">Signup</button>
+      </div>
+      <div class="bottom-field">
+        <a href="#">Terms & conditions</a>
+      </div>
+    </form>
+</div>
+
+<script src="{% static 'authentication/js/signup.js' %}"></script>
+{% endblock %}
+

@@ -1,0 +1,34 @@
+{% load static %}
+
+<div class="navbar">
+    <div class="sidebar sidebar-closed" id="sidebar">
+        <a href="{% url 'index' %}" class="logo">
+            <img src="{% static 'authentication/images/invoice1.png' %}" alt="">
+            <span class="nav-item">Invoice</span> 
+        </a>
+
+        <a href="{% url 'statics' %}" class="logo">
+            <img src="{% static 'authentication/images/static.png' %}" alt="">
+            <span class="nav-item">Static</span> 
+        </a>
+
+        <a href="{% url 'clinic' %}" class="logo">
+            <img src="{% static 'authentication/images/clinic.png' %}" alt="">
+            <span class="nav-item">Clinic</span> 
+        </a>
+
+        <a href="{% url 'import-export' %}" class="logo export">
+            <img src="{% static 'authentication/images/import.png' %}" alt="">
+            <span class="nav-item">Export
+                <br>/ Import</span> 
+        </a>
+
+
+
+
+        <div class="toggle-btn" onclick="toggleSidebar()">
+            <div class="arrow">&#9664;</div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'authentication/js/sidebar.js' %}"></script>

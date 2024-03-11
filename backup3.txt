@@ -1,0 +1,168 @@
+window.onload = function () {
+  var activeTab = document.querySelector(".tablinks.active");
+  if (activeTab) {
+    activeTab.click();
+  }
+};
+
+function openpanel(evt, panels) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  var panel = document.getElementById(panels);
+  if (panel) {
+    panel.style.display = "inline-flex";
+  }
+  if (evt.currentTarget.className.indexOf("active") === -1) {
+    evt.currentTarget.className += " active";
+  }
+
+  const invoice_amount = document.querySelector(".invoice_amount");
+  const payment_amount = document.querySelector(".payment_amount");
+  const balance_amount = document.querySelector(".balance_amount");
+
+  invoice_amount.addEventListener("input", calculate);
+  payment_amount.addEventListener("input", calculate);
+
+  function calculate() {
+    let invoice = Number(invoice_amount.value);
+    let payment = Number(payment_amount.value);
+    let balance = invoice - payment;
+
+    if (balance < 0) {
+      balance_amount.value = "Amount Not Valid";
+      balance_amount.style.backgroundColor = "red";
+      balance_amount.style.color = "#FFFF";
+    } else if (
+      Number(invoice_amount.value) !== 0 &&
+      Number(payment_amount.value) !== 0 &&
+      Number(invoice_amount.value) == Number(payment_amount.value)
+    ) {
+      balance_amount.value = "Paying Full Amount ";
+      balance_amount.style.backgroundColor = "green";
+      balance_amount.style.color = "#FFFF";
+    } else {
+      balance_amount.value =` ₹ ${balance}`;
+      balance_amount.style.backgroundColor = "#d3d3d3";
+      balance_amount.style.color = "black";
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  const editButtons = document.querySelectorAll('.editBtn');
+  const saveButtons = document.querySelectorAll('.saveBtn');
+  const cancelButtons = document.querySelectorAll('.cancelBtn');
+  const deleteButtons = document.querySelectorAll('.deleteBtn');
+
+  editButtons.forEach((editBtn, index) => {
+    editBtn.addEventListener('click', function () {
+      const row = this.closest('tr');
+      const inputFields = row.querySelectorAll('input');
+
+      inputFields.forEach(input => {
+        input.removeAttribute('disabled');
+        input.classList.add('border-active');
+      });
+
+      editBtn.style.display = 'none';
+      saveButtons[index].style.display = 'inline-block';
+      cancelButtons[index].style.display = 'inline-block';
+      if (deleteButtons[index]) {
+        deleteButtons[index].style.display = 'none';
+      }
+    });
+
+    //TODO: POSTING a Data For Update using Featch 
+    saveButtons[index].addEventListener('click', function () {
+      const row = this.closest('tr');
+      const inputFields = row.querySelectorAll('input');
+      const invoiceId = row.dataset.invoiceId;
+      const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+
+      const dataToUpdate = {};
+      inputFields.forEach(input => {
+        input.setAttribute('disabled', 'true');
+        input.classList.remove('border-active');
+        dataToUpdate[input.name] = input.value;
+      });
+
+      fetch(`/update_invoice/${invoiceId}/`, {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+           'X-CSRFToken': csrfToken,
+         },
+         body: JSON.stringify(dataToUpdate),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Row updated successfully:', data);
+      })
+      .catch(error => {
+      console.error('Error updating row:', error);
+      });
+
+
+      editBtn.style.display = 'inline-block';
+      saveButtons[index].style.display = 'none';
+      cancelButtons[index].style.display = 'none';
+      if (deleteButtons[index]) {
+        deleteButtons[index].style.display = 'inline-block';
+      }
+    });
+
+    cancelButtons[index].addEventListener('click', function (event) {
+      event.preventDefault();
+
+      const row = this.closest('tr');
+      const inputFields = row.querySelectorAll('input');
+
+      inputFields.forEach(input => {
+        input.setAttribute('disabled', 'true');
+        input.classList.remove('border-active');
+      });
+
+      editBtn.style.display = 'inline-block';
+      saveButtons[index].style.display = 'none';
+      cancelButtons[index].style.display = 'none';
+      if (deleteButtons[index]) {
+        deleteButtons[index].style.display = 'inline-block';
+      }
+    });
+
+    if (deleteButtons[index]) {
+      deleteButtons[index].addEventListener('click', function () {
+        const row = this.closest('tr');
+        const invoiceId = row.dataset.invoiceId;
+        const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+
+        fetch(`/delete_invoice/${invoiceId}/`, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRFToken': csrfToken,
+          },
+        })
+          .then(response => response.json())
+          .then(data => {
+            row.remove();
+            console.log('Row deleted successfully:', data);
+          })
+          .catch(error => {
+            console.error('Error deleting row:', error);
+          });
+      });
+    }
+  });
+});

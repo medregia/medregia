@@ -1,0 +1,121 @@
+
+footer{
+    /* min-height:30vh; */
+    height: 40vh;
+    width:100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items:center;
+    margin-top: 20px;
+    background-color:#033B4A;
+    padding: 60px 10%;
+    justify-content: space-evenly;
+}
+.foot1{
+    list-style: none;
+    height: 100px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    /* margin-left: -60px; */
+    /* background-color: red; */
+}
+.foot{
+    height: 100px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    /* background-color: red; */
+}
+    
+
+.footer-col{
+    width: 25%;
+}
+.footer-col h4{
+    position: relative;
+    margin-bottom: 30px;
+    font-weight: 500;
+    font-size: 25px;
+    color:dodgerblue ;
+    text-transform: capitalize;
+}
+h4::before{
+    content: ' ';
+    position: absolute;
+    left: 0;
+    bottom:-6px;
+    background-color: gold;
+    height: 2px;
+    width: 40px;
+}
+li:not(:last-child){
+    margin-bottom: 8px;
+}
+.foot li a{
+    display: block;
+    font-size: 19px;
+    
+    color: white;
+    text-decoration: none;
+    transition: 0.4s;
+    width: 250px;
+    margin-left: 15px;
+}
+.foot li a:hover{
+    color: white;
+    padding-left: 3px;
+
+}
+.links a{
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+    color: white;
+    background-color: rgba(40, 130, 214,0.8);
+    margin: 0 8px 8px 0;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 50%;
+    transition: 0.4s;
+}
+.links a:hover{
+    color: rgba(40, 130, 214,0.8);
+    background-color: white;
+}
+
+#social-inst{
+    background-color: rgb(204, 46, 46);
+    color: white;
+}
+#social-inst:hover{
+    background-color: white;
+    color:  rgb(204, 46, 46);
+}
+#social-what{
+    background-color:rgb(56, 206, 56);
+    color: white;
+}
+#social-what:hover{
+    background-color: white;
+    color: rgb(56, 206, 56);
+}
+
+@media(max-width:740px){
+    .footer-col{
+        width: 50%;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    .footer-col h4::before{
+        all:unset
+    }
+    .foot1{
+        margin-left: 25px;
+    }
+}
+@media(max-width:555px){
+    .footer-col{
+        width: 100%;
+    }
+}

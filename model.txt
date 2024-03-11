@@ -1,0 +1,45 @@
+from django.db import models
+from django.utils import timezone
+from authentication.models import CustomUser
+
+class Invoice(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True)
+    pharmacy_name = models.CharField(max_length=100)
+    invoice_number = models.CharField(max_length=20, unique=True)
+    invoice_date = models.DateField(default=timezone.now)
+    invoice_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    balance_amount = models.DecimalField(max_digits=10, decimal_places=2 ,null=True, blank=True)
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    today_date = models.DateField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        self.balance_amount = self.invoice_amount - self.payment_amount
+        super().save(*args, **kwargs)
+
+    def _str_(self):
+        return f"{self.pharmacy_name} - {self.invoice_number}"
+     
+
+
+
+
+
+
+
+
+     # Alternate  ....
+
+            # If the instance is already in the database
+        if self.id:
+            prev_invoice = Invoice.objects.get(id=self.id)
+            # Check if payment_amount is changed without changing invoice_amount
+            if ( prev_invoice.payment_amount != self.payment_amount and prev_invoice.invoice_amount == self.invoice_amount):
+                # Only payment_amount is changed, update balance_amount
+                self.balance_amount = self.invoice_amount - self.payment_amount
+                print(f"Updated balance_amount: {self.balance_amount}")
+
+        else:
+            # For new instances, set balance_amount initially
+            self.balance_amount = self.invoice_amount - self.payment_amount
+
+        print(f"Updated payment_amount (before save): {self.payment_amount}")

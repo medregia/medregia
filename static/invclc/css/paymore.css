@@ -1,0 +1,80 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    height: 100vh;
+    width: 100%;
+}
+.paymore-container{
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+}
+h3{
+    text-align: center;
+    font-size: 25px;
+    
+}
+.paymoreTable{
+    /* height: 100vh; */
+    width: 100%;
+    position: absolute;
+    border-collapse: collapse;
+}
+
+.paymoreTable tr{
+    border-bottom: 1px solid #a39f9f ;
+}
+.paymoreTable th , .paymoreTable td{
+    padding: 12px 15px;
+    text-align: center;
+    border-right: 1px solid #bdb8b8 ;
+}
+.paymoreTable th{
+    background-color: #6b6060;
+    color: white;
+}
+.paymoreTable tr:nth-child(even){
+    background-color: #eeeeee;
+}
+button.pay_btn{
+    height: 40px;
+    width: 60px;
+    background-color: blue;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+}
+
+
+.paymore-container table tbody tr td input{
+    height:30px;
+    width:100px;
+    border:none;
+    font-weight: bold;
+    /* background-color:red; */
+  }
+  .border-active {
+    border: 1px solid #3498db;
+    outline: 1px solid #3498db
+  }
+  .paymore-container table tbody tr td input{
+    height:30px;
+    width:100px;
+    border:none;
+    font-weight: bold;
+    /* background-color:red; */
+  }
+    
+  .paymore-container button{
+    height:40px;
+    width: 70px;
+    background-color:blue;
+    color: #FFF;
+    border-radius: 3px;
+    transition: all 0.7s ease;
+  }

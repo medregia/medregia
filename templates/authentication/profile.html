@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block link %}{% static 'authentication/css/profile.css' %}{% endblock link%}
+{% block font %}{% static 'fontawesome/css/all.min.css' %}{% endblock font %}
+{% block link2 %}{% static 'authentication/css/nav.css' %} {% endblock link2 %}
+{% block title %} MedRegia || Profile {% endblock title%}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% block navbar %}
+  {% include 'nav.html' %}
+{% endblock navbar %}
+ 
+{% block content%}
+<form method="post">
+    {% csrf_token %}
+    {% comment %} {{ profile.as_p }} {% endcomment %}
+    <div class=heading>
+        <h1>Profile</h1>
+    </div>
+        <div class="container">
+            <div class="left-panel">
+                <div class="input-group">
+                    <div class="medicalname  medical">
+                        <label for="Medicalshop Name">Medicalshop Name :</label>
+                        {{profile.MedicalShopName}}
+                    </div>
+                    
+                    <hr class="hr">
+                    <div class="proprietaryname medical">
+                        <label for="Proprietary Name">Proprietary Name :</label>
+                        {{profile.ProprietaryName}}
+                    </div>
+                    
+                    <div class="drug1 medical">
+                        <label for="Drug Licenese Number1">Drug Licenese Number1 :</label>
+                        {{profile.DrugLiceneseNumber1}}
+                    </div>
+                    <hr class="hr">
+                    <div class="proprietarynum medical">
+                        <label for="proprietary Number">Proprietary Number :</label>
+                        {{profile.ProprietaryNumber}}
+                    </div>
+                    <div class="drug2 medical">
+                        <label for="Drug Licenese Number2">Drug Licenese Number2 :</label>
+                        {{profile.DrugLiceneseNumber2}}
+                    </div>
+                    <hr class="hr">
+                    <div class="proprietarycont medical ">
+                        <label for="id_ProprietaryContact Number">Proprietary Contact Number :</label>
+                        {{profile.ProprietaryContact}}
+                    </div>
+                
+                </div>
+                <div class="head"><p class="registered">Registered Address</p></div>
+                <div class="input-group" id="register-group">
+                    <div class="state medical">
+                        <label for="state">State :</label>
+                        {{profile.state}}                      
+                    </div>
+
+                    <script>
+                        $(document).ready(function() {
+                            $('#id_state').select2({
+                                placeholder: "Select a State",
+                                allowClear: true
+                            });
+                        });
+                    </script>
+
+                    <hr class="hr">
+                    
+                    <div class="district medical">
+                        <label for="state">District :</label>
+                        {{ profile.district }}
+                    </div>
+
+                    <!-- Include the Select2 CSS and JS files -->
+                    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+
+                    <script>
+                        $(document).ready(function() {
+                            $('#id_district').select2({
+                                placeholder: "Select a district",
+                                allowClear: true
+                            });
+                        });
+                    </script>
+                    
+                    <div class="city medical">
+                        <label for="city">City :</label>
+                        {{profile.City}}
+                    </div>
+                    <hr class="hr">
+                    <div class="pincode medical">
+                        <label for="pincode">Pincode :</label>
+                        {{profile.Pincode}}
+                    </div>
+                    <div class="street medical">
+                        <label for="Street Name"> Street Name :</label>
+                        {{profile.StreetNumber}}
+                    </div>
+                    <hr class="hr">
+                    <div class="door medical">
+                        <label for="Door Number">Door Number :</label>
+                        {{profile.DoorNumber}}
+                    </div>
+                </div>
+                <div class="unique">
+                    <div class="uniqueid ">
+                        <label for="name">Unique ID :</label>
+                        <input type="text" value="{{unique_code}}" readonly>
+                    </div>
+                </div>  
+            </div>
+            <div class="right-panel">
+                <div class="input-group">
+                    <div class="Pharmacistname medical">
+                        <label for="Pharmacist Name">Pharmacist Name :</label>
+                        {{profile.PharmacistName}}
+                    </div>
+                    <hr>
+                    <div class="Registerednumber medical">
+                        <label for="Registered Number">Registered Number :</label>
+                        {{profile.RegisteredNumber}}
+                    </div>
+                    <div class="contectnumber medical">
+                        <label for="Contact Number">Contact Number :</label>
+                        {{profile.ContactNumber}}
+                    </div>
+                    
+                </div>
+                </form>
+                <div class="divider"></div>
+            <div class="data-section">
+                <div class="input-group meta">
+                    <div class="head"><p class="admin-detail">Admin Details</p></div>
+                    <div class="name medical">
+                        {% for admin in admins %}
+                        <label for="name">Name :</label>
+                            <input type="text" value="{{ admin.username }}" id="user_name" disabled>
+                        {% endfor %}
+                    </div>
+                    <div class="contact medical">
+                        <label for="Contact">Contact :</label>
+                        {% for admin in admins %}
+                            <input type="text"id="Contact"  name="Contact" value="{{ admin.phone_num }}" disabled>
+                        {% endfor %}
+                        
+                    </div>
+                    <div class="divider2"></div>
+                    <div class="input-subgroup meta">
+                        <div class="head"><p class="current-user">Current user Detail</p></div>
+                        <div class="currentusername medical ">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text"id="currentusername" value="{{request.user}}" name="currentusername" placeholder="Name" readonly>
+                        </div>
+                        {% for data in user_profile_data %}
+                        <div class=" Currentphone medical">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="text"id="Currentphone" value="{{data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
+                        </div>
+                        {% endfor %}
+                        <div class="passwordchange medical">
+                            <i class="fa-solid fa-lock"></i>
+                                <a href="{% url 'password_change' %}"class="button-paper">Change Password</a>
+                        </div>
+                        <div class="pinchange medical">
+                            <i class="fa-solid fa-key"></i>
+                            <a href="{% url 'change_pin' %}"class="button-paper">Change Pin</a>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="divider"></div>
+                <div class="medical2">
+                    <div class="username medical">
+                        {% if request.user.is_superuser or request.user.is_staff %}
+                        <form action="#" method="post">
+                            {% csrf_token %}
+                            <label for="Username">Make As Admin :</label>
+                            <input type="text" placeholder="Enter User Name Want to Admin " name="admin">
+                            <button class="button-paper" role="submit">Make Admin</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                
+            </div>
+            {% comment %} <button type="submit" class="sub">Submit</button> {% endcomment %}
+            <div class="btn_container">
+                <button id="button" class="submit_btn"></button>
+            </div>
+        </div>
+        <script>
+            $(function() {
+                $( "#button" ).click(function() {
+                  $( "#button" ).addClass( "onclic", 250, validate);
+                });
+              
+                function validate() {
+                  setTimeout(function() {
+                    $( "#button" ).removeClass( "onclic" );
+                    $( "#button" ).addClass( "validate", 450, callback );
+                  }, 2250 );
+                }
+                  function callback() {
+                    setTimeout(function() {
+                      $( "#button" ).removeClass( "validate" );
+                    }, 1250 );
+                  }
+                });
+        </script>
+        
+
+    
+     {% comment %} <script>
+        $(document).ready(function(){
+            $('#id_state').change(function(){
+                var selectedStateId = $(this).val();
+                if(selectedStateId) {
+                    $.ajax({
+                        url: '/get_districts/',  // Django view url
+                        data: {'state_id': selectedStateId},
+                        success: function(data) {
+                            console.log(data);  // Log the data
+                            $('#id_district').html(data);
+                        }
+                    });
+                }
+            });
+        });
+            
+    </script> {% endcomment %}
+
+    {% comment %} <script>
+        $(document).ready(function(){
+            var $select1 = $('#id_state'),
+                $select2 = $('#id_district'),
+                $options = $select2.find('option');
+                $select1.on('change',function(){
+                    $select2.html($options.filter('[value="'+this.value+'"]'));
+                }).trigger('change');
+        });
+
+
+    </script>  
+    {% endcomment %}
+
+    {% comment %} <script src="{% static 'authentication/js/profile.js'%}"></script>  {% endcomment %}
+
+{% endblock content%}

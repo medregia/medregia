@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} MedRegiA || Phone Login {% endblock title %}
+{% block link2 %} {% static 'authentication/css/login.css' %} {% endblock link2 %}
+
+{% block message %}
+  {% include 'message.html' %}
+{% endblock message %}
+
+{% block content %}
+
+{% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+        <i class="fas fa-times disable"></i>
+    </div>
+{% endif %}
+
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-header-about">
+        <a href="#">About Us</a>
+      </div>
+
+      <div class="login-header-medregia">
+        <a href="{% url 'login' %}"> MedRegiA</a>
+      </div>
+    </div>
+
+    <div class="login-container-body">
+      <div class="container-body-messages">
+        <div class="messages-mission">
+          <h3>Mission</h3>
+          <p> To guide small-scale businessmen in the medical field and strongly support them for business development, ultimately contributing to the success of their ventures.</p>
+        </div>
+
+        <div class="messages-vision">
+          <h3>Vision</h3>
+          <p> To foster successful businesses in the medical sector, recognizing that each small business contributes significantly to the growth and prosperity of our nation.</p>
+        </div>
+      </div>
+
+      <div class="container-body-login">
+        <div class="login-body-container">
+          <div class="login-body-header">
+            <h3>Phone login</h3>
+
+            <div class="phone">
+              <a href="{% url 'login'%}"><span><i class="fa-solid fa-user"></i></span></a>
+            </div>
+          </div>
+
+          
+          <div class="body-container-login">
+            <form action="#" method="post">
+              {% csrf_token %}
+              <div class="login-username">
+                <label for="login-user" for="id_username">Phone Number</label>
+                <input id="login-user" type="number" name="phone_num" placeholder="Number">
+              </div>
+          
+              <div class="login-password">
+                <label for="login-pswd"for="id_password">Pin Number</label>
+                <input id="login-pswd" type="number" name="pin" placeholder="Pin">
+              </div>
+          
+              <div class="login-buttons">
+                <div class="login-btn">
+                  <button type="submit" class="loginbtn">Login</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="bottom-field">
+            <a href="#">Forget Password ?</a>
+            <a href="#">Terms & Conditions</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script src="{% static 'authentication/js/login.js' %}"></script>
+{% endblock content %}
+
+
+
+
+
+
+{% comment %} 
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} MedApp || Login {% endblock title %}
+{% block link %} {% static 'authentication/css/phonelogin.css' %} {% endblock link %}
+
+{% block message %}
+  {% include 'message.html' %}
+{% endblock message %}
+
+{% block content %}
+
+{% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+    </div>
+{% endif %}
+<div class="phone-heading">
+ <a href="#"> <h1>MedRegia</h1></a>
+</div>
+  
+<div class="container">
+  <div class="arrow">
+    <a href="{% url 'login'%}"><span><i class="fa-solid fa-user"></i></span></a>
+  </div>
+  
+  <div class="header">
+    <h1>Phone login</h1>
+  </div>
+
+  <form action="#" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="login-user">Phone Number</label>
+      <input id="login-user" type="number" name="phone_num" placeholder="Number">
+    </div>
+
+    <div class="form-group">
+      <label for="login-pswd">Pin Number</label>
+      <input id="login-pswd" type="number" name="pin" placeholder="Pin">
+    </div>
+
+    <button type="submit" class="btn">Login</button>
+    <div class="bottom-field">
+      <a href="#">Forget Password ?</a>
+      <a href="#">Terms & Conditions</a>
+    </div>
+  </form>
+</div>
+
+{% endblock content %}
+{% block script %}{% static 'authentication/js/login.js' %}{% endblock script %} {% endcomment %}

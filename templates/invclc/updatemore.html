@@ -1,0 +1,48 @@
+{% extends 'base.html' %} 
+
+{% load static %} 
+
+{% block title %} MedRegiA || Update More {% endblock title %} 
+
+{% block nav_footer %}{% static 'nav_footer.css' %} {%endblock nav_footer %} 
+
+{% block link %}{% static 'invclc/css/updatemore.css' %} {%endblock link %}
+
+{% block navbar %} 
+    {% include 'nav.html' %} 
+{% endblock navbar%} 
+
+{% block content %}
+    <div class=" checkmore-container">
+        <h3>Update More details</h3>
+        <table class="checkmoreTable">
+            <thead>
+              <th>Pharmacy Name</th>
+              <th>Invoice Amount</th>
+              <th>Paid Date</th>
+              <th>Balance Amount</th>
+              <th>Action</th>
+            </thead>
+            <tbody>
+              <form action="" method="post" id="update_delete_id">
+                {% csrf_token %}
+                {% for data in invoices %}
+                <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
+                    <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
+                    <td><input type="text" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
+                    <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
+                    <td><input type="text" value="{{ data.balance_amount }}" disabled name="balance_amount"></td>
+                    <td>
+                        <button type="button" class="editBtn">Edit</button>
+                        <button type="button" class="deleteBtn">Delete</button>
+                        <button type="button" class="saveBtn" data-invoice-id="{{ data.id }}" style="display: none;">Save</button>
+                        <button type="button" class="cancelBtn" style="display: none;">Cancel</button>
+                    </td>
+                </tr>
+                {% endfor %}
+              </form> 
+            </tbody>
+          </table>
+    </div>
+    <script src="{% static 'invclc/js/updatemore.js' %}"></script>
+{% endblock content %}

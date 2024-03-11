@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} MedRegiA || Home {% endblock title %}
+{% block nav_footer %}{% static 'nav_footer.css' %} {% endblock nav_footer %}
+{% block link_footer %}{% static 'footer.css' %} {% endblock link_footer %}
+{% block link %}{% static 'authentication/css/home.css' %} {% endblock link %}
+{% block side %}{% static 'authentication/css/sidebar.css' %}{% endblock side %}
+
+{% block navbar %}
+  {% include 'nav.html' %}
+{% endblock navbar %}
+
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock sidebar %}
+
+{% block message %}
+    {% include 'message.html' %}
+{% endblock message %}
+
+{% block content %}
+
+
+  
+    <div class="main-container">
+ 
+      <div class="main-header">
+        
+        <div class="header-top">
+          
+          <div class="heading">
+            <div class="unique-code">
+              <p>UNIQUE-ID :</p><span>{{unique}}</span>
+            </div>
+            <h2>Invoice</h2>
+          </div>  
+          <div class="header-top-btn">
+            <a href="{% url 'create' %}"><button type="button">Overall</button></a>
+          </div>
+        </div>
+  
+        <div class="header-bottom">
+          <form action="" method="post">
+            {% csrf_token %}
+            <table class="tableCreate">
+              <thead>
+                <tr>
+                  <th>Pharmacy Name</th>
+                  <th>Invoice Number</th>
+                  <th>Invoice Date</th>
+                  <th>Invoice Amount</th>
+                  <th>Due Pay</th>
+                  <th>Balance</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                    <td>{{form.pharmacy_name}}</td>
+                    <td>{{form.invoice_number}}</td>
+                    <td>{{form.invoice_date}}</td>
+                    <td>{{form.invoice_amount}}</td>
+                    <td>{{form.payment_amount}}</td>
+                    <td>{{form.balance_amount}}</td>
+                    {% comment %} <td>{{form.today_date}}</td> {% endcomment %}
+                    <td>
+                      {{form.today_date}}
+                      <button type="submit"> Save </button>
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+          
+        </div>
+      </div>
+  
+      <div class="main-body">
+  
+        <div class="panel-content">
+          <div class="tab">
+            <button class="tablinks active" onclick="openpanel(event, 'Current Update')">Current Update</button>
+            <button class="tablinks" onclick="openpanel(event, 'Payment Details')">Payment Details</button>
+          </div>
+  
+          <div class="search-panel">
+            {% comment %} <form action="" method="post">
+                {% csrf_token %}
+                <input type="text" name="all" id="search" placeholder="Search">
+                <button type="submit">Search</button>
+            </form> {% endcomment %}
+            <div class="delete-panel">
+                <p>Delete History :-</p>
+                <a href="{% url 'delete' %}"><button type="button">Delete</button></a>
+            </div>            
+          </div>
+  
+        </div>
+  
+        <div id="Current Update" class="tabcontent">
+  
+          <div class="table-content-left">
+            <div class="table-panel">
+              <h2 class="panel-heading">Paid Records</h2>
+  
+              <form action="" method="post">
+                  {% csrf_token %}
+                  <input type="text" name="payed" id="payment_list" placeholder="Search" title= "Search 'all' to get Full Data">
+                  <button type="submit">Search</button>
+              </form>
+            </div>
+            <div class="table-cover-left">
+              <table>
+                <thead>
+                  <th>Pharmacy Name</th>
+                  <th>Invoice Number</th>
+                  <th colspan="2">Status</th>
+                  <th>Records</th>
+                </thead>
+                <tbody>
+                  {% for data in payed_details %}
+                  <tr>
+                    <td>{{data.pharmacy_name}}</td>
+                    <td>{{data.invoice_number}}</td>
+                    <td>GP Accepted</td>
+                    <td>AMP</td>
+                    <td><a href="../check/{{data.id}}"><button type="button">Check</button></a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>  
+            <a href="{% url 'checkmore' %}"><button style="width: 100px;">more details</button></a>
+          </div>
+  
+  
+          <div class="table-content-right">
+            <div class="table-panel">
+              <h2 class="panel-heading">Update</h2>
+  
+              <form action="" method="post">
+                  {% csrf_token %}
+                  <input type="text" name="payment_list" id="payment_list" placeholder="Search" title= "Search 'all' to get Full Data">
+                  <button type="submit">Search</button>
+              </form>
+            </div>
+            <div class="table-cover-right">
+              <table>
+                <thead>
+                  <th>Pharmacy Name</th>
+                  <th>Invoice Amount</th>
+                  <th>Paid Date</th>
+                  <th>Balance Amount</th>
+                  <th>Action</th>
+                </thead>
+                <tbody> 
+                  {% for data in payment %}
+                  <tr>
+                    <td>{{data.pharmacy_name}}</td>
+                    <td>{{data.invoice_amount}}</td>
+                    <td>{{data.invoice_date}}</td>
+                    <td>{{data.balance_amount}}</td>
+                    <td><a href="../edit/{{data.id}}"><button type="button">Edit</button></a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <a href="{% url 'updatemore' %}"><button style="width: 100px;">more details</button></a>
+          </div>
+  
+        </div>
+  
+        <div id="Payment Details" class="tabcontent">
+          <div class="table-content-left">
+            <div class="table-panel">
+              <h2 class="panel-heading">Partially Paid</h2>
+  
+              <form action="" method="post">
+                  {% csrf_token %}
+                  <input type="text" name="q" id="search" placeholder="Search" title= "Search 'all' to get Full Data">
+                  <button type="submit">Search</button>
+              </form>
+            </div>
+            <div class="table-cover-left">
+              <table>
+                <thead>
+                  <th>Name</th>
+                  <th>IV / No.</th>
+                  <th>Total</th>
+                  <th>Pending</th>
+                  <th>Payment</th>
+                  <th>Action</th>
+                </thead>
+                <tbody>
+                  {% for data in q %}
+                  <tr>
+                    <td>{{data.pharmacy_name}}</td>
+                    <td>{{data.invoice_number}}</td>
+                    <td>{{data.invoice_amount}}</td>
+                    <td>{{data.balance_amount}}</td>
+                    <td>{{data.payment_amount}}</td>
+                    <td><a href="{% url 'update' %}"><button type="button">Pay</button></a></td>
+                    {% comment %} <td><button id="payButton">Pay</button><td> {% endcomment %}
+                    {% comment %} <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                      <script>
+                          var options = {
+                              key: 'rzp_test_KDg1PjvIOUmvli',
+                              amount:'{{data.balance_amount}}', // amount in the smallest currency unit (here 10000 represents ₹100)
+                              currency: 'INR',
+                              name: '{{data.pharmacy_name}}',
+                              description: 'Payment for Purchase',
+                              handler: function(response) {
+                                  // Handle the success callback
+                                  alert('Payment successful: ' + response.razorpay_payment_id);
+                                  // You can redirect or do other actions as required
+                              },
+                              prefill: {
+                                  name: '{{data.pharmacy_name}}',
+                                  email: 'customer@example.com',
+                                  contact: '9999999999'
+                              }
+                          };
+                          document.getElementById('payButton').onclick = function(){
+                              var rzp = new Razorpay(options);
+                              rzp.open();
+                          }
+                      </script> {% endcomment %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <a href="{% url 'paymore' %}"><button style="width: 100px;">more details</button></a>
+          </div>
+  
+          <div class="table-content-right">
+            <div class="table-panel">
+              <h2 class="panel-heading">Payment List</h2>
+  
+              <form action="" method="post">
+                  {% csrf_token %}
+                  <input type="text" name="search" id="search" placeholder="Search" title= "Search 'all' to get Full Data">
+                  <button type="submit">Search</button>
+              </form>
+            </div>
+            <div class="table-cover-right">
+              <table>
+                <thead>
+                  <th>Pharmacy Name</th>
+                  <th>Invoice Amount</th>
+                  <th>Paid Amount</th>
+                  <th>Balance Amount</th>
+                  <th>Action</th>
+                </thead>
+                <tbody>
+                  {% for data in search %}
+                  <tr>
+                    <td>{{data.pharmacy_name}}</td>
+                    <td>{{data.invoice_amount}}</td>
+                    <td>{{data.payment_amount}}</td>
+                    <td>{{data.balance_amount}}</td>
+                    <td><a href="../edit/{{data.id}}"><button type="button">Pay</button></a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <a href="{% url 'paymentlist' %}"><button style="width: 100px;">more details</button></a>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  
+    <script src="{% static 'invclc/js/index.js' %}"></script>    
+  
+{% endblock content %}
+
+{% block footer %}
+  {% include 'footer.html' %}
+{% endblock footer %}

@@ -1,0 +1,73 @@
+body{
+    height: 100vh;
+    width: 100%;
+}
+.checkmore-container{
+    height: 100vh;
+    width: 100%;
+    position: absolute;
+}
+h3{
+    text-align: center;
+    font-size: 25px;
+    
+}
+.checkmoreTable{
+    /* height: 100vh; */
+    width: 100%;
+    position: absolute;
+    border-collapse: collapse;
+}
+
+.checkmoreTable tr{
+    border-bottom: 1px solid #a39f9f ;
+}
+.checkmoreTable th , .checkmoreTable td{
+    padding: 12px 15px;
+    text-align: center;
+    border-right: 1px solid #bdb8b8 ;
+}
+.checkmoreTable th{
+    background-color: #6b6060;
+    color: white;
+}
+.checkmoreTable tr:nth-child(even){
+    background-color: #eeeeee;
+}
+button.edit_btn{
+    height: 40px;
+    width: 60px;
+    background-color: blue;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+}
+
+.checkmore-container table tbody tr td input{
+    height:30px;
+    width:100px;
+    border:none;
+    font-weight: bold;
+    /* background-color:red; */
+  }
+  .border-active {
+    border: 1px solid #3498db;
+    outline: 1px solid #3498db
+  }
+  .checkmore-container table tbody tr td input{
+    height:30px;
+    width:100px;
+    border:none;
+    font-weight: bold;
+    /* background-color:red; */
+  }
+    
+  .checkmore-container button{
+    height:40px;
+    width: 70px;
+    background-color:blue;
+    color: #FFF;
+    border-radius: 3px;
+    transition: all 0.7s ease;
+  }

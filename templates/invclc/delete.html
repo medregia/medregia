@@ -1,0 +1,55 @@
+{% extends 'base.html' %} 
+
+{% load static %} 
+
+{% block title %} MedRegiA || Delete History {% endblock title %} 
+
+{% block nav_footer %}{% static 'nav_footer.css' %} {%endblock nav_footer %} 
+
+{% block link %}{% static 'invclc/css/delete.css' %} {%endblock link %}
+
+{% block navbar %} 
+    {% include 'nav.html' %} 
+{% endblock navbar%} 
+
+
+{% block content %}
+<div class="main-container">
+    <h2 class="heading">Delete Page</h2>
+    <hr>
+        <form action="">
+          <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pharamacy Name</th>
+                        <th>Invoice Number</th>
+                        <th>Invoice date</th>
+                        <th>Amount</th>
+                        <th>Balance</th>
+                        <th>due Pay</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                  <tbody>
+                    {% for i in invoices %}
+                    <tr>
+                      <td>{{ i.pharmacy_name }}</td>
+                      <td>{{ i.invoice_number }}</td>
+                      <td>{{ i.invoice_date }}</td>
+                      <td>₹{{ i.invoice_amount }}</td>
+                      <td>₹{{ i.balance_amount }}</td>
+                      <td>₹{{ i.payment_amount }}</td>
+                      <td>
+                        <a href="../delete_view/{{i.id}}"><button type="button" class="btn"> Delete</button> </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+            </table>
+        </form>
+    </div>
+{% endblock content %}
+
+

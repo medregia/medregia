@@ -1,0 +1,16 @@
+{% for message in messages %}
+    <div class="alert" id="message">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        setTimeout(function() {
+            $("#message").fadeOut("slow", function () {
+                $("#message").remove();
+            });
+        }, 300000 ); // 300000ms = 5 minutes
+    });
+</script>

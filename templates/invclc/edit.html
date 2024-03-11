@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block nav_footer %}{% static 'nav_footer.css' %} {% endblock nav_footer %}
+{% block link %}{% static 'invclc/css/edit.css' %} {% endblock link %}
+
+{% block title %} Editing {{invoice.pharmacy_name}} {% endblock title %}
+{% block navbar %}
+  {% include 'nav.html' %}
+{% endblock navbar %}
+
+{% block message %}
+  {% include 'message.html' %}
+{% endblock message %}
+
+    {% block content %}
+    <div class="invoice-user">
+        <h2>Editing {{invoice.pharmacy_name}}</h2>
+        <form action="" method="post">
+            {% csrf_token %}
+
+            <div class="pharmacy invoice">
+                <label for="id_pharmacy_name">Pharmacy Name</label>
+                <input type="text" name="pharmacy_name" id="id_pharmacy_name" value="{{invoice.pharmacy_name}}">
+            </div>
+
+            <div class="invoice-number invoice">
+                <label for="id_invoice_number">Invoice Number</label>
+                <input type="text" name="invoice_number" id="id_invoice_number" value="{{invoice.invoice_number}}">
+            </div>
+            
+            <div class="invoice-date invoice">
+                <div class="instruction">
+                <label for="id_invoice_date">Invoice Date</label> 
+                <small>DD/MM/YYYY or DD-MM-YYYY (Formate)</small>
+                </div>
+                <input type="text" name="invoice_date" id="id_invoice_date" value="{{invoice.invoice_date}}">
+            </div>
+           
+
+            <div class="invoice-Amount invoice">
+                <label for="id_invoice_amount">Invoice Amount</label>
+                <input type="text" name="invoice_amount" id="id_invoice_amount" value="{{invoice.invoice_amount}}">
+            </div>
+            
+            <div class="due-pay invoice">
+                <label for="id_payment_amount">Due Pay</label>
+                <input type="text" name="payment_amount" id="id_payment_amount" value="{{invoice.payment_amount}}">
+            </div>
+            
+            <div class="today-date invoice">
+                <label for="id_today_date">today date</label>
+                <input type="date" name="today_date" id="id_today_date" value="{{invoice.today_date}}">
+            </div>   
+
+            <button type="submit">Make the Changes</button>
+
+        </form>
+        
+        <a href="{% url 'index' %}">Back to Index</a>
+    </div>
+        
+
+
+    {% endblock %}

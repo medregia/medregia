@@ -1,0 +1,78 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    height:100vh;
+    width:100%;
+    /* background-color:red; */
+}
+
+.invoice-user{
+    height:100vh;
+    width:100%;
+    /* background-color:blue; */
+    display:flex;
+    row-gap:15px;
+    justify-content:center;
+    flex-direction:column;
+    align-items:center;
+}
+.invoice-user form{
+    height:85vh;
+    width:50%;
+    box-shadow:0px 0px 10px 0px black;
+    border-radius:5px;
+    display:flex;
+    justify-content:center;
+    flex-direction:column;
+    align-items:center;
+    padding:10px;
+    /* align-items:flex-start; */
+    gap:15px;
+    /* background-color:green; */
+}
+
+.invoice-user form label{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.invoice{
+    height:10vh;
+    width:90%;
+    /* background-color:green; */
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+.invoice input{
+    height:40px;
+    width:90%;
+    margin-left:20px;
+    border:none;
+    border-bottom:1px solid black;
+    background-color:transparent;
+    padding-left:10px;
+    transition:all 0.8s ease-out;
+}
+
+.instruction{
+    font-weight:bolder;
+}
+
+.invoice input:focus{
+    padding-left:30px
+}
+
+.invoice-user form button{
+    height:40px;
+    width:150px;
+    background-color:blue;
+    color:#FFFF;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+}

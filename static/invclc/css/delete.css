@@ -1,0 +1,299 @@
+body{
+  height: 100vh;
+  width: 100%;
+}
+.main-container {
+  height: 100vh;
+  width: 80%; 
+  margin: 0 auto;
+}
+.main-container h2{
+  text-align: center;
+}
+form {
+  margin-bottom: 20px; 
+}
+
+.table-container {
+  max-height: 300px; 
+  overflow-y: scroll;
+  margin-top: 10%;
+}
+
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  height: 40px;
+}
+th {
+  background-color: #f2f2f2;
+}
+input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  height: 40px;
+  border: none;
+}
+
+.btn{
+  /* padding: 5px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 3px;
+  border: none;
+  height: 30px;
+  width: 70px; */
+  --background: #2b3044;
+  position: relative;
+  border: none;
+  outline: none;
+  background: none;
+  padding: 10px 24px;
+  border-radius: 7px;
+  min-width: 142px;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  display: flex;
+  color: var(--text);
+  background: var(--btn, var(--background));
+  box-shadow: 0 var(--shadow-y, 4px) var(--shadow-blur, 8px) var(--shadow);
+  transform: scale(var(--scale, 1));
+  transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+}
+
+.btn span {
+    display: block;
+    font-size: 14px;
+    line-height: 25px;
+    font-weight: 600;
+    opacity: var(--span-opacity, 1);
+    transform: translateX(var(--span-x, 0)) translateZ(0);
+    transition: transform 0.4s ease var(--span-delay, 0.2s), opacity 0.3s ease var(--span-delay, 0.2s);
+}
+.btn .trash {
+    display: block;
+    position: relative;
+    left: -8px;
+    transform: translate(var(--trash-x, 0), var(--trash-y, 1px)) translateZ(0) scale(var(--trash-scale, 0.64));
+    transition: transform 0.5s;
+}
+.btn .trash:before, .btn .trash:after {
+    content: '';
+    position: absolute;
+    height: 8px;
+    width: 2px;
+    border-radius: 1px;
+    background: var(--icon, var(--trash));
+    bottom: 100%;
+    transform-origin: 50% 6px;
+    transform: translate(var(--x, 3px), 2px) scaleY(var(--sy, 0.7)) rotate(var(--r, 0deg));
+    transition: transform 0.4s, background 0.3s;
+}
+.btn .trash:before {
+    left: 1px;
+}
+.btn .trash:after {
+    right: 1px;
+    --x: -3px;
+}
+.btn .trash .top {
+    position: absolute;
+    overflow: hidden;
+    left: -4px;
+    right: -4px;
+    bottom: 100%;
+    height: 40px;
+    z-index: 1;
+    transform: translateY(2px);
+}
+.btn .trash .top:before, .btn .trash .top:after {
+    content: '';
+    position: absolute;
+    border-radius: 1px;
+    background: var(--icon, var(--trash));
+    width: var(--w, 12px);
+    height: var(--h, 2px);
+    left: var(--l, 8px);
+    bottom: var(--b, 5px);
+    transition: background 0.3s, transform 0.4s;
+}
+.btn .trash .top:after {
+    --w: 28px;
+    --h: 2px;
+    --l: 0;
+    --b: 0;
+    transform: scaleX(var(--trash-line-scale, 1));
+}
+.btn .trash .top .paper {
+    width: 14px;
+    height: 18px;
+    background: var(--paper);
+    left: 7px;
+    bottom: 0;
+    border-radius: 1px;
+    position: absolute;
+    transform: translateY(-16px);
+    opacity: 0;
+}
+.btn .trash .top .paper:before, .btn .trash .top .paper:after {
+    content: '';
+    width: var(--w, 10px);
+    height: 2px;
+    border-radius: 1px;
+    position: absolute;
+    left: 2px;
+    top: var(--t, 2px);
+    background: var(--paper-lines);
+    transform: scaleY(0.7);
+    box-shadow: 0 9px 0 var(--paper-lines);
+}
+.btn .trash .top .paper:after {
+    --t: 5px;
+    --w: 7px;
+}
+.btn .trash .box {
+    width: 20px;
+    height: 25px;
+    border: 2px solid var(--icon, var(--trash));
+    border-radius: 1px 1px 4px 4px;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+    transition: border-color 0.3s;
+}
+.btn .trash .box:before, .btn .trash .box:after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: var(--h, 20px);
+    top: 0;
+    left: var(--l, 50%);
+    background: var(--b, var(--trash-lines));
+}
+.btn .trash .box:before {
+    border-radius: 2px;
+    margin-left: -2px;
+    transform: translateX(-3px) scale(0.6);
+    box-shadow: 10px 0 0 var(--trash-lines);
+    opacity: var(--trash-lines-opacity, 1);
+    transition: transform 0.4s, opacity 0.4s;
+}
+.btn .trash .box:after {
+    --h: 16px;
+    --b: var(--paper);
+    --l: 1px;
+    transform: translate(-0.5px, -16px) scaleX(0.5);
+    box-shadow: 7px 0 0 var(--paper), 14px 0 0 var(--paper), 21px 0 0 var(--paper);
+}
+.btn .trash .check {
+    padding: 4px 3px;
+    border-radius: 50%;
+    background: var(--check-background);
+    position: absolute;
+    left: 2px;
+    top: 24px;
+    opacity: var(--check-opacity, 0);
+    transform: translateY(var(--check-y, 0)) scale(var(--check-scale, 0.2));
+    transition: transform var(--check-duration, 0.2s) ease var(--check-delay, 0s), opacity var(--check-duration-opacity, 0.2s) ease var(--check-delay, 0s);
+}
+.btn .trash .check svg {
+    width: 8px;
+    height: 6px;
+    display: block;
+    fill: none;
+    stroke-width: 1.5;
+    stroke-dasharray: 9px;
+    stroke-dashoffset: var(--check-offset, 9px);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke: var(--check);
+    transition: stroke-dashoffset 0.4s ease var(--checkmark-delay, 0.4s);
+}
+.btn.delete {
+    --span-opacity: 0;
+    --span-x: 16px;
+    --span-delay: 0s;
+    --trash-x: 46px;
+    --trash-y: 2px;
+    --trash-scale: 1;
+    --trash-lines-opacity: 0;
+    --trash-line-scale: 0;
+    --icon: #fff;
+    --check-offset: 0;
+    --check-opacity: 1;
+    --check-scale: 1;
+    --check-y: 16px;
+    --check-delay: 1.7s;
+    --checkmark-delay: 2.1s;
+    --check-duration: 0.55s;
+    --check-duration-opacity: 0.3s;
+}
+.btn.delete .trash:before, .btn.delete .trash:after {
+    --sy: 1;
+    --x: 0;
+}
+.btn.delete .trash:before {
+    --r: 40deg;
+}
+.btn.delete .trash:after {
+    --r: -40deg;
+}
+.btn.delete .trash .top .paper {
+    animation: paper 1.5s linear forwards 0.5s;
+}
+.btn.delete .trash .box:after {
+    animation: cut 1.5s linear forwards 0.5s;
+}
+.btn.delete, .btn:hover {
+    --btn: var(--background-hover);
+    --shadow-y: 5px;
+    --shadow-blur: 9px;
+}
+.btn:active {
+    --shadow-y: 2px;
+    --shadow-blur: 5px;
+    --scale: 0.94;
+}
+@keyframes paper {
+    10%, 100% {
+        opacity: 1;
+   }
+    20% {
+        transform: translateY(-16px);
+   }
+    40% {
+        transform: translateY(0);
+   }
+    70%, 100% {
+        transform: translateY(24px);
+   }
+}
+@keyframes cut {
+    0%, 40% {
+        transform: translate(-0.5px, -16px) scaleX(0.5);
+   }
+    100% {
+        transform: translate(-0.5px, 24px) scaleX(0.5);
+   }
+}
+html {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+* {
+    box-sizing: inherit;
+}
+*:before, *:after {
+    box-sizing: inherit;
+}
+
+

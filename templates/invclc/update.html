@@ -1,0 +1,84 @@
+{% extends 'base.html' %} 
+
+{% load static %} 
+
+{% block title %} MedRegiA || Update {% endblock title %} 
+
+{% block nav_footer %}{% static 'nav_footer.css' %} {%endblock nav_footer %} 
+
+{% block link %}{% static 'invclc/css/update.css' %} {%endblock link %}
+
+{% block navbar %} 
+    {% include 'nav.html' %} 
+{% endblock navbar%} 
+
+{% block content %}
+    <div class=" updateTable-container">
+      <h3>Update Page</h3>
+      <table class="UpdateTable">
+        <thead>
+            <tr>
+                <th>Pharamacy Name</th>
+                <th>Invoice Number</th>
+                <th>Invoice date</th>
+                <th>Amount</th>
+                <th>Balance</th>
+                <th>due Pay</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+          {% for i in invoices %}
+          <form action="#" method="post">
+              {% csrf_token %}
+            <tr>
+              <td>{{ i.pharmacy_name }}</td>
+              <td>{{ i.invoice_number }}</td>
+              <td>{{ i.invoice_date }}</td>
+              <td>₹{{ i.invoice_amount }}</td>
+              <td>₹{{ i.balance_amount }}</td>
+              <td>₹{{ i.payment_amount }}</td>
+              <td><a href="../edit/{{i.id}}"><button type="button">Edit</button></a></td>
+            </tr>
+          </form>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    {% comment %} <script>
+      function editRow(link, id) {
+          var row = link.parentNode.parentNode;
+          var cells = row.getElementsByTagName('td');
+      
+          // Replace content with input fields for editing
+          for (var i = 0; i < cells.length - 1; i++) {
+              var cell = cells[i];
+              var oldValue = cell.innerHTML;
+              var input = document.createElement('input');
+              input.type = 'text';
+              input.value = oldValue;
+              cell.innerHTML = '';
+              cell.appendChild(input);
+          }
+      
+          // Create submit button to submit the form
+          var submitButton = document.createElement('button');
+          submitButton.className = 'submit-button';
+          submitButton.innerHTML = 'Submit';
+          submitButton.type = 'submit'; // Set button type to submit
+      
+          // Create form element
+          var form = document.createElement('form');
+          form.action = '../edit/' + id; // Set form action to next page
+          form.method = 'post'; // Set form method to post
+          form.appendChild(submitButton);
+      
+          // Replace edit link with form
+          var actionCell = cells[cells.length - 1];
+          actionCell.innerHTML = '';
+          actionCell.appendChild(form);
+      }
+    </script> {% endcomment %}
+
+{% endblock content %}

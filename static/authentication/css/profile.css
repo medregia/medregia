@@ -1,0 +1,455 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    font-family: sans-serif;
+    background-color: #fff;
+    overflow-x: hidden;
+}
+
+.heading h1 {
+    text-align: center;
+    margin-top: 1%;
+}
+
+.container {
+    margin-top: -1.5%;
+    display: flex;
+    flex-wrap: wrap;
+    background: transparent;
+    border: 1px solid black;
+}
+
+.head {
+    margin-left: 15px;
+    font-weight: 900;
+    font-size: 22px;
+    margin-top: -10px;
+    margin-bottom: -10px;
+}
+
+.input-group {
+    margin-bottom: 5px;
+    /* background-color: aquamarine; */
+    /* border-bottom: 1px solid #ccc; */
+    max-height: 35vh;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.medical2 {
+    display: flex;
+}
+
+.medical {
+    margin: 5px;
+    padding: 5px;
+}
+
+.medical input {
+    height: 25px;
+    width: 200px;
+    margin-left: 15px;
+    padding-left: 10px;
+    border: none;
+    border-bottom: 1px solid #000;
+    border-radius: 5px;
+    background: transparent;
+}
+
+.medical input::placeholder {
+    color: #000;
+}
+
+.medical label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.unique {
+    position: relative;
+    top: -20px;
+}
+
+.uniqueid {
+    margin-top: 40px;
+}
+
+.uniqueid input {
+    height: 25px;
+    width: 400px;
+    padding-left: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.uniqueid label {
+    margin-left: 5px;
+    font-weight: 800;
+}
+
+.left-panel {
+    width: 50%;
+    /* height: 633px; */
+    padding: 20px;
+    background: transparent;
+    box-sizing: border-box;
+    border-right: 1px solid black;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.right-panel {
+    width: 50%;
+    height: 100%;
+    padding: 20px;
+    background: transparent;
+    box-sizing: border-box;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.panel h2 {
+    margin-top: 0;
+}
+
+.meta {
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+}
+
+.input-subgroup {
+    margin: 5px;
+    padding: 5px;
+    margin-top: -8px;
+    border-left: #ccc;
+
+}
+
+.second {
+    margin-top: 20px;
+}
+
+#btn {
+    position: relative;
+    height: 30px;
+    width: 60px;
+    top: -20px;
+    left: 48%;
+}
+
+.unique button {
+    height: 30px;
+    width: 70px;
+    padding: 5px;
+}
+
+.input-group select {
+    height: 30px;
+    width: 225px;
+    margin-left: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.divider {
+    width: 750px;
+    height: 1px;
+    display: inline-block;
+    background-color: #000;
+    position: relative;
+    left: -20px;
+}
+
+.divider2 {
+    height: 400px;
+    width: 1px;
+    display: inline-block;
+    background-color: #000;
+    position: relative;
+}
+
+.data-section {
+    position: relative;
+    top: -30px;
+}
+
+/* .sub{
+    background-color:rgb(116, 116, 182);
+    color: white;
+    margin-left:47%;
+    height: 30px;
+    width: 70px;
+    border-radius: 5px;
+    margin-top: -35px;
+} */
+/* for submit button */
+/* Container Styles */
+.btn_container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Button Styles */
+.submit_btn {
+
+    outline: none;
+    height: 40px;
+    text-align: center;
+    width: 130px;
+    border-radius: 40px;
+    background: #fff;
+    border: 2px solid green;
+    color: green;
+    letter-spacing: 1px;
+    text-shadow: 0;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.submit_btn:hover {
+    color: white;
+    background: green;
+}
+
+.submit_btn:active {
+    letter-spacing: 2px;
+}
+
+.submit_btn:after {
+    content: "SUBMIT";
+}
+
+/* Onclic Styles */
+.onclic {
+    width: 40px;
+    border-color: gray;
+    border-width: 3px;
+    font-size: 0;
+    border-left-color: green;
+    animation: rotating 2s 0.25s linear infinite;
+}
+
+.onclic:hover {
+    color: green;
+    background: white;
+}
+
+/* Validate Styles */
+.validate {
+    font-size: 13px;
+    color: white;
+    background: green;
+    /* Using variable */
+}
+
+.validate:after {
+    font-family: 'FontAwesome';
+    content: "\f00c";
+}
+
+/* Keyframe Animation */
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.username {
+    /* background-color: aqua; */
+    height: 80px;
+    width: 350px;
+}
+
+.username form {
+    height: 80px;
+    width: 350px;
+}
+
+.username form input {
+    margin-top: 20px;
+}
+
+.use {
+    background-color: blue;
+    color: white;
+    border-radius: 5px;
+    height: 30px;
+    margin-left: 10px;
+}
+
+div.pinchange.medical,
+div.passwordchange.medical {
+    margin: 0px 0px 0px 5px;
+    padding: 0px 0px 0px px;
+
+}
+
+.profile_btn {
+    animation: 1.5s ease infinite alternate running shimmer;
+    background: linear-gradient(90deg, #FFE27D 0%, #64E3FF 30%, #9192FF 85%);
+    background-size: 200% 100%;
+    border: none;
+    border-radius: 6px;
+    box-shadow: -2px -2px 10px rgba(255, 227, 126, 0.5), 2px 2px 10px rgba(144, 148, 255, 0.5);
+    color: #170F1E;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 670;
+    line-height: 18x;
+    overflow: hidden;
+    padding: 12px 24px;
+    position: relative;
+    text-decoration: none;
+    transition: 0.2s;
+
+    svg {
+        left: -20px;
+        opacity: 0.5;
+        position: absolute;
+        top: -2px;
+        transition: 0.5s cubic-bezier(.5, -0.5, .5, 1.5);
+    }
+
+    &:hover svg {
+        opacity: 0.8;
+        transform: translateX(50px) scale(1.5);
+    }
+
+    &:hover {
+        transform: rotate(-3deg);
+    }
+
+    &:active {
+        transform: scale(0.95) rotate(-3deg);
+    }
+
+}
+
+@keyframes shimmer {
+    to {
+        background-size: 100% 100%;
+        box-shadow: -2px -2px 6px rgba(255, 227, 126, 0.5), 2px 2px 6px rgba(144, 148, 255, 0.5);
+    }
+}
+
+/* PAPER */
+.button-paper {
+    align-self: center;
+    background-color: #fff;
+    background-image: none;
+    background-position: 0 90%;
+    background-repeat: repeat no-repeat;
+    background-size: 4px 3px;
+    border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
+    border-style: solid;
+    border-width: 2px;
+    box-shadow: rgba(0, 0, 0, .2) 15px 28px 25px -18px;
+    box-sizing: border-box;
+    color: #41403e;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 1rem;
+    line-height: 18px;
+    outline: none;
+    padding: .75rem;
+    text-decoration: none;
+    transition: all 235ms ease-in-out;
+    border-bottom-left-radius: 15px 255px;
+    border-bottom-right-radius: 225px 15px;
+    border-top-left-radius: 255px 15px;
+    border-top-right-radius: 15px 225px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+} 
+
+.button-paper:hover {
+    box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
+    transform: translate3d(0, 2px, 0);
+}
+
+.button-paper:focus {
+    box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
+}
+
+
+
+.select2-container--open .select2-dropdown .select2-results__options {
+    width: 100%;
+    height: 200px;
+    text-align: center;
+    overflow-y: auto;  
+}
+
+.select2-results__options {
+    display: flex;
+    flex-direction: column;
+
+}
+
+/* mediaquery */
+@media (max-width:1501px) {
+    .heading h1 {
+        margin-top: 0%;
+    } 
+    .divider {
+        width: 720px;
+    }
+    
+}
+@media (max-width:1480px) {
+    .divider {
+        width: 700px;
+    }
+}
+@media (max-width:1441px) {
+    .heading h1 {
+        margin-top: 0%;
+    } 
+    .divider {
+        width: 680px;
+    }
+}
+@media (max-width:1401px) {
+    .heading h1 {
+        margin-top: 2%;
+    } 
+    .divider {
+        width: 660px;
+    }
+}
+
+@media (max-width:1350px) {
+    .heading h1 {
+        margin-top: 3%;
+    }
+    .divider {
+        width: 640px;
+    }
+}
+
+@media (max-width:1301px) {
+    .heading h1 {
+        margin-top: 5%;
+    }
+    .divider {
+        width: 630px;
+    }
+}
+
+
+
+
