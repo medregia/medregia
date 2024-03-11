@@ -288,7 +288,7 @@ body {
 /* Main Body Table left  */
 .table-content-left table {
   min-height: 50px;
-  width: 98%;
+  width: 100%;
   border-collapse: collapse;
   border: 1px solid black;
 }
@@ -313,7 +313,7 @@ body {
 
 .table-content-left td {
   border: 1px solid black;
-  padding: 3px;
+  padding: 1px;
 }
 
 .table-content-left button,
@@ -330,7 +330,7 @@ body {
 /* Main Body Table right */
 .table-content-right table {
   min-height: 50px;
-  width: 98%;
+  width: 100%;
   border-collapse: collapse;
   border: 1px solid black;
 }
@@ -354,8 +354,10 @@ body {
 }
 
 .table-content-right td {
+  height:40px;
+  width:100px;
   border: 1px solid black;
-  padding: 3px;
+  padding: 1px;
 }
 
 .table-panel {
@@ -442,8 +444,9 @@ body {
 .table-cover-right table tbody tr td input,
 .table-content-left table tbody tr td input{
   height:30px;
-  width:100px;
+  width:89px;
   border:none;
+  text-align:center;
   font-weight: bold;
   /* background-color:red; */
 }
@@ -458,10 +461,16 @@ body {
   align-items:center;
 }
 
+.table-content-left table a{
+  height:40px;
+  /* background-color:red; */
+  width:100%;
+}
+
 .table-content-left a button,
 .table-content-right a button{
-  height:40px;
-  width:95%;
+  height:35px;
+  width:90%;
   background-color:blue;
 }
 

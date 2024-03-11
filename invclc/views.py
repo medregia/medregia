@@ -194,7 +194,7 @@ def create_view(request):
             create_form.save()
             return redirect('index')
         else:
-            print(form.errors)
+            messages.error(" Invoice Number Must be Unique")
     return render(request, 'invclc/create.html', {'form': form})
 
 
@@ -223,7 +223,6 @@ def import_view(request):
         user = request.user
         data = Invoice.objects.filter(user=request.user).order_by('id')
     except Exception as e:
-        print("Error", e)
         return HttpResponse("Update Your Profile",e)
     
     
@@ -358,10 +357,8 @@ def parse_date(date_string):
 # Example usage:
 try:
     result = parse_date("June 10, 2024")
-    print("Parsed Date:", result)
 except ValueError as e:
-    print(f"Error: {e}")
-
+    messages.error(" Date Formate Not Accessable")
 
 
 # @require_POST
@@ -396,8 +393,6 @@ def pay_invoice(request, invoice_id):
         invoice = get_object_or_404(Invoice, id=invoice_id)
 
         data = json.loads(request.body)
-        print(f'Updated Data: {data}')
-
         updated_payment_amount = Decimal(data.get('payment_amount', invoice.payment_amount))
 
         # Adding the previous payment_amount and Updated payment_amount and Saved into Payment_amount
@@ -411,8 +406,6 @@ def pay_invoice(request, invoice_id):
 
         invoice.save()
 
-        print(f"After Saved - Balance Amount: {invoice.balance_amount}, Payment Amount: {invoice.payment_amount}")
-
         # Check the action type (Pay or Save)
         action_type = data.get('action_type', 'Pay')
 
@@ -422,7 +415,6 @@ def pay_invoice(request, invoice_id):
             return JsonResponse({'message': 'Invoice updated successfully'})
 
     except Exception as e:
-        print(f'Error in pay_invoice: {e}')
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
 require_POST
@@ -432,7 +424,6 @@ def payment_invoice(request,payment_id):
         invoice = get_object_or_404(Invoice, id=payment_id)
 
         data = json.loads(request.body)
-        print(f'Updated Data: {data}')
 
         pay_amount = Decimal(data.get('payment_amount', invoice.payment_amount))
         
@@ -445,8 +436,6 @@ def payment_invoice(request,payment_id):
             invoice.balance_amount = 0
 
         invoice.save()
-
-        print(f"After Saved Payment Amount : {invoice.payment_amount}")
         
         # Check the action type (Pay or Save)
         action_type = data.get('action_type', 'Pay')
@@ -457,5 +446,4 @@ def payment_invoice(request,payment_id):
             return JsonResponse({'message': 'Invoice updated successfully'})
 
     except Exception as e:
-        print(f'Error in pay_invoice: {e}')
         return JsonResponse({'error': 'Internal Server Error'}, status=500)

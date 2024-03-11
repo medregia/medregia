@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const inputFields = row.querySelectorAll('input');
       const invoiceId = row.dataset.invoiceId;
       const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+      let headerMessage = document.querySelector('.header-messages');
 
       const dataToUpdate = {};
       inputFields.forEach(input => {
@@ -111,9 +112,12 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then(data => {
         console.log('Row updated successfully:', data);
+        headerMessage.textContent = `Successfully Updated`
       })
       .catch(error => {
       console.error('Error updating row:', error);
+      headerMessage.textContent = `Updation Failed`
+      headerMessage.style.color = "red"
       });
 
 
@@ -162,9 +166,12 @@ document.addEventListener('DOMContentLoaded', function () {
           .then(data => {
             row.remove();
             console.log('Row deleted successfully:', data);
+            headerMessage.textContent = "Row Deleted Successfully "
           })
           .catch(error => {
             console.error('Error deleting row:', error);
+            headerMessage.textContent = "Row Not Deleted "
+            headerMessage.style.color = "red"
           });
       });
     }
@@ -231,6 +238,8 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => {
           console.error('Error updating row:', error);
+          headerMessages.textContent = "Payment Failed .."
+          headerMessages.style.color = "red"
           payBtn.textContent = 'Save'; // Handle error scenario, if needed
         });
       } else {
@@ -377,6 +386,8 @@ document.addEventListener('DOMContentLoaded', function () {
           })
           .catch(error => {
             console.error('Error updating payment:', error);
+            headerMessages.style.color = "red"
+            headerMessages.textContent = `Paied Failed `
           });
         }
       });
