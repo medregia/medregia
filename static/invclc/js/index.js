@@ -259,6 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }
           else
             input.value = '';
+            input.focus();
         });
 
         payBtn.textContent = 'Save';

@@ -18,5 +18,18 @@ class Invoice(models.Model):
         self.balance_amount = self.invoice_amount - self.payment_amount
         super().save(*args, **kwargs)
 
-    def _str_(self):
-        return f"{self.pharmacy_name} - {self.invoice_number}"
+    def __str__(self):
+        return f"{self.user} - {self.pharmacy_name}"
+    
+class DeletedInvoice(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True)
+    pharmacy = models.CharField(max_length=100)
+    number = models.CharField(max_length=20, unique=True)
+    date = models.DateField(default=timezone.now)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    balance = models.DecimalField(max_digits=10, decimal_places=2 ,null=True, blank=True)
+    payment = models.DecimalField(max_digits=10, decimal_places=2)
+    today_date = models.DateField(default=timezone.now)
+    
+    def __str__(self):
+        return f"{self.pharmacy}"

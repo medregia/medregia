@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Invoice
+from .models import Invoice,DeletedInvoice
 from .forms import InvoiceForm
 from django.http import JsonResponse,HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +13,7 @@ from datetime import datetime
 from django.http import HttpResponse,HttpResponseBadRequest
 import csv
 import json
+from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.core.management import call_command
 from django.http import HttpResponse
@@ -84,8 +85,12 @@ def index_view(request):
     except Person.DoesNotExist:
         unique_code = "Please Update Your Profile"
         unique_id = "Please Update Your Profile"
-    
-    # print(history_entries.history_user)
+        
+    DeleteHistory = DeletedInvoice.objects.filter(user=current_user).order_by('-id')
+    if not DeleteHistory.exists():
+        DeleteHistory = "NOT Found 404 "
+     
+# print(history_entries.history_user)
     
     if request.method == 'POST':
         query = request.POST.get('payment_list')
@@ -121,6 +126,9 @@ def index_view(request):
             invoice = invoice_form.save(commit=False)
             invoice.user = request.user
             invoice.save()
+        else:
+            error_message = invoice_form.errors.get('invoice_number', 'Invoice Number Must Be Unique')
+            messages.error(request, error_message)
 
     else:
         invoice_form = InvoiceForm()
@@ -131,6 +139,7 @@ def index_view(request):
                'q':q_details,
                'search':search_details,
                'uniqueid':unique_id,
+               'DeleteHistory':DeleteHistory,
                }
     return render(request,'invclc/index.html',context)
 
@@ -281,7 +290,7 @@ def staticspage_view(request):
 @login_required(login_url='/')
 def checkmore_view(request):
     current_user = request.user
-    invoices = Invoice.objects.filter(user=current_user, balance_amount=0.00)
+    invoices = Invoice.objects.filter(user=current_user, balance_amount=0.00).order_by('-id')
     return render(request, 'invclc/checkmore.html',{'invoices': invoices})
 
 @login_required(login_url='/')
@@ -293,13 +302,13 @@ def paymore_view(request):
 @login_required(login_url='/')
 def updatemore_view(request):
     current_user = request.user
-    invoices = Invoice.objects.filter(user = current_user)
+    invoices = Invoice.objects.filter(user = current_user).order_by('-id')
     return render(request, 'invclc/updatemore.html',{'invoices': invoices})
 
 @login_required(login_url='/')
 def unpaid_debt(request):
     current_user = request.user
-    invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
+    invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0)).order_by('-id')
     return render(request, 'invclc/unpaid_debt.html',{'invoices': invoices})
 
 @require_POST
@@ -377,13 +386,38 @@ except ValueError as e:
 @login_required(login_url='/')
 def delete_invoice(request, invoice_id):
     try:
+        # Check if the invoice exists
         invoice = Invoice.objects.get(pk=invoice_id)
+
+        # Create a DeletedInvoice object with a unique number (using timestamp)
+        deleted_invoice = DeletedInvoice(
+            user=request.user,
+            pharmacy=invoice.pharmacy_name,
+            number=f"{invoice.invoice_number}_{timezone.now().timestamp()}",
+            date=invoice.invoice_date,
+            amount=invoice.invoice_amount,
+            balance=invoice.balance_amount,
+            payment=invoice.payment_amount,
+            today_date=invoice.today_date
+        )
+
+        # Save the DeletedInvoice object
+        deleted_invoice.save()
+
+        # Delete the Invoice object
         invoice.delete()
+
         return JsonResponse({'message': 'Invoice deleted successfully'})
+    
     except Invoice.DoesNotExist:
         return JsonResponse({'error': 'Invoice not found'}, status=404)
+
     except Exception as e:
+        # Log the error for debugging purposes
+        print(f"Error deleting invoice with id {invoice_id}: {str(e)}")
+        
         return JsonResponse({'error': f'Error deleting invoice: {str(e)}'}, status=500)
+
     
 @require_POST
 def pay_invoice(request, invoice_id):
@@ -417,7 +451,7 @@ def pay_invoice(request, invoice_id):
     except Exception as e:
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
-require_POST
+@require_POST
 def payment_invoice(request,payment_id):
     # TODO: For more Details Check Logic.txt File
     try:

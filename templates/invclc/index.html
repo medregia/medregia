@@ -65,7 +65,7 @@
                     {% comment %} <td>{{form.today_date}}</td> {% endcomment %}
                     <td>
                       {{form.today_date}}
-                      <button type="submit"> Save </button>
+                      <button type="submit" id="saveButton"> Save </button>
                     </td>
                 </tr>
               </tbody>
@@ -250,13 +250,42 @@
           </div>
         </div>
 
-        <div id="DeleteHistory" class="tabcontent">
-        <h3>Delete History</h3>
+        <div id="DeleteHistory" class="tabcontent deleted-history">
+          <div class="delete-heading">
+            <h3>Delete History</h3>
+          </div>
 
+          <div class="delete-table">
+            <table>
+              <thead>
+                <th>Delete Date</th>
+                <th>Name</th>
+                <th>Invoice Number</th>
+                <th>Invoice Date</th>
+                <th>Total Amount</th>
+                <th>Payment Amount</th>
+              </thead>
+            
+              <tbody>
+                {% for history in DeleteHistory%}
+                <tr>
+                  <td>{{history.today_date}}</td>
+                  <td>{{history.pharmacy}}</td>
+                  <td>{{history.number}}</td>
+                  <td>{{history.date}}</td>
+                  <td>{{history.amount}}</td>
+                  <td>{{history.payment}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+  
+          </div>
+          
         </div>
 
         <div id="UpdateHistory" class="tabcontent">
-        <h3>Update History</h3>
+        <h3>Modified History</h3>
           <table>
             <thead>
               <th>History Date</th>
@@ -267,21 +296,9 @@
             </thead>
 
             <tbody>
-              {% for entry in history %}
-                  <tr>
-                      <td>{{ entry.history_date }}</td>
-                      <td>{{ entry.history_change_reason }}</td>
-                      <td>{{ entry.history_user.username }}</td>
-                      <td>
-                          {% for field, changes in entry.diff_against_previous.items %}
-                              {{ field }}:
-                              {% for old_value, new_value in changes %}
-                                  {{ old_value }} -> {{ new_value }}
-                              {% endfor %}
-                              <br>
-                          {% endfor %}
-                      </td>
-                  </tr>
+              {%for record in history %}:
+                {{record.history_date}} <br>
+                {{record.history_type}}
               {% endfor %}
             </tbody>                   
           </table>
