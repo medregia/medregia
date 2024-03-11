@@ -266,7 +266,7 @@ def import_view(request):
         'unique_id':unique_id,
         'dataset':dataset,
     }
-    return render(request,'invclc/im-ex-port.html',context)
+    return render(request,'invclc/import-export.html',context)
 
 @login_required(login_url = '/')
 def payment_view(request,payment_id):
