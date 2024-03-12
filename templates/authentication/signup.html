@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %} MedApp || signup {% endblock title %}
+{% block title %} MedRegiA || signup {% endblock title %}
 {% block link %} {% static 'authentication/css/signup.css' %} {% endblock link %}
 
 {% block message %}
@@ -8,14 +8,25 @@
 {% endblock message %}
 
 {% block content %}
+
+
+<div class="signup-header">
+
+  <div class="signup-header-medregia">
+    <a href="{% url 'login' %}"> MedRegiA</a>
+  </div>
+</div>
+
 <div class="container">
   
   <div class="arrow">
     <a href="{% url 'login'%}"><span><i class="fa-solid fa-arrow-left"></i></span></a>
   </div>
 
+
+
     <div class="header">
-      <h1>MedRegiA</h1>
+      <h1>Sign Up</h1>
     </div>
     <form action="" method="post">
         {% csrf_token %}
@@ -108,4 +119,3 @@
 
 <script src="{% static 'authentication/js/signup.js' %}"></script>
 {% endblock %}
-

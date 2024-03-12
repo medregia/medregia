@@ -14,7 +14,6 @@
   <div class="navbar">
     {% include "nav.html" %}
   </div>
-    
 {% endblock navbar %}
 
 {% block content %}
@@ -33,13 +32,13 @@
       <div class="box-container1">
         <div id="print_page">
           <div class="address-container1">
-            <div class="address-details1">
+            <div class="address-details1">  
               <h2>Admin Address Details</h2>
               {% for admin in admin_data %}
               <p> Name : {{admin.username}}</p>
-              <p> City : {{admin_person.City}}</p>
+              <p> City : {{admin_city.City}}</p>
               <p> PhoneNumber : {{admin.phone_num}}</p>
-              <p> Unique Id : {{admin_person.UniqueId}}</p>
+              <p> unique_id : {{admin.unique_id}}</p>
               {% endfor %}
             </div>
             <div class="logo">
@@ -50,7 +49,7 @@
               <p> Name : {{user.username}}</p>
               <p> City : {{city}}</p>
               <p> PhoneNumber : {{user.phone_num}}</p>
-              <p> Unique Id : {{unique_id}}</p>
+              <p> unique_id : {{unique_id}}</p>
             </div>
           </div>
           <div class="unique1">
@@ -109,94 +108,93 @@
     </div>
 
     <div id="Import" class="import-content tabcontent">
-        <div class="panel-container">
+      <div class="panel-container">
           <div class="box2">
-            <div class="btn csv">
-              <input type="file" name="csv_file" id="csv_file_input" accept=".csv" style="display: none;" onchange="handleFileSelect('csv_file_input')">
-              <button type="button" onclick="document.getElementById('csv_file_input').click()">Choose CSV</button>
-            </div>
-            <div class="btn mysql">
-              <input type="file" name="mysql_dump" id="mysql_file_input" accept=".sql" style="display: none;" onchange="handleFileSelect('mysql_file_input')">
-              <button type="button" onclick="document.getElementById('mysql_file_input').click()">Choose MySQL</button>
-            </div>
-            <div class="btn xlsx">
-              <input type="file" name="excel_file" id="excel_file_input" accept=".xls, .xlsx" style="display: none;" onchange="handleFileSelect('excel_file_input')">
-              <button type="button" onclick="document.getElementById('excel_file_input').click()">Choose Excel</button>
-            </div>
-          </div>
-        </div>
-
-
-          <div class="lastbox">
-            <div class="lastbox-content">
-              <div class="lastbox-center">
-                <div class="lastbox-content-formate">
-                  <label for="user">Choose</label>
-                  <select id="tableSelector">
-                    <option value="table1">Format 1</option>
-                    <option value="table2">Format 2</option>
-                  </select>
-                </div>
-                
-                <div class="lastbox-content-agency">
-                  <label for="user">Store Type</label>
-                  {% if request.user.store_type == 'others' %}
-                    <input type="text" id="user" value="{{ request.user.other_value }}" placeholder="Agencyname" disabled>
-                  {% else %}
-                    <input type="text" id="user" value="{{ request.user.store_type }}" placeholder="Agencyname" disabled>
-                  {% endif %}
-                </div>
+              <!-- Buttons to choose different file types -->
+              <div class="btn csv">
+                  <input type="file" name="csv_file" id="csv_file_input" accept=".csv" style="display: none;" onchange="handleFileSelect('csv_file_input')">
+                  <button type="button" onclick="document.getElementById('csv_file_input').click()">Choose CSV</button>
               </div>
-            </div>
-          
-            <div class="box main-box">
+              <div class="btn pdf">
+                  <input type="file" name="pdf_file" id="pdf_file_input" accept=".pdf" style="display: none;" onchange="handleFileSelect('pdf_file_input')">
+                  <button type="button" onclick="document.getElementById('pdf_file_input').click()">Choose PDF</button>
+              </div>
+              <div class="btn xlsx">
+                  <input type="file" name="excel_file" id="excel_file_input" accept=".xls, .xlsx" style="display: none;" onchange="handleFileSelect('excel_file_input')">
+                  <button type="button" onclick="document.getElementById('excel_file_input').click()">Choose Excel</button>
+              </div>
+          </div>
+      </div>
+  
+      <div class="lastbox">
+          <div class="lastbox-content">
+              <!-- Form for selecting options -->
+              <div class="lastbox-center">
+                  <div class="lastbox-content-formate">
+                      <label for="user">Choose</label>
+                      <select id="tableSelector">
+                          <option value="table1">Format 1</option>
+                          <option value="table2">Format 2</option>
+                      </select>
+                  </div>
+                  <div class="lastbox-content-agency">
+                      <label for="user">Store Type</label>
+                      {% if request.user.store_type == 'others' %}
+                          <input type="text" id="user" value="{{ request.user.other_value }}" placeholder="Agencyname" disabled>
+                      {% else %}
+                          <input type="text" id="user" value="{{ request.user.store_type }}" placeholder="Agencyname" disabled>
+                      {% endif %}
+                  </div>
+              </div>
+          </div>
+          <!-- Table for displaying data -->
+          <div class="box main-box">
               <table id="table1">
-                <thead id="file_data">
+                  <thead id="file_data">
                   <!-- Data will be dynamically added here -->
-                </thead>
+                  </thead>
               </table>
-              
               <table id="table2" style="display: none;">
-                <!-- Data for Format 2 -->
-                <thead>
+                  <!-- Data for Format 2 -->
+                  <thead>
                   <tr>
-                    <th>Agency name</th>
-                    <th>Invoice Number</th>
-                    <th>Invoice Date</th>
-                    <th>Total</th>
-                    <th>Paid/Pending</th>
+                      <th>Agency name</th>
+                      <th>Invoice Number</th>
+                      <th>Invoice Date</th>
+                      <th>Total</th>
+                      <th>Paid/Pending</th>
                   </tr>
-                </thead>
-                <tbody>
+                  </thead>
+                  <tbody>
                   {% for data in datas %}
                   <tr>
-                    {% if request.user.store_type == 'others' %}
-                    <td>{{ request.user.other_value }}</td>
-                    {% else %}
-                    <td>{{ request.user.store_type }}</td>
-                    {% endif %}
-                    <td>{{ data.invoice_number }}</td>
-                    <td>{{ data.invoice_date }}</td>
-                    <td>{{ data.invoice_amount }}</td>
-                    {% if data.balance_amount == 0 %}
-                    <td>Paid</td>
-                    {% else %}
-                    <td>Pending</td>
-                    {% endif %}
+                      {% if request.user.store_type == 'others' %}
+                      <td>{{ request.user.other_value }}</td>
+                      {% else %}
+                      <td>{{ request.user.store_type }}</td>
+                      {% endif %}
+                      <td>{{ data.invoice_number }}</td>
+                      <td>{{ data.invoice_date }}</td>
+                      <td>{{ data.invoice_amount }}</td>
+                      {% if data.balance_amount == 0 %}
+                      <td>Paid</td>
+                      {% else %}
+                      <td>Pending</td>
+                      {% endif %}
                   </tr>
                   {% endfor %}
-                </tbody>
+                  </tbody>
               </table>
-            </div>
           </div>
-          
-
-        <div class="print">
+      </div>
+  
+      {% comment %} <div class="print">
+          <!-- Button to print -->
           <h3>Do you want to print :</h3>
           <button type="button" onclick="window.print()">Print</button>
-        </div>
-    </div>
-    </div>
+      </div> {% endcomment %}
+  </div>
+  
      
     
   </div>
@@ -216,8 +214,50 @@
     }
     console.log(selectedOption)
   }
-</script>
 
+  function handleFileSelect(inputId) {
+    const fileInput = document.getElementById(inputId);
+    const file = fileInput.files[0];
+
+    if (file) {
+        if (file.type === 'application/pdf') {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const pdfContent = event.target.result;
+                // Create container div
+                const container = document.createElement('div');
+                container.style.display = 'flex';
+                container.style.alignItems = 'center';
+                container.style.justifyContent = 'center';
+                container.style.width = '100vw'; // Full viewport width
+                container.style.height = '100vh'; // Full viewport height
+                
+                
+                // Create iframe element
+                const iframe = document.createElement('iframe');
+                iframe.setAttribute('src', pdfContent);
+                // Set style for iframe to cover most of the screen
+                iframe.style.width = '90vw'; // 90% of viewport width
+                iframe.style.height = '90vh'; // 90% of viewport height
+                iframe.style.border = 'none'; // Remove iframe border
+                
+                // Append iframe to container
+                container.appendChild(iframe);
+                // Append container to body
+                document.body.appendChild(container);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Handle other file types
+            console.log('Unsupported file type');
+        }
+    }
+}
+
+
+
+
+</script>
 
 <script src="{% static 'invclc/js/import-export.js' %}"></script>
 {% endblock content %}
