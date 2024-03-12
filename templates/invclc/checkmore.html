@@ -18,6 +18,7 @@
         <table class="checkmoreTable">
             <thead>
                 <tr>
+                    <th><input type="checkbox"></th>
                     <th>Pharmacy Name</th>
                     <th>Invoice Number</th>
                     <th colspan="2">Status</th>
@@ -27,6 +28,7 @@
             <tbody>
                 {% for data in invoices %}
                     <tr>
+                        <td><input type="checkbox"></td>
                         <td>{{data.pharmacy_name}}</td>
                         <td>{{data.invoice_number}}</td>
                         <td>GP Accepted</td>

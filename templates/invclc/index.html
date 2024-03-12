@@ -284,24 +284,38 @@
           
         </div>
 
-        <div id="UpdateHistory" class="tabcontent">
-        <h3>Modified History</h3>
-          <table>
-            <thead>
-              <th>History Date</th>
-              <th>History Type</th>
-              <th>History User</th>
-              <th>History Change Reason</th>
-              <th>Old / New</th>
-            </thead>
+        <div id="UpdateHistory" class="tabcontent updated-history">
+          <div class="update-heading">
+            <h3>Modified History</h3>
+          </div>
 
-            <tbody>
-              {%for record in history %}:
-                {{record.history_date}} <br>
-                {{record.history_type}}
-              {% endfor %}
-            </tbody>                   
-          </table>
+          <div class="update-table">
+            <table>
+              <thead>
+                <th>Updated Date</th>
+                <th>Updated Name</th>
+                <th>Updated Invoice Number</th>
+                <th>Updated Invoice Date</th>
+                <th>Updated Total Amount</th>
+                <th>Updated Payment Amount</th>
+              </thead>
+            
+              <tbody>
+                {% for Modified in ModifiedHistory%}
+                <tr>
+                  <td>{{Modified.modified_today_date}}</td>
+                  <td>{{Modified.modified_pharmacy}}</td>
+                  <td>{{Modified.modified_Invoice_number}}</td>
+                  <td>{{Modified.modified_Invoice_date}}</td>
+                  <td>{{Modified.modified_Total_amount}}</td>
+                  <td>{{Modified.modified_payment}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+  
+          </div>
+          
         </div>
   
       </div>

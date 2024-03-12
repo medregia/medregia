@@ -474,7 +474,7 @@ body {
   background-color:blue;
 }
 
-.deleted-history{
+.deleted-history,.updated-history{
   display:flex;
   gap:10px;
   flex-direction:column;
@@ -488,7 +488,8 @@ body {
   overflow:hidden;
 }
 
-.deleted-history .delete-heading{
+.deleted-history .delete-heading,
+.updated-history .update-heading{
   height:40px;
   width:100%;
   display:flex;
@@ -499,7 +500,8 @@ body {
   /* border-bottom:1px solid black; */
 }
 
-.deleted-history .delete-table{
+.deleted-history .delete-table,
+.updated-history .update-table{
   height: 53vh;
   width: 100%;
   display:flex;
@@ -510,31 +512,39 @@ body {
 }
 
 /* Styling for the delete history heading */
-.delete-heading h3 {
+.delete-heading h3,
+.update-heading h3  {
   color: #333;
   font-size: 24px;
 }
 
 /* Styling for the delete history table */
-.delete-table table {
+.delete-table table,
+.update-table table {
   width: 100%;
   border-collapse: collapse;
 }
 
 .delete-table th,
-.delete-table td {
-  border: 1px solid #ddd;
+.delete-table td ,
+.update-table th,
+.update-table td{
+  border: 1px solid #0000;
   padding: 8px;
   text-align: left;
 }
 
-.delete-table th {
-  background-color: #f2f2f2;
-  color: #333;
+.delete-table th ,
+.update-table th{
+  background-color: rgba(160, 160, 160,0.6);
+  /* color: #f3f2f200; */
+  text-align:center;
+  font-weight:bold;
 }
 
-.delete-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+.delete-table tr:nth-child(even),
+.update-table tr:nth-child(even) {
+  background-color: rgba(186, 180, 180,0.5);
 }
 
 /* mediaquery */

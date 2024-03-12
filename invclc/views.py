@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Invoice,DeletedInvoice
+from .models import Invoice,DeletedInvoice,ModifiedInvoice
 from .forms import InvoiceForm
 from django.http import JsonResponse,HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
@@ -88,7 +88,11 @@ def index_view(request):
         
     DeleteHistory = DeletedInvoice.objects.filter(user=current_user).order_by('-id')
     if not DeleteHistory.exists():
-        DeleteHistory = "NOT Found 404 "
+        DeleteHistory = "N Deletion Found"
+        
+    ModifiedHistory = ModifiedInvoice.objects.filter(user = current_user).order_by('-id')
+    if not ModifiedHistory.exists():
+        ModifiedHistory = "No Updatation Found"
      
 # print(history_entries.history_user)
     
@@ -140,6 +144,7 @@ def index_view(request):
                'search':search_details,
                'uniqueid':unique_id,
                'DeleteHistory':DeleteHistory,
+               'ModifiedHistory':ModifiedHistory,
                }
     return render(request,'invclc/index.html',context)
 
@@ -344,6 +349,20 @@ def update_invoice(request, invoice_id):
 
         # Save the updated Invoice
         invoice.save()
+        
+        modified_invoice = ModifiedInvoice(
+            user=request.user,
+            modified_pharmacy=invoice.pharmacy_name,
+            modified_Invoice_number=f"{invoice.invoice_number}_{timezone.now().timestamp()}",
+            modified_Invoice_date=invoice.invoice_date,
+            modified_Total_amount=invoice.invoice_amount,
+            modified_balance=invoice.balance_amount,
+            modified_payment=invoice.payment_amount,
+            modified_today_date=invoice.today_date
+        )
+
+        # Save the DeletedInvoice object
+        modified_invoice.save()
 
         return JsonResponse({'status': 'success', 'message': 'Invoice updated successfully'})
     except json.JSONDecodeError:

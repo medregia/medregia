@@ -32,4 +32,17 @@ class DeletedInvoice(models.Model):
     today_date = models.DateField(default=timezone.now)
     
     def __str__(self):
-        return f"{self.pharmacy}"
+        return f"{self.pharmacy}-{self.today_date}"
+    
+class ModifiedInvoice(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True)
+    modified_pharmacy = models.CharField(max_length=100)
+    modified_Invoice_number = models.CharField(max_length=20, unique=True)
+    modified_Invoice_date = models.DateField(default=timezone.now)
+    modified_Total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    modified_balance = models.DecimalField(max_digits=10, decimal_places=2 ,null=True, blank=True)
+    modified_payment = models.DecimalField(max_digits=10, decimal_places=2)
+    modified_today_date = models.DateField(default=timezone.now)
+    
+    def __str__(self):
+        return f"{self.modified_pharmacy}-{self.modified_today_date}"
