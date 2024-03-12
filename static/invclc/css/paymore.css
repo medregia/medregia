@@ -7,6 +7,7 @@
 body{
     height: 100vh;
     width: 100%;
+    font-family: 'Times New Roman';
 }
 .paymore-container{
     height: 100vh;

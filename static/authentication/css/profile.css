@@ -490,10 +490,13 @@ div.passwordchange.medical {
 }
 @media (max-width:1075px) {
     .heading h1 {
-        margin-top: 12%;
+        margin-top: 10%;
+    }
+    .container {
+        margin-top: -2%;
     }
     .divider {
-        width: 510px;
+        width: 490px;
     }
     p.registered{
         margin: 50px 0px;
@@ -531,622 +534,78 @@ div.passwordchange.medical {
         margin: 0px 0px 0px 0px;
         width: 180px;
     }
-
-    /* .uniqueid input {
-        width: 250px;
-    }
-
-    .admin-detail {
-        position: relative;
-        top: -40px;
-    }
-
-    .name {
-        position: relative;
-        left: 0px;
-        top: -20px;
-    }
-
-    .contact {
-        position: relative;
-        left: -200px;
-        top: 150px;
-    }
-
-    .input-subgroup {
-        position: relative;
-        left: -150px;
-        top: -40px;
-    }
-
-    .divider2 {
-        position: relative;
-        left: -160px;
-    } */
 }
-
-
-
-/*@media (max-width:1219px) {
-    .heading h1 {
-        margin-top: -6%;
-    }
-
-    .divider {
-        width: 575px;
-    }
-}
-
-@media (max-width:1175px) {
-    .unique button {
-        position: inherit;
-        float: center;
-    }
-
-    .uniqueid input {
-        width: 300px;
-    }
-
-    .divider {
-        width: 560px;
-    }
-}
-
-@media (max-width:1175px) {
-    .divider {
-        width: 540px;
-    }
-}
-
-@media (max-width:1106px) {
-    .divider {
-        width: 580px;
-    }
-
-    .medical label {
-        width: 180px;
-    }
-
-    .medical input {
-        width: 150px;
-        padding: 1px 2px 1px 5px;
-        margin: 0px 0px 0px 8px;
-    }
-
-    p {
-        margin: 70px 0px 10px;
-        text-align: center;
-    }
-
-    .state,
-    .district {
-        margin: 0px 0px 0px 8px;
-    }
-
-    select#id_state,
-    select#id_district {
-        margin: 0px 0px 0px 0px;
-        width: 180px;
-    }
-
-    .uniqueid input {
-        width: 250px;
-    }
-
-    .admin-detail {
-        position: relative;
-        top: -40px;
-    }
-
-    .name {
-        position: relative;
-        left: 0px;
-        top: -20px;
-    }
-
-    .contact {
-        position: relative;
-        left: -200px;
-        top: 150px;
-    }
-
-    .input-subgroup {
-        position: relative;
-        left: -150px;
-        top: -40px;
-    }
-
-    .divider2 {
-        position: relative;
-        left: -160px;
-    }
-}
-
-@media (max-width:1106px) {
-    .divider {
-        width: 500px;
-    }
-}
-
-@media (max-width:1060px) {
-    .divider {
-        width: 500px;
-    }
-
-    .admin-detail {
-        position: relative;
-        left: -10px;
-        top: -40px;
-    }
-
-    .name {
-        position: relative;
-        left: -10px;
-        top: -20px;
-    }
-
-    .contact {
-        position: relative;
-        left: -210px;
-        top: 150px;
-    }
-
-    .divider2 {
-        position: relative;
-        left: -190px;
-    }
-
-    .input-subgroup {
-        position: relative;
-        left: -180px;
-        top: -40px;
-    }
-}
-
-@media (max-width:1024px) {
-    .divider {
+@media (max-width:1025px) {
+    .divider{
         width: 480px;
     }
 }
-
 @media (max-width:1000px) {
-    .divider {
-        width: 460px;
-    }
-
-    .admin-detail {
-        position: relative;
-        left: -25px;
-        top: -40px;
-    }
-
-    .name {
-        position: relative;
-        left: -15px;
-        top: -20px;
-    }
-
-    .contact {
-        position: relative;
-        left: -215px;
-        top: 150px;
-    }
-
-    .divider2 {
-        position: relative;
-        left: -210px;
-    }
-
-    .input-subgroup {
-        position: relative;
-        left: -200px;
-        top: -40px;
+    .divider{
+        width: 455px;
     }
 }
-
-@media (max-width:970px) {
-    .divider {
-        width: 440px;
+@media (max-width:950px) {
+    .heading h1 {
+        margin-top: 12%;
     }
-
-    .input-subgroup {
-        position: relative;
-        left: -220px;
-        top: -40px;
-    }
-
-    .uniqueid input {
-        width: 200px;
+    .divider{
+        width: 430px;
     }
 }
-
-@media (max-width:920px) {
-    .divider {
-        width: 420px;
-    }
-
-    .current-user {
-        font-size: 20px;
-    }
-
-    .admin-detail {
-        font-size: 20px;
-    }
-}
-
 @media (max-width:886px) {
     .divider {
         width: 400px;
-
     }
-
     .medical label {
         font-size: 13px;
         width: 140px;
         height: 30px;
         margin: 0px 0px 5px;
     }
-
     .medical input {
         width: 120px;
         height: 20px;
         padding: 1px 2px 1px 5px;
         margin: 0px 0px 0px 8px;
     }
-
-    p.registered {
-        font-size: 18px;
-        margin: 50px 0px 10px;
+    .medical input::placeholder{
+        font-size: 12px;
     }
-
+    p.registered {
+        font-size: 20px;
+        margin: 40px 0px;
+    }
+    p.admin-detail,p.current-user{
+        font-size: 20px;
+    }
+    .heading h1 {
+        font-size: 28px;
+    }
+    #register-group {
+        position: relative;
+        top: -30px;
+    }
     .state,
     .district {
-        margin: 0px 0px 0px 8px;
+        margin: 0px 0px 0px 0px;
     }
-
     select#id_state,
     select#id_district {
         margin: 0px 0px 0px 0px;
-        width: 140px;
+        width: 120px;
     }
-
-    div.uniqueid {
-        margin: 50px 0px 10px;
-    }
-
     .uniqueid input {
-        width: 180px;
-    }
-
-    .admin-detail {
-        font-size: 18px;
-        position: relative;
-        top: -40px;
-        left: -30px;
-    }
-
-    .name {
-        position: relative;
-        left: -20px;
-        top: -20px;
-    }
-
-    input#name,
-    input#Contact {
-        width: 120px;
-        padding: 0px 0px 0px 0px;
-        margin: 0px 0px 0px 5px
-    }
-
-    .contact {
-        position: relative;
-        left: -180px;
-        top: 150px;
-    }
-
-    .divider2 {
-        position: relative;
-        left: -170px;
-    }
-
-    .input-subgroup {
-        position: relative;
-        left: -170px;
-        top: -40px;
+        width: 250px;
     }
 }
-
-@media (max-width:834px) {
+@media (max-width:840px) {
     .divider {
-        width: 375px;
-    }
-
-    input#id_UniqueId {
-        padding: 1px 2px 1px 5px;
-        position: relative;
-        top: 25px;
-        left: -70px;
-        height: 20px;
-    }
-
-    .uniqueid button {
-        position: relative;
-        top: 26.5px;
-        left: -70px;
-        width: 60px;
-        height: 25px;
-        font-size: 12px;
-    }
-
-    .input-subgroup input {
-        width: 120px;
-        margin: 0px 0px 0px 0px;
-    }
-
-    p.current-user {
-        font-size: 18px;
-    }
-
-    .input-subgroup {
-        position: relative;
-        left: -190px;
-        top: -35px;
-    }
-
-    .divider2 {
-        position: relative;
-        left: -185px;
+        width: 380px;
     }
 }
-
-@media (max-width:801px) {
+@media (max-width:800px) {
     .divider {
         width: 360px;
     }
-
-    .uniqueid button {
-        position: relative;
-        top: 0px;
-        left: 230px;
-    }
 }
-
-@media (max-width:755px) {
-    .divider {
-        width: 340px;
-    }
-}
-
-@media (max-width:726px) {
-    .divider {
-        width: 340px;
-    }
-
-    .medical label {
-        font-size: 12px;
-        width: 125px;
-        height: 30px;
-        margin: 0px 0px 0px;
-    }
-
-    .medical input {
-        width: 100px;
-        height: 20px;
-    }
-
-    p.registered {
-        font-size: 16px;
-        margin: 40px 0px 10px;
-    }
-
-    .state,
-    .district {
-        margin: 0px 0px 0px 0px;
-    }
-
-    select#id_state,
-    select#id_district {
-        margin: 0px 0px 0px 5px;
-        width: 110px;
-        height: 20px;
-    }
-
-    .admin-detail {
-        font-size: 16px;
-        position: relative;
-        top: -40px;
-        left: -35px;
-    }
-
-    .name {
-        position: relative;
-        left: -25px;
-        top: -20px;
-    }
-
-    input#name,
-    input#Contact {
-        width: 100px;
-        padding: 0px 0px 0px 0px;
-        margin: 0px 0px 0px 5px
-    }
-
-    .contact {
-        position: relative;
-        left: -170px;
-        top: 150px;
-    }
-
-    .input-subgroup input {
-        width: 100px;
-        margin: 0px 0px 0px 0px;
-    }
-
-    p.current-user {
-        font-size: 16px;
-        position: relative;
-        left: -10px;
-    }
-
-    .input-subgroup {
-        position: relative;
-        left: -180px;
-        top: -35px;
-    }
-
-    .divider2 {
-        position: relative;
-        left: -175px;
-    }
-}
-
-@media (max-width:710px) {
-    .divider {
-        width: 320px;
-    }
-}
-
-@media (max-width:672px) {
-    input#id_UniqueId {
-        padding: 0px 0px 0px 0px;
-        position: relative;
-        top: 25px;
-        left: -100px;
-        height: 20px;
-    }
-
-    .uniqueid button {
-        position: relative;
-        top: 0px;
-        left: 190px;
-        width: 60px;
-        height: 25px;
-    }
-}
-
-@media (max-width:666px) {
-    .divider {
-        width: 300px;
-    }
-
-    .medical label {
-        font-size: 12px;
-        width: 115px;
-        height: 30px;
-        margin: 0px 0px 0px;
-    }
-
-    .medical input {
-        width: 100px;
-        height: 20px;
-    }
-
-    p.registered {
-        font-size: 16px;
-        margin: 20px 0px 10px;
-    }
-
-    .contact {
-        position: relative;
-        left: -160px;
-        top: 150px;
-    }
-
-    .input-subgroup {
-        position: relative;
-        left: -170px;
-        top: -35px;
-    }
-
-    .divider2 {
-        position: relative;
-        left: -165px;
-    }
-}
-
-@media (max-width:657px) {
-    input#id_UniqueId {
-        position: relative;
-        top: 0px;
-        left: 0px;
-    }
-
-    .uniqueid button {
-        position: relative;
-        top: 0px;
-        left: 0px;
-    }
-}
-
-@media (max-width:633px) {
-    .divider {
-        width: 280px;
-    }
-
-    .medical label {
-        font-size: 12px;
-        width: 105px;
-        height: 30px;
-        margin: 0px 0px 0px;
-    }
-
-    .medical input {
-        width: 90px;
-        height: 20px;
-    }
-
-    p.registered {
-        font-size: 15px;
-        margin: 20px 0px 10px;
-    }
-
-    .divider2 {
-        position: relative;
-        left: -157px;
-    }
-}
-
-@media (max-width:600px) {
-    .container {
-        height: 100%;
-    }
-
-    .left-panel {
-        width: 50%;
-    }
-
-    .right-panel {
-        width: 30%;
-    }
-
-    div.uniqueid {
-        display: none;
-    }
-
-    #register-group {
-        display: none;
-    }
-
-    .hr {
-        display: none;
-    }
-
-    div.input-group {
-        position: relative;
-        left: 50px;
-    }
-
-    div.proprietaryname.medical,
-    div.proprietarynum.medical,
-    div.proprietarycont.medical {
-        position: relative;
-        left: -130px;
-        top: 210px;
-    }
-
-    p.registered {
-        position: relative;
-        top: 210px;
-
-    }
-} */

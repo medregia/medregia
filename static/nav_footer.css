@@ -64,12 +64,12 @@ margin-left: 20px;
 nav {
   height: 50px;
   width: 100%;
+  font-family: 'Times New Roman';
   background-color: #033b4a;
   color: #ffff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -78,32 +78,32 @@ nav {
 .header {
   height: 50px;
   width: 15%;
-  /* background-color:red; */
   display: flex;
   align-items: center;
   margin-left: 6%;
-  letter-spacing: 6px;
 }
 .nav-heading{
   letter-spacing: 3px;
 }
-.nav-links{
-  height: 50px;
-  width: 20%;
-  /* background-color: blue; */
-  /* display: flex; */
-}
+/* .nav-links{
+  height: 40px;
+  width: 17%;
+} */
 
 .nav-links ul{
-  height: 50px;
+  height: 40px;
   width: 100%;
-  /* background-color: red; */
+  gap: 10px;
+  padding: 10px;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: left;
   align-items: center;
 }
-
-ul li {
+/* .for_a{
+  position: relative;
+  top: 2px;
+} */
+.nav-links ul li {
   list-style-type: none;
   float: left;
 }
@@ -114,7 +114,7 @@ a {
 }
 .user-pic {
   width: 40px;
-  clip-path: circle(50%);
+  clip-path: circle(45%);
   cursor: pointer;
   transition: all 0.8s ease-in-out;
 }
