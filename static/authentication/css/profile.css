@@ -423,29 +423,6 @@ body{
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
 
-
-
-.select2-container--open .select2-dropdown .select2-results__options {
-  width: 100%;
-  height: 200px;
-  text-align: center;
-  overflow-y: auto;  
-}
-
-.select2-results__options {
-  display: flex;
-  flex-direction: column;
-
-}
-
-
-/* .profile-container .profile-main form{
-    height: 92vh;
-    width: 100%;
-    background-color: green;
-} */
-
-
 /* Notification bar Styles */
 .admin-request{
     height:50px;
@@ -508,3 +485,136 @@ body{
     display: flex;
     flex-direction: row;
   }
+
+  .btn_container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Button Styles */
+.submit_btn {
+
+    outline: none;
+    height: 40px;
+    text-align: center;
+    width: 130px;
+    border-radius: 40px;
+    background: #fff;
+    border: 2px solid green;
+    color: green;
+    letter-spacing: 1px;
+    text-shadow: 0;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.submit_btn:hover {
+    color: white;
+    background: green;
+}
+
+.submit_btn:active {
+    letter-spacing: 2px;
+}
+
+.submit_btn:after {
+    content: "SUBMIT";
+}
+
+/* Onclic Styles */
+.onclic {
+    width: 40px;
+    border-color: gray;
+    border-width: 3px;
+    font-size: 0;
+    border-left-color: green;
+    animation: rotating 2s 0.25s linear infinite;
+}
+
+.onclic:hover {
+    color: green;
+    background: white;
+}
+
+/* Validate Styles */
+.validate {
+    font-size: 13px;
+    color: white;
+    background: green;
+    /* Using variable */
+}
+
+.validate:after {
+    font-family: 'FontAwesome';
+    content: "\f00c";
+}
+
+/* Keyframe Animation */
+@keyframes rotating {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* state and district dropdown */
+.select2-results__options {
+    display: flex;
+    flex-direction: column;
+}
+.select2-container--open .select2-dropdown .select2-results__options {
+    width: 100%;
+    height: 200px;
+    text-align: center;
+    overflow-y: auto;  
+  }
+/* .state_dropdown,.district_dropdown{
+    width: 100%;
+}
+.select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    width: 70%;
+}
+.select2-container--open .select2-dropdown .select2-results__options {
+    width: 200px;
+    height: 200px;
+    text-align: center;
+    overflow-y: auto;  
+  }  
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 26px;
+    position: relative;
+    top: 1px;
+    left: 150px;
+    width: 20px;
+}
+.select2-container--default .select2-results>.select2-results__options {
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+} */
+ /* .select2-search--dropdown ,.select2-results ,.select2-container--open .select2-dropdown--below ,.select2-dropdown {
+    width: 70%;
+} */
+/*.select2-container--open .select2-dropdown--below {
+    background-color: #9192FF;
+}
+span.selection{
+    width: 100%;
+}
+.select2-results {
+    width: 100%;
+    display: block;
+}
+.select2-container--default .select2-results>.select2-results__options {
+    width: 100%;
+} */

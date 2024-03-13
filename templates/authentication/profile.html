@@ -5,24 +5,33 @@
 {% block link2 %}{% static 'authentication/css/nav.css' %} {% endblock link2 %}
 {% block title %} MedRegia || Profile {% endblock title%}
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
 {% block navbar %}
   {% include 'nav.html' %}
 {% endblock navbar %}
  
 {% block content%} 
+
+
+<!-- Include the Select2 CSS and JS files -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+
+
+<form action="#" method="post">
+    {% csrf_token %}
     <div class="profile-container">
         <div class="profile-heading">
             <h3>Profile</h3>
         </div>
         <div class="profile-main">
             <div class="profile-left-full">
-                <form action="#" method="post">
-                {% csrf_token %}
+                
                     <div class="profile-main-left">
                         <div class="profile-main-left-top">
                             <div class="left-medical-name left-top-containers">
@@ -56,7 +65,6 @@
                             </div>
 
                         </div>
-{% comment %}TODO: Left Bootom  {% endcomment %}
                         <div class="profile-main-left-bottom">
                             <div class="left-bottom-heading">
                                 <h3>Register Address</h3>
@@ -65,12 +73,16 @@
                             <div class="profile-left-bottom-main">
                                 <div class="left-bottom-state left-bottom-containers">
                                     <label for="state">State :</label>
-                                    {{profile.state}} 
+                                    <div class="state_dropdown">
+                                        {{profile.state}}
+                                    </div>
                                 </div>
 
                                 <div class="left-bottom-district left-bottom-containers">
                                     <label for="state">District :</label>
-                                    {{ profile.district }}
+                                    <div class="district_dropdown">
+                                        {{ profile.district }}
+                                    </div>
                                 </div>
 
                                 <div class="left-bottom-city left-bottom-containers">
@@ -98,14 +110,12 @@
                                     <input type="text" value="{{unique_code}}" readonly>
                                     <span></span>
                                 </div>
-
-                                <button class="profile_btn" type="submit">Submit</button>
                             </div>
                         </div>
 
                     </div>
                 </div>
-{% comment %}TODO: Profile Right styles {% endcomment %}
+                {% comment %}TODO: Profile Right styles {% endcomment %}
                 <div class="profile-right-full">
                     <div class="profile-main-right-top">
                         <div class="profile-right-pharmacist right-top-containers">
@@ -194,7 +204,13 @@
 
                     </div>
                 </div>
+                
+        </div>
+        <div class="btn_container">
+            <button id="button" class="submit_btn" type="submit"></button>
         </div>
     </div>
+
+
     <script src="{% static 'authentication/js/profile.js' %}"></script>
 {% endblock content%}
