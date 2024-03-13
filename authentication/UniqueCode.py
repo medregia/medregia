@@ -786,7 +786,7 @@ class User_code:
             short_form = STATE_CODES.get(self.state.Pname)
             return '0' + str(short_form)
         else:
-            return "No state"
+            return "State Not Found"
 
 
     def convert_store(self):
@@ -809,7 +809,7 @@ class User_code:
      else:
          district_name = DISTRICT_CODES.get(self.district.districtname.capitalize())
          if district_name is None:
-             return(f"Error: Code {self.district.districtname} not found.")
+             return("{self.district.districtname} Not Found.")
          else:
              code = district_name.split(",")[0]
              return code

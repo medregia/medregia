@@ -1,3 +1,15 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const unique_id = document.getElementById("unique_id");
+  const unique_id_span = document.querySelector(".left-bottom-unique-id span");
+
+  // Check if the unique_id value contains specific strings
+  if (unique_id.value.includes("State Not Found") || unique_id.value.includes("Invalid input") || unique_id.value.includes("No district")) {
+    unique_id_span.style.backgroundColor = "red";
+  } else {
+    unique_id_span.style.backgroundColor = "green";
+  }
+});
+
 // for submit button
 $(function() {
     $( "#button" ).click(function() {
