@@ -529,9 +529,9 @@ body {
 .delete-table td ,
 .update-table th,
 .update-table td{
-  border: 1px solid #0000;
+  border: 1px solid #000;
   padding: 8px;
-  text-align: left;
+  text-align: center;
 }
 
 .delete-table th ,

@@ -84,11 +84,6 @@
           </div>
   
           <div class="search-panel">
-            {% comment %} <form action="" method="post">
-                {% csrf_token %}
-                <input type="text" name="all" id="search" placeholder="Search">
-                <button type="submit">Search</button>
-            </form> {% endcomment %}
             <div class="delete-panel">
                 <p>Delete History :-</p>
                 <a href="{% url 'delete' %}"><button type="button">Delete</button></a>
@@ -132,8 +127,7 @@
             </div>  
             <a href="{% url 'checkmore' %}"><button style="width: 100px;">more details</button></a>
           </div>
-  
-  
+
           <div class="table-content-right">
             <div class="table-panel">
               <h2 class="panel-heading">Update</h2>
@@ -168,7 +162,6 @@
             </div>
             <a href="{% url 'updatemore' %}"><button style="width: 100px;">more details</button></a>
           </div>
-  
         </div>
   
         <div id="Payment Details" class="tabcontent">
@@ -201,31 +194,6 @@
                     <td>{{data.balance_amount}}</td>
                     <td>{{data.payment_amount}}</td>
                     <td><a href="{% url 'update' %}"><button type="button">Pay</button></a></td>
-                    {% comment %} <td><button id="payButton">Pay</button><td> {% endcomment %}
-                    {% comment %} <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-                      <script>
-                          var options = {
-                              key: 'rzp_test_KDg1PjvIOUmvli',
-                              amount:'{{data.balance_amount}}', // amount in the smallest currency unit (here 10000 represents ₹100)
-                              currency: 'INR',
-                              name: '{{data.pharmacy_name}}',
-                              description: 'Payment for Purchase',
-                              handler: function(response) {
-                                  // Handle the success callback
-                                  alert('Payment successful: ' + response.razorpay_payment_id);
-                                  // You can redirect or do other actions as required
-                              },
-                              prefill: {
-                                  name: '{{data.pharmacy_name}}',
-                                  email: 'customer@example.com',
-                                  contact: '9999999999'
-                              }
-                          };
-                          document.getElementById('payButton').onclick = function(){
-                              var rzp = new Razorpay(options);
-                              rzp.open();
-                          }
-                      </script> {% endcomment %}
                   </tr>
                   {% endfor %}
                 </tbody>
