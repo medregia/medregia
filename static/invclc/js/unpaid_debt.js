@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'selected_rows.csv';
+    a.download = 'Payment-Dept.csv';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
