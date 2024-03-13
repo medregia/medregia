@@ -18,3 +18,11 @@ class InvoiceForm(forms.ModelForm):
             'payment_amount': forms.NumberInput(attrs={'placeholder': '0','title':'Default 0 ','class':'payment_amount'}),
             'today_date':forms.DateInput(attrs={'type':'hidden'})
         }
+
+    def save(self, commit=True):
+        instance = super(InvoiceForm, self).save(commit=False)
+        if commit:
+            instance.save()
+            # Clear the form fields after saving
+            self.initial = {}  # Reset form to initial state
+        return instance
