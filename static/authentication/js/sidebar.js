@@ -7,6 +7,7 @@ function toggleSidebar() {
         sidebar.classList.add('sidebar-open');
         mainContent.style.marginLeft = '170px'; // Adjust this value according to your sidebar width
         mainContent.style.width = '85%';
+        mainContent.style.transition = '1s';
     } else {
         sidebar.classList.remove('sidebar-open');
         sidebar.classList.add('sidebar-closed');

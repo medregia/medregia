@@ -54,18 +54,22 @@ a{
   /* width: 100%; */
 }
 .sidebar {
-  width: 170px;
+  width: 150px;
   height: 100vh;
   margin-left: -10px;
   background-color: #033b4a;
   color: #fff;
   overflow-x: hidden;
-  transition: 0.5s;
+  transition:1s;
   position: fixed;
   top: 50px;
   z-index: 100;
 }
 
+span.nav-item{
+  /* background-color: red; */
+  font-size: 20px;
+}
 .toggle-btn {
   position: absolute;
   top: 50%;
@@ -85,4 +89,4 @@ a{
 
 .sidebar-closed .arrow {
   transform: rotate(180deg);
-}
+} 

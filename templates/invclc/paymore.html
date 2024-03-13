@@ -15,34 +15,39 @@
 {% block content %}
     <div class=" paymore-container">
         <h3> Partially Paid More details</h3>
-        <table class="paymoreTable">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>IV / No.</th>
-                    <th>Total</th>
-                    <th>Pending</th>
-                    <th>Payment</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="paymentTableBody">
-                {% for data in invoices %}
-                <tr data-invoice-id="{{ data.id }}">
-                  <!-- Add name attributes to your input fields -->
-                  <td><input type="text" name="pharmacy_name" value="{{ data.pharmacy_name }}" disabled></td>
-                  <td><input type="text" name="invoice_number" value="{{ data.invoice_number }}" disabled></td>
-                  <td><input type="text" name="invoice_amount" value="{{ data.invoice_amount }}" disabled></td>
-                  <td><input type="text" name="balance_amount" value="{{ data.balance_amount }}" disabled></td>
-                  <td><input type="text" name="payment_amount" value="{{ data.payment_amount }}" disabled></td>
-                  <td> 
-                    <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
-                    <button class="cancelBtn" type="button" style="display: none;">Cancel</button>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-        </table>
+        <div class="paymore-container-paid">
+            <div class="paymore-container-btn"><button type="button" class="csvBtn">Print CSV</button></div>
+            <table class="paymoreTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox"></th>
+                        <th>Name</th>
+                        <th>IV / No.</th>
+                        <th>Total</th>
+                        <th>Pending</th>
+                        <th>Payment</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="paymentTableBody">
+                    {% for data in invoices %}
+                    <tr data-invoice-id="{{ data.id }}">
+                    <!-- Add name attributes to your input fields -->
+                    <td><input type="checkbox" id="check"></td>
+                    <td><input type="text" name="pharmacy_name" value="{{ data.pharmacy_name }}" disabled></td>
+                    <td><input type="text" name="invoice_number" value="{{ data.invoice_number }}" disabled></td>
+                    <td><input type="text" name="invoice_amount" value="{{ data.invoice_amount }}" disabled></td>
+                    <td><input type="text" name="balance_amount" value="{{ data.balance_amount }}" disabled></td>
+                    <td><input type="text" name="payment_amount" value="{{ data.payment_amount }}" disabled></td>
+                    <td> 
+                        <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
+                        <button class="cancelBtn" type="button" style="display: none;">Cancel</button>
+                    </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script src="{% static 'invclc/js/paymore.js' %}"></script>

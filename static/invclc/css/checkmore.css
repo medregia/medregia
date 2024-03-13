@@ -7,6 +7,28 @@ body{
     width: 100%;
     position: absolute;
 }
+.checkmore-container-paid{
+    height: 100vh;
+    width: 100%;
+    /* background-color: red; */
+    
+}
+.checkmore-container-btn{
+    height: 50px;
+    width: 100%;
+    /* background-color: red; */
+    display: flex;
+    justify-content: flex-end;
+}
+.checkmore-container .csvBtn{
+    color: white;
+    background-color: blue;
+    cursor: pointer;
+    height: 40px;
+    width: 100px;
+    margin-right: 20px;
+
+}
 h3{
     text-align: center;
     font-size: 25px;
