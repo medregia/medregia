@@ -85,3 +85,71 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Get the table header checkbox
+  const headerCheckbox = document.querySelector('.unpaidmoretable thead input[type="checkbox"]');
+
+  // Get all the table body checkboxes
+  const bodyCheckboxes = document.querySelectorAll('.unpaidmoretable tbody input[type="checkbox"]');
+
+  // Add an event listener to the header checkbox
+  headerCheckbox.addEventListener("change", function () {
+    // Loop through each body checkbox and set its checked property
+    bodyCheckboxes.forEach(function (checkbox) {
+      checkbox.checked = headerCheckbox.checked;
+    });
+  });
+});
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const csvBtn = document.querySelector('.csvBtn');
+  csvBtn.addEventListener('click', function () {
+    printSelectedRows();
+  });
+
+  function printSelectedRows() {
+    const checkboxes = document.querySelectorAll('.unpaidmoretable tbody input[type="checkbox"]');
+    const selectedRows = [];
+
+    checkboxes.forEach((checkbox) => {
+      if (checkbox.checked) {
+        const row = checkbox.closest('tr');
+        const rowData = {
+          pharmacyName: row.querySelector('[name="phmy_name"]').value,
+          invoiceAmount: row.querySelector('[name="iv_amount"]').value,
+          balanceAmount: row.querySelector('[name="bal_amount"]').value,
+          paidAmount: row.querySelector('[name="pmnt_amount"]').value,
+        };
+        selectedRows.push(rowData);
+      }
+    });
+
+    if (selectedRows.length > 0) {
+      downloadCSV(selectedRows);
+    } else {
+      alert('No rows selected. Please select at least one row.');
+    }
+  }
+
+  function downloadCSV(data) {
+    const headers = ['Pharmacy Name', 'Invoice Amount', 'Balance Amount', 'Paid Amount'];
+    const csvContent = [
+      headers.join(','),
+      ...data.map((row) => Object.values(row).map(value => `"${value}"`).join(',')),
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'selected_rows.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+});

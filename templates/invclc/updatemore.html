@@ -14,9 +14,12 @@
 
 {% block content %}
     <div class=" checkmore-container">
-        <h3>Update More details</h3>
-        <table class="checkmoreTable">
+        <h3>Update More details</h3> 
+        <div class="checkmore-container-update">
+          <div class="checkmore-container-btn"><button type="button" class="csvBtn">Print CSV</button></div>
+          <table class="checkmoreTable">
             <thead>
+              <th><input type="checkbox"></th>
               <th>Pharmacy Name</th>
               <th>Invoice Amount</th>
               <th>Paid Date</th>
@@ -28,6 +31,7 @@
                 {% csrf_token %}
                 {% for data in invoices %}
                 <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
+                    <td><input type="checkbox" id="check"></td>
                     <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
                     <td><input type="text" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
                     <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
@@ -43,6 +47,7 @@
               </form> 
             </tbody>
           </table>
+        </div>
     </div>
     <script src="{% static 'invclc/js/updatemore.js' %}"></script>
 {% endblock content %}
