@@ -39,37 +39,19 @@ function openTab(evt, TabName) {
     evt.currentTarget.className += " active";
 }
 
-function changeTable() {
-    var selectedTable = document.getElementById("tableSelector").value;
-
-    var tables = document.querySelectorAll('.box table');
-    tables.forEach(function(table) {
-        table.style.display = 'none';
-    });
-
-    if (selectedTable === 'table1') {
-        document.querySelector('.box').style.display = 'block';
-        document.getElementById('table1').style.display = 'block';
-        document.getElementById('table2').style.display = 'none';
-        document.querySelector('.boxes').style.display = 'none';
-    } else if (selectedTable === 'table2') {
-        document.querySelector('.boxes').style.display = 'block';
-        document.querySelector('.box').style.display ='none';
-        document.getElementById('table1').style.display = 'none';
-        document.getElementById('table2').style.display = 'block';
+const tablechange =  document.querySelector("#tableSelector");
+  tablechange.addEventListener("change",changeTable)
+  function changeTable() {
+    var selectedOption = document.getElementById("tableSelector").value;
+    if (selectedOption === "table1") {
+      document.getElementById("table1").style.display = "block";
+      document.getElementById("table2").style.display = "none";
+    } else if (selectedOption === "table2") {
+      document.getElementById("table1").style.display = "none";
+      document.getElementById("table2").style.display = "block";
     }
-
-    const agen = document.querySelector(".format2");
-    const agency = document.querySelector(".agency");
-
-    if (selectedTable === "table2") {
-        agency.style.display = "none";
-    } else {
-        agency.style.display = "block";
-    }
-
-    document.getElementById(selectedTable).style.display = "block";
-}
+    console.log(selectedOption)
+  }
 
 // Save the original body content on window load
 var originalContents = document.body.innerHTML;
@@ -78,3 +60,43 @@ var originalContents = document.body.innerHTML;
 window.onload = function() {
     document.querySelector(".tablinks.active").click();
 };
+
+// for import a table
+function handleFileSelect(inputId) {
+    const fileInput = document.getElementById(inputId);
+    const file = fileInput.files[0];
+
+    if (file) {
+        if (file.type === 'application/pdf') {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const pdfContent = event.target.result;
+                // Create container div
+                const container = document.createElement('div');
+                container.style.display = 'flex';
+                container.style.alignItems = 'center';
+                container.style.justifyContent = 'center';
+                container.style.width = '100vw'; // Full viewport width
+                container.style.height = '100vh'; // Full viewport height
+                
+                
+                // Create iframe element
+                const iframe = document.createElement('iframe');
+                iframe.setAttribute('src', pdfContent);
+                // Set style for iframe to cover most of the screen
+                iframe.style.width = '90vw'; // 90% of viewport width
+                iframe.style.height = '90vh'; // 90% of viewport height
+                iframe.style.border = 'none'; // Remove iframe border
+                
+                // Append iframe to container
+                container.appendChild(iframe);
+                // Append container to body
+                document.body.appendChild(container);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Handle other file types
+            console.log('Unsupported file type');
+        }
+    }
+}
