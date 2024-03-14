@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then(data => {
         console.log('Row updated successfully:', data);
-        headerMessage.textContent = `Successfully Updated`
+        headerMessage.textContent = "Successfully Updated"
         location.reload()
       })
       .catch(error => {
