@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
         console.log('Row updated successfully:', data);
         headerMessage.textContent = `Successfully Updated`
+        location.reload()
       })
       .catch(error => {
       console.error('Error updating row:', error);
@@ -164,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
           .then(response => response.json())
           .then(data => {
+            // location.reload()
             row.remove();
             console.log('Row deleted successfully:', data);
             headerMessage.textContent = "Row Deleted Successfully "
@@ -235,6 +237,9 @@ document.addEventListener('DOMContentLoaded', function () {
             input.setAttribute('disabled', 'true');
             input.classList.remove('border-active');
           });
+
+          // Reload the page after successful payment
+          location.reload();
         })
         .catch(error => {
           console.error('Error updating row:', error);
@@ -263,20 +268,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         payBtn.textContent = 'Save';
-
-        cancelBtn.addEventListener('click', function () {
-          console.log('Cancel button clicked');
-
-          // Reset changes on cancel
-          inputFields.forEach(input => {
-            input.setAttribute('disabled', 'true');
-            input.classList.remove('border-active');
-          });
-
-          payBtn.textContent = 'Pay';
-          // Refresh the table by reloading the page
-          location.reload();
-        });
       }
     });
   });
@@ -301,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
 
 
 //TODO: Payment List Finall Panel
