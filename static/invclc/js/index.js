@@ -155,6 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
       deleteButtons[index].addEventListener('click', function () {
         const row = this.closest('tr');
         const invoiceId = row.dataset.invoiceId;
+        let headerMessage = document.querySelector('.header-messages');
         const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
 
         fetch(`/delete_invoice/${invoiceId}/`, {
@@ -165,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
         })
           .then(response => response.json())
           .then(data => {
-            // location.reload()
+            location.reload()
             row.remove();
             console.log('Row deleted successfully:', data);
             headerMessage.textContent = "Row Deleted Successfully "
@@ -387,3 +388,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+
+//TODO: clearing a Data After Saved ....

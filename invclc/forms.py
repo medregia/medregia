@@ -19,10 +19,9 @@ class InvoiceForm(forms.ModelForm):
             'today_date':forms.DateInput(attrs={'type':'hidden'})
         }
 
-    def save(self, commit=True):
-        instance = super(InvoiceForm, self).save(commit=False)
-        if commit:
-            instance.save()
-            # Clear the form fields after saving
-            self.initial = {}  # Reset form to initial state
-        return instance
+    # def save(self, commit=True):
+    #     instance = super().save(commit=commit)
+    #     # Clear the form fields after saving
+    #     if commit:
+    #         self.cleaned_data = {}
+    #     return instance
