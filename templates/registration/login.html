@@ -3,18 +3,8 @@
 {% block title %} MedRegiA || Login {% endblock title %}
 {% block link %} {% static 'authentication/css/login.css' %} {% endblock link %}
 
-{% block message %}
-  {% include 'message.html' %}
-{% endblock message %}
 
 {% block content %}
-
-{% if form.non_field_errors %}
-    <div class="alert alert-danger">
-        {{ form.non_field_errors }}
-        <i class="fas fa-times disable"></i>
-    </div>
-{% endif %}
 
   <div class="login-container">
     <div class="login-header">
@@ -25,6 +15,15 @@
       <div class="login-header-medregia">
         <a href="{% url 'login' %}"> MedRegiA</a>
       </div>
+
+      {% comment %} <div class="login-error-message">
+        {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+            {{ form.non_field_errors }}
+            <i class="fas fa-times disable"></i>
+          </div>
+        {% endif %}
+      </div> {% endcomment %}
     </div>
 
     <div class="login-container-body">
@@ -41,6 +40,12 @@
       </div>
 
       <div class="container-body-login">
+        <div class="login-messages">
+          {% block message %}
+            {% include 'message.html' %}
+          {% endblock message %}
+        </div>
+
         <div class="login-body-container">
           <div class="login-body-header">
             <h3>Login Page</h3>

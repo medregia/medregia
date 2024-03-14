@@ -130,10 +130,11 @@ def index_view(request):
             invoice = invoice_form.save(commit=False)
             invoice.user = request.user
             invoice.save()
+            return redirect("index")
         else:
             error_message = invoice_form.errors.get('invoice_number', 'Invoice Number Must Be Unique')
             messages.error(request, error_message)
-
+            
     else:
         invoice_form = InvoiceForm()
 
