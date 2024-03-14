@@ -289,8 +289,25 @@ def payment_view(request,payment_id):
 
 @login_required(login_url='/')
 def staticspage_view(request):
-    invoices = Invoice.objects.all().order_by('-id')
-    return render(request, 'invclc/static.html',{'invoices': invoices})
+    current_user = Invoice.objects.filter(user=request.user)
+    # Total Amomunt Calculation ..
+    all_invoice_amounts = current_user.values_list('invoice_amount', flat=True)
+    total_amount = sum(all_invoice_amounts)
+    
+    # Total Paid Amount Calculation ..
+    all_paid_amount = current_user.values_list('payment_amount', flat=True)
+    payment_amount = sum(all_paid_amount)
+    
+    # Total Balance Amount
+    all_balance_amount = current_user.values_list('balance_amount', flat=True)
+    balance_amount = sum(all_balance_amount)
+    
+    context = {
+        'total_amount': total_amount,
+        'payment_amount':payment_amount,
+        'balance_amount': balance_amount,
+        }
+    return render(request, 'invclc/static.html',context)
 
 @login_required(login_url='/')
 def checkmore_view(request):

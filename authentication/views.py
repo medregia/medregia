@@ -181,59 +181,6 @@ def logout_view(request):
 
         messages.success(request, "Logout Successful")
         return redirect('login')
-    
-
-# @login_required(login_url='/')
-# def home_page(request):
-#     current_user = request.user
-#     query = request.POST.get('payment_list') if request.method == 'POST' else None
-#     paied = request.POST.get('payed') if request.method == 'POST' else None
-#     q = request.POST.get('q') if request.method == 'POST' else None
-#     search = request.POST.get('search') if request.method == 'POST' else None
-
-#     payment_details = Invoice.objects.filter(user=current_user)
-#     payed_details = Invoice.objects.filter(user=current_user, balance_amount=0.00)
-#     q_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount')))
-#     search_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
-
-#     if query is not None and query != 'all':
-#         lookups = Q(pharmacy_name__icontains=query)
-#         payment_details = payment_details.filter(lookups)
-#     if paied is not None and paied != 'all':
-#         search_payed = Q(pharmacy_name__icontains=paied)
-#         payed_details = payed_details.filter(search_payed)
-#     if q is not None and q != 'all':
-#         q_payed = Q(pharmacy_name__icontains=q)
-#         q_details = q_details.filter(q_payed)
-#     if search is not None and search != 'all':
-#         search_data = Q(pharmacy_name__icontains=search)
-#         search_details = search_details.filter(search_data)
-
-#     try:
-#         person = Person.objects.get(user=request.user)
-#         unique_id = person.UniqueId
-#     except Person.DoesNotExist:
-#         unique_id = "Please Update Your Profile"
-
-#     invoice_form = InvoiceForm(request.POST if request.method == 'POST' else None)
-#     if request.method == 'POST' and invoice_form.is_valid():
-#         invoice = invoice_form.save(commit=False)
-#         invoice.user = request.user
-#         invoice.save()
-#     elif request.method == 'POST':
-#         messages.error(request, "This Invoice Number Already Exists..")
-
-#     context = {
-#         'form': invoice_form,
-#         'payment': payment_details.order_by('-id'),
-#         'payed_details': payed_details.order_by('-id'),
-#         'q': q_details.order_by('-id'),
-#         'search': search_details.order_by('-id'),
-#         'unique': unique_id
-#     }
-#     return render(request, 'authentication/home.html', context)
-
-
 
 @login_required(login_url='/')
 def change_pin(request):
@@ -292,9 +239,9 @@ def confirm_admin(request):
 
     return redirect('index')
 
-@login_required(login_url='/login/')
-def payment_view(request):
-    return render(request, 'authentication/index.html')
+# @login_required(login_url='/login/')
+# def payment_view(request):
+#     return render(request, 'authentication/index.html')
 
 @login_required(login_url='/login/')
 def clinic_page(request):

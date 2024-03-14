@@ -13,7 +13,7 @@ urlpatterns = [
     # path('home/', views.home_page, name='home'),
     path('profile/', views.profile_view, name='profile'),
     path('change_pin/', views.change_pin, name='change_pin'),
-    path('payment_home/', views.payment_view, name='payment_home'),
+    # path('payment_home/', views.payment_view, name='payment_home'),
 
     path('clinic/', views.clinic_page, name='clinic'),
 
