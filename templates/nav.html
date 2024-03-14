@@ -9,16 +9,28 @@
   </div>
 
   <div class="nav-links">
-    <ul>
+      <span class="bell"><i id="bell" class="fa-regular fa-bell"></i></span>  
+
+      {% if request.user.is_superuser %}
+        <a href="{% url 'admin:index' %}">Admin</a>
+      {% endif %}
+
+      <a href="{% url 'profile' %}"><span><img src="{% static 'authentication/images/profile.png'%}" class="user-pic" alt="profile" /></span></a>
+
+      <a href="{% url 'logout' %}">Logout</a>
+  </div>
+  
+{% comment %} 
+  <ul>
       <li class="for_a"><i id="bell" class="fa-regular fa-bell"></i></li>
       {% if request.user.is_superuser %}
         <li class="for_a"><a href="{% url 'admin:index' %}">Admin</a></li>
       {% endif %}
       <li><a href="{% url 'profile' %}"><span><img src="{% static 'authentication/images/profile.png'%}" class="user-pic" alt="profile" /></span></a></li>
       <li><a href="{% url 'logout' %}">Logout</a></li>
-    </ul>
-  </div>
-  
+  </ul>
+{% endcomment %}
+
 </nav>
 
 

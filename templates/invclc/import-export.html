@@ -36,9 +36,9 @@
               <h2>Admin Address Details</h2>
               {% for admin in admin_data %}
               <p> Name : {{admin.username}}</p>
-              <p> City : {{admin_city.City}}</p>
+              <p> City : {{admin_person.City}}</p>
               <p> PhoneNumber : {{admin.phone_num}}</p>
-              <p> unique_id : {{admin.unique_id}}</p>
+              <p> UniqueId : {{admin_person.UniqueId}}</p>
               {% endfor %}
             </div>
             <div class="logo">
@@ -49,7 +49,7 @@
               <p> Name : {{user.username}}</p>
               <p> City : {{city}}</p>
               <p> PhoneNumber : {{user.phone_num}}</p>
-              <p> unique_id : {{unique_id}}</p>
+              <p> UniqueId : {{unique_id}}</p>
             </div>
           </div>
           <div class="unique1">

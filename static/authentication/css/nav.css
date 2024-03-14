@@ -29,7 +29,7 @@
   align-items: center;
   margin-left: 6%;
 }
-ul {
+/* ul {
   height: 50px;
   width: 15%;
   display: flex;
@@ -39,7 +39,53 @@ ul {
 ul li {
   list-style-type: none;
   float: left;
+} */
+
+.nav-heading{
+  height: 50px;
+  width: 20%;
+  /* background-color:red; */
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  column-gap:5px;
+  letter-spacing: 3px;
 }
+/* .nav-links{
+  height: 40px;
+  width: 17%;
+} */
+
+.nav-links {
+  height: 50px;
+  width: 20%;
+  /* background-color: red; */
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding-right: 7px;
+}
+
+.nav-links span.bell{
+  height:40px;
+  width:40px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:50%;
+  /* background-color:rgba(0, 0, 255,0.5); */
+  background-color: rgba(255, 255, 255, 0.2); /* Fallback color */
+  backdrop-filter: blur(5px);
+}
+
+.nav-links ul{
+  height:49px;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
 a {
   text-decoration: none;
   color: #fff;
@@ -56,7 +102,7 @@ a {
   cursor:pointer;
   font-size: 22px;
   border-radius: 50%;
-  background-color: rgb(0, 0, 0);
+  /* background-color: rgb(0, 0, 0); */
 } 
 
 .user-box {
