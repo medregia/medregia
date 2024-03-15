@@ -71,3 +71,70 @@ button.check_btn{
     color: #fff;
     cursor: pointer;
 }
+
+
+
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .checkmore-container table tbody tr td input {
+        width: auto; /* Adjust as needed */
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .checkmore-container table tbody tr td input {
+        width: 80px; /* Adjust as needed */
+    }
+}
+
+/* Small devices (phones, 576px and up) */
+@media (max-width: 767px) {
+    .checkmore-container table tbody tr td input {
+        width: 60px; /* Adjust as needed */
+    }
+}
+
+/* Extra small devices (phones, 375px and up) */
+@media (max-width: 506px) {
+    .checkmore-container table{
+        width: 20%;
+    }
+    .checkmore-container table tbody {
+        width: 20%;
+    }
+    .checkmore-container   th{
+        padding: 5px;
+        font-size: 12px;
+
+    }
+    .checkmore-container table tbody tr td input {
+        width: 50px; /* Adjust as needed */
+    }
+}
+@media (max-width: 478px){
+    .checkmore-container tr{
+        height: 30px;
+    }
+    .checkmore-container   th{
+        /* padding: 5px; */
+        font-size: 12px;
+
+    }
+    .checkmore-container button{
+        height: 25px;
+        width: 50px;
+        font-size: 12px;
+    }
+    .checkmore-container .checkmore-container-btn .csvBtn{
+        width: 15%;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .checkmore-container table tbody tr td input {
+        width: auto; /* Adjust as needed */
+    }
+}

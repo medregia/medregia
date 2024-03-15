@@ -211,27 +211,4 @@ ul li a:hover {
 
 
 
-/* mediaquery */
-
-@media (max-width:1401px){
-  ul {
-    height: 50px;
-    width: 15%;
-    margin: 0px 10px 0px 0px; 
-    gap: 5px;
-  }
-}
-@media (max-width:1301px){
-  ul{
-    margin: 0px 20px 0px 0px;
-    gap: 5px;
-  }
-}
-@media (max-width:1101px){
-  .container {
-    width: auto;
-  }
-}
-
-
 

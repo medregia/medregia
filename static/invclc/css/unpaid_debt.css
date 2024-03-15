@@ -104,3 +104,69 @@ button.pay_btn{
     height: 13px;
     width: 13px;
 }
+
+
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .Unpaid-container table tbody tr td input {
+        width: auto; /* Adjust as needed */
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .Unpaid-container table tbody tr td input {
+        width: 80px; /* Adjust as needed */
+    }
+}
+
+/* Small devices (phones, 576px and up) */
+@media (max-width: 767px) {
+    .Unpaid-container table tbody tr td input {
+        width: 60px; /* Adjust as needed */
+    }
+}
+
+/* Extra small devices (phones, 375px and up) */
+@media (max-width: 506px) {
+    .Unpaid-container table{
+        width: 20%;
+    }
+    .Unpaid-container table tbody {
+        width: 20%;
+    }
+    .Unpaid-container   th{
+        padding: 5px;
+        font-size: 12px;
+
+    }
+    .Unpaid-container table tbody tr td input {
+        width: 50px; /* Adjust as needed */
+    }
+}
+@media (max-width: 478px){
+    .Unpaid-container tr{
+        height: 30px;
+    }
+    .Unpaid-container   th{
+        /* padding: 5px; */
+        font-size: 10px;
+
+    }
+    .Unpaid-container button{
+        height: 25px;
+        width: 50px;
+        font-size: 12px;
+    }
+    .Unpaid-container .Unpaid-container-btn .csvBtn{
+        width: 15%;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .Unpaid-container table tbody tr td input {
+        width: auto; /* Adjust as needed */
+    }
+}
