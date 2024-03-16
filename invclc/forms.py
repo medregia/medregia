@@ -19,9 +19,11 @@ class InvoiceForm(forms.ModelForm):
             'today_date':forms.DateInput(attrs={'type':'hidden'})
         }
 
-    # def save(self, commit=True):
-    #     instance = super().save(commit=commit)
-    #     # Clear the form fields after saving
-    #     if commit:
-    #         self.cleaned_data = {}
-    #     return instance
+class UploadFileForm(forms.Form):
+    file = forms.FileField(label='Select a file')
+
+    def clean_file(self):
+        file = self.cleaned_data['file']
+        if not file.name.endswith(('.csv', '.json')):
+            raise forms.ValidationError("File format not supported. Please upload a CSV or JSON file.")
+        return file

@@ -126,6 +126,15 @@
           </div>
       </div>
   
+      <div class="file-choose">
+        <form action="#" method="post">
+          {% csrf_token %}
+          {{form.as_p}}
+          <button type="submit">Import</button>
+        </form>
+        
+      </div>
+
       <div class="lastbox">
           <div class="lastbox-content">
               <!-- Form for selecting options -->
