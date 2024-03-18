@@ -574,3 +574,35 @@ body{
     text-align: center;
     overflow-y: auto;  
   }
+
+
+  @media (min-width: 820px) and (max-width: 997px){
+    .select2-container--default .select2-selection--single{
+      width:80%;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow{
+      display:none;
+    }
+  }
+  @media (min-width: 710px) and (max-width: 819px){
+    .select2-container--default .select2-selection--single{
+      width:70%;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow{
+      display:none;
+    }
+
+    .profile-left-bottom-main .left-bottom-unique-id input{
+      width:250px;
+    }
+
+    .profile-left-bottom-main .left-bottom-unique-id {
+      flex-wrap:wrap;
+    }
+
+    .profile-left-bottom-main .left-bottom-unique-id span{
+      width:30px
+    }
+  }

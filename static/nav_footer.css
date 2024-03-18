@@ -211,4 +211,20 @@ ul li a:hover {
 
 
 
+<<<<<<< HEAD
 
+=======
+/* mediaquery */
+
+@media(max-width:1000px){
+  .nav-links{
+    width:23%
+  }
+}
+
+@media(max-width:768px){
+  .nav-links{
+    width:30%;
+  }
+}
+>>>>>>> f58daf61c69a74d2799aab97910d79b33d212f3d

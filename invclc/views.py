@@ -25,6 +25,11 @@ import traceback
 from import_export.resources import ModelResource
 from import_export.fields import Field
 from tablib import Dataset
+from import_export.results import RowResult
+from import_export.formats.base_formats import DEFAULT_FORMATS
+from import_export.formats.base_formats import XLSX
+from import_export import resources
+from .forms import UploadFileForm
 
 @login_required(login_url='/')
 def exports_to_csv(request):
@@ -227,60 +232,78 @@ class InvoiceResource(ModelResource):
 @login_required(login_url='/')
 def import_view(request):
     resource = InvoiceResource()
-    dataset = resource.export()
     try:
-        person = Person.objects.get(user = request.user)
+        person = Person.objects.get(user=request.user)
         city = person.City
         unique_id = person.UniqueId
         admin_user = CustomUser.objects.filter(is_staff=True).order_by('-date_joined')[:1]
-        admin_person = Person.objects.get(user = admin_user)
+        admin_person = Person.objects.get(user=admin_user)
         
         user = request.user
         data = Invoice.objects.filter(user=request.user).order_by('id')
     except Exception as e:
-        return HttpResponse("Update Your Profile",e)
+        return HttpResponse("Update Your Profile", e)
     
+    #  if request.method == 'POST':
+@login_required(login_url='/')
+def import_view(request):
+    try:
+        person = Person.objects.get(user=request.user)
+        city = person.City
+        unique_id = person.UniqueId
+        admin_user = CustomUser.objects.filter(is_staff=True).order_by('-date_joined')[:1]
+        admin_person = Person.objects.get(user=admin_user)
+        
+        user = request.user
+        data = Invoice.objects.filter(user=request.user).order_by('id')
+    except Exception as e:
+        return HttpResponse("Update Your Profile", e)
     
     if request.method == 'POST':
-        # Handle import
-        if 'file' in request.FILES:
-            imported_data = request.FILES['file'].read()
-            dataset = resource.load(imported_data, format='xlsx')
-            # Process the imported data as needed
-        elif 'export' in request.POST:
-            # Handle export
-            queryset = Invoice.objects.all()
-            export_format = request.POST.get('export_format', 'xlsx')
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_file = request.FILES['file']
+            file_extension = uploaded_file.name.split('.')[-1].lower()
+            
+            # Check if the uploaded file is in a supported format
+            if file_extension in ['csv', 'json']:
+                # Process the uploaded file
+                if file_extension == 'csv':
+                    resource = resources.CSV()
+                elif file_extension == 'json':
+                    resource = resources.JSON()
 
-            if export_format == 'xlsx':
-                dataset = resource.export(queryset)
-                content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                file_extension = 'xlsx'
-            elif export_format == 'csv':
-                dataset = resource.export(queryset, format='csv')
-                content_type = 'text/csv'
-                file_extension = 'csv'
+                dataset = resource.load(uploaded_file.read().decode('utf-8'))
+                
+                # Associate the imported data with the current user
+                for row in dataset:
+                    row['user'] = request.user.id
+                
+                # Import the data
+                result = resource.import_data(dataset, dry_run=False)
+                if result.has_errors():
+                    messages.error(request,"Import Failed")
+                    
+                else:
+                    # Data imported successfully
+                    messages.success(request,"Data imported successfully")
             else:
-                # Handle other formats as needed
-                return HttpResponseBadRequest("Invalid export format")
-
-            response = HttpResponse(dataset, content_type=content_type)
-            response['Content-Disposition'] = f'attachment; filename="exported_data.{file_extension}"'
-            return response
+                # Handle unsupported file formats
+                messages.error(request,"Unsuported Formation Please Select Correct formats ")
 
     else:
-        dataset = None
+        form = UploadFileForm()
     
     context = {
-        'datas':data,
-        'admin_data':admin_user,
-        'city':city,
-        'admin_person':admin_person,
-        'user':user,
-        'unique_id':unique_id,
-        'dataset':dataset,
+        'datas': data,
+        'admin_data': admin_user,
+        'city': city,
+        'admin_person': admin_person,
+        'user': user,
+        'unique_id': unique_id,
+        'form': form,
     }
-    return render(request,'invclc/import-export.html',context)
+    return render(request, 'invclc/import-export.html', context)
 
 @login_required(login_url = '/')
 def payment_view(request,payment_id):
