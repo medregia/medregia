@@ -195,17 +195,23 @@ body {
 }
 .main-body .panel-content .tab button {
   height: 65px;
-  width: 24%;
+  width: 26%;
   background-color: transparent;
-  box-shadow: 0px 0px 10px 0px black;
+  /* box-shadow: 0px 0px 10px 0px black; */
   border: none;
-  border-radius: 4px;
+  /* border-radius: 4px; */
   font-size: 17px;
   cursor: pointer;
 }
+
 .main-body .panel-content .tab button:active {
-  background-color: #aaaaaa;
+  background-color: #a09b9b;
 }
+
+.main-body .panel-content .tab button:focus{
+  background-color: #a09b9b;
+}
+
 .main-body .panel-content .search-panel {
   height: 17vh;
   width: 55%;
@@ -263,11 +269,23 @@ body {
   min-height: 55vh;
   width: 99%;
   display: flex;
-  box-shadow:0px 0px 10px 0px black;
+  /* box-shadow:0px 0px 10px 0px black; */
   border-radius:5px;
   justify-content: space-evenly;
   /* align-items: center; */
+  margin-top: -17px;
 }
+
+.tabcontent:active{
+  background-color: #a09b9b;
+}
+
+.tabcontent:focus{
+  background-color: #a09b9b;
+
+}
+
+
 .tabcontent .table-content-left,
 .tabcontent .table-content-right {
   height: 50vh;
@@ -276,19 +294,19 @@ body {
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
-  background-color: white;
+  background-color: transparent;
   border-radius: 5px;
 }
 .table-cover-left{
   height:28vh;
   width:100%;
-  background-color:#dfdfdf;
+  background-color:transparent;
   overflow: hidden;
 }
 .table-cover-right{
   height:28vh;
   width:100%;
-  background-color:#dfdfdf;
+  background-color:transparent;
   overflow: hidden;
 }
 

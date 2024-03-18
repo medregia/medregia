@@ -10,10 +10,12 @@ function openpanel(evt, panels) {
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
+    tabcontent[i].style.backgroundColor="#ccc";
   }
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
+    tablinks[i].style.backgroundColor = "#fff";
   }
   var panel = document.getElementById(panels);
   if (panel) {
@@ -21,6 +23,10 @@ function openpanel(evt, panels) {
   }
   if (evt.currentTarget.className.indexOf("active") === -1) {
     evt.currentTarget.className += " active";
+    evt.currentTarget.style.backgroundColor = "#ccc";
+  }
+  else {
+    evt.currentTarget.style.backgroundColor = "#fff"; // Set background color to white if the element is not active
   }
 
   const invoice_amount = document.querySelector(".invoice_amount");
