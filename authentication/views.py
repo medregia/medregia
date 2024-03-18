@@ -5,31 +5,20 @@ from django.contrib.auth.decorators import login_required,permission_required
 from .forms import SignUpForm
 from django.contrib.auth.models import User 
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required,permission_required
-from .forms import SignUpForm
-from django.contrib.auth.models import User 
 from .models import CustomUser,Person,MakeUsAdmin
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
-from .profile import ProfileForm,MakeAdmin
+from .profile import ProfileForm
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import views as auth_views
-from django.urls import reverse_lazy
-from django.conf import settings
 from invclc.models import Invoice
 from invclc.forms import InvoiceForm
-from django.db.models import Q
-from django.db.models import F
 import json 
-import random
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
 from .models import StateModel, DistrictModel
-from django.http import HttpResponse
-from django.http import JsonResponse
+from django.http import HttpResponse,JsonResponse
 from .UniqueCode import User_code
 
 
@@ -151,8 +140,6 @@ def profile_view(request):
             messages.success(request, "You Got It ")
 
         return redirect("profile")
-
-
         
     admins = CustomUser.objects.filter(is_staff=True).order_by('-date_joined')[:1]
     context = {
