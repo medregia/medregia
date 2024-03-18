@@ -231,22 +231,6 @@ class InvoiceResource(ModelResource):
 
 @login_required(login_url='/')
 def import_view(request):
-    resource = InvoiceResource()
-    try:
-        person = Person.objects.get(user=request.user)
-        city = person.City
-        unique_id = person.UniqueId
-        admin_user = CustomUser.objects.filter(is_staff=True).order_by('-date_joined')[:1]
-        admin_person = Person.objects.get(user=admin_user)
-        
-        user = request.user
-        data = Invoice.objects.filter(user=request.user).order_by('id')
-    except Exception as e:
-        return HttpResponse("Update Your Profile", e)
-    
-    #  if request.method == 'POST':
-@login_required(login_url='/')
-def import_view(request):
     try:
         person = Person.objects.get(user=request.user)
         city = person.City
