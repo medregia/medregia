@@ -1,33 +1,28 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Invoice,DeletedInvoice,ModifiedInvoice
 from .forms import InvoiceForm
-from django.http import JsonResponse,HttpResponseServerError
+from django.http import JsonResponse,HttpResponseServerError,HttpResponse,HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q
-from django.db.models import F
+from django.db.models import Q,F
 from django.utils import timezone
 from authentication.models import CustomUser,Person
 from datetime import datetime
-from django.http import HttpResponse,HttpResponseBadRequest
 import csv
 import json
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.core.management import call_command
 from django.http import HttpResponse
-import pandas as pd
 from decimal import Decimal
 from datetime import datetime
 from openpyxl import Workbook
-import traceback
 from import_export.resources import ModelResource
 from import_export.fields import Field
 from tablib import Dataset
 from import_export.results import RowResult
-from import_export.formats.base_formats import DEFAULT_FORMATS
-from import_export.formats.base_formats import XLSX
+from import_export.formats.base_formats import DEFAULT_FORMATS,XLSX
 from import_export import resources
 from .forms import UploadFileForm
 
@@ -255,7 +250,7 @@ def import_view(request):
                 if file_extension == 'csv':
                     resource = resources.CSV()
                 elif file_extension == 'json':
-                    resource = resources.JSON()
+                    resource = resources.JSON() 
 
                 dataset = resource.load(uploaded_file.read().decode('utf-8'))
                 
