@@ -9,40 +9,46 @@
  {% endblock navbar %}
 
 {% block content %}
-<form action="" method="post">
-    {% csrf_token %}
-  <div class="inputdetails">
-    <label>Pharmacy name :</label>
-    {{form.pharmacy_name}}
-  </div>
-  <div class="inputdetails">
-    <label>Invoice Number :</label>
-    {{form.invoice_number}}
-  </div>
-  <div class="inputdetails">
-    <label>Invoice Date :</label>
-    {{form.invoice_date}}
-  </div>
-  <div class="inputdetails">
-    <label>invoice Amount :</label>
-    {{form.invoice_amount}}
-  </div>
+<div class="create-container">
+  {% comment %} <h3>Create</h3> {% endcomment %}
+  <form action="" method="post">
+      {% csrf_token %}
+    <div class="inputdetails">
+      <label>Pharmacy name :</label>
+      {{form.pharmacy_name}}
+    </div>
+    <div class="inputdetails">
+      <label>Invoice Number :</label>
+      {{form.invoice_number}}
+    </div>
+    <div class="inputdetails">
+      <label>Invoice Date :</label>
+      {{form.invoice_date}}
+    </div>
+    <div class="inputdetails">
+      <label>invoice Amount :</label>
+      {{form.invoice_amount}}
+    </div>
 
-  <div class="inputdetails">
-    <label>Payment Amount :</label>
-    {{form.payment_amount}}
-  </div>
+    <div class="inputdetails">
+      <label>Payment Amount :</label>
+      {{form.payment_amount}}
+    </div>
 
-  <div class="inputdetails">
-    <label>Balance Amount :</label>
-    {{form.balance_amount}}
-  </div>
-    {{form.today_date}}
-  <button type="submit">Save</button>
-  <div class="back_btn">
-    <a href="{% url 'index' %}">Back to Invoice</a>
-  </div>
-</form>
+    <div class="inputdetails">
+      <label>Balance Amount :</label>
+      {{form.balance_amount}}
+    </div>
+      {{form.today_date}}
+    <div class="back_btn">
+      <button type="submit">Save</button>
+    </div>
+    <div class="navigate">
+      <a href="{% url 'index' %}">Back to Invoice</a>
+    </div>
+  </form>
+</div>
+
 <script>
   const invoice_amount = document.querySelector(".invoice_amount");
   const payment_amount = document.querySelector(".payment_amount");

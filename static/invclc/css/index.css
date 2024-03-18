@@ -771,6 +771,7 @@ cursor: pointer;
 
   .tabcontent{
     align-items:center;
+    /* height: 55vh; */
   }
 }
 
