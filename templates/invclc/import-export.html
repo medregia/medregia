@@ -109,6 +109,99 @@
 
     <div id="Import" class="import-content tabcontent">
       <div class="panel-container">
+        <div class="box2">
+          <form action="#" method="post" id="uploadForm">
+            {% csrf_token %}
+            <div class="btn csv">
+              <input type="file" id="csvFile" style="display: none;" accept=".csv" onchange="displayFileContent(this)">
+              <button type="button" onclick="document.getElementById('csvFile').click()">Choose CSV</button>
+            </div>
+            <div class="btn pdf">
+              <input type="file" id="pdfFile" style="display: none;" accept=".pdf" onchange="displayFileContent(this)">
+              <button type="button" onclick="document.getElementById('pdfFile').click()">Choose PDF</button>
+            </div>
+            <div class="btn xlsx">
+              <input type="file" id="xlsxFile" style="display: none;" accept=".xlsx" onchange="displayFileContent(this)">
+              <button type="button" onclick="document.getElementById('xlsxFile').click()">Choose Excel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <div id="contentDisplay"></div>
+    
+    <script>
+      
+
+      function displayFileContent(input) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const content = e.target.result;
+          const fileType = file.type;
+          const displayArea = document.getElementById('contentDisplay');
+          const contentElement = document.createElement('div');
+          contentElement.classList.add('file-content'); // General class
+          if (fileType === 'text/csv') {
+            contentElement.classList.add('csv-content'); // Add CSV specific class
+            contentElement.innerHTML = `<p>CSV content:</p><pre>${parseCSV(content)}</pre>`; // Example function call for parsing CSV
+          } else if (fileType === 'application/pdf') {
+            contentElement.classList.add('pdf-content'); // Add PDF specific class
+            contentElement.innerHTML = `<p>PDF content:</p><pre>${content}</pre>`; // Display PDF content as is
+          } else if (fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+            contentElement.classList.add('xlsx-content'); // Add Excel specific class
+            contentElement.innerHTML = `<p>Excel content:</p><pre>${content}</pre>`; // Display Excel content as is
+          }
+          displayArea.appendChild(contentElement);
+          const uploadButton = document.createElement('button');
+          uploadButton.textContent = 'Upload to Database';
+          uploadButton.addEventListener('click', function() {
+            // Add logic here to upload content to the database
+              
+            console.log('Upload to database clicked!');
+          });
+          displayArea.appendChild(uploadButton);
+        };
+        reader.readAsText(file);
+      }
+      
+      
+
+      // Example function for parsing CSV content into a HTML table
+      function parseCSV(csvContent) {
+        // Parse CSV content and generate HTML table
+        // Example implementation:
+        const rows = csvContent.split('\n');
+        let tableHTML = '<table>';
+        rows.forEach(row => {
+          const columns = row.split(',');
+          tableHTML += '<tr>';
+          columns.forEach(column => {
+            tableHTML += `<td>${column}</td>`;
+          });
+          tableHTML += '</tr>';
+        });
+        tableHTML += '</table>';
+        return tableHTML;
+      }
+      
+    </script>
+    
+    
+    
+    
+       
+  </div>
+</div>
+
+
+<script src="{% static 'invclc/js/import-export.js' %}"></script>
+{% endblock content %}
+
+
+
+{% comment %} <div class="panel-container">
           <div class="box2">
               <!-- Buttons to choose different file types -->
               <div class="btn csv">
@@ -195,10 +288,5 @@
                   </tbody>
               </table>
           </div>
-      </div>
-    </div>    
-  </div>
-</div>
-
-<script src="{% static 'invclc/js/import-export.js' %}"></script>
-{% endblock content %}
+      </div> 
+    </div>{% endcomment %} 
