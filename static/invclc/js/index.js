@@ -26,7 +26,8 @@ function openpanel(evt, panels) {
     evt.currentTarget.style.backgroundColor = "#ccc";
   }
   else {
-    evt.currentTarget.style.backgroundColor = "#fff"; // Set background color to white if the element is not active
+    evt.currentTarget.style.backgroundColor = "#fff"; 
+    // Set background color to white if the element is not active
   }
 
   const invoice_amount = document.querySelector(".invoice_amount");
@@ -394,6 +395,3 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
-
-
-//TODO: clearing a Data After Saved ....
