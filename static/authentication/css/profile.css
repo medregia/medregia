@@ -1,3 +1,4 @@
+
 *{
     margin: 0;
     padding: 0;
@@ -385,6 +386,7 @@ body{
 
 /* PAPER */
 .button-paper {
+  height: 40px;
   align-self: center;
   background-color: #fff;
   background-image: none;
@@ -573,6 +575,15 @@ body{
     height: 200px;
     text-align: center;
     overflow-y: auto;  
+  }
+
+  .profile-data{
+    width:92%;
+    border-bottom:1px solid black;
+    padding-left:5px;
+    /* display:flex;
+    align-items:center;
+    background-color:green; */
   }
 
 

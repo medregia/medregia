@@ -36,32 +36,68 @@
                         <div class="profile-main-left-top">
                             <div class="left-medical-name left-top-containers">
                                 <label for="Medicalshop Name">Medicalshop Name :</label>
-                                {{profile.MedicalShopName}}
-                            </div>
+                                {% if data.MedicalShopName and data.MedicalShopName != "" %}
+                                    <div class="profile-data">
+                                        {{data.MedicalShopName}}
+                                    </div>
+                                {% else %}
+                                    {{profile.MedicalShopName}}
+                                {% endif %}
+                            </div>                            
 
                             <div class="left-pharmacy-name left-top-containers">
-                                <label for="Proprietary Name">Proprietary Name :</label>
-                                {{profile.ProprietaryName}}
+                                <label for="Medicalshop Name">Proprietary Name :</label>
+                                {% if data.ProprietaryName and data.ProprietaryName != "" %}
+                                    <div class="profile-data">
+                                        {{data.ProprietaryName }}
+                                    </div>
+                                {% else %}
+                                    {{profile.ProprietaryName }}
+                                {% endif %}
                             </div>
 
                             <div class="left-drug-1 left-top-containers">
-                                <label for="Drug Licenese Number1">Drug Licenese Number1 :</label>
-                                {{profile.DrugLiceneseNumber1}}
+                                <label for="Medicalshop Name">Drug Licenese Number1 :</label>
+                                {% if data.DrugLiceneseNumber1 and data.DrugLiceneseNumber1 != "" %}
+                                    <div class="profile-data">
+                                        {{data.DrugLiceneseNumber1 }}
+                                    </div>
+                                {% else %}
+                                    {{profile.DrugLiceneseNumber1}}
+                                {% endif %}
                             </div>
 
                             <div class="left-proprietary-number left-top-containers">
-                                <label for="proprietary Number">Proprietary Number :</label>
-                                {{profile.ProprietaryNumber}}
+                                <label for="Medicalshop Name">Proprietary Number :</label>
+                                {% if data.ProprietaryNumber and data.ProprietaryNumber != "" %}
+                                    <div class="profile-data">
+                                        {{data.ProprietaryNumber }}
+                                    </div>
+                                {% else %}
+                                    {{profile.ProprietaryNumber}}
+                                {% endif %}
                             </div>
 
                             <div class="left-drug-2 left-top-containers">
-                                <label for="Drug Licenese Number2">Drug Licenese Number2 :</label>
-                                {{profile.DrugLiceneseNumber2}}
+                                <label for="Medicalshop Name">Drug Licenese Number2 :</label>
+                                {% if data.DrugLiceneseNumber2 and data.DrugLiceneseNumber2 != "" %}
+                                    <div class="profile-data">
+                                        {{data.DrugLiceneseNumber2 }}
+                                    </div>
+                                {% else %}
+                                    {{profile.DrugLiceneseNumber2}}
+                                {% endif %}
                             </div>
 
                             <div class="left-proprietary-contact left-top-containers">
-                                <label for="id_ProprietaryContact Number">Proprietary Contact Number :</label>
-                                {{profile.ProprietaryContact}}
+                                <label for="Medicalshop Name">Proprietary Contact Number :</label>
+                                {% if data.ProprietaryContact and data.ProprietaryContact != "" %}
+                                    <div class="profile-data">
+                                        {{data.ProprietaryContact }}
+                                    </div>
+                                {% else %}
+                                    {{profile.ProprietaryContact}}
+                                {% endif %}
                             </div>
 
                         </div>
@@ -72,37 +108,75 @@
 
                             <div class="profile-left-bottom-main">
                                 <div class="left-bottom-state left-bottom-containers">
-                                    <label for="state">State :</label>
-                                    <div class="state_dropdown">
-                                        {{profile.state}}
-                                    </div>
+                                    <label for="Medicalshop Name">State :</label>
+                                    {% if data.state and data.state != "" %}
+                                        <div class="profile-data">
+                                            {{data.state }}
+                                        </div>
+                                    {% else %}
+                                        <div class="state_dropdown">
+                                            {{profile.state}}
+                                        </div>
+                                    {% endif %}
+                                    
                                 </div>
 
                                 <div class="left-bottom-district left-bottom-containers">
-                                    <label for="state">District :</label>
-                                    <div class="district_dropdown">
-                                        {{ profile.district }}
-                                    </div>
+                                    <label for="Medicalshop Name">District :</label>
+                                    {% if data.district and data.district != "" %}
+                                        <div class="profile-data">
+                                            {{data.district }}
+                                        </div>
+                                    {% else %}
+                                        <div class="district_dropdown">
+                                            {{ profile.district }}
+                                        </div>
+                                    {% endif %}
+                                    
                                 </div>
 
                                 <div class="left-bottom-city left-bottom-containers">
-                                    <label for="city">City :</label>
-                                    {{profile.City}}
+                                    <label for="Medicalshop Name">City :</label>
+                                    {% if data.City and data.City != "" %}
+                                        <div class="profile-data">
+                                            {{data.City }}
+                                        </div>
+                                    {% else %}
+                                        {{profile.City}}
+                                    {% endif %}
                                 </div>
 
                                 <div class="left-bottom-pincode left-bottom-containers">
-                                    <label for="pincode">Pincode :</label>
-                                    {{profile.Pincode}}
+                                    <label for="Medicalshop Name">Pincode :</label>
+                                    {% if data.Pincode and data.Pincode != "" %}
+                                        <div class="profile-data">
+                                            {{data.Pincode }}
+                                        </div>
+                                    {% else %}
+                                        {{profile.Pincode}}
+                                    {% endif %}
                                 </div>
 
                                 <div class="left-bottom-street left-bottom-containers">
-                                    <label for="Street Name"> Street Name :</label>
-                                    {{profile.StreetNumber}}
+                                    <label for="Medicalshop Name">StreetNumber :</label>
+                                    {% if data.StreetNumber and data.StreetNumber != "" %}
+                                        <div class="profile-data">
+                                            {{data.StreetNumber }}
+                                        </div>
+                                    {% else %}
+                                        {{profile.StreetNumber}}
+                                    {% endif %}
                                 </div>
 
                                 <div class="left-bottom-doornumber left-bottom-containers">
-                                    <label for="Door Number">Door Number :</label>
-                                    {{profile.DoorNumber}}
+                                    <label for="Medicalshop Name">DoorNumber :</label>
+                                    {% if data.DoorNumber and data.DoorNumber != "" %}
+                                        <div class="profile-data">
+                                            {{data.DoorNumber }}
+                                        </div>
+                                    {% else %}
+                                        {{profile.DoorNumber}}
+                                    {% endif %}
                                 </div>
 
                                 <div class="left-bottom-unique-id">
@@ -119,18 +193,36 @@
                 <div class="profile-right-full">
                     <div class="profile-main-right-top">
                         <div class="profile-right-pharmacist right-top-containers">
-                            <label for="Pharmacist Name">Pharmacist Name :</label>
-                            {{profile.PharmacistName}}
+                            <label for="Medicalshop Name">Pharmacist Name :</label>
+                            {% if data.PharmacistName and data.PharmacistName != "" %}
+                                <div class="profile-data">
+                                    {{data.PharmacistName }}
+                                </div>
+                            {% else %}
+                                {{profile.PharmacistName}}
+                            {% endif %}
                         </div>
 
                         <div class="profile-right-register right-top-containers">
-                            <label for="Registered Number">Registered Number :</label>
-                            {{profile.RegisteredNumber}}
+                            <label for="Medicalshop Name">Registered Number :</label>
+                            {% if data.RegisteredNumber and data.RegisteredNumber != "" %}
+                                <div class="profile-data">
+                                    {{data.RegisteredNumber }}
+                                </div>
+                            {% else %}
+                                {{profile.RegisteredNumber}}
+                            {% endif %}
                         </div>
 
                         <div class="profile-right-contactnumber right-top-containers">
-                            <label for="Contact Number">Contact Number :</label>
-                            {{profile.ContactNumber}}
+                            <label for="Medicalshop Name">Contact Number :</label>
+                            {% if data.ContactNumber and data.ContactNumber != "" %}
+                                <div class="profile-data">
+                                    {{data.ContactNumber }}
+                                </div>
+                            {% else %}
+                                {{profile.ContactNumber}}
+                            {% endif %}
                         </div>
                     </div>
                     </form>     
