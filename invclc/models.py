@@ -12,7 +12,7 @@ class Invoice(models.Model):
     balance_amount = models.DecimalField(max_digits=10, decimal_places=2 ,null=True, blank=True)
     payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
     today_date = models.DateField(default=timezone.now)
-    history = HistoricalRecords()
+    history = HistoricalRecords() 
 
     def save(self, *args, **kwargs):
         self.balance_amount = self.invoice_amount - self.payment_amount

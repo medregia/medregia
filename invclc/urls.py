@@ -26,4 +26,6 @@ urlpatterns = [
     path('paymore/', views.paymore_view, name='paymore'),
     path('updatemore/', views.updatemore_view, name='updatemore'),
     path('unpaid_debt/', views.unpaid_debt, name='unpaid_debt'),
+
+    path('upload-csv/', views.upload_csv, name='upload_csv'),
 ]

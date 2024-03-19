@@ -26,6 +26,22 @@ from import_export.formats.base_formats import DEFAULT_FORMATS,XLSX
 from import_export import resources
 from .forms import UploadFileForm
 
+
+from django.http import JsonResponse
+from .models import Invoice
+
+def upload_csv(request):
+    if request.method == 'POST' and request.FILES.get('csv_content'):
+        csv_content = request.FILES['csv_content'].read().decode('utf-8')
+        # Assuming you have a way to get the current user (e.g., request.user)
+        current_user = request.user
+        # Create or update the invoice with the CSV content
+        invoice = Invoice.objects.update_or_create(user=current_user, defaults={'csv_content': csv_content})
+        return JsonResponse({'message': 'CSV content uploaded successfully'})
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
 @login_required(login_url='/')
 def exports_to_csv(request):
     currentuser = request.user

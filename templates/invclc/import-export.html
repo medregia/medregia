@@ -138,53 +138,76 @@
         const file = input.files[0];
         const reader = new FileReader();
         reader.onload = function(e) {
-          const content = e.target.result;
-          const fileType = file.type;
-          const displayArea = document.getElementById('contentDisplay');
-          const contentElement = document.createElement('div');
-          contentElement.classList.add('file-content'); // General class
-          if (fileType === 'text/csv') {
-            contentElement.classList.add('csv-content'); // Add CSV specific class
-            contentElement.innerHTML = `<p>CSV content:</p><pre>${parseCSV(content)}</pre>`; // Example function call for parsing CSV
-          } else if (fileType === 'application/pdf') {
-            contentElement.classList.add('pdf-content'); // Add PDF specific class
-            contentElement.innerHTML = `<p>PDF content:</p><pre>${content}</pre>`; // Display PDF content as is
-          } else if (fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-            contentElement.classList.add('xlsx-content'); // Add Excel specific class
-            contentElement.innerHTML = `<p>Excel content:</p><pre>${content}</pre>`; // Display Excel content as is
-          }
-          displayArea.appendChild(contentElement);
-          const uploadButton = document.createElement('button');
-          uploadButton.textContent = 'Upload to Database';
-          uploadButton.addEventListener('click', function() {
-            // Add logic here to upload content to the database
-              
-            console.log('Upload to database clicked!');
-          });
-          displayArea.appendChild(uploadButton);
+            const content = e.target.result;
+            const fileType = file.type;
+            const displayArea = document.getElementById('contentDisplay');
+            const contentElement = document.createElement('div');
+            contentElement.classList.add('file-content'); // General class
+            if (fileType === 'text/csv') {
+                contentElement.classList.add('csv-content'); // Add CSV specific class
+                contentElement.innerHTML = `<p>CSV content:</p><pre>${parseCSV(content)}</pre>`; // Example function call for parsing CSV
+                const uploadButton = document.createElement('button');
+                uploadButton.textContent = 'Upload to Database';
+                uploadButton.addEventListener('click', function() {
+                    uploadCSVContent(content); // Call function to upload CSV content
+                });
+                displayArea.appendChild(uploadButton);
+            } else if (fileType === 'application/pdf') {
+                contentElement.classList.add('pdf-content'); // Add PDF specific class
+                contentElement.innerHTML = `<p>PDF content:</p><pre>${content}</pre>`; // Display PDF content as is
+            } else if (fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                contentElement.classList.add('xlsx-content'); // Add Excel specific class
+                contentElement.innerHTML = `<p>Excel content:</p><pre>${content}</pre>`; // Display Excel content as is
+            }
+            displayArea.appendChild(contentElement);
         };
         reader.readAsText(file);
-      }
-      
-      
-
-      // Example function for parsing CSV content into a HTML table
-      function parseCSV(csvContent) {
+    }
+    
+    function uploadCSVContent(csvContent) {
+        // AJAX request to send CSV content to Django backend
+        const formData = new FormData();
+        formData.append('csv_content', csvContent);
+    
+        fetch('/upload-csv/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('CSV content uploaded successfully:', data);
+        })
+        .catch(error => {
+            console.error('There was a problem with your fetch operation:', error);
+        });
+    }
+    
+    // Example function for parsing CSV content into a HTML table
+    function parseCSV(csvContent) {
         // Parse CSV content and generate HTML table
         // Example implementation:
         const rows = csvContent.split('\n');
         let tableHTML = '<table>';
         rows.forEach(row => {
-          const columns = row.split(',');
-          tableHTML += '<tr>';
-          columns.forEach(column => {
-            tableHTML += `<td>${column}</td>`;
-          });
-          tableHTML += '</tr>';
+            const columns = row.split(',');
+            tableHTML += '<tr>';
+            columns.forEach(column => {
+                tableHTML += `<td>${column}</td>`;
+            });
+            tableHTML += '</tr>';
         });
         tableHTML += '</table>';
         return tableHTML;
-      }
+    }
+    
       
     </script>
     
