@@ -64,6 +64,11 @@ body {
   /* background-color: red; */
 }
 
+.main-container .main-header .header-top .header-top-btn h3{
+  /* background-color:rgba(172, 172, 172,0.4); */
+  color:rgba(3, 135, 3,0.6);
+}
+
 .main-container .main-header .header-top .header-top-btn .header-messages{
   height: 9vh;
   width: 70%;
@@ -148,11 +153,11 @@ body {
   border-radius: 3px;
   border: none;
   outline: 1px solid black;
-  transition: all 0.6s ease-in-out;
+  /* transition: all 0.6s ease-in-out; */
 }
-.header-bottom form table input:focus {
+/* .header-bottom form table input:focus {
   padding-left: 20px;
-}
+} */
 .header-bottom form table button {
   cursor: pointer;
   height: 40px;
@@ -381,9 +386,8 @@ body {
 
 .table-content-right td {
   /* height:40px; */
-  /* width:100px; */
+  width:100px;
   border: 1px solid black;
-  padding: 1px;
 }
 
 .table-panel {
@@ -874,4 +878,12 @@ cursor: pointer;
     width:95%;
     justify-content:center;
   }
+}
+
+@media (min-width:1020px) and (max-width:1247px){
+  .table-content-left button, .table-content-right button{
+    width:40px;
+    margin:none;
+  }
+
 }

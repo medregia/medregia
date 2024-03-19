@@ -23,6 +23,7 @@ class DistrictModel(models.Model):
 
         
 class CustomUser(AbstractUser):
+    username = models.CharField(max_length=150, unique=True)
     phone_num = models.CharField(max_length=15, blank=False)
     email = models.EmailField(unique=True)
     pin = models.IntegerField(blank=False ,null=True)
@@ -51,8 +52,6 @@ class CustomUser(AbstractUser):
         verbose_name='user permissions',
         help_text='Specific permissions for this user.',
     )
-
-    history = HistoricalRecords()
     def _str_(self):
         return self.username
     

@@ -26,13 +26,14 @@
       <div class="main-header">
         <div class="header-top">
           <div class="header-top-btn">
-            <a href="{% url 'create' %}"><button type="button">Overall</button></a>
+            <h3 >{{request.user}}</h3>
+            {% comment %} <a href="{% url 'create' %}"><button type="button">Overall</button></a> {% endcomment %}
             <div class="header-messages">
               
             </div>
           </div>
           <div class="heading">
-            <h2>Invoice</h2>
+            <h2>{{medicalname}}</h2>
           </div>
           <div class="unique-code">
             <p>UNIQUE-ID :</p><span>{{uniqueid}}</span>
