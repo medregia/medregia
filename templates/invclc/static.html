@@ -12,110 +12,112 @@
 {% endblock navbar %}
  
 {% block content %}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-    <form> 
-        <div class="static-container">
-            <div class="panel first-panel">
+<div class="static-container">
+    <div class="left-side">
+        <div class="left-box">
+            <div class="mainbox">
                 <h3 class="static_head">DURATION BASED</h3>
-                <div class="mainbox1">
-                    <div class="firstbox">
-                        <div class="dates">
-                            <input type="checkbox">
-                            <select name="year"></select>
-                        </div>
-                        <div class="dates">
-                            <input type="checkbox">
-                            <select name="month"></select>
-                        </div>
-                        <div class="dates">
-                            <input type="checkbox">
-                            <select name="week"></select>
-                        </div>
-                    </div> 
-                    <div class="firstbox1">
-                        <div class="from">
-                            <input type="checkbox">
-                            <label for="">Datewise :</label>
-                        </div>
-                        <div class="from">
-                            <label for="">From :</label>
-                            <input type="date">
-                        </div>
-                        <div class="from">
-                            <label for="">to :</label>
-                            <input type="date">
-                        </div>
+                <div class="firstbox">
+                    <div class="dates">
+                        <input type="checkbox">
+                        <select name="year">
+                            <option>_year_</option>
+                        </select>
+                    </div>
+                    <div class="dates">
+                        <input type="checkbox">
+                        <select name="month">
+                            <option>_month_</option>
+                        </select>
+                    </div>
+                    <div class="dates">
+                        <input type="checkbox">
+                        <select name="week">
+                            <option>_week_</option>
+                        </select>
+                    </div>
+                </div> 
+                <div class="firstbox1">
+                    <div class="from">
+                        <!-- <input type="checkbox"> -->
+                        <label for="">Datewise :</label>
+                    </div>
+                    <div class="from">
+                        <label for="">From :</label>
+                        <input type="date">
+                    </div>
+                    <div class="from">
+                        <label for="">to :</label>
+                        <input type="date">
                     </div>
                 </div>
             </div>
-            <div class="panel second-panel">
+            <div class="mainbox2">
                 <h3 class="static_head">CATEGORY BASED</h3>
-                <div class="mainbox2">
-                    <div class="firstbox">
-                        <div class="choose">
-                            <input type="checkbox">
-                            <label>Pharmacy</label>
-                        </div>
-                        <div class="choose">
-                            <input type="checkbox">
-                            <label>Dealer</label>
-                        </div>
-                        <div class="choose">
-                            <input type="checkbox">
-                            <label>Agency</label>
-                        </div>
-                    </div> 
-                    <div class="firstbox1">
-                        <div class="other">
-                            <label>Others :</label>
-                            <input type="text" style="height: 26px; width: 200px; background-color: #ebe2e2;">
-                        </div>
+                <div class="firstbox1">
+                    <div class="choose">
+                        <input type="checkbox">
+                        <label>Pharmacy</label>
+                    </div>
+                    <div class="choose">
+                        <input type="checkbox">
+                        <label>Dealer</label>
+                    </div>
+                    <div class="choose">
+                        <input type="checkbox">
+                        <label>Agency</label>
+                    </div>
+                </div> 
+                <div class="firstbox1">
+                    <div class="other">
+                        <label>Others :</label>
+                        <input type="text" style="height: 26px; width: 200px; background-color: #ebe2e2;">
                     </div>
                 </div>
             </div>
-            <div class="panel thrid-panel">
-                <div class="mainbox3">
-                    <div class="">
-                        <label for="">Total Purches :</label>
-                        <input type="text" value={{total_amount}} readonly>
-                    </div>
-                    <div class="">
-                        <label for="">total Paid Amount :</label>
-                        <input type="text" value={{payment_amount}} readonly>
-                    </div>
-                    <div class="">
-                        <label for="">Remaining Pay :</label>
-                        <input type="text" value={{balance_amount}} readonly>
-                    </div>
-                    <div class="">
-                        <label for=""> Selling Amount :</label>
-                        <input type="text">
-                    </div>
-                </div>
-            </div>
-            <div class="panel fourth-panel">
-                <div class="mainbox4">
-                    <div class="">
-                        <label for="">Expenses :</label>
-                        <input type="text">
-                    </div>
-                    <div class="">
-                        <label for="">Profit :</label>
-                        <input type="text">
-                    </div>
-                    <div class="">
-                        <label for="">Profile :</label>
-                        <input type="text">
-                    </div>
-                </div>
-            </div>
-            <div class="panel">Panel 5</div>
-            <div class="panel">Panel 6</div>
         </div>
-    </form>
+        <div class="left-box">
+            <div class="mainbox3">
+                <div class="">
+                    <label for="">Total Purches :</label>
+                    <input type="text">
+                </div>
+                <div class="">
+                    <label for="">total Paid Amount :</label>
+                    <input type="text">
+                </div>
+                <div class="">
+                    <label for="">Remaining Pay :</label>
+                    <input type="text">
+                </div>
+                <div class="">
+                    <label for=""> Selling Amount :</label>
+                    <input type="text">
+                </div>
+                <div class="">
+                    <label for="">Expenses :</label>
+                    <input type="text">
+                </div>
+                <div class="">
+                    <label for="">Profit :</label>
+                    <input type="text">
+                </div>
+                <div class="">
+                    <label for="">Profile :</label>
+                    <input type="text">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right-side">
+        <div id="piechart"></div>
+        <div id="chart_div"></div>
+    </div>
+</div>
 
-
-
+<script src="{% static 'invclc/js/static.js' %}"></script> 
     
 
 {% endblock %}
