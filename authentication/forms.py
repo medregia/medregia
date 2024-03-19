@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
 
 class SignUpForm(UserCreationForm):
@@ -26,3 +27,12 @@ class SignUpForm(UserCreationForm):
         fields = UserCreationForm.Meta.fields + (
             'email', 'password1', 'password2', 'phone_num', 'pin', 'store_type', 'other_value',
         )
+        
+
+class LoginAuthenticationForm(AuthenticationForm):
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if username:
+            return username
+        else:
+            raise forms.ValidationError("Please enter a valid username.")

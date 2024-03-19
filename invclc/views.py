@@ -95,6 +95,7 @@ def exports_to_json(request):
 @login_required(login_url='/')
 def index_view(request):
     current_user = request.user
+    Medicalname = Person.objects.get(user=current_user)
     invoices = Invoice.objects.filter(user=current_user)
     payment_details = invoices.filter().order_by('-id')
     q_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
@@ -167,6 +168,7 @@ def index_view(request):
                'uniqueid':unique_id,
                'DeleteHistory':DeleteHistory,
                'ModifiedHistory':ModifiedHistory,
+               'medicalname':Medicalname.MedicalShopName,
                }
     return render(request,'invclc/index.html',context)
 

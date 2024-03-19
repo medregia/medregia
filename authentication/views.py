@@ -20,6 +20,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from .models import StateModel, DistrictModel
 from django.http import HttpResponse,JsonResponse
 from .UniqueCode import User_code
+from .forms import LoginAuthenticationForm
 
 
 def signup_view(request):
@@ -40,14 +41,13 @@ def signup_view(request):
 
 def login_view(request):
     if request.method == "POST":
-        login_form = AuthenticationForm(request, data=request.POST)
+        login_form = LoginAuthenticationForm(request, data=request.POST)
         if login_form.is_valid():
             user = login_form.get_user()
             login(request, user)
-            print(login_form.errors)
             return redirect('index/')
     else:
-        login_form = AuthenticationForm(request)
+        login_form = LoginAuthenticationForm(request)
         login_form.fields['username'].widget.attrs.update({'placeholder': 'Username'})
         login_form.fields['password'].widget.attrs.update({'placeholder': 'Password'})
         
