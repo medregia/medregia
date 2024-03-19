@@ -113,10 +113,13 @@
           <form action="#" method="post" id="uploadForm">
             {% csrf_token %}
             <div class="btn csv">
-              <input type="file" id="csvFile" style="display: none;" accept=".csv" onchange="displayFileContent(this)">
-              <button type="button" onclick="document.getElementById('csvFile').click()">Choose CSV</button>
+                <input type="file" id="csvFile" style="display: none;" accept=".csv" onchange="displayFileContent(this)">
+                <label for="csvFile">Choose CSV</label>
             </div>
-            <div class="btn pdf">
+          </form>
+        <div id="contentDisplay"></div>
+        
+            {% comment %} <div class="btn pdf">
               <input type="file" id="pdfFile" style="display: none;" accept=".pdf" onchange="displayFileContent(this)">
               <button type="button" onclick="document.getElementById('pdfFile').click()">Choose PDF</button>
             </div>
@@ -124,12 +127,12 @@
               <input type="file" id="xlsxFile" style="display: none;" accept=".xlsx" onchange="displayFileContent(this)">
               <button type="button" onclick="document.getElementById('xlsxFile').click()">Choose Excel</button>
             </div>
-          </form>
+          </form> {% endcomment %}
         </div>
       </div>
     </div>
     
-    <div id="contentDisplay"></div>
+    {% comment %} <div id="contentDisplay"></div> {% endcomment %}
     
     <script>
       
@@ -168,12 +171,13 @@
         // AJAX request to send CSV content to Django backend
         const formData = new FormData();
         formData.append('csv_content', csvContent);
-    
-        fetch('/upload-csv/', {
+        const csrftoken = getCookie('csrftoken'); // Retrieve CSRF token correctly
+        
+        fetch('/import-export/', {
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                'X-CSRFToken': csrftoken // Ensure CSRF token is included
             }
         })
         .then(response => {
@@ -190,10 +194,8 @@
         });
     }
     
-    // Example function for parsing CSV content into a HTML table
+    // Function to parse CSV content into an HTML table
     function parseCSV(csvContent) {
-        // Parse CSV content and generate HTML table
-        // Example implementation:
         const rows = csvContent.split('\n');
         let tableHTML = '<table>';
         rows.forEach(row => {
@@ -207,6 +209,25 @@
         tableHTML += '</table>';
         return tableHTML;
     }
+    
+    // Function to get CSRF token from cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Check if this cookie name is the one we want
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    
     
       
     </script>

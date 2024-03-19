@@ -27,6 +27,7 @@ from import_export import resources
 from .forms import UploadFileForm
 
 
+# views.py
 from django.http import JsonResponse
 from .models import Invoice
 
@@ -36,10 +37,14 @@ def upload_csv(request):
         # Assuming you have a way to get the current user (e.g., request.user)
         current_user = request.user
         # Create or update the invoice with the CSV content
-        invoice = Invoice.objects.update_or_create(user=current_user, defaults={'csv_content': csv_content})
+        invoice = Invoice.objects.create(
+            user=current_user,
+            csv_content=csv_content  # Assuming your Invoice model has a field named csv_content
+        )
         return JsonResponse({'message': 'CSV content uploaded successfully'})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 
 @login_required(login_url='/')
@@ -254,40 +259,6 @@ def import_view(request):
     except Exception as e:
         return HttpResponse("Update Your Profile", e)
     
-    if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            uploaded_file = request.FILES['file']
-            file_extension = uploaded_file.name.split('.')[-1].lower()
-            
-            # Check if the uploaded file is in a supported format
-            if file_extension in ['csv', 'json']:
-                # Process the uploaded file
-                if file_extension == 'csv':
-                    resource = resources.CSV()
-                elif file_extension == 'json':
-                    resource = resources.JSON() 
-
-                dataset = resource.load(uploaded_file.read().decode('utf-8'))
-                
-                # Associate the imported data with the current user
-                for row in dataset:
-                    row['user'] = request.user.id
-                
-                # Import the data
-                result = resource.import_data(dataset, dry_run=False)
-                if result.has_errors():
-                    messages.error(request,"Import Failed")
-                    
-                else:
-                    # Data imported successfully
-                    messages.success(request,"Data imported successfully")
-            else:
-                # Handle unsupported file formats
-                messages.error(request,"Unsuported Formation Please Select Correct formats ")
-
-    else:
-        form = UploadFileForm()
     
     context = {
         'datas': data,
@@ -296,7 +267,6 @@ def import_view(request):
         'admin_person': admin_person,
         'user': user,
         'unique_id': unique_id,
-        'form': form,
     }
     return render(request, 'invclc/import-export.html', context)
 
