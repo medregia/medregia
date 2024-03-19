@@ -5,49 +5,27 @@ window.onload = function () {
   }
 };
 
-// const partiallyBalance = document.getElementById('partiallyBalance');
-// const partiallyPayment = document.getElementById('partiallyPayment');
-// const partiallyTotal = document.getElementById('partiallyTotal');
+const paymentRows = document.querySelectorAll("#paymentTableBody tr");
+paymentRows.forEach(row => {
+  const partiallyBalance = row.querySelector(".partiallyBalance");
+  const partiallyPayment = row.querySelector(".partiallyPayment");
+  const initialBalance = partiallyBalance.value;
 
-// partiallyPayment.addEventListener('input',PartiallyCheck)
+  partiallyPayment.addEventListener("input", function() {
+    let balance = Number(initialBalance);
+    let payment = Number(this.value);
 
-// function PartiallyCheck(){
-//   let partially = Number(partiallyTotal.value) - Number(partiallyPayment.value)
-//   partiallyBalance.value = partially >= 0 ? partially : 0;
+    let newBalance = balance - payment;
 
-// }
+    partiallyBalance.value = newBalance >= 0 ? newBalance : 0;
+  });
 
-const partiallyBalance = document.getElementById('partiallyBalance');
-const partiallyPayment = document.getElementById('partiallyPayment');
-const partiallyTotal = document.getElementById('partiallyTotal');
-
-// Store the initial value of partiallyBalance
-const initialBalance = partiallyBalance.value;
-
-// Add event listener to partiallyPayment
-partiallyPayment.addEventListener('input', PartiallyCheck);
-
-function PartiallyCheck() {
-  // Convert values to numbers
-  let balance = Number(initialBalance);
-  let payment = Number(partiallyPayment.value);
-
-  // Calculate the new balance
-  let newBalance = balance - payment;
-
-  // Update the partiallyBalance field with the new balance
-  partiallyBalance.value = newBalance >= 0 ? newBalance : 0;
-}
-
-// Add event listener to partiallyPayment to handle clearing
-partiallyPayment.addEventListener('change', function() {
-  if (partiallyPayment.value.trim() === '') {
-    partiallyBalance.value = initialBalance;
-  }
+  partiallyPayment.addEventListener("change", function() {
+    if (this.value.trim() === "") {
+      partiallyBalance.value = initialBalance;
+    }
+  });
 });
-
-
-
 
 function openpanel(evt, panels) {
   var i, tabcontent, tablinks;
