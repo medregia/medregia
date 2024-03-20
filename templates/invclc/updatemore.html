@@ -20,10 +20,14 @@
           <table class="checkmoreTable">
             <thead>
               <th><input type="checkbox"></th>
-              <th>Pharmacy Name</th>
+              <th>Name</th>
+              <th>Invoice Date</th>
+              <th>Updated on</th>
+              <th>Updated by</th>
               <th>Invoice Amount</th>
+              <th>Paid Amount</th>
               <th>Paid Date</th>
-              <th>Balance Amount</th>
+              <th>Pending Amount</th>
               <th>Action</th>
             </thead>
             <tbody>
@@ -33,9 +37,13 @@
                 <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
                     <td><input type="checkbox" id="check"></td>
                     <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
-                    <td><input type="text" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
                     <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
-                    <td><input type="text" value="{{ data.balance_amount }}" disabled name="balance_amount"></td>
+                    <td></td>
+                    <td></td>
+                    <td><input type="text" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ data.balance_amount }}</td>
                     <td>
                         <button type="button" class="editBtn">Edit</button>
                         <button type="button" class="deleteBtn">Delete</button>
