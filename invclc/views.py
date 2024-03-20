@@ -115,14 +115,14 @@ def index_view(request):
 
     DeleteHistory = DeletedInvoice.objects.filter(user=current_user).order_by('-id')
     if not DeleteHistory.exists():
-        DeleteHistory = "N Deletion Found"
+        DeleteHistory = "No Deletion Found"
         
     ModifiedHistory = ModifiedInvoice.objects.filter(user = current_user).order_by('-id')
     if not ModifiedHistory.exists():
         ModifiedHistory = "No Updatation Found"
      
 # print(history_entries.history_user)
-    
+
     if request.method == 'POST':
         query = request.POST.get('payment_list')
         if query is not None:
