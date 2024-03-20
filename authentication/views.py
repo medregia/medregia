@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponseNotAllowed
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required,permission_required
@@ -157,17 +158,18 @@ def profile_view(request):
 
 
 def logout_view(request):
-
-    if request.user.is_authenticated:
-        # Clear all messages.
-        messages.set_level(request, messages.SUCCESS)
-        while messages.get_messages(request):
-            pass
-        
-        logout(request)
-
-        messages.success(request, "Logout Successful")
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            # Clear all messages.
+            messages.set_level(request, messages.SUCCESS)
+            while messages.get_messages(request):
+                pass
+            
+            logout(request)
+            messages.success(request, "Logout Successful")
         return redirect('login')
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 @login_required(login_url='/')
 def change_pin(request):

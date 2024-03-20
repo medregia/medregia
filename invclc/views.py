@@ -121,20 +121,16 @@ def index_view(request):
     if not ModifiedHistory.exists():
         ModifiedHistory = "No Updatation Found"
         
+    Storename = None
     try:
         Storename = Person.objects.get(user=current_user)
         modifiedStore = convert_Medical(Storename.MedicalShopName)
     except Person.DoesNotExist:
-        modifiedStore = convert_Medical(Storename.MedicalShopName)
-
-    try:
-        Pharmacy = Invoice.objects.filter(user=current_user).first()
-        if Pharmacy:
-            PharmacyStatus = convert_Medical(Pharmacy.pharmacy_name)
+        if Storename:
+            modifiedStore = convert_Medical(Storename.MedicalShopName)
         else:
-            PharmacyStatus = "Not Found" 
-    except Invoice.DoesNotExist:
-        PharmacyStatus = "Not Found"  # If Pharmacy doesn't exist, set PharmacyStatus to "Not Found"
+            # Handle the case where Storename is not found
+            modifiedStore = None  # or any other appropriate value
 
         
     
