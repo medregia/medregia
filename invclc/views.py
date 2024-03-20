@@ -339,26 +339,26 @@ def update_invoice(request, invoice_id):
         invoice.pharmacy_name = data.get('pharmacy_name', invoice.pharmacy_name)
         invoice.invoice_amount = Decimal(data.get('invoice_amount', invoice.invoice_amount))
         invoice.invoice_date = data.get('invoice_date', invoice.invoice_date)
-        invoice.balance_amount = Decimal(data.get('balance_amount', invoice.balance_amount))
+        # invoice.balance_amount = Decimal(data.get('balance_amount', invoice.balance_amount))
 
         # Handle balance_amount separately
         invoice_date = data.get('invoice_date', invoice.invoice_date)
-        balance_amount = data.get('balance_amount', invoice.balance_amount)
+        # balance_amount = data.get('balance_amount', invoice.balance_amount)
 
         # Perform the necessary conversions
         invoice_date = parse_date(invoice_date)
-        balance_amount = Decimal(balance_amount) if balance_amount is not None else None
+        # balance_amount = Decimal(balance_amount) if balance_amount is not None else None
 
         # Update the invoice_date and balance_amount fields
         invoice.invoice_date = invoice_date
 
         # Check if balance_amount is not None before updating
-        if balance_amount is not None:
-            # Update balance_amount based on the formula in your model
-            invoice.payment_amount = invoice.invoice_amount - balance_amount
-        else:
-            # If balance_amount is None, set it to invoice.invoice_amount
-            invoice.payment_amount = invoice.invoice_amount
+        # if balance_amount is not None:
+        #     # Update balance_amount based on the formula in your model
+        #     invoice.payment_amount = invoice.invoice_amount - balance_amount
+        # else:
+        #     # If balance_amount is None, set it to invoice.invoice_amount
+        #     invoice.payment_amount = invoice.invoice_amount
 
         # Save the updated Invoice
         invoice.save()

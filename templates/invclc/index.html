@@ -147,15 +147,15 @@
                   <th>Balance Amount</th>
                   <th>Action</th>
                 </thead>
-                <tbody>
+                <tbody id="updatePaymentTable">
                   <form action="" method="post" id="update_delete_id">
                     {% csrf_token %}
                     {% for data in payment %}
                     <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
                         <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
-                        <td><input type="text" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
+                        <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
                         <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
-                        <td><input type="text" value="{{ data.balance_amount }}" disabled name="balance_amount"></td>
+                        <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
                         <td>
                             <button type="button" class="editBtn">Edit</button>
                             <button type="button" class="deleteBtn">Delete</button>
@@ -191,7 +191,7 @@
                   <th>Total</th>
                   <th>Status</th>
                   <th>Pending</th>
-                  <th>Payment</th>
+                  <th>Payment</tha>
                   <th>Action</th>
                 </thead>
                 <tbody id="paymentTableBody">
@@ -201,8 +201,14 @@
                     <td><input type="text" name="pharmacy_name" value="{{ data.pharmacy_name }}" disabled></td>
                     <td><input type="text" name="invoice_number" value="{{ data.invoice_number }}" disabled></td>
                     <td><input type="text" class="partiallyTotal" name="invoice_amount" value="{{ data.invoice_amount }}" disabled></td>
+                    {% if data.balance_amount == 0 %}
+                      <td>Paid</td>
+                    {% else %}
+                      <td>Pending</td>
+                    {% endif %}
                     <td><input type="text" class="partiallyBalance" name="balance_amount" value="{{ data.balance_amount }}" disabled></td>
                     <td><input type="text" class="partiallyPayment" name="payment_amount" value="{{ data.payment_amount }}" disabled></td>
+                    
                     <td> 
                       <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
                       <button class="cancelBtn" type="button" style="display: none;">Cancel</button>

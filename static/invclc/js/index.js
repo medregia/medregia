@@ -5,6 +5,7 @@ window.onload = function () {
   }
 };
 
+// TODO: Partially Payment Dynamicaly Changing
 const paymentRows = document.querySelectorAll("#paymentTableBody tr");
 paymentRows.forEach(row => {
   const partiallyBalance = row.querySelector(".partiallyBalance");
@@ -27,6 +28,8 @@ paymentRows.forEach(row => {
   });
 });
 
+// TODO: Payment List Dynamically Change
+
 const payRows = document.querySelectorAll("#payTableBody tr");
 payRows.forEach(row => {
   const balanceAmount = row.querySelector(".bal_amount");
@@ -45,6 +48,30 @@ payRows.forEach(row => {
   paymentAmount.addEventListener("change", function() {
     if (this.value.trim() === "") {
       balanceAmount.value = initial_Balance;
+    }
+  });
+});
+
+// TODO: Uptade Dynamically Change
+
+const updateRows = document.querySelectorAll("#updatePaymentTable tr");
+updateRows.forEach(row => {
+  const  updateBalance = row.querySelector(".updateBalance");
+  const updatePayment = row.querySelector(".updatePayment");
+  const initialUpdate= updateBalance.value;
+
+  updatePayment.addEventListener("input", function() {
+    let updatingBalance = Number(initialUpdate);
+    let payingPayment = Number(this.value);
+
+    let changingTotal = payingPayment - updatingBalance;
+
+    updateBalance.value = changingTotal >= 0 ? changingTotal : 'Amount Exceeds';
+  });
+
+  updatePayment.addEventListener("change", function() {
+    if (this.value.trim() === "") {
+      updateBalance.value = initialUpdate;
     }
   });
 });
