@@ -27,6 +27,28 @@ paymentRows.forEach(row => {
   });
 });
 
+const payRows = document.querySelectorAll("#payTableBody tr");
+payRows.forEach(row => {
+  const balanceAmount = row.querySelector(".bal_amount");
+  const paymentAmount = row.querySelector(".pmnt_amount");
+  const initial_Balance = balanceAmount.value;
+
+  paymentAmount.addEventListener("input", function() {
+    let pendingBalance = Number(initial_Balance);
+    let payPayment = Number(this.value);
+
+    let createdBalance = pendingBalance - payPayment;
+
+    balanceAmount.value = createdBalance >= 0 ? createdBalance : 'Amount Exceeds';
+  });
+
+  paymentAmount.addEventListener("change", function() {
+    if (this.value.trim() === "") {
+      balanceAmount.value = initial_Balance;
+    }
+  });
+});
+
 function openpanel(evt, panels) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
