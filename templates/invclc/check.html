@@ -16,11 +16,13 @@
 {% block content %}
 <div class="main-container">
   <h2 class="heading">Check Page</h2>
-  <hr>
+  <hr> 
+    <div class="check-container-btn"><button type="button" class="csvBtn">Print CSV</button></div>
       <form action="">
         <div class="table-container">
             <table>
                 <thead>
+                    <th><input type="checkbox"></th>
                     <th>Pharmacy Name</th>
                     <th>Agency name</th>
                     <th>Invoice Number</th>
@@ -33,6 +35,7 @@
                   <tbody>
                     {% for i in invoices %}
                     <tr>
+                      <td><input type="checkbox" id="check"></td>
                       <td>{{ i.pharmacy_name }}</td>
                       {% if request.user.store_type == 'others' %}
                         <td>{{request.user.other_value}}</td>
@@ -50,6 +53,10 @@
             </table>
         </form>
     </div>
+
+
+    <script src="{% static 'invclc/js/check.js' %}"></script>
+
 {% endblock content %}
 
 

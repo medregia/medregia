@@ -7,6 +7,7 @@ body{
     height: 100vh;
     width: 100%;
     font-family: 'Times New Roman';
+    overflow: hidden;
   }
   .main-container {
     height: 100vh;
@@ -61,3 +62,19 @@ body{
     height: 30px;
     width: 50px;
   }
+.check-container-btn{
+    height: 50px;
+    width: 100%;
+    /* background-color: red; */
+    display: flex;
+    justify-content: flex-end;
+}
+.csvBtn{
+    color: white;
+    background-color: blue;
+    cursor: pointer;
+    height: 40px;
+    width: 100px;
+    margin-right: 20px;
+
+}
