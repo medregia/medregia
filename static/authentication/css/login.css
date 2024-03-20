@@ -125,6 +125,7 @@ body{
   color: red;
 }
 .alert i{
+  cursor: pointer;
   margin-left: 95%;
 }
 
