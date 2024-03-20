@@ -270,27 +270,6 @@
                 <th>Total Amount</th>
                 <th>Payment Amount</th>
               </thead>
-
-              {% comment %} 
-                <tbody>
-                {% if ModifiedHistory == "No Updatation Found" %}
-                  <tr>
-                    <td colspan="6"><h2>No Modified Details Here ...</h2></td>
-                  </tr>
-                {% else %}
-                  {% for Modified in ModifiedHistory %}
-                    <tr>
-                      <td>{{ Modified.modified_today_date }}</td>
-                      <td>{{ Modified.modified_pharmacy }}</td>
-                      <td>{{ Modified.modified_Invoice_number }}</td>
-                      <td>{{ Modified.modified_Invoice_date }}</td>
-                      <td>{{ Modified.modified_Total_amount }}</td>
-                      <td>{{ Modified.modified_payment }}</td>
-                    </tr>
-                  {% endfor %}
-                {% endif %}
-              </tbody>
-              {% endcomment %}
             
               <tbody>
 
