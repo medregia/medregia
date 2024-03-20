@@ -33,7 +33,11 @@
             </div>
           </div>
           <div class="heading">
-            <h2>{{medicalname}}</h2>
+            {% if not medicalname.MedicalShopName or medicalname.MedicalShopName == '' %}
+              <h2><h2>
+            {% else %}
+              <h2>{{ medicalname.MedicalShopName }}</h2>
+            {% endif %}
           </div>
           <div class="unique-code">
             <p>UNIQUE-ID :</p><span>{{uniqueid}}</span>

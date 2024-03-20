@@ -283,6 +283,34 @@ body{
   display: none;
 }
 
+/* message */
+
+.login_message {
+    height: 40px;
+    width: 17%;
+    background-color: #04aa6d;
+    color: #ffff;
+    position: absolute;
+    top: 12%;
+    left: 77%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 15px;
+}
+.close-button {
+  font-size: 20px;
+  position: relative;
+  left: 60px;
+  background-color: transparent;
+  border: none;
+  color: #fff;
+}
+
+
+
+
+
 @media(max-width:768px ){
   .container-body-messages {
     width:45%;
