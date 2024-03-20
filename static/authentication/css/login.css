@@ -112,8 +112,20 @@ body{
   width:30%;
   /* background-color:red; */
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.errorlist li{
+  list-style-type: none;
+}
+.alert{
+  /* background-color: #04aa6d; */
+  width: 80%;
+  color: red;
+}
+.alert i{
+  margin-left: 95%;
 }
 
 .login-body-container{
