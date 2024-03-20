@@ -16,7 +16,7 @@ class SignUpForm(UserCreationForm):
         ('others', 'Others'),
     ]
     store_type = forms.ChoiceField(choices=STORE_TYPES)
-    other_value = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'placeholder':'Enter Your Job'}), required=False)
+    other_value = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'placeholder':'Categories'}), required=False)
 
     email = forms.EmailField(max_length=200, help_text='Required', widget=forms.EmailInput(attrs={'placeholder': 'Enter your email'}))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password'}))

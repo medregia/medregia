@@ -189,8 +189,9 @@
                   <th>Name</th>
                   <th>IV / No.</th>
                   <th>Total</th>
+                  <th>Status</th>
                   <th>Pending</th>
-                  <th>Payment</tha>
+                  <th>Payment</th>
                   <th>Action</th>
                 </thead>
                 <tbody id="paymentTableBody">
@@ -200,6 +201,11 @@
                     <td><input type="text" name="pharmacy_name" value="{{ data.pharmacy_name }}" disabled></td>
                     <td><input type="text" name="invoice_number" value="{{ data.invoice_number }}" disabled></td>
                     <td><input type="text" class="partiallyTotal" name="invoice_amount" value="{{ data.invoice_amount }}" disabled></td>
+                    {% if data.balance_amount == 0 %}
+                      <td>Paid</td>
+                    {% else %}
+                      <td>Pending</td>
+                    {% endif %}  
                     <td><input type="text" class="partiallyBalance" name="balance_amount" value="{{ data.balance_amount }}" disabled></td>
                     <td><input type="text" class="partiallyPayment" name="payment_amount" value="{{ data.payment_amount }}" disabled></td>
 
