@@ -586,6 +586,10 @@ body {
   background-color: rgba(186, 180, 180,0.5);
 }
 
+.medicalstatus{
+  background-color:rgba(4, 176, 4,0.9);
+}
+
 /* mediaquery */
 @media (min-width:1300px) and (max-width:1351px){
   .tabcontent {

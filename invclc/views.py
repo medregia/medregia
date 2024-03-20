@@ -120,7 +120,24 @@ def index_view(request):
     ModifiedHistory = ModifiedInvoice.objects.filter(user = current_user).order_by('-id')
     if not ModifiedHistory.exists():
         ModifiedHistory = "No Updatation Found"
-     
+        
+    try:
+        Storename = Person.objects.get(user=current_user)
+        modifiedStore = convert_Medical(Storename.MedicalShopName)
+    except Person.DoesNotExist:
+        modifiedStore = convert_Medical(Storename.MedicalShopName)
+
+    try:
+        Pharmacy = Invoice.objects.filter(user=current_user).first()
+        if Pharmacy:
+            PharmacyStatus = convert_Medical(Pharmacy.pharmacy_name)
+        else:
+            PharmacyStatus = "Not Found" 
+    except Invoice.DoesNotExist:
+        PharmacyStatus = "Not Found"  # If Pharmacy doesn't exist, set PharmacyStatus to "Not Found"
+
+        
+    
 # print(history_entries.history_user)
 
     if request.method == 'POST':
@@ -174,8 +191,23 @@ def index_view(request):
                'DeleteHistory':DeleteHistory,
                'ModifiedHistory':ModifiedHistory,
                'medicalname':Medicalname,
+               'MedicalStatus':modifiedStore,
+            #    'convert_Medical': convert_Medical,
                }
     return render(request,'invclc/index.html',context)
+
+def convert_Medical(shopname):
+     words = shopname.split()
+     if len(words) == 2:
+         return '0' + ''.join(word[0] for word in words).upper()
+     elif len(words) == 3:
+         return ''.join(word[0] for word in words).upper()
+     elif len(words) > 3:
+         return ''.join(word[0] for word in words[:3]).upper()
+     elif len(words) == 1:
+         return '00' + words[0][0].upper()  # prepend '00' for single-word store names
+     else:
+         return "####"
 
 
 @login_required(login_url='/')

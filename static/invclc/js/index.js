@@ -57,14 +57,15 @@ payRows.forEach(row => {
 const updateRows = document.querySelectorAll("#updatePaymentTable tr");
 updateRows.forEach(row => {
   const  updateBalance = row.querySelector(".updateBalance");
+  const  updatePay = row.querySelector(".updatePay");
   const updatePayment = row.querySelector(".updatePayment");
-  const initialUpdate= updateBalance.value;
+  const initialUpdate= updatePay.value;
 
   updatePayment.addEventListener("input", function() {
-    let updatingBalance = Number(initialUpdate);
+    let updatingPay = Number(initialUpdate);
     let payingPayment = Number(this.value);
 
-    let changingTotal = payingPayment - updatingBalance;
+    let changingTotal = payingPayment - updatingPay;
 
     updateBalance.value = changingTotal >= 0 ? changingTotal : 'Amount Exceeds';
   });

@@ -30,7 +30,7 @@
               <th>Pending Amount</th>
               <th>Action</th>
             </thead>
-            <tbody>
+            <tbody id="updatePaymentTable">
               <form action="" method="post" id="update_delete_id">
                 {% csrf_token %}
                 {% for data in invoices %}
@@ -38,12 +38,13 @@
                     <td><input type="checkbox" id="check"></td>
                     <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
                     <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
-                    <td></td>
-                    <td></td>
-                    <td><input type="text" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
-                    <td></td>
-                    <td></td>
-                    <td>{{ data.balance_amount }}</td>
+                    <td><span id="paymentCurrentTime">{{data.current_time}}</span></td>
+                    <td><span id="paymentCurrentUser">{{request.user}}</span></td>
+                    <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
+                    <td><span id="paymentAmountList">{{data.payment_amount}}</span></td>
+                    <td><span id="paymentTodayDate">{{data.today_date}}</span></td>
+                    <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" name="balance_amount" readonly disabled></td>
+                    <input type="hidden" class="updatePay" value="{{data.payment_amount}}">
                     <td>
                         <button type="button" class="editBtn">Edit</button>
                         <button type="button" class="deleteBtn">Delete</button>

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
 {% block title %} MedRegiA || Invoice {% endblock title %}
 {% block nav_footer %}{% static 'nav_footer.css' %} {% endblock nav_footer %}
 {% block link2 %}{% static 'invclc/css/index.css' %} {% endblock link2 %}
@@ -70,6 +71,7 @@
                     {% comment %} <td>{{form.today_date}}</td> {% endcomment %}
                     <td>
                       {{form.today_date}}
+                      {{form.current_time}}
                       <button type="submit" id="saveButton"> Save </button>
                     </td>
                 </tr>
@@ -116,8 +118,14 @@
                   <tr>
                     <td>{{data.pharmacy_name}}</td>
                     <td>{{data.invoice_number}}</td>
-                    <td>GP Accepted</td>
-                    <td>AMP</td>
+                    <td class="medicalstatus">{{MedicalStatus}} Accepted</td>
+                    <td class="pharmacystatus">
+                      {% if data.pharmacy_name %}
+                          {{ data.pharmacy_name|convert_medical }}
+                      {% else %}
+                          Not Found
+                      {% endif %}
+                  </td>
                     <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td>
                   </tr>
                   {% endfor %}
@@ -156,6 +164,7 @@
                         <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
                         <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
                         <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
+                        <input type="hidden" class="updatePay" value="{{data.payment_amount}}">
                         <td>
                             <button type="button" class="editBtn">Edit</button>
                             <button type="button" class="deleteBtn">Delete</button>
@@ -202,9 +211,9 @@
                     <td><input type="text" name="invoice_number" value="{{ data.invoice_number }}" disabled></td>
                     <td><input type="text" class="partiallyTotal" name="invoice_amount" value="{{ data.invoice_amount }}" disabled></td>
                     {% if data.balance_amount == 0 %}
-                      <td>Paid</td>
+                      <td><input type="text" value="Paid" disabled></td>
                     {% else %}
-                      <td>Pending</td>
+                      <td><input type="text" value="Pending" disabled></td>
                     {% endif %}
                     <td><input type="text" class="partiallyBalance" name="balance_amount" value="{{ data.balance_amount }}" disabled></td>
                     <td><input type="text" class="partiallyPayment" name="payment_amount" value="{{ data.payment_amount }}" disabled></td>
