@@ -17,7 +17,7 @@ paymentRows.forEach(row => {
 
     let newBalance = balance - payment;
 
-    partiallyBalance.value = newBalance >= 0 ? newBalance : 0;
+    partiallyBalance.value = newBalance >= 0 ? newBalance : 'Amount Exceeds';
   });
 
   partiallyPayment.addEventListener("change", function() {
