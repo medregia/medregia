@@ -98,7 +98,7 @@ def index_view(request):
     invoices = Invoice.objects.filter(user=current_user)
     payment_details = invoices.filter().order_by('-id')
     q_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
-    search_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0)).order_by('-id')
+    search_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
     payed_details = invoices.filter(balance_amount=0.00).order_by('-id')
     try:
         unique_code = Person.objects.get(user = request.user)
@@ -326,7 +326,7 @@ def updatemore_view(request):
 @login_required(login_url='/')
 def unpaid_debt(request):
     current_user = request.user
-    invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0)).order_by('-id')
+    invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
     return render(request, 'invclc/unpaid_debt.html',{'invoices': invoices})
 
 @require_POST
