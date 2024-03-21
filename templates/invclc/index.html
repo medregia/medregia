@@ -17,7 +17,7 @@
 {% endblock sidebar %}
 
 {% block message %}
-    {% include 'message.html' %}
+    {% include 'invoice_message.html' %}
 {% endblock message %}
 
 {% block content %}
@@ -134,7 +134,7 @@
                       {% else %}
                           <input type="text" value="Not Found" disabled>
                       {% endif %}
-                    </td> <!-- Displaying Pharmacy Status -->
+                    </td>
                     <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td> <!-- Adding link to check records -->
                   </tr>
                   {% endfor %}

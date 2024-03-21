@@ -1,5 +1,5 @@
 {% extends 'base.html' %} 
-
+{% load custom_filters %}
 {% load static %} 
 
 {% block title %} MedRegiA || Check More {% endblock title %} 
@@ -23,6 +23,11 @@
                         <th><input type="checkbox"></th>
                         <th>Pharmacy Name</th>
                         <th>Invoice Number</th>
+                        <th>Invoice Date</th>
+                        <th>Updated Date</th>
+                        <th>Invoice Ammount</th>
+                        <th>Paid Details</th>
+                        <th>Paid Date</th>
                         <th colspan="2">Status</th>
                         <th>Records</th>
                     </tr>
@@ -33,8 +38,19 @@
                             <td><input type="checkbox" id="check"></td>
                             <td>{{data.pharmacy_name}}</td>
                             <td>{{data.invoice_number}}</td>
-                            <td>GP Accepted</td>
-                            <td>AMP</td>
+                            <td>{{data.invoice_date}}</td>
+                            <td>{{data.today_date}}</td>
+                            <td>{{data.invoice_amount}}</td>
+                            <td>{{data.payment_amount}}</td>
+                            <td>{{data.today_date}}</td>
+                            <td class="medicalstatus">{{MedicalStatus}} <span class="status "></span></td>
+                            <td class="pharmacystatus">
+                                {% if data.pharmacy_name %}
+                                    {{ data.pharmacy_name|convert_medical }}<span class="loginstatus"></span>
+                                {% else %}
+                                    Not Found
+                                {% endif %}
+                            </td>
                             <td><a href="../check/{{data.id}}"><button type="button" class="check_btn">Check</button></a></td>
                         </tr>
                     {% endfor %}

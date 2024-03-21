@@ -130,7 +130,7 @@ def index_view(request):
             modifiedStore = convert_Medical(Storename.MedicalShopName)
         else:
             # Handle the case where Storename is not found
-            modifiedStore = None  # or any other appropriate value
+            modifiedStore = "Not Found"
 
         
     
@@ -170,6 +170,7 @@ def index_view(request):
             invoice = invoice_form.save(commit=False)
             invoice.user = request.user
             invoice.save()
+            messages.success(request, "Saved SuccessFUlly")
             return redirect("index")
         else:
             error_message = invoice_form.errors.get('invoice_number', 'Invoice Number Must Be Unique')
@@ -336,8 +337,43 @@ def staticspage_view(request):
 @login_required(login_url='/')
 def checkmore_view(request):
     current_user = request.user
+    Storename = None
+    try:
+        Storename = Person.objects.get(user=current_user)
+        modifiedStore = convert_Medical(Storename.MedicalShopName)
+    except Person.DoesNotExist:
+        if Storename:
+            modifiedStore = convert_Medical(Storename.MedicalShopName)
+        else:
+            # Handle the case where Storename is not found
+            modifiedStore = "Not Found"
+            
+    # try:
+    #     Invoice_data = Invoice.objects.get(user=request.user)
+    #     invoiceDate = Invoice_data.invoice_date
+    #     updateDate = Invoice_data.today_date
+    #     invoice_amount = Invoice_data.invoice_amount
+    #     paid_invoice = Invoice_data.payment_amount
+    #     paid_date = Invoice_data.today_date
+        
+    # except Invoice.DoesNotExist:
+    #     invoiceDate = "Date Not Found"
+    #     updateDate = "Date Not Found"
+    #     invoice_amount = "Amount Not Found"
+    #     paid_invoice = "Amount Not Found"
+    #     paid_date = "Date Not Found"
+    
     invoices = Invoice.objects.filter(user=current_user, balance_amount=0.00).order_by('-id')
-    return render(request, 'invclc/checkmore.html',{'invoices': invoices})
+    context={
+        'invoices': invoices,
+        'MedicalStatus':modifiedStore,
+        # 'invoice_date':invoiceDate,
+        # 'update_date':updateDate,
+        # 'invoice_amount':invoice_amount,
+        # 'paid_invoice':paid_invoice,
+        # 'paid_date':paid_date,
+    }
+    return render(request, 'invclc/checkmore.html',context)
 
 @login_required(login_url='/')
 def paymore_view(request):
