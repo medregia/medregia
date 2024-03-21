@@ -326,7 +326,7 @@ body {
 }
 
 .table-content-left th {
-  height: 50px;
+  /* height: 50px; */
   background-color: #bebebe;
   /* color: white; */
   border-left: 1px solid black;
@@ -337,9 +337,12 @@ body {
 .table-content-left tr:nth-child(even) {
   background-color: #f2f2f2;
 }
-
+.table-content-left .table_tr{
+  height: 25px;
+  text-align: center;
+}
 .table-content-left tr {
-  height: 40px;
+  height: 35px;
   text-align: center;
 }
 
@@ -589,6 +592,13 @@ body {
 .medicalstatus{
   background-color:rgba(4, 176, 4,0.9);
 }
+
+
+
+
+
+
+
 
 /* mediaquery */
 @media (min-width:1300px) and (max-width:1351px){

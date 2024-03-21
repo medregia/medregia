@@ -108,29 +108,39 @@
             <div class="table-cover-left">
               <table>
                 <thead>
-                  <th>Pharmacy Name</th>
-                  <th>Invoice Number</th>
-                  <th colspan="2">Status</th>
-                  <th>Records</th>
+                  <tr class="table_tr">
+                    <th>Pharmacy Name</th>
+                    <th>Invoice Number</th>
+                    <th colspan="2">Status</th> <!-- Main header spanning two columns -->
+                    <th>Records</th>
+                  </tr>
+                  <tr class="table_tr">
+                    <th></th> <!-- Placeholder for the first empty cell -->
+                    <th></th> <!-- Placeholder for the second empty cell -->
+                    <th>Current Medical</th> <!-- Subheader for the first part of "Status" -->
+                    <th>Invoice Medical</th> <!-- Subheader for the second part of "Status" -->
+                    <th></th> <!-- Placeholder for the fifth empty cell -->
+                  </tr>
                 </thead>
                 <tbody>
                   {% for data in payed_details %}
                   <tr>
-                    <td>{{data.pharmacy_name}}</td>
-                    <td>{{data.invoice_number}}</td>
-                    <td class="medicalstatus">{{MedicalStatus}} Accepted</td>
+                    <td>{{data.pharmacy_name}}</td> <!-- Displaying Pharmacy Name -->
+                    <td>{{data.invoice_number}}</td> <!-- Displaying Invoice Number -->
+                    <td class="medicalstatus">{{MedicalStatus}} Accepted</td> <!-- Displaying Medical Status -->
                     <td class="pharmacystatus">
                       {% if data.pharmacy_name %}
                           {{ data.pharmacy_name|convert_medical }}
                       {% else %}
                           Not Found
                       {% endif %}
-                  </td>
-                    <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td>
+                    </td> <!-- Displaying Pharmacy Status -->
+                    <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td> <!-- Adding link to check records -->
                   </tr>
                   {% endfor %}
                 </tbody>
               </table>
+              
             </div>  
             <a href="{% url 'checkmore' %}"><button type="button">more details</button></a>
           </div>
