@@ -195,13 +195,13 @@ def index_view(request):
 def convert_Medical(shopname):
      words = shopname.split()
      if len(words) == 2:
-         return '0' + ''.join(word[0] for word in words).upper()
+         return ''.join(word[0] for word in words).upper()
      elif len(words) == 3:
          return ''.join(word[0] for word in words).upper()
      elif len(words) > 3:
          return ''.join(word[0] for word in words[:3]).upper()
      elif len(words) == 1:
-         return '00' + words[0][0].upper()  # prepend '00' for single-word store names
+         return words[0][0].upper()
      else:
          return "####"
 
