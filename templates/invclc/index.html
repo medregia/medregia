@@ -116,14 +116,14 @@
                 <tbody>
                   {% for data in payed_details %}
                   <tr>
-                    <td>{{data.pharmacy_name}}</td>
-                    <td>{{data.invoice_number}}</td>
-                    <td class="medicalstatus">{{MedicalStatus}} Accepted</td>
+                    <td><input type="text" value="{{data.pharmacy_name}}" disabled></td>
+                    <td><input type="text" value="{{data.invoice_number}}" disabled></td>
+                    <td class="medicalstatus"><input type="text" value="{{MedicalStatus}} Accepted" disabled><span class="status "></span></td>
                     <td class="pharmacystatus">
                       {% if data.pharmacy_name %}
-                          {{ data.pharmacy_name|convert_medical }}
+                        <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled><span class="loginstatus"></span>
                       {% else %}
-                          Not Found
+                          <input type="text" value="Not Found" disabled>
                       {% endif %}
                   </td>
                     <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td>
