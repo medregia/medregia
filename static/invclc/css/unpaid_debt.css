@@ -30,7 +30,7 @@ body{
 .unpaid-container .csvBtn{
     /* color: red; */
     height: 40px;
-    width: 100px;
+    width: 70px;
     cursor: pointer;
     margin-right: 20px;
 
@@ -50,12 +50,15 @@ h3{
 .unpaid-container table tr{
     border-bottom: 1px solid #a39f9f ;
 }
-.unpaid-container table th , .unpaid-container table td{
-    padding: 12px 15px;
+.unpaid-container table td{
+    padding: 0px;
     text-align: center;
     border-right: 1px solid #bdb8b8 ;
 }
 .unpaid-container table th{
+    padding: 10px 10px;
+    text-align: center;
+    border-right: 1px solid #bdb8b8 ;
     background-color: #6b6060;
     color: white;
 }
@@ -93,8 +96,8 @@ button.pay_btn{
   }
     
   .unpaid-container button{
-    height:40px;
-    width: 70px;
+    height:20px;
+    width: 50px;
     background-color:blue;
     color: #FFF;
     border-radius: 3px;
