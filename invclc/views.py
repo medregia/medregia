@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Invoice,DeletedInvoice,ModifiedInvoice
+from .models import Invoice,DeletedInvoice,ModifiedInvoice,TrackingPayment
 from .forms import InvoiceForm
 from django.http import JsonResponse,HttpResponseServerError,HttpResponse,HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
@@ -170,7 +170,7 @@ def index_view(request):
             invoice = invoice_form.save(commit=False)
             invoice.user = request.user
             invoice.save()
-            messages.success(request, "Saved SuccessFUlly")
+            messages.success(request, "Saved SuccessFully")
             return redirect("index")
         else:
             error_message = invoice_form.errors.get('invoice_number', 'Invoice Number Must Be Unique')
@@ -219,6 +219,25 @@ def delete_page(request):
 
 @login_required(login_url='/')
 def check_view(request,id):
+    
+    current_user = request.user
+    Storename = None
+    try:
+        Storename = Person.objects.get(user=current_user)
+        modifiedStore = convert_Medical(Storename.MedicalShopName)
+    except Person.DoesNotExist:
+        if Storename:
+            modifiedStore = convert_Medical(Storename.MedicalShopName)
+        else:
+            modifiedStore = "Not Found"
+            
+    try:
+        trackingPayment = TrackingPayment.objects.filter(user=request.user).order_by('-id')
+    except TrackingPayment.DoesNotExist:
+        trackingPayment = "None"
+            
+    # invoices = Invoice.objects.filter(user=current_user, balance_amount=0.00).order_by('-id')
+    
     userInvoice = Invoice.objects.get(id = id)
     if userInvoice.pharmacy_name:
         user_title = userInvoice.pharmacy_name.title()
@@ -226,7 +245,14 @@ def check_view(request,id):
         user_title = "Unknown"
 
     invoices = Invoice.objects.all().filter(user=request.user).filter(id=id).order_by('-id')
-    return render(request, 'invclc/check.html', {'invoices': invoices,'user_title':user_title})
+    
+    context = {
+        'invoices': invoices,
+        'user_title':user_title,
+        'tracking_invoices':trackingPayment,
+        'store':modifiedStore,
+    }
+    return render(request, 'invclc/check.html', context)
 
 
 @login_required(login_url='/')
@@ -345,33 +371,19 @@ def checkmore_view(request):
         if Storename:
             modifiedStore = convert_Medical(Storename.MedicalShopName)
         else:
-            # Handle the case where Storename is not found
             modifiedStore = "Not Found"
             
-    # try:
-    #     Invoice_data = Invoice.objects.get(user=request.user)
-    #     invoiceDate = Invoice_data.invoice_date
-    #     updateDate = Invoice_data.today_date
-    #     invoice_amount = Invoice_data.invoice_amount
-    #     paid_invoice = Invoice_data.payment_amount
-    #     paid_date = Invoice_data.today_date
-        
-    # except Invoice.DoesNotExist:
-    #     invoiceDate = "Date Not Found"
-    #     updateDate = "Date Not Found"
-    #     invoice_amount = "Amount Not Found"
-    #     paid_invoice = "Amount Not Found"
-    #     paid_date = "Date Not Found"
-    
+    try:
+        trackingPayment = TrackingPayment.objects.filter(user=request.user).order_by('-id')
+    except TrackingPayment.DoesNotExist:
+        trackingPayment = "None"
+            
     invoices = Invoice.objects.filter(user=current_user, balance_amount=0.00).order_by('-id')
+    
     context={
         'invoices': invoices,
         'MedicalStatus':modifiedStore,
-        # 'invoice_date':invoiceDate,
-        # 'update_date':updateDate,
-        # 'invoice_amount':invoice_amount,
-        # 'paid_invoice':paid_invoice,
-        # 'paid_date':paid_date,
+        'tracking_invoices':trackingPayment,
     }
     return render(request, 'invclc/checkmore.html',context)
 
@@ -393,7 +405,6 @@ def unpaid_debt(request):
     invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
     return render(request, 'invclc/unpaid_debt.html',{'invoices': invoices})
 
-@require_POST
 def update_invoice(request, invoice_id):
     try:
         data = json.loads(request.body)
@@ -403,29 +414,21 @@ def update_invoice(request, invoice_id):
         invoice.pharmacy_name = data.get('pharmacy_name', invoice.pharmacy_name)
         invoice.invoice_amount = Decimal(data.get('invoice_amount', invoice.invoice_amount))
         invoice.invoice_date = data.get('invoice_date', invoice.invoice_date)
-        # invoice.balance_amount = Decimal(data.get('balance_amount', invoice.balance_amount))
-
-        # Handle balance_amount separately
-        invoice_date = data.get('invoice_date', invoice.invoice_date)
-        # balance_amount = data.get('balance_amount', invoice.balance_amount)
+        invoice.balance_amount = Decimal(data.get('balance_amount', invoice.balance_amount))
 
         # Perform the necessary conversions
+        invoice_date = data.get('invoice_date', invoice.invoice_date)
         invoice_date = parse_date(invoice_date)
-        # balance_amount = Decimal(balance_amount) if balance_amount is not None else None
 
-        # Update the invoice_date and balance_amount fields
+        # Update the invoice_date field
         invoice.invoice_date = invoice_date
 
-        # Check if balance_amount is not None before updating
-        # if balance_amount is not None:
-        #     # Update balance_amount based on the formula in your model
-        #     invoice.payment_amount = invoice.invoice_amount - balance_amount
-        # else:
-        #     # If balance_amount is None, set it to invoice.invoice_amount
-        #     invoice.payment_amount = invoice.invoice_amount
+        # Update the payment_amount based on the balance_amount
+        invoice.payment_amount = invoice.invoice_amount - invoice.balance_amount
 
         # Save the updated Invoice
         invoice.save()
+        
         
         modified_invoice = ModifiedInvoice(
             user=request.user,
@@ -438,15 +441,21 @@ def update_invoice(request, invoice_id):
             modified_today_date=invoice.today_date
         )
 
-        # Save the DeletedInvoice object
+        # Save the ModifiedInvoice object
         modified_invoice.save()
+
+        # Display success message
+        messages.success(request, "Invoice successfully modified")
 
         return JsonResponse({'status': 'success', 'message': 'Invoice updated successfully'})
     except json.JSONDecodeError:
+        # Handle JSON decoding error
+        messages.error(request, "Failed to modify invoice: Invalid JSON data")
         return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'})
     except Exception as e:
+        # Handle other exceptions
+        messages.error(request, f"Failed to modify invoice: {str(e)}")
         return JsonResponse({'status': 'error', 'message': str(e)})
-
 
 def parse_date(date_string):
     date_formats = ['%b. %d, %Y', '%d/%m/%Y', '%d-%m-%y', '%B %d, %Y']
@@ -503,9 +512,11 @@ def delete_invoice(request, invoice_id):
         # Delete the Invoice object
         invoice.delete()
 
+        messages.success(request,"Deleted Success")
         return JsonResponse({'message': 'Invoice deleted successfully'})
     
     except Invoice.DoesNotExist:
+        messages.erroe(request,"Deletion Failed ")
         return JsonResponse({'error': 'Invoice not found'}, status=404)
 
     except Exception as e:
@@ -535,6 +546,17 @@ def pay_invoice(request, invoice_id):
             invoice.balance_amount = 0
 
         invoice.save()
+        
+        tracking_payment = TrackingPayment(
+            user=invoice.user,
+            Medical_name = invoice.pharmacy_name,
+            Medical_payments = invoice.payment_amount,
+            payment_date = invoice.today_date,
+            paying_amount = updated_payment_amount
+        )
+        
+        tracking_payment.save()
+        messages.success(request,"payment Success")
 
         # Check the action type (Pay or Save)
         action_type = data.get('action_type', 'Pay')
@@ -545,6 +567,8 @@ def pay_invoice(request, invoice_id):
             return JsonResponse({'message': 'Invoice updated successfully'})
 
     except Exception as e:
+        print("Error",e)
+        messages.error(request,"Payment Falied")
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
 @require_POST
@@ -567,6 +591,17 @@ def payment_invoice(request,payment_id):
 
         invoice.save()
         
+        tracking_payment = TrackingPayment(
+            user=invoice.user,
+            Medical_name = invoice.pharmacy_name,
+            Medical_payments = invoice.payment_amount,
+            payment_date = invoice.today_date,
+            paying_amount = pay_amount
+        )
+        
+        tracking_payment.save()
+        messages.success(request,"payment Success")
+        
         # Check the action type (Pay or Save)
         action_type = data.get('action_type', 'Pay')
 
@@ -576,4 +611,5 @@ def payment_invoice(request,payment_id):
             return JsonResponse({'message': 'Invoice updated successfully'})
 
     except Exception as e:
+        messages.error(request,"payment Failed",e)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)

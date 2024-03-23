@@ -36,14 +36,30 @@
                     {% for data in invoices %}
                         <tr>
                             <td><input type="checkbox" id="check"></td>
-                            <td>{{data.pharmacy_name}}</td>
-                            <td>{{data.invoice_number}}</td>
-                            <td>{{data.invoice_date}}</td>
-                            <td>{{data.today_date}}</td>
-                            <td>{{data.invoice_amount}}</td>
-                            <td>{{data.payment_amount}}</td>
-                            <td>{{data.today_date}}</td>
-                            <td class="medicalstatus">{{MedicalStatus}} <span class="status "></span></td>
+                            <td>{{ data.pharmacy_name }}</td>
+                            <td>{{ data.invoice_number }}</td>
+                            <td>{{ data.invoice_date }}</td>
+                            <td>{{ data.today_date }}</td>
+                            <td>{{ data.invoice_amount }}</td>
+                            <td>
+                                <div class="scrollable-cell">
+                                    {% for tracking_invoice in tracking_invoices %}
+                                        {% if tracking_invoice.Medical_name == data.pharmacy_name %}
+                                            {{ tracking_invoice.paying_amount }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="scrollable-cell expand">
+                                    {% for tracking_invoice in tracking_invoices %}
+                                        {% if tracking_invoice.Medical_name == data.pharmacy_name %}
+                                            {{ tracking_invoice.payment_date }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="medicalstatus">{{ MedicalStatus }} <span class="status"></span></td>
                             <td class="pharmacystatus">
                                 {% if data.pharmacy_name %}
                                     {{ data.pharmacy_name|convert_medical }}<span class="loginstatus"></span>
@@ -51,10 +67,11 @@
                                     Not Found
                                 {% endif %}
                             </td>
-                            <td><a href="../check/{{data.id}}"><button type="button" class="check_btn">Check</button></a></td>
+                            <td><a href="../check/{{ data.id }}"><button type="button" class="check_btn">Check</button></a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
+                
            </table>
         </div>
     </div>
