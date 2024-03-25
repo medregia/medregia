@@ -16,7 +16,8 @@ class InvoiceForm(forms.ModelForm):
             'invoice_amount': forms.NumberInput(attrs={'placeholder': 'Invoice Amount','class':'invoice_amount'}),
             'balance_amount': forms.TextInput(attrs={'placeholder': 'Balance Amount', 'disabled': True,'class':'balance_amount'}),
             'payment_amount': forms.NumberInput(attrs={'placeholder': '0','title':'Default 0 ','class':'payment_amount'}),
-            'today_date':forms.DateInput(attrs={'type':'hidden'})
+            'today_date':forms.DateInput(attrs={'type':'hidden'}),
+            'current_time':forms.TimeInput(attrs={'type':'hidden'}),
         }
 
 class UploadFileForm(forms.Form):

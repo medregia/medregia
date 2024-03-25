@@ -20,22 +20,31 @@
           <table class="checkmoreTable">
             <thead>
               <th><input type="checkbox"></th>
-              <th>Pharmacy Name</th>
+              <th>Name</th>
+              <th>Invoice Date</th>
+              <th>Updated on</th>
+              <th>Updated by</th>
               <th>Invoice Amount</th>
+              <th>Paid Amount</th>
               <th>Paid Date</th>
-              <th>Balance Amount</th>
+              <th>Pending Amount</th>
               <th>Action</th>
             </thead>
-            <tbody>
+            <tbody id="updatePaymentTable">
               <form action="" method="post" id="update_delete_id">
                 {% csrf_token %}
                 {% for data in invoices %}
                 <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
                     <td><input type="checkbox" id="check"></td>
                     <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
-                    <td><input type="text" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
                     <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
-                    <td><input type="text" value="{{ data.balance_amount }}" disabled name="balance_amount"></td>
+                    <td><span id="paymentCurrentTime">{{data.current_time}}</span></td>
+                    <td><span id="paymentCurrentUser">{{request.user}}</span></td>
+                    <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
+                    <td><span id="paymentAmountList">{{data.payment_amount}}</span></td>
+                    <td><span id="paymentTodayDate">{{data.today_date}}</span></td>
+                    <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" name="balance_amount" readonly disabled></td>
+                    <input type="hidden" class="updatePay" value="{{data.payment_amount}}">
                     <td>
                         <button type="button" class="editBtn">Edit</button>
                         <button type="button" class="deleteBtn">Delete</button>

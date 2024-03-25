@@ -1,3 +1,26 @@
+const updateRows = document.querySelectorAll("#updatePaymentTable tr");
+updateRows.forEach(row => {
+  const  updateBalance = row.querySelector(".updateBalance");
+  const  updatePay = row.querySelector(".updatePay");
+  const updatePayment = row.querySelector(".updatePayment");
+  const initialUpdate= updatePay.value;
+
+  updatePayment.addEventListener("input", function() {
+    let updatingPay = Number(initialUpdate);
+    let payingPayment = Number(this.value);
+
+    let changingTotal = payingPayment - updatingPay;
+
+    updateBalance.value = changingTotal >= 0 ? changingTotal : 'Amount Exceeds';
+  });
+
+  updatePayment.addEventListener("change", function() {
+    if (this.value.trim() === "") {
+      updateBalance.value = initialUpdate;
+    }
+  });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
   const editButtons = document.querySelectorAll('.editBtn');
   const saveButtons = document.querySelectorAll('.saveBtn');
@@ -146,8 +169,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const row = checkbox.closest('tr');
         const rowData = {
           pharmacyName: row.querySelector('[name="pharmacy_name"]').value,
-          invoiceAmount: row.querySelector('[name="invoice_amount"]').value,
           invoiceDate: row.querySelector('[name="invoice_date"]').value,
+          currentTime: row.querySelector('#paymentCurrentTime').textContent,
+          currentUser: row.querySelector('#paymentCurrentUser').textContent,
+          invoiceAmount: row.querySelector('[name="invoice_amount"]').value,
+          paymentAmountList: row.querySelector('#paymentAmountList').textContent,
+          todayDate: row.querySelector('#paymentTodayDate').textContent,
           balanceAmount: row.querySelector('[name="balance_amount"]').value,
         };
         selectedRows.push(rowData);
@@ -162,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function downloadCSV(data) {
-    const headers = ['Pharmacy Name', 'Invoice Amount', 'Invoice Date', 'Balance Amount'];
+    const headers = ['Pharmacy Name','Invoice Date', 'Update on','Update By','Invoice Amount','Paid Amount','Paid Date','Balance Amount'];
     const csvContent = [
       headers.join(','),
       ...data.map((row) => Object.values(row).map(value => `"${value}"`).join(',')),

@@ -1,5 +1,5 @@
 {% extends 'base.html' %} 
-
+{% load custom_filters %}
 {% load static %} 
 
 {% block title %} MedRegiA || Check {{user_title}} {% endblock title %} 
@@ -12,44 +12,75 @@
     {% include 'nav.html' %} 
 {% endblock navbar%} 
 
+{% comment %} <div class="check-container-btn"><button type="button" class="csvBtn">Print CSV</button></div> {% endcomment %}
 
+{% comment %} 
+<td class="pharmacystatus">
+   {% if data.pharmacy_name %}
+       {{ data.pharmacy_name|convert_medical }}<span class="loginstatus"></span>
+   {% else %}
+       Not Found
+   {% endif %}
+</td> {% endcomment %}
 {% block content %}
-<div class="main-container">
-  <h2 class="heading">Check Page</h2>
-  <hr>
-      <form action="">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <th>Pharmacy Name</th>
-                    <th>Agency name</th>
-                    <th>Invoice Number</th>
-                    <th>Invoice Date</th>
-                    <th>Invoice Amount</th>
-                    <th>Due Pay</th>
-                    <th>Balance</th>
-                  </thead>
-
-                  <tbody>
-                    {% for i in invoices %}
-                    <tr>
-                      <td>{{ i.pharmacy_name }}</td>
-                      {% if request.user.store_type == 'others' %}
-                        <td>{{request.user.other_value}}</td>
-                      {% else %}
-                        <td>{{request.user.store_type}}</td>
-                      {% endif %}
-                      <td>{{ i.invoice_number }}</td>
-                      <td>{{ i.invoice_date }}</td>
-                      <td>₹{{ i.invoice_amount }}</td>
-                      <td>₹{{ i.payment_amount }}</td>
-                      <td>₹{{ i.balance_amount }}</td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-            </table>
-        </form>
+{% for invoice in invoices %}
+  <div class="main-container">
+    <div class="main-header">
+      <h2 class="heading">{{invoice.pharmacy_name}}</h2>
     </div>
+    <div class="main-body">
+      <div class="main-body-left">
+        <h4>Invoice Number : {{invoice.invoice_number}} </h4>
+        <h4>Invoice Date : {{invoice.invoice_date}}</h4>
+      </div>
+
+      <div class="main-body-center">
+        <h4>Invoice Amount</h4>
+        <h4>{{invoice.invoice_amount}}</h4>
+      </div>
+
+      <div class="main-body-right">
+        <h4>Updated Date : {{invoice.today_date}}</h4>
+        <div class="status">
+          <h4>{{store}}</h4>
+          {% if invoice.pharmacy_name %}
+              {{ invoice.pharmacy_name|convert_medical }}<span class="loginstatus"></span>
+          {% else %}
+              Not Found
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="main-bottom">
+      <table>
+        <thead>
+          <tr>
+            <th>Paid Date</th>
+            <th>Paid Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tracking_invoice in tracking_invoices %}
+          {% if tracking_invoice.Medical_name == invoice.pharmacy_name %}
+          <tr>
+            <td>{{ tracking_invoice.payment_date }}</td>
+            <td>{{ tracking_invoice.paying_amount }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>      
+    </div>
+
+    <div class="main-footer">
+      <h4 class="full-paid">Status : Full Paid</h4>
+      <button type="button" onclick = "window.print()">Print/pdf</button>
+    </div>
+</div>
+{% endfor %}
+<script src="{% static 'invclc/js/check.js' %}"></script>
+
 {% endblock content %}
 
 

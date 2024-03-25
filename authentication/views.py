@@ -1,36 +1,26 @@
 from django.shortcuts import render, redirect
+from django.http import HttpResponseNotAllowed
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required,permission_required
 from .forms import SignUpForm
-from django.contrib.auth.models import User 
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required,permission_required
-from .forms import SignUpForm
-from django.contrib.auth.models import User 
 from .models import CustomUser,Person,MakeUsAdmin
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
-from .profile import ProfileForm,MakeAdmin
+from .profile import ProfileForm
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import views as auth_views
-from django.urls import reverse_lazy
-from django.conf import settings
 from invclc.models import Invoice
-from invclc.forms import InvoiceForm
-from django.db.models import Q
-from django.db.models import F
 import json 
-import random
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
 from .models import StateModel, DistrictModel
-from django.http import HttpResponse
-from django.http import JsonResponse
+from django.http import HttpResponse,JsonResponse
 from .UniqueCode import User_code
+from .forms import LoginAuthenticationForm
+
 
 
 def signup_view(request):
@@ -51,14 +41,13 @@ def signup_view(request):
 
 def login_view(request):
     if request.method == "POST":
-        login_form = AuthenticationForm(request, data=request.POST)
+        login_form = LoginAuthenticationForm(request, data=request.POST)
         if login_form.is_valid():
             user = login_form.get_user()
             login(request, user)
-            print(login_form.errors)
             return redirect('index/')
     else:
-        login_form = AuthenticationForm(request)
+        login_form = LoginAuthenticationForm(request)
         login_form.fields['username'].widget.attrs.update({'placeholder': 'Username'})
         login_form.fields['password'].widget.attrs.update({'placeholder': 'Password'})
         
@@ -151,8 +140,6 @@ def profile_view(request):
             messages.success(request, "You Got It ")
 
         return redirect("profile")
-
-
         
     admins = CustomUser.objects.filter(is_staff=True).order_by('-date_joined')[:1]
     context = {
@@ -170,17 +157,18 @@ def profile_view(request):
 
 
 def logout_view(request):
-
-    if request.user.is_authenticated:
-        # Clear all messages.
-        messages.set_level(request, messages.SUCCESS)
-        while messages.get_messages(request):
-            pass
-        
-        logout(request)
-
-        messages.success(request, "Logout Successful")
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            # Clear all messages.
+            messages.set_level(request, messages.SUCCESS)
+            while messages.get_messages(request):
+                pass
+            
+            logout(request)
+            messages.success(request, "Logout Successful")
         return redirect('login')
+    else:
+        return HttpResponseNotAllowed(['GET'])
 
 @login_required(login_url='/')
 def change_pin(request):
@@ -252,3 +240,4 @@ from django.contrib.auth.views import LoginView
 
 class CustomLoginView(LoginView):
     template_name = 'authentication/login.html'
+    

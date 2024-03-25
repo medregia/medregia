@@ -5,15 +5,89 @@ window.onload = function () {
   }
 };
 
+// TODO: Partially Payment Dynamicaly Changing
+const paymentRows = document.querySelectorAll("#paymentTableBody tr");
+paymentRows.forEach(row => {
+  const partiallyBalance = row.querySelector(".partiallyBalance");
+  const partiallyPayment = row.querySelector(".partiallyPayment");
+  const initialBalance = partiallyBalance.value;
+
+  partiallyPayment.addEventListener("input", function() {
+    let balance = Number(initialBalance);
+    let payment = Number(this.value);
+
+    let newBalance = balance - payment;
+
+    partiallyBalance.value = newBalance >= 0 ? newBalance : 'Amount Exceeds';
+  });
+
+  partiallyPayment.addEventListener("change", function() {
+    if (this.value.trim() === "") {
+      partiallyBalance.value = initialBalance;
+    }
+  });
+});
+
+// TODO: Payment List Dynamically Change
+
+const payRows = document.querySelectorAll("#payTableBody tr");
+payRows.forEach(row => {
+  const balanceAmount = row.querySelector(".bal_amount");
+  const paymentAmount = row.querySelector(".pmnt_amount");
+  const initial_Balance = balanceAmount.value;
+
+  paymentAmount.addEventListener("input", function() {
+    let pendingBalance = Number(initial_Balance);
+    let payPayment = Number(this.value);
+
+    let createdBalance = pendingBalance - payPayment;
+
+    balanceAmount.value = createdBalance >= 0 ? createdBalance : 'Amount Exceeds';
+  });
+
+  paymentAmount.addEventListener("change", function() {
+    if (this.value.trim() === "") {
+      balanceAmount.value = initial_Balance;
+    }
+  });
+});
+
+// TODO: Uptade Dynamically Change
+
+const updateRows = document.querySelectorAll("#updatePaymentTable tr");
+updateRows.forEach(row => {
+  const  updateBalance = row.querySelector(".updateBalance");
+  const  updatePay = row.querySelector(".updatePay");
+  const updatePayment = row.querySelector(".updatePayment");
+  const initialUpdate= updatePay.value;
+
+  updatePayment.addEventListener("input", function() {
+    let updatingPay = Number(initialUpdate);
+    let payingPayment = Number(this.value);
+
+    let changingTotal = payingPayment - updatingPay;
+
+    updateBalance.value = changingTotal >= 0 ? changingTotal : 'Amount Exceeds';
+  });
+
+  updatePayment.addEventListener("change", function() {
+    if (this.value.trim() === "") {
+      updateBalance.value = initialUpdate;
+    }
+  });
+});
+
 function openpanel(evt, panels) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
+    tabcontent[i].style.backgroundColor="rgba(172, 172, 172,0.4)";
   }
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" active", "");
+    tablinks[i].style.backgroundColor = "#fff";
   }
   var panel = document.getElementById(panels);
   if (panel) {
@@ -21,6 +95,11 @@ function openpanel(evt, panels) {
   }
   if (evt.currentTarget.className.indexOf("active") === -1) {
     evt.currentTarget.className += " active";
+    evt.currentTarget.style.backgroundColor = "rgba(172, 172, 172,0.4)";
+  }
+  else {
+    evt.currentTarget.style.backgroundColor = "#fff"; 
+    // Set background color to white if the element is not active
   }
 
   const invoice_amount = document.querySelector(".invoice_amount");
@@ -388,6 +467,3 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
-
-
-//TODO: clearing a Data After Saved ....

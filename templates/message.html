@@ -1,9 +1,8 @@
 {% load static %}
-{% comment %} <link rel="stylesheet" href="{% static 'fontawesome/css/all.min.css'%}" /> {% endcomment %}
-<link rel="stylesheet" href="{% static 'message.css' %}">
 
+<link rel="stylesheet" href="{% static 'authentication/css/login.css' %}"> 
 {% for msg in messages %}
-<div class="message">
+<div class="login_message">
   {{msg}}
   <button
     class="close-button"
