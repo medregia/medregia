@@ -1,4 +1,5 @@
 from django import template
+from invclc.models import ModifiedInvoice
 
 register = template.Library()
 

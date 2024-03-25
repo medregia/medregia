@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function printSelectedRows() {
-        const checkboxes = document.querySelectorAll('.table-container tbody input[type="checkbox"]');
+        const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
         const selectedRows = [];
 
         checkboxes.forEach((checkbox) => {
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function parseCurrency(value) {
         // Regular expression to match currency symbols and non-numeric characters
         const regex = /[^\d.]+/g;
-        // Remove unwanted characters and convert the string to a floating-point number
+        // Remove unwanted characters except dots and convert the string to a floating-point number
         return parseFloat(value.replace(regex, '').trim());
     }
 });

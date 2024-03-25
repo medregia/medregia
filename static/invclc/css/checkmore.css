@@ -101,4 +101,13 @@ span.status{
     align-items: center;
     padding-left: 15px;
   }
-  
+
+  .scrollable-cell {
+    max-height: 40px;
+    max-width: 90px;
+    overflow-y: auto;
+}
+
+.expand{
+    max-width: 150px;
+}

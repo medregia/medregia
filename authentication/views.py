@@ -4,7 +4,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required,permission_required
 from .forms import SignUpForm
-from django.contrib.auth.models import User 
 from django.shortcuts import render, redirect
 from .models import CustomUser,Person,MakeUsAdmin
 from django.contrib.auth.forms import AuthenticationForm
@@ -14,7 +13,6 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from invclc.models import Invoice
-from invclc.forms import InvoiceForm
 import json 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
@@ -22,6 +20,7 @@ from .models import StateModel, DistrictModel
 from django.http import HttpResponse,JsonResponse
 from .UniqueCode import User_code
 from .forms import LoginAuthenticationForm
+
 
 
 def signup_view(request):
@@ -241,3 +240,4 @@ from django.contrib.auth.views import LoginView
 
 class CustomLoginView(LoginView):
     template_name = 'authentication/login.html'
+    

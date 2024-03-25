@@ -2,13 +2,16 @@
 
 <link rel="stylesheet" href="{% static 'invclc/css/index.css' %}"> 
 {% for msg in messages %}
-<div class="invoice_message">
-  {{msg}}
-  <button
-    class="close-button"
-    onclick="this.parentElement.style.display='none';"
-  >in
-    x
-  </button>
+<div class="overall-message">
+  <div class="invoice_message">
+    {{msg}}
+    <button
+      class="close-button"
+      onclick="this.parentElement.style.display='none';"
+    >
+      x
+    </button>
+  </div>
 </div>
+
 {% endfor %}

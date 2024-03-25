@@ -27,10 +27,10 @@
       <div class="main-header">
         <div class="header-top">
           <div class="header-top-btn">
-            <h3 >{{request.user}}</h3>
+            <a href="{% url 'create' %}"><h3>{{request.user}}</h3></a>
             {% comment %} <a href="{% url 'create' %}"><button type="button">Overall</button></a> {% endcomment %}
             <div class="header-messages">
-              
+
             </div>
           </div>
           <div class="heading">
@@ -111,41 +111,50 @@
                   <tr class="table_tr">
                     <th>Pharmacy Name</th>
                     <th>Invoice Number</th>
-                    <th colspan="2">Status</th> <!-- Main header spanning two columns -->
+                    <th colspan="2">Status</th> 
                     <th>Records</th>
                   </tr>
                   <tr class="table_tr">
-                    <th></th> <!-- Placeholder for the first empty cell -->
-                    <th></th> <!-- Placeholder for the second empty cell -->
-                    <th>Current Medical</th> <!-- Subheader for the first part of "Status" -->
-                    <th>Invoice Medical</th> <!-- Subheader for the second part of "Status" -->
-                    <th></th> <!-- Placeholder for the fifth empty cell -->
+                    <th></th>
+                    <th></th>
+                    <th>Current Medical</th>
+                    <th>Invoice Medical</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for data in payed_details %}
                   <tr>
-                    <td><input type="text" value="{{data.pharmacy_name}}" disabled></td>
-                    <td><input type="text" value="{{data.invoice_number}}" disabled></td>
-                    <td class="medicalstatus"><input type="text" value="{{MedicalStatus}} Accepted" disabled><span class="status "></span></td>
-                    <td class="pharmacystatus">
-                      {% if data.pharmacy_name %}
-                        <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled><span class="loginstatus"></span>
-                      {% else %}
-                          <input type="text" value="Not Found" disabled>
-                      {% endif %}
-                    </td>
-                    <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td> <!-- Adding link to check records -->
+                      <td><input type="text" value="{{ data.pharmacy_name }}" disabled></td>
+                      <td><input type="text" value="{{ data.invoice_number }}" disabled></td>
+                      <td class="medicalstatus">
+                          <input type="text" value="{{ MedicalStatus }} Accepted" disabled>
+                          <span class="status"></span>
+                      </td>
+                      <td class="pharmacystatus">
+                          {% if data.pharmacy_name %}
+                              {% if request.user.is_authenticated %}
+                                  <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
+                                  <span class="loginstatus"></span>
+                              {% else %}
+                                  <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
+                                  <span class="statusfailed"></span>
+                              {% endif %}
+                          {% else %}
+                              <input type="text" value="Not Found" disabled>
+                          {% endif %}
+                      </td>
+                      <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td>
                   </tr>
                   {% endfor %}
-                </tbody>
+              </tbody>
+              
               </table>
               
             </div>  
             <a href="{% url 'checkmore' %}"><button type="button">more details</button></a>
           </div>
-  
-  
+
           <div class="table-content-right">
             <div class="table-panel">
               <h2 class="panel-heading">Update</h2>
