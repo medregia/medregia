@@ -5,6 +5,7 @@ from django.utils import timezone
 from simple_history.models import HistoricalRecords
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in
+from django.contrib.auth.models import Permission
 
 class StateModel(models.Model):
     Pid = models.IntegerField(primary_key=True)
@@ -35,6 +36,7 @@ class CustomUser(AbstractUser):
         ('manufacturer', 'Manufacturer'),
         ('pharmacy', 'Pharmacy'),
         ('medical', 'Medical'),
+        ('user','User'),
         ('others', 'Others'),
     ]
     store_type = models.CharField(max_length=50, choices=STORE_TYPES,null=False,blank=False)
@@ -54,6 +56,12 @@ class CustomUser(AbstractUser):
         verbose_name='user permissions',
         help_text='Specific permissions for this user.',
     )
+    
+    # class Meta:
+    #     permissions = [
+    #         ("view_own_details", "Can view own details"),
+    #     ]
+    
     def _str_(self):
         return self.username
     

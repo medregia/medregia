@@ -20,8 +20,9 @@ from .models import StateModel, DistrictModel
 from django.http import HttpResponse,JsonResponse
 from .UniqueCode import User_code
 from .forms import LoginAuthenticationForm
-
-
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth import get_user_model
 
 def signup_view(request):
     form = SignUpForm()
@@ -29,14 +30,39 @@ def signup_view(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
+            user.is_staff = True  # Grant staff status to new users
             store_type = form.cleaned_data.get('store_type')
             if store_type == 'other':
                 other_value = form.cleaned_data.get('other_value')
                 user.other_value = other_value
             user.save()
+
+            # Create a group for the user (optional)
+            user_group, created = Group.objects.get_or_create(name="User Group")
+            
+            # Get the content type for the Invoice model
+            content_type = ContentType.objects.get_for_model(Invoice)
+            
+            # Define default permissions for adding, viewing, updating, and deleting invoices
+            add_permission = Permission.objects.get(codename='add_invoice')
+            view_permission = Permission.objects.get(codename='view_invoice')
+            change_permission = Permission.objects.get(codename='change_invoice')
+            delete_permission = Permission.objects.get(codename='delete_invoice')
+            
+            # Add desired permissions to the group
+            user_group.permissions.add(add_permission)
+            user_group.permissions.add(view_permission)
+            user_group.permissions.add(change_permission)
+            user_group.permissions.add(delete_permission)
+
+            # Assign the user to the group
+            user.groups.add(user_group)
+            user.save()
+
             messages.success(request, "Signup Success")
             return redirect("/")
     return render(request, 'authentication/signup.html', {'form': form})
+
 
 
 def login_view(request):
@@ -99,6 +125,12 @@ def profile_view(request):
 
     except Exception as e:
         print(f"Error: {e}")
+        
+    permissions = Permission.objects.filter(content_type__model='invoice')
+
+    # Print permission codenames
+    for permission in permissions:
+        print(permission.codename)
 
     current_user = request.user
     profile_data = CustomUser.objects.filter(username=current_user)
