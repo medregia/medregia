@@ -106,9 +106,9 @@ span.status{
   }
 
   .scrollable-cell {
-    max-height: 20px; /* Set the maximum height for the scrolling area */
-    max-width:100px;
-    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 40px;
+    max-width: 90px;
+    overflow-y: auto;
 }
 
 .expand{
