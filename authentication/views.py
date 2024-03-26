@@ -126,11 +126,11 @@ def profile_view(request):
     except Exception as e:
         print(f"Error: {e}")
         
-    permissions = Permission.objects.filter(content_type__model='invoice')
+    # permissions = Permission.objects.filter(content_type__model='invoice')
 
-    # Print permission codenames
-    for permission in permissions:
-        print(permission.codename)
+    # # Print permission codenames
+    # for permission in permissions:
+    #     print(permission.codename)
 
     current_user = request.user
     profile_data = CustomUser.objects.filter(username=current_user)
