@@ -21,6 +21,7 @@
             <thead>
               <th><input type="checkbox"></th>
               <th>Name</th>
+              <th>Invoice Number</th>
               <th>Invoice Date</th>
               <th>Updated on</th>
               <th>Updated by</th>
@@ -37,6 +38,7 @@
                 <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
                     <td><input type="checkbox" id="check"></td>
                     <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
+                    <td><span id="invoice_number">{{data.invoice_number}}</span></td>
                     <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
                     <td><span id="paymentCurrentTime">{{data.current_time}}</span></td>
                     <td><span id="paymentCurrentUser">{{request.user}}</span></td>
