@@ -12,7 +12,7 @@ from .profile import ProfileForm
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import views as auth_views
-from invclc.models import Invoice
+from invclc.models import Invoice,DeletedInvoice,ModifiedInvoice,TrackingPayment
 import json 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import MultipleObjectsReturned
@@ -38,23 +38,53 @@ def signup_view(request):
             user.save()
 
             # Create a group for the user (optional)
-            user_group, created = Group.objects.get_or_create(name="User Group")
+            user_group, created = Group.objects.get_or_create(name="Admin Group")
             
-            # Get the content type for the Invoice model
-            content_type = ContentType.objects.get_for_model(Invoice)
+            deleted_invoice_content_type = ContentType.objects.get_for_model(DeletedInvoice)
             
-            # Define default permissions for adding, viewing, updating, and deleting invoices
-            add_permission = Permission.objects.get(codename='add_invoice')
-            view_permission = Permission.objects.get(codename='view_invoice')
-            change_permission = Permission.objects.get(codename='change_invoice')
-            delete_permission = Permission.objects.get(codename='delete_invoice')
+            view_deleted_invoice_permission = Permission.objects.get(codename='view_deletedinvoice')
+            delete_deleted_invoice_permission = Permission.objects.get(codename='delete_deletedinvoice')
             
-            # Add desired permissions to the group
-            user_group.permissions.add(add_permission)
-            user_group.permissions.add(view_permission)
-            user_group.permissions.add(change_permission)
-            user_group.permissions.add(delete_permission)
+            user_group.permissions.add(view_deleted_invoice_permission)
+            user_group.permissions.add(delete_deleted_invoice_permission)
+            
+            
 
+            # Get the content type for the Invoice model
+            invoice_content_type = ContentType.objects.get_for_model(Invoice)
+            
+            add_invoice_permission = Permission.objects.get(codename='add_invoice')
+            view_invoice_permission = Permission.objects.get(codename='view_invoice')
+            change_invoice_permission = Permission.objects.get(codename='change_invoice')
+            delete_invoice_permission = Permission.objects.get(codename='delete_invoice')
+            
+            user_group.permissions.add(add_invoice_permission)
+            user_group.permissions.add(view_invoice_permission)
+            user_group.permissions.add(change_invoice_permission)
+            user_group.permissions.add(delete_invoice_permission)
+            
+            
+            modified_invoice_content_type = ContentType.objects.get_for_model(ModifiedInvoice)
+            
+            # Define permissions for ModifiedInvoice model
+            view_modified_invoice_permission = Permission.objects.get(codename='view_modifiedinvoice')
+            delete_modified_invoice_permission = Permission.objects.get(codename='delete_modifiedinvoice')
+            
+            # Add permissions for ModifiedInvoice model to the group
+            user_group.permissions.add(view_modified_invoice_permission)
+            user_group.permissions.add(delete_modified_invoice_permission)
+
+
+            # Get the content type for the TrackingPayment model
+            tracking_payment_content_type = ContentType.objects.get_for_model(TrackingPayment)
+            
+            # Define permissions for TrackingPayment model
+            view_tracking_payment_permission = Permission.objects.get(codename='view_trackingpayment')
+            delete_tracking_payment_permission = Permission.objects.get(codename='delete_trackingpayment')
+            
+            # Add permissions for TrackingPayment model to the group
+            user_group.permissions.add(view_tracking_payment_permission)
+            user_group.permissions.add(delete_tracking_payment_permission)
             # Assign the user to the group
             user.groups.add(user_group)
             user.save()
@@ -62,7 +92,6 @@ def signup_view(request):
             messages.success(request, "Signup Success")
             return redirect("/")
     return render(request, 'authentication/signup.html', {'form': form})
-
 
 
 def login_view(request):
@@ -128,7 +157,7 @@ def profile_view(request):
         
     # permissions = Permission.objects.filter(content_type__model='invoice')
 
-    # # Print permission codenames
+    # Print permission codenames
     # for permission in permissions:
     #     print(permission.codename)
 
@@ -237,23 +266,21 @@ def get_districts(request):
 @login_required(login_url='/')
 def confirm_admin(request):
      # Get the most recent MakeUsAdmin object
-    current_admin = MakeUsAdmin.objects.order_by('-date_joined').first()
+    colaborator = MakeUsAdmin.objects.order_by('-date_joined').first()
 
     # Check if the current user's username matches Admin_form
-    if request.user.username == current_admin.newAdmin:
+    if request.user.username == colaborator.newAdmin:
         # Demote the previous admin to a normal user
-        previous_admin = CustomUser.objects.get(is_staff=True)
-        if previous_admin:
-            previous_admin.is_staff = False
-            previous_admin.is_superuser = False
-            previous_admin.save()
-
-        # Make the current user an admin and a superuser
-        request.user.is_staff = True
-        request.user.is_superuser = True
+        # previous_admin = CustomUser.objects.get(is_staff=True)
+        user = CustomUser.objects.get(username = colaborator.newAdmin)
+        group = Group.objects.get(name ='Admin Group')
+        user.groups.remove(group)
+        colaborator.is_staff = False    
+        
+        colaborator.save()
         request.user.save()
 
-        messages.success(request, "You are now an admin and a superuser.")
+        messages.success(request, f"You Colaborator with Admin ")
     else:
         messages.error(request, "You are not authorized to become an admin.")
 
