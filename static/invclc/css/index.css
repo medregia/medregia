@@ -346,6 +346,7 @@ body {
   text-align: center;
 }
 
+
 .table-content-left td {
   border: 1px solid black;
   width:100px;
@@ -361,6 +362,16 @@ body {
   border-radius: 3px;
   cursor: pointer;
 }
+button.payBtn, button.cancelBtn{
+  height: 25px;
+  width: 40px;
+  font-size: 10px;
+}
+button.editBtn,button.deleteBtn,button.saveBtn{
+  height: 25px;
+  width: 40px;
+  font-size: 10px;
+}
 
 /* Main Body Table right */
 .table-content-right table {
@@ -371,7 +382,7 @@ body {
 }
 
 .table-content-right th {
-  height: 50px;
+  /* height: 35px; */
   background-color: #bebebe;
   /* color: white; */
   border-left: 1px solid black;
@@ -382,9 +393,8 @@ body {
 .table-content-right tr:nth-child(even) {
   background-color: #f2f2f2;
 }
-
 .table-content-right tr {
-  height: 40px;
+  height: 35px;
   text-align: center;
 }
 
@@ -424,8 +434,8 @@ body {
   padding-left: 20px;
 }
 .table-panel form button {
-  height: 40px;
-  width: 60px;
+  height: 35px;
+  width: 50px;
   background-color: blue;
   border: none;
   border-radius: 4px;
@@ -597,16 +607,16 @@ body {
 } */
 
 span.status{
-  display:inline-block;
-  height: 10px;
-  width:20px;
+  display: inline-block;
+  height: 15px;
+  width: 35px;
   background-color:rgba(4, 176, 4,0.9);
 }
 
 span.loginstatus{
   display: inline-block;
-  height: 10px;
-  width:20px;
+  height: 15px;
+  width: 35px;
   background-color:rgba(186, 27, 10, 0.9);
 }
 

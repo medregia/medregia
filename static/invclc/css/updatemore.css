@@ -29,7 +29,7 @@ body{
 .checkmore-container .csvBtn{
     /* color: red; */
     height: 40px;
-    width: 100px;
+    width: 70px;
     cursor: pointer;
     margin-right: 20px;
 
@@ -49,12 +49,15 @@ h3{
 .checkmoreTable tr{
     border-bottom: 1px solid #a39f9f ;
 }
-.checkmoreTable th , .checkmoreTable td{
-    padding: 12px 15px;
+ .checkmoreTable td{
+    padding:0px;
     text-align: center;
     border-right: 1px solid #bdb8b8 ;
 }
 .checkmoreTable th{
+    padding: 10px 10px;
+    text-align: center;
+    border-right: 1px solid #bdb8b8 ;
     background-color: #6b6060;
     color: white;
 }
@@ -83,8 +86,8 @@ button.edit_btn{
     outline: 1px solid #3498db
   }   
   .checkmore-container button{
-    height:40px;
-    width: 70px;
+    height:20px;
+    width: 50px;
     background-color:blue;
     color: #FFF;
     border-radius: 3px;

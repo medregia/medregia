@@ -22,7 +22,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 
-
+{% if request.user.is_superuser or request.user.is_staff %}
 <form action="#" method="post">
     {% csrf_token %}
     <div class="profile-container">
@@ -249,7 +249,8 @@
                                 </div>
                             </div>
                         </div>
-                    
+
+{% endif %}
                         <div class="profile-current-user">
                             <div class="current-user-header">
                                 <h3>Current User Details</h3>
