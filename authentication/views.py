@@ -185,9 +185,9 @@ def profile_view(request):
         try:
             is_user = CustomUser.objects.get(username = Admin_form)
             if is_user and Admin_form is not None:
-                admin = MakeUsAdmin(newAdmin = Admin_form)
+                admin = MakeUsAdmin(newAdmin = Admin_form,request_sender = request.user)
                 admin.save()
-                messages.success(request, f"Admin Request Send to user '{Admin_form}'")
+                messages.success(request, f"Collaborate Request Send to Medical '{Admin_form}'")
                 return redirect("index")
             else: 
                 messages.error(request,f"Admin Request Not sended")
@@ -213,8 +213,6 @@ def profile_view(request):
         
     }
     return render(request, 'authentication/profile.html', context)
-
-
 
 
 def logout_view(request):
@@ -265,30 +263,27 @@ def get_districts(request):
 
 @login_required(login_url='/')
 def confirm_admin(request):
-     # Get the most recent MakeUsAdmin object
-    colaborator = MakeUsAdmin.objects.order_by('-date_joined').first()
+    # Get the most recent MakeUsAdmin object
+    collaborator = MakeUsAdmin.objects.order_by('-date_joined').first()
 
-    # Check if the current user's username matches Admin_form
-    if request.user.username == colaborator.newAdmin:
-        # Demote the previous admin to a normal user
-        # previous_admin = CustomUser.objects.get(is_staff=True)
-        user = CustomUser.objects.get(username = colaborator.newAdmin)
-        group = Group.objects.get(name ='Admin Group')
-        user.groups.remove(group)
-        colaborator.is_staff = False    
-        
-        colaborator.save()
-        request.user.save()
+    # Check if there's a collaborator request
+    if collaborator:
+        # Check if the current user's username matches the new admin's username
+        if request.user.username == collaborator.newAdmin:
+            # Demote the previous admin to a normal user
+            previous_admin =CustomUser.objects.get(username=collaborator.request_sender)
+            admin_group = Group.objects.get(name='Admin Group')
+            previous_admin.groups.remove(admin_group)
+            previous_admin.is_staff = False
+            previous_admin.save()
 
-        messages.success(request, f"You Colaborator with Admin ")
+            messages.success(request, f"You have become collaborator with {previous_admin}")
+        else:
+            messages.error(request, "You are not authorized to become an admin.")
     else:
-        messages.error(request, "You are not authorized to become an admin.")
+        messages.error(request, "There are no pending collaborator requests.")
 
     return redirect('index')
-
-# @login_required(login_url='/login/')
-# def payment_view(request):
-#     return render(request, 'authentication/index.html')
 
 @login_required(login_url='/login/')
 def clinic_page(request):

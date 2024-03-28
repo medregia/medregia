@@ -96,6 +96,7 @@ class Person(models.Model):
     
 class MakeUsAdmin(models.Model):
     newAdmin = models.CharField(max_length = 30)
+    request_sender = models.CharField(max_length = 30, null=True)
     date_joined = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
