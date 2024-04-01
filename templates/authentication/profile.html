@@ -16,6 +16,7 @@
  
 {% block content%} 
 
+{% include 'message.html' %}
 
 <!-- Include the Select2 CSS and JS files -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
@@ -262,10 +263,8 @@
                                 </div>
                             
                                 <div class="current-user-phone bottom-containers">
-                                    {% for data in user_profile_data %}
-                                        <i class="fa-solid fa-phone"></i>
-                                        <input type="text"id="Currentphone" value="{{data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
-                                    {% endfor %}
+                                    <i class="fa-solid fa-phone"></i>
+                                    <input type="text"id="Currentphone" value="{{user_profile_data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
                                 </div>
                             
                                 <div class="current-user-passwor">
@@ -285,10 +284,10 @@
                             {% if request.user.is_superuser or request.user.is_staff %}
                                 <form action="#" method="post">
                                     {% csrf_token %}
-                                    <label for="Username">Make As Admin :</label>
+                                    <label for="Username">Collaborate:</label>
                                     <div class="makeus-admin-container">
                                         <input type="text" placeholder="Enter User Name Want to Admin " name="admin">
-                                        <button class="button-paper" role="submit">Make Admin</button>
+                                        <button class="button-paper" role="submit">Send Request</button></a>   
                                     </div>
                                 </form>
                             {% endif %}
@@ -303,10 +302,9 @@
         </div>
     </div>
 
-    {% endif %}
+{% endif %}
 
-    {% if not request.user.is_superuser or not request.user.is_staff %}
-
+{% if request.user.is_superuser == False or request.user.is_staff == False%}
     <div class="profile-right-bottom">
         <div class="profile-admin-details">
             <div class="profile-admin-header">
@@ -342,10 +340,8 @@
                 </div>
             
                 <div class="current-user-phone bottom-containers">
-                    {% for data in user_profile_data %}
-                        <i class="fa-solid fa-phone"></i>
-                        <input type="text"id="Currentphone" value="{{data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
-                    {% endfor %}
+                    <input type="text"id="Currentphone" value="{{user_profile_data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
+                    <i class="fa-solid fa-phone"></i>
                 </div>
             
                 <div class="current-user-passwor">
@@ -361,6 +357,6 @@
         </div>
 
     </div>
-    {% endif %}
+{% endif %}
     <script src="{% static 'authentication/js/profile.js' %}"></script>
 {% endblock content%}

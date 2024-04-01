@@ -94,11 +94,16 @@ class Person(models.Model):
     def str(self):
         return self.UserName
     
-class MakeUsAdmin(models.Model):
-    newAdmin = models.CharField(max_length = 30)
-    request_sender = models.CharField(max_length = 30, null=True)
-    date_joined = models.DateTimeField(default=timezone.now)
+class Notification(models.Model):
+    sender = models.ForeignKey(CustomUser, related_name='sent_notifications', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(CustomUser, related_name='received_notifications', on_delete=models.CASCADE)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    
+    class Meta:
+        unique_together = ('sender', 'receiver')
     
     def __str__(self):
-        return self.newAdmin
+        return f"Notification from {self.sender.username} to {self.receiver.username}"
     
