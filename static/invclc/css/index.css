@@ -514,11 +514,6 @@ button.editBtn,button.deleteBtn,button.saveBtn{
   justify-content:center;
   align-items:center;
 }
-.table-content-left a button ,
-.table-content-right a button{
-  
-}
-
 .table-content-left table a{
   height:40px;
   /* background-color:red; */
