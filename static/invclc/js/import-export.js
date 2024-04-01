@@ -134,37 +134,84 @@ function handleFileSelect(inputId) {
     }
 }
 
- function handleFileSelect(inputId) {
-            var file = document.getElementById(inputId).files[0];
-            var reader = new FileReader();
+//  function handleFileSelect(inputId) {
+//             var file = document.getElementById(inputId).files[0];
+//             var reader = new FileReader();
 
-            reader.onload = function(event) {
-                var csvData = event.target.result;
-                displayCSV(csvData);
-            };
+//             reader.onload = function(event) {
+//                 var csvData = event.target.result;
+//                 displayCSV(csvData);
+//             };
 
-            reader.readAsText(file);
-        }
+//             reader.readAsText(file);
+//         }
 
-        function displayCSV(csvData) {
-            // Split CSV data into rows
-            var rows = csvData.split("\n");
+//         function displayCSV(csvData) {
+//             // Split CSV data into rows
+//             var rows = csvData.split("\n");
             
-            // Create a table element
-            var table = document.createElement("table");
+//             // Create a table element
+//             var table = document.createElement("table");
 
-            // Iterate through rows and create table rows and cells
-            rows.forEach(function(rowData) {
-                var row = document.createElement("tr");
-                var cells = rowData.split(",");
-                cells.forEach(function(cellData) {
-                    var cell = document.createElement("td");
-                    cell.appendChild(document.createTextNode(cellData));
-                    row.appendChild(cell);
-                });
-                table.appendChild(row);
-            });
+//             // Iterate through rows and create table rows and cells
+//             rows.forEach(function(rowData) {
+//                 var row = document.createElement("tr");
+//                 var cells = rowData.split(",");
+//                 cells.forEach(function(cellData) {
+//                     var cell = document.createElement("td");
+//                     cell.appendChild(document.createTextNode(cellData));
+//                     row.appendChild(cell);
+//                 });
+//                 table.appendChild(row);
+//             });
 
-            // Append the table to the body of the document
-            document.body.appendChild(table);
-        }
+//             // Append the table to the body of the document
+//             document.body.appendChild(table);
+//         }
+
+
+function handleFileSelect(inputId) {
+    var file = document.getElementById(inputId).files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(event) {
+        var csvData = event.target.result;
+        displayCSV(csvData);
+    };
+
+    reader.readAsText(file);
+}
+function displayCSV(csvData) {
+    // Split CSV data into rows
+    var rows = csvData.split("\n");
+    
+    // Create a table element
+    var table = document.createElement("table");
+    var tbody = document.createElement("tbody");
+
+    // Iterate through rows and create table rows and cells
+    rows.forEach(function(rowData) {
+        var row = document.createElement("tr");
+        var cells = rowData.split(",");
+        cells.forEach(function(cellData) {
+            var cell = document.createElement("td");
+            cell.appendChild(document.createTextNode(cellData));
+            row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+    });
+
+    // Append the tbody to the table
+    table.appendChild(tbody);
+
+    // Create a div to center the table
+    var centerDiv = document.createElement("div");
+    centerDiv.style.display = "flex";
+    centerDiv.style.justifyContent = "center";
+    centerDiv.appendChild(table);
+
+    // Append the centered table to the main-box div inside tabcontent
+    var mainBox = document.querySelector('.tabcontent .main-box');
+    mainBox.appendChild(centerDiv);
+}
+
