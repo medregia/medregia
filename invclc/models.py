@@ -15,7 +15,8 @@ class Invoice(models.Model):
     balance_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
     today_date = models.DateField(default=timezone.now)
-    current_time = models.TimeField(default=(timezone.now() + timedelta(hours=5, minutes=30)).time())
+    # current_time = models.TimeField(default=(timezone.now() + timedelta(hours=5, minutes=30)).time())
+    current_time = models.TimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
         self.balance_amount = self.invoice_amount - self.payment_amount
@@ -49,6 +50,7 @@ class ModifiedInvoice(models.Model):
     modified_today_date = models.DateField(default=timezone.now)
     
     def __str__(self):
+        
         return f"{self.modified_pharmacy}-{self.modified_today_date}"
     
 class TrackingPayment(models.Model):

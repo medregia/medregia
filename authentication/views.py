@@ -263,10 +263,8 @@ def get_districts(request):
 
 @login_required(login_url='/')
 def confirm_admin(request):
-    # Get the most recent MakeUsAdmin object
-    collaborator = MakeUsAdmin.objects.order_by('-date_joined').first()
 
-    # Check if there's a collaborator request
+    collaborator = MakeUsAdmin.objects.order_by('-date_joined').first()
     if collaborator:
         # Check if the current user's username matches the new admin's username
         if request.user.username == collaborator.newAdmin:

@@ -164,30 +164,24 @@
 </div>
 
 <div id="Import" class="tabcontent" style="display: none;">
-
-
   <div class="lastbox">
     <div class="lastbox-content">
-        <!-- Form for selecting options -->
-        <div class="lastbox-center">
-            <div class="lastbox-content-formate">
-                <label for="user">Choose</label>
-                <select id="tableSelector">
-                    <option value="table1">Format 1</option>
-                    <option value="table2">Format 2</option>
-                </select>
-            </div>
-            <div class="lastbox-content-agency" style="display: none;">
-                <label for="user">Store Type</label>
-                {% if request.user.store_type == 'others' %}
-                    <input type="text" id="user" value="{{ request.user.other_value }}" placeholder="Agencyname" disabled>
-                {% else %}
-                    <input type="text" id="user" value="{{ request.user.store_type }}" placeholder="Agencyname" disabled>
-                {% endif %}
-            </div>
+      <!-- Form for selecting options -->
+      <div class="lastbox-center">
+        <div class="lastbox-content-formate">
+          <label for="tableSelector">Choose</label>
+          <select id="tableSelector">
+            <option value="table1">Format 1</option>
+            <option value="table2">Format 2</option>
+          </select>
         </div>
+        <div class="lastbox-content-agency" style="display: none;">
+          <label for="user">Store Type</label>
+          <input type="text" id="user" value="{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}" placeholder="Agencyname" disabled>
+        </div>
+      </div>
     </div>
-
+  </div>
 
   <div class="panel-container">
     <div class="box2">
@@ -206,57 +200,49 @@
       </div>
     </div>
   </div>
-
-
-
-  <!-- Table for displaying data -->
   <div class="box main-box">
-        <table id="table1">
-          <thead id="file_data">
-          <!-- Data will be dynamically added here -->
-          </thead>
-        </table>
-        <table id="table2" style="display: none;">
-          <!-- Data for Format 2 -->
-          <thead>
-          <tr>
-              <th>Agency name</th>
-              <th>Invoice Number</th>
-              <th>Invoice Date</th>
-              <th>Total</th>
-              <th>Paid/Pending</th>
-          </tr>
-          </thead>
-          <tbody>
-          {% for data in datas %}
-          <tr>
-              {% if request.user.store_type == 'others' %}
-              <td>{{ request.user.other_value }}</td>
-              {% else %}
-              <td>{{ request.user.store_type }}</td>
-              {% endif %}
-              <td>{{ data.invoice_number }}</td>
-              <td>{{ data.invoice_date }}</td>
-              <td>{{ data.invoice_amount }}</td>
-              {% if data.balance_amount == 0 %}
-              <td>Paid</td>
-              {% else %}
-              <td>Pending</td>
-              {% endif %}
-          </tr>
-          {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    </div> 
+    <table id="table1">
+      <thead id="file_data">
+        <!-- Data will be dynamically added here -->
+      </thead>
+    </table>
+    <table id="table2" style="display: none;">
+      <!-- Data for Format 2 -->
+      <thead>
+        <tr>
+          <th>Agency name</th>
+          <th>Invoice Number</th>
+          <th>Invoice Date</th>
+          <th>Total</th>
+          <th>Paid/Pending</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for data in datas %}
+        <tr>
+          <td>{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}</td>
+          <td>{{ data.invoice_number }}</td>
+          <td>{{ data.invoice_date }}</td>
+          <td>{{ data.invoice_amount }}</td>
+          <td>{% if data.balance_amount == 0 %}Paid{% else %}Pending{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="Upload" style="display: none;">
+      <button>Upload</button>
+    </div>
   </div>
+</div>
 
+
+  
 
 
 
 
  
-</div>
+
 
 
 <script src="{% static 'invclc/js/import-export.js' %}"></script>
