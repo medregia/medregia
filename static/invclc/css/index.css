@@ -508,7 +508,7 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 .table-content-left a ,
 .table-content-right a{
   height:50px;
-  width:100%;
+  width:50%;
   /* background-color:red; */
   display:flex;
   justify-content:center;
@@ -516,8 +516,7 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 }
 .table-content-left a button ,
 .table-content-right a button{
-  height:50px;
-  width:20%;
+  
 }
 
 .table-content-left table a{
@@ -528,8 +527,8 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 
 .table-content-left a button,
 .table-content-right a button{
-  height:35px;
-  width:60%;
+  height:40px;
+  width:40%;
   background-color:blue;
 }
 .deleted-history,.updated-history{
