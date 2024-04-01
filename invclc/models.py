@@ -49,6 +49,7 @@ class ModifiedInvoice(models.Model):
     modified_today_date = models.DateField(default=timezone.now)
     
     def __str__(self):
+        
         return f"{self.modified_pharmacy}-{self.modified_today_date}"
     
 class TrackingPayment(models.Model):
