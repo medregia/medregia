@@ -53,7 +53,7 @@ class PersonAdmin(admin.ModelAdmin):
     
 class NotificationAdmin(admin.ModelAdmin):
     model = Notification
-    list_display = ('sender','receiver','message','timestamp','is_read','falied_request')
+    list_display = ('sender','receiver','message','timestamp','is_read','failed_request')
     
 
 admin.site.register(CustomUser, CustomUserAdmin)
