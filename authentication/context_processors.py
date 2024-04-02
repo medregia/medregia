@@ -13,7 +13,7 @@ def nav_message(request):
         current_user = request.user
         
         # Query notifications where the current user is the receiver
-        notifications = Notification.objects.filter(receiver=current_user, is_read=False)
+        notifications = Notification.objects.filter(receiver=current_user, is_read=False,falied_request=False)
     else:
         # If the user is not authenticated, return an empty list of notifications
         notifications = []

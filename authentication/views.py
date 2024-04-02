@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseNotAllowed
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -198,7 +198,6 @@ def profile_view(request):
                 admin = Notification(sender=request.user, receiver=receiver, message="User Request")
                 admin.save()
                 messages.success(request, f"Collaborate Request Sent to User'{receiver}'")
-                print(receiver_name)
                 return redirect("index")
 
             else: 
@@ -297,6 +296,15 @@ def confirm_admin(request):
     
     return redirect('index')
 
+@login_required(login_url='/')
+def admin_cancel(request):
+    try:
+        notification = get_object_or_404(Notification, receiver=request.user, is_read=False, falied_request=False)
+        notification.falied_request = True
+        notification.save()
+        return redirect('index')
+    except Exception as e:
+        print("Admin Cancel Error", e)
 
 @login_required(login_url='/login/')
 def clinic_page(request):
