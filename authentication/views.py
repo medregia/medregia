@@ -299,8 +299,8 @@ def confirm_admin(request):
 @login_required(login_url='/')
 def admin_cancel(request):
     try:
-        notification = get_object_or_404(Notification, receiver=request.user, is_read=False, falied_request=False)
-        notification.falied_request = True
+        notification = get_object_or_404(Notification, receiver=request.user, is_read=False, failed_request=False)
+        notification.failed_request = True
         notification.save()
         return redirect('index')
     except Exception as e:
