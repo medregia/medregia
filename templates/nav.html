@@ -20,52 +20,58 @@
       <a href="{% url 'logout' %}">Logout</a>
   </div>
   
-{% comment %} 
-  <ul>
-      <li class="for_a"><i id="bell" class="fa-regular fa-bell"></i></li>
-      {% if request.user.is_superuser %}
-        <li class="for_a"><a href="{% url 'admin:index' %}">Admin</a></li>
-      {% endif %}
-      <li><a href="{% url 'profile' %}"><span><img src="{% static 'authentication/images/profile.png'%}" class="user-pic" alt="profile" /></span></a></li>
-      <li><a href="{% url 'logout' %}">Logout</a></li>
-  </ul>
-{% endcomment %}
-
 </nav>
 
 
 <div class="notifications hide">
-  {% if request.user.username == Admin_form %}
-    <div class="admin-request">
-      <p>Admin Request </p>
-      <h4>Here Admin User Want to Make
-        You as a Admin {{ admin_user }}</h4>
+  {% for notify in notifications %}
+    {% if request.user.username == notify.receiver.username %}
+      {% if request.user.is_staff == True %}
+        <div id="admin-request-message" class="admin-request "> 
+          <p>Colloboration Request</p>
+          <h4>User {{notify.sender}} Wants to Collaborate with You {{notify.receiver }}</h4>
 
-      <form method="post" action="{% url 'confirm_admin' %}" id="admin_action">
-        {% csrf_token %}
-        <input  class="confirm" type="submit" value="Confirm">
-        <input type="button" value="Cancel">
-      </form>
+          <form method="post" action="{% url 'confirm_admin' %}" id="admin_action">
+            {% csrf_token %}
+            <input class="confirm" type="submit" value="Confirm">
+            <input type="button" value="Cancel">
+          </form>
 
-    </div>
-  {% endif %}
-    <h5> Your Message Notifications Here </h5>
-
+        </div>
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  <h5>Your Message Notifications Here</h5>
   <div class="notify-me">
     {% include 'notification_message.html' %}
   </div>
-  
 </div>
 
-{% comment %} <div class="user-box hide">
-  <img src="{% static 'authentication/images/profile.png'%}" class="user" alt="profile" >
-  <h3>{{request.user}}</h3>
-  <a href="{% url 'profile' %}">Profile</a>
-  <div class="mail">{{user_mail}}</div>
 
-  <div class="content">
-    <a href="{% url 'password_change' %}">Change Password</a>
-    <a href="{% url 'logout' %}">Logout</a>
-  </div>
-</div> {% endcomment %}
+{% comment %} <script>
+  // Fetch notification ID asynchronously using AJAX
+  function fetchNotificationId() {
+      // Make an AJAX request to your Django backend
+      $.ajax({
+          url: '/profile/',  // URL to fetch notification ID
+          type: 'GET',
+          success: function(data) {
+              // If notification ID is retrieved successfully
+              if (data.notification_id) {
+                  // Show the admin request message
+                  $('#admin-request-message').removeClass('hide');
+              }
+          },
+          error: function(xhr, status, error) {
+              console.error('Error fetching notification ID:', error);
+          }
+      });
+  }
+
+  // Call the function when the document is ready
+  $(document).ready(function() {
+      fetchNotificationId();
+  });
+</script> {% endcomment %}
+
 <script src="{% static 'authentication/js/nav.js' %}"></script>
