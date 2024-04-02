@@ -62,8 +62,8 @@ class CustomUser(AbstractUser):
     #         ("view_own_details", "Can view own details"),
     #     ]
     
-    def _str_(self):
-        return self.username
+    def __str__(self):
+        return self.username 
     
 class Person(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,null=True)
