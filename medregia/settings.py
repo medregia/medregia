@@ -92,10 +92,11 @@ WSGI_APPLICATION = 'medregia.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'medregia',
+        'NAME': 'Medregia',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': '1234Q1234',
         'HOST': 'localhost',
+        'PORT':'3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,STRICT_ALL_TABLES'",
         },
