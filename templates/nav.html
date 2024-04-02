@@ -27,14 +27,17 @@
   {% for notify in notifications %}
     {% if request.user.username == notify.receiver.username %}
       {% if request.user.is_staff == True %}
-        <div id="admin-request-message" class="admin-request "> 
-          <p>Colloboration Request</p>
+        <div id="admin-request-message" class="admin-request"> 
+          <p>Collaboration Request</p>
           <h4>User {{notify.sender}} Wants to Collaborate with You {{notify.receiver }}</h4>
 
           <form method="post" action="{% url 'confirm_admin' %}" id="admin_action">
             {% csrf_token %}
             <input class="confirm" type="submit" value="Confirm">
-            <input type="button" value="Cancel">
+          </form>
+          <form method="post" action="{% url 'admin_cancel' %}" id="action_cancel">
+            {% csrf_token %}
+            <input class="cancel" type="submit" value="cancel">
           </form>
 
         </div>
@@ -47,31 +50,21 @@
   </div>
 </div>
 
-
-{% comment %} <script>
-  // Fetch notification ID asynchronously using AJAX
-  function fetchNotificationId() {
-      // Make an AJAX request to your Django backend
-      $.ajax({
-          url: '/profile/',  // URL to fetch notification ID
-          type: 'GET',
-          success: function(data) {
-              // If notification ID is retrieved successfully
-              if (data.notification_id) {
-                  // Show the admin request message
-                  $('#admin-request-message').removeClass('hide');
-              }
-          },
-          error: function(xhr, status, error) {
-              console.error('Error fetching notification ID:', error);
-          }
-      });
-  }
-
-  // Call the function when the document is ready
-  $(document).ready(function() {
-      fetchNotificationId();
+<script>
+$(document).ready(function() {
+  // When cancel button is clicked, hide the notification
+  $('.cancel').click(function() {
+    $('.admin-request').addClass('cover');
   });
-</script> {% endcomment %}
+
+  // When confirm button is clicked, submit the form
+  $('.confirm').click(function() {
+    $('#admin_action').submit();
+    // After submitting the form, hide the notification
+    $('.admin-request').addClass('cover');
+  });
+});
+</script>
+
 
 <script src="{% static 'authentication/js/nav.js' %}"></script>

@@ -209,7 +209,9 @@ ul li a:hover {
   color: #04aa6d;
 }
 
-
+.cover{
+  display:none
+}
 
 /* mediaquery */
 

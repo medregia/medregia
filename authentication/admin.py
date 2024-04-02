@@ -51,12 +51,13 @@ class PersonAdmin(admin.ModelAdmin):
         'UniqueId',
     ]
     
-class CreateAdmin(admin.ModelAdmin):
+class NotificationAdmin(admin.ModelAdmin):
     model = Notification
-    list_display = ('sender','receiver','message','timestamp','is_read')
+    list_display = ('sender','receiver','message','timestamp','is_read','falied_request')
+    
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(StateModel, StateModelAdmin)
 admin.site.register(DistrictModel, DistrictModelAdmin)
 admin.site.register(Person, PersonAdmin)
-admin.site.register(Notification, CreateAdmin)
+admin.site.register(Notification, NotificationAdmin)

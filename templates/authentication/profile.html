@@ -282,6 +282,9 @@
 
                         <div class="makeus-admin">
                             {% if request.user.is_superuser or request.user.is_staff %}
+                                <div class="collobarate-message">
+                                    <h4>* Please note that if the request receiver rejects the request, you should not send another request to the same receiver *</h4>
+                                </div>
                                 <form action="#" method="post">
                                     {% csrf_token %}
                                     <label for="Username">Collaborate:</label>
