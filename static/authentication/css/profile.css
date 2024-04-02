@@ -587,6 +587,13 @@ body{
     background-color:green; */
   }
 
+  .collobarate-message{
+    min-height:40px;
+    width:70%;
+    /* background-color:green; */
+    color:red;
+  }
+
 
   @media (min-width: 820px) and (max-width: 997px){
     .select2-container--default .select2-selection--single{
