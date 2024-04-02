@@ -107,7 +107,7 @@ span.status{
     max-width: 90px;
     overflow-y: auto;
 }
-
-.expand{
-    max-width: 150px;
+div.scrollable-cell.expand,div.scrollable-cell{
+    text-align: center;
+    margin-left: 25px;
 }
