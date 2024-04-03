@@ -275,6 +275,7 @@ def get_districts(request):
 @login_required(login_url='/')
 def confirm_admin(request):
     collaborator_requests = Notification.objects.filter(receiver=request.user, is_read=False)
+    admin_manager = CustomUser.objects.get(username=request.user)
     if collaborator_requests.exists():
         # Assuming a user can have multiple pending collaborator requests
         for collaborator in collaborator_requests:
@@ -287,8 +288,10 @@ def confirm_admin(request):
                 sender.is_staff = False
                 collaborator.is_read = True
                 sender.save()
-                collaborator.save()
+                collaborator.save()                
                 messages.success(request, f"You have become a collaborator with {sender}.")
+                request_user = CustomUser.objects.get(username=sender)
+                
             else:
                 messages.error(request, "You are not authorized to become an admin.")
     else:
@@ -299,8 +302,8 @@ def confirm_admin(request):
 @login_required(login_url='/')
 def admin_cancel(request):
     try:
-        notification = get_object_or_404(Notification, receiver=request.user, is_read=False, failed_request=False)
-        notification.failed_request = True
+        notification = get_object_or_404(Notification, receiver=request.user, is_read=False, request_status=True)
+        notification.request_status = False
         notification.save()
         return redirect('index')
     except Exception as e:

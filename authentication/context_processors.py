@@ -12,7 +12,7 @@ def nav_message(request):
     if request.user.is_authenticated:
         current_user = request.user
         
-        notifications = Notification.objects.filter(receiver=current_user, is_read=False,failed_request=False)
+        notifications = Notification.objects.filter(receiver=current_user, is_read=False,request_status=True)
     else:
         # If the user is not authenticated, return an empty list of notifications
         notifications = []
