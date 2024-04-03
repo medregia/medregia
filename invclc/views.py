@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q,F
 from django.utils import timezone
-from authentication.models import CustomUser,Person
+from authentication.models import CustomUser,Person,Notification
 from datetime import datetime
 import csv
 import json
@@ -100,6 +100,9 @@ def index_view(request):
     q_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
     search_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
     payed_details = invoices.filter(balance_amount=0.00).order_by('-id')
+    check_user = None
+    check_admin= None
+    unique_code_id = None
     try:
         unique_code = Person.objects.get(user = request.user)
         unique_id = unique_code.UniqueId
@@ -112,7 +115,46 @@ def index_view(request):
     except Person.DoesNotExist:
         Medicalname = ''
 
+    try:
+        #Getting Request sender is a currentuser 
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            
+            get_admin_name = notification.receiver.username
+            print('Get_Admin_name',get_admin_name) #not Getting
 
+            print(f"Collaborator request sender username: {collaborator_request_username}") # 
+            
+            # getting Request Sender user their name in CustomUser model
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username = get_admin_name, is_staff=True)   #getting main admin
+            print("collaborator_admin : ",collaborator_admin)
+            print("new : ",collaborator_request_sender)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:    
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                        # check_user = Invoice.objects.get(user=current_user)
+                        check_admin = Invoice.objects.get(user=collaborator_admin)
+                        unique_code_id = Person.objects.get(user = collaborator_admin)
+                        print("User name : ",check_user)
+                        print("unique code :",unique_code_id.UniqueId)
+                except Exception as a:
+                    print("Collaborating Error : ", a)
+                print(f"Collaborate username: {collaborator_sender_username}")
+                print(f"Admin username: {current_user.username if current_user else None}")
+
+    except Exception as e:
+        print("Error When Collaborating the User", e)
+
+
+        
     DeleteHistory = DeletedInvoice.objects.filter(user=current_user).order_by('-id')
     if not DeleteHistory.exists():
         DeleteHistory = "No Deletion Found"
@@ -189,6 +231,10 @@ def index_view(request):
                'ModifiedHistory':ModifiedHistory,
                'medicalname':Medicalname,
                'MedicalStatus':modifiedStore,
+               'check_user':check_user,
+               'check_admin':check_admin,
+               'unique':unique_code_id,
+               'current_user':request.user,
             #    'convert_Medical': convert_Medical,
                }
     return render(request,'invclc/index.html',context)
