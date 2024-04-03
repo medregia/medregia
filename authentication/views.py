@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required,permission_required
 from .forms import SignUpForm
 from django.shortcuts import render, redirect
 from .models import CustomUser,Person,Notification
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import auth
 from django.contrib.auth import get_user_model
 from .profile import ProfileForm
 from django.core.mail import send_mail
@@ -19,7 +19,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from .models import StateModel, DistrictModel
 from django.http import HttpResponse,JsonResponse
 from .UniqueCode import User_code
-from .forms import LoginAuthenticationForm
+# from .forms import LoginAuthenticationForm
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
@@ -97,17 +97,23 @@ def signup_view(request):
 
 def login_view(request):
     if request.method == "POST":
-        login_form = AuthenticationForm(request, data=request.POST)
-        if login_form.is_valid():
-            user = login_form.get_user()
-            login(request, user)
-            return redirect('index/')
-    else:
-        login_form = AuthenticationForm(request)
-        login_form.fields['username'].widget.attrs.update({'placeholder': 'Username'})
-        login_form.fields['password'].widget.attrs.update({'placeholder': 'Password'})
-        
-    return render(request, 'authentication/login.html', {'form': login_form})
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
+        if username is not None and password is not None:
+            # Perform case-sensitive authentication
+            user = auth.authenticate(request, username=username, password=password)
+            if user is not None:
+                auth.login(request, user)
+                messages.success(request, "Login Successful")
+                return redirect('/index')
+            else:
+                messages.error(request, "Invalid Username or Password")
+                return redirect('login')
+        else:
+            messages.error(request, "Please provide both username and password")
+            return redirect('login')
+    return render(request, 'authentication/login.html')
+
 
 def phone_login_view(request):
     if request.user.is_authenticated:

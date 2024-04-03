@@ -24,7 +24,7 @@ class DistrictModel(models.Model):
     def __str__(self):
         return self.districtname
 
-        
+     
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=150, unique=True)
     phone_num = models.CharField(max_length=15, blank=False)
@@ -57,11 +57,6 @@ class CustomUser(AbstractUser):
         help_text='Specific permissions for this user.',
     )
     
-    # class Meta:
-    #     permissions = [
-    #         ("view_own_details", "Can view own details"),
-    #     ]
-    
     def __str__(self):
         return self.username 
     
@@ -85,14 +80,11 @@ class Person(models.Model):
     PharmacistName =  models.CharField(max_length=100 ,blank=False,null=False)
     RegisteredNumber =  models.CharField(max_length=100 ,blank=False,null=False)
     ContactNumber =  models.CharField( max_length = 15, blank=False,null=False)
-    
-    #Admin Details
-    # UserName =  models.CharField(max_length=100 ,blank=False,null=False)
-    # UserNumber =  models.CharField(max_length=100 ,blank=False,null=False)
-    
     UniqueId = models.CharField(max_length=100 ,blank=True,null=True)    
-    def str(self):
-        return self.UserName
+    
+    def __str__(self):
+        return self.name
+    
     
 class Notification(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_notifications', on_delete=models.CASCADE)

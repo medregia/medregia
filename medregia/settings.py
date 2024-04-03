@@ -87,9 +87,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'medregia',
         'USER': 'root',
-        'PASSWORD': '1234Q1234',
+        'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT':'3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,STRICT_ALL_TABLES'",
         },

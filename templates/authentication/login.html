@@ -58,13 +58,13 @@
               {% csrf_token %}
               <div class="login-username">
                 <label for="id_username">Username</label>
-                {{form.username}}
-              </div>
-
-              <div class="login-password">
+                <input type="text" name="username" autocapitalize="off" autofocus maxlength="150" placeholder="Username" id="id_username" required>
+            </div>
+            
+            <div class="login-password">
                 <label for="id_password">Password</label>
-                {{form.password}}
-              </div>
+                <input type="password" name="password" autocapitalize="off" autofocus placeholder="Password" id="id_password" required>
+            </div>
 
               <div class="login-buttons">
                 <div class="login-btn">
