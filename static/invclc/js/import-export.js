@@ -61,157 +61,90 @@ function openTab(evt, TabName) {
     evt.currentTarget.className += " active";
 }
 
-const tablechange =  document.querySelector("#tableSelector");
-  tablechange.addEventListener("change",changeTable)
-  function changeTable() {
-    var selectedOption = document.getElementById("tableSelector").value;
-    if (selectedOption === "table1") {
-      document.getElementById("table1").style.display = "block";
-      document.getElementById("table2").style.display = "none";
-      document.querySelector(".lastbox-content-agency").style.display = "none";
-      document.querySelector(".panel-container").style.display = "block";
-      document.querySelector(".panel-container").style.display = "flex";
-      document.querySelector(".box2").style.justifyContent = "center"; 
+const tableSelector = document.getElementById("tableSelector");
+const csvFileInput = document.getElementById("csv_file_input");
+const csvContainer = document.getElementById("csvContainer");
+const tableContainer = document.getElementById("table2");
+const table = document.getElementById("tableContainer");
+const csvTable = document.getElementById("csvTable");
+const upload = document.getElementById("upload");
 
-    } else if (selectedOption === "table2") {
-      document.getElementById("table1").style.display = "none";
-      document.getElementById("table2").style.display = "block";
-      document.querySelector(".lastbox-content-agency").style.display = "block";
-      document.querySelector(".panel-container").style.display = "none";
-      document.querySelector("#table2").style.display = "flex";
-      document.querySelector("#table2").style.flexDirection = "column";
-      document.querySelector("#table2").style.justifyContent = "center";
-      document.querySelector("#table2").style.alignItems = "center";  
-    }
-    console.log(selectedOption)
-  }
 
-// Save the original body content on window load
-var originalContents = document.body.innerHTML;
+const lastboxAgency = document.querySelector(".lastbox-content-agency");
 
-// Open the default tab on window load
-window.onload = function() {
-    document.querySelector(".tablinks.active").click();
-};
+tableSelector.addEventListener("change", function() {
+  if (tableSelector.value === "format1") {
+    csvContainer.style.display = "block";
+    tableContainer.style.display = "none";
+    lastboxAgency.style.display = "none";
+    table.style.display = "none";
+    csvContainer.style.textAlign = "center";
+    csvTable.style.width = "100%";
+    csvTable.style.margin = "0 auto";
+    upload.style.display = "block";
 
-// for import a table
-function handleFileSelect(inputId) {
-    const fileInput = document.getElementById(inputId);
-    const file = fileInput.files[0];
-
-    if (file) {
-        if (file.type === 'application/pdf') {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const pdfContent = event.target.result;
-                // Create container div
-                const container = document.createElement('div');
-                container.style.display = 'flex';
-                container.style.alignItems = 'center';
-                container.style.justifyContent = 'center';
-                container.style.width = '100vw'; // Full viewport width
-                container.style.height = '100vh'; // Full viewport height
-                
-                
-                // Create iframe element
-                const iframe = document.createElement('iframe');
-                iframe.setAttribute('src', pdfContent);
-                // Set style for iframe to cover most of the screen
-                iframe.style.width = '90vw'; // 90% of viewport width
-                iframe.style.height = '90vh'; // 90% of viewport height
-                iframe.style.border = 'none'; // Remove iframe border
-                
-                // Append iframe to container
-                container.appendChild(iframe);
-                // Append container to body
-                document.body.appendChild(container);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            // Handle other file types
-            console.log('Unsupported file type');
-        }
-    }
+//   } else {
+//     csvContainer.style.display = "none";
+//     tableContainer.style.display = "block";
+//     lastboxAgency.style.display = "block";
+//     loadTable();
+//   }
+  }else if (tableSelector.value === "format2"){
+    csvContainer.style.display = "none";
+    tableContainer.style.display = "block";
+    lastboxAgency.style.display = "block";
+    table.style.display = "block";
+    upload.style.display = "none";
 }
 
-//  function handleFileSelect(inputId) {
-//             var file = document.getElementById(inputId).files[0];
-//             var reader = new FileReader();
-
-//             reader.onload = function(event) {
-//                 var csvData = event.target.result;
-//                 displayCSV(csvData);
-//             };
-
-//             reader.readAsText(file);
-//         }
-
-//         function displayCSV(csvData) {
-//             // Split CSV data into rows
-//             var rows = csvData.split("\n");
-            
-//             // Create a table element
-//             var table = document.createElement("table");
-
-//             // Iterate through rows and create table rows and cells
-//             rows.forEach(function(rowData) {
-//                 var row = document.createElement("tr");
-//                 var cells = rowData.split(",");
-//                 cells.forEach(function(cellData) {
-//                     var cell = document.createElement("td");
-//                     cell.appendChild(document.createTextNode(cellData));
-//                     row.appendChild(cell);
-//                 });
-//                 table.appendChild(row);
-//             });
-
-//             // Append the table to the body of the document
-//             document.body.appendChild(table);
-//         }
-
-
-function handleFileSelect(inputId) {
-    var file = document.getElementById(inputId).files[0];
-    var reader = new FileReader();
-
-    reader.onload = function(event) {
-        var csvData = event.target.result;
-        displayCSV(csvData);
-    };
-
-    reader.readAsText(file);
+const trElements = csvTable.getElementsByTagName("tr");
+for (let i = 0; i < trElements.length; i++) {
+  trElements[i].style.border = "1px solid #ccc";
 }
-function displayCSV(csvData) {
-    // Split CSV data into rows
-    var rows = csvData.split("\n");
-    
-    // Create a table element
-    var table = document.createElement("table");
-    var tbody = document.createElement("tbody");
 
-    // Iterate through rows and create table rows and cells
-    rows.forEach(function(rowData) {
-        var row = document.createElement("tr");
-        var cells = rowData.split(",");
-        cells.forEach(function(cellData) {
-            var cell = document.createElement("td");
-            cell.appendChild(document.createTextNode(cellData));
-            row.appendChild(cell);
+// Add border to td elements
+const tdElements = csvTable.getElementsByTagName("td");
+for (let i = 0; i < tdElements.length; i++) {
+  tdElements[i].style.border = "1px solid #ccc";
+}
+
+// Add border to th elements
+const thElements = csvTable.getElementsByTagName("th");
+for (let i = 0; i < thElements.length; i++) {
+  thElements[i].style.border = "1px solid #ccc";
+}
+
+});
+
+csvFileInput.addEventListener("change", function() {
+  loadCSV();
+});
+
+function loadCSV() {
+  const file = csvFileInput.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const lines = e.target.result.split('\n');
+      csvTable.innerHTML = ""; // Clear previous table data
+      lines.forEach(line => {
+        const cells = line.split(',');
+        const row = csvTable.insertRow();
+        cells.forEach(cell => {
+          const cellElement = row.insertCell();
+          cellElement.textContent = cell;
         });
-        tbody.appendChild(row);
-    });
-
-    // Append the tbody to the table
-    table.appendChild(tbody);
-
-    // Create a div to center the table
-    var centerDiv = document.createElement("div");
-    centerDiv.style.display = "flex";
-    centerDiv.style.justifyContent = "center";
-    centerDiv.appendChild(table);
-
-    // Append the centered table to the main-box div inside tabcontent
-    var mainBox = document.querySelector('.tabcontent .main-box');
-    mainBox.appendChild(centerDiv);
+      });
+    };
+    reader.readAsText(file);
+  }
 }
 
+function loadTable() {
+  // You need to implement the logic to load the table data for format 2 here
+}
+
+function clearTable() {
+  csvTable.innerHTML = ""; // Clear CSV table
+  // You may want to clear data in the table for format 2 here as well
+}
