@@ -28,7 +28,7 @@ class SignUpForm(UserCreationForm):
         fields = UserCreationForm.Meta.fields + (
             'email', 'password1', 'password2', 'phone_num', 'pin', 'store_type', 'other_value',
         )
-        
+    
 
 # class LoginAuthenticationForm(AuthenticationForm):
 #     def clean_username(self):

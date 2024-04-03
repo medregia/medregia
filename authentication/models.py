@@ -6,6 +6,7 @@ from simple_history.models import HistoricalRecords
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in
 from django.contrib.auth.models import Permission
+from django.core.validators import RegexValidator
 
 class StateModel(models.Model):
     Pid = models.IntegerField(primary_key=True)
@@ -24,9 +25,40 @@ class DistrictModel(models.Model):
     def __str__(self):
         return self.districtname
 
-     
 class CustomUser(AbstractUser):
-    username = models.CharField(max_length=150, unique=True)
+    username_validator = RegexValidator(r'^[a-zA-Z\-_]+\Z', 'Only letters, hyphens, and underscores are allowed.')
+
+    username = models.CharField(
+        'username',
+        max_length=150,
+        unique=True,
+        help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.',
+        validators=[username_validator],
+        error_messages={
+            'unique': 'A user with that username already exists.',
+        },
+    )
+
+    def authenticate(self, **kwargs):
+        username = kwargs['username'].lower()
+        password = kwargs['password']
+        try:
+            user = self.get(username=username)
+        except self.DoesNotExist:
+            # If the user does not exist, create a new user with the lowercase username
+            # and password
+            user = self.create(username=username, password=password)
+            user.save()
+        else:
+            # If the user exists, make sure the user has the correct password
+            if not user.check_password(password):
+                return None
+        # If the user exists and has the correct password, save the lowercase username
+        # to the database
+        user.username = user.username.lower()
+        user.save()
+        return user
+        
     phone_num = models.CharField(max_length=15, blank=False)
     email = models.EmailField(unique=True)
     pin = models.IntegerField(blank=False ,null=True)

@@ -96,12 +96,12 @@ def signup_view(request):
 
 
 def login_view(request):
-    if request.method == "POST":
-        username = request.POST.get('username', None)
+    if request.method == 'POST':
+        username = request.POST.get('username', None).lower()
         password = request.POST.get('password', None)
         if username is not None and password is not None:
-            # Perform case-sensitive authentication
-            user = auth.authenticate(request, username=username, password=password)
+            # Perform case-insensitive authentication
+            user = auth.authenticate(username=username, password=password)
             if user is not None:
                 auth.login(request, user)
                 messages.success(request, "Login Successful")
