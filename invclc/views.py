@@ -111,36 +111,32 @@ def index_view(request):
         unique_id = "Please Update Your Profile"
 
     try:
-        #Getting Request sender is a currentuser 
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
         print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
-            
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name',get_admin_name) #not Getting
-
-            print(f"Collaborator request sender username: {collaborator_request_username}") # 
+            print('Get_Admin_name', get_admin_name)
+            print(f"Collaborator request sender username: {collaborator_request_username}")
             
-            # getting Request Sender user their name in CustomUser model
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username = get_admin_name, is_staff=True)   #getting main admin
-            print("collaborator_admin : ",collaborator_admin)
-            print("new : ",collaborator_request_sender)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            print("collaborator_admin : ", collaborator_admin)
+            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
-                try:    
+                try:
                     current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
                     if current_user and collaborator_admin:
                         check_user = current_user.username
-                        # check_user = Invoice.objects.get(user=current_user)
-                        check_admin = Invoice.objects.get(user=collaborator_admin)
-                        unique_code_id = Person.objects.get(user = collaborator_admin)
-                        print("User name : ",check_user)
-                        print("unique code :",unique_code_id.UniqueId)
-                        print("REQUEST TYPE",request.user.username)
+                        # Use filter instead of get
+                        check_admin = Invoice.objects.filter(user=collaborator_admin).first()
+                        unique_code_id = Person.objects.get(user=collaborator_admin)
+                        print("User name : ", check_user)
+                        print("unique code :", unique_code_id.UniqueId)
+                        print("REQUEST TYPE", request.user.username)
                 except Exception as a:
                     print("Collaborating Error : ", a)
                 print(f"Collaborate username: {collaborator_sender_username}")
@@ -160,7 +156,7 @@ def index_view(request):
         ModifiedHistory = "No Updatation Found"
         
     Storename = None
-
+    admin_invoices = None
     try:
         if check_user == str(request.user): 
             Storename = Person.objects.get(user=collaborator_admin)
@@ -181,8 +177,35 @@ def index_view(request):
             Medicalname = Person.objects.get(user=current_user)
     except Person.DoesNotExist:
         Medicalname = ''
-    
-# print(history_entries.history_user)
+        
+    full_paid =None
+    edit_paid = None
+    partially_paid = None
+    debt_paid = None
+    delete_history = None
+    modified_history = None
+    if check_user == str(request.user):
+        admin_invoices = Invoice.objects.filter(user=collaborator_admin)
+        full_paid = admin_invoices.filter(balance_amount=0.00).order_by('-id')
+        edit_paid = admin_invoices.filter().order_by('-id')
+        partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+        debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
+        
+        delete_history = DeletedInvoice.objects.filter(user=collaborator_admin).order_by('-id')
+        if not delete_history.exists():
+            delete_history = "No Deletion Found"
+            
+        modified_history = ModifiedInvoice.objects.filter(user = collaborator_admin).order_by('-id')
+        if not modified_history.exists():
+            modified_history = "No Updatation Found"
+            
+        if full_paid.exists():
+            print("payment :", full_paid)
+        else:
+            print("No fully paid invoices found for the collaborator admin.", collaborator_admin)
+    else:
+        print("Current user is not a collaborator admin.")
+
 
     if request.method == 'POST':
         query = request.POST.get('payment_list')
@@ -215,11 +238,18 @@ def index_view(request):
 
         invoice_form = InvoiceForm(request.POST)
         if invoice_form.is_valid():
-            invoice = invoice_form.save(commit=False)
-            invoice.user = request.user
-            invoice.save()
-            messages.success(request, "Saved SuccessFully")
-            return redirect("index")
+            if check_user == str(request.user):
+                invoice = invoice_form.save(commit=False)
+                invoice.user = collaborator_admin
+                invoice.save()
+                messages.success(request, "Saved SuccessFully")
+                return redirect("index")
+            else:
+                invoice = invoice_form.save(commit=False)
+                invoice.user = request.user
+                invoice.save()
+                messages.success(request, "Saved SuccessFully")
+                return redirect("index")
         else:
             error_message = invoice_form.errors.get('invoice_number', 'Invoice Number Must Be Unique')
             messages.error(request, error_message)
@@ -241,7 +271,14 @@ def index_view(request):
                'check_admin':check_admin,
                'unique':unique_code_id,
                'current_user':str(request.user),
-               'admin_storename':Storename.MedicalShopName,
+            #    'admin_storename':Storename.MedicalShopName,
+               'admin_invoice':admin_invoices,
+               'full_paid':full_paid,
+               'edit_paid':edit_paid,
+               'partially_paid':partially_paid,
+               'debt_paid':debt_paid,
+               'coloborate_delete':delete_history,
+               'colloborate_modified':modified_history,
                #    'convert_Medical': convert_Medical,
                }
     return render(request,'invclc/index.html',context)
