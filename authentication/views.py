@@ -24,6 +24,7 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 from .context_processors import nav_message
+from django.template.loader import render_to_string
 
 def signup_view(request):
     form = SignUpForm()
@@ -89,6 +90,12 @@ def signup_view(request):
             # Assign the user to the group
             user.groups.add(user_group)
             user.save()
+            
+            subject = 'Welcome to MedRegia !'
+            message = render_to_string('authentication/welcome_email.html', {'user': user})
+            email_from = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [user.email]
+            send_mail(subject, message, email_from, recipient_list)
 
             messages.success(request, "Signup Success")
             return redirect("/")
