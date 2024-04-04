@@ -239,11 +239,18 @@ def index_view(request):
 
         invoice_form = InvoiceForm(request.POST)
         if invoice_form.is_valid():
-            invoice = invoice_form.save(commit=False)
-            invoice.user = request.user
-            invoice.save()
-            messages.success(request, "Saved SuccessFully")
-            return redirect("index")
+            if check_user == str(request.user):
+                invoice = invoice_form.save(commit=False)
+                invoice.user = collaborator_admin
+                invoice.save()
+                messages.success(request, "Saved SuccessFully")
+                return redirect("index")
+            else:
+                invoice = invoice_form.save(commit=False)
+                invoice.user = request.user
+                invoice.save()
+                messages.success(request, "Saved SuccessFully")
+                return redirect("index")
         else:
             error_message = invoice_form.errors.get('invoice_number', 'Invoice Number Must Be Unique')
             messages.error(request, error_message)
