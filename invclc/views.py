@@ -164,7 +164,6 @@ def index_view(request):
     try:
         if check_user == str(request.user): 
             Storename = Person.objects.get(user=collaborator_admin)
-            print("Store Type : ",Storename)
         else:
             print("Using request.user")
             Storename = Person.objects.get(user=request.user)
