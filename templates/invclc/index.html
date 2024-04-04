@@ -40,15 +40,15 @@
               <h2>{{ medicalname.MedicalShopName }}</h2>
             {% endif %}
           </div>
+
           <div class="unique-code">
-            {% comment %} request user :{{request.user}}
-            current user : {{check_user}} {% endcomment %}
-            {% if request.user == check_user %}
-              <p>UNIQUE-ID :</p><span>{{unique.UniqueId}}</span>
+            {% if check_user == current_user %}
+              <p>UNIQUE-ID :</p><span>{{ unique.UniqueId }}</span>
             {% else %}
-              <p>UNIQUE-ID :</p><span>{{uniqueid}}</span>
+                <p>UNIQUE-ID :</p><span>{{ uniqueid }}</span>
             {% endif %}
-          </div>  
+        </div>
+                       
         </div>
   
         <div class="header-bottom">
