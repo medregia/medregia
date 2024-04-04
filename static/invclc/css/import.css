@@ -1,3 +1,10 @@
+body{
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+}
+
+
 .import-content{
   height:auto;
   width:100%;
@@ -57,11 +64,12 @@
   align-items:center;
   /* background-color:blue; */
 }
-table#table1{
+/* table#table1{
   width:100%;
   justify-content:center;
   align-items:center;
-}
+  margin-left: 35%;
+} */
 .lastbox .lastbox-content .lastbox-center{
   height:18vh;
   width:50%;
@@ -99,79 +107,32 @@ table#table1{
   /* background-color:red; */
 }
 
-.import-content .main-box{
-  max-height:70vh;
-  width:100%;
-  display: flex;
-  align-content: center;
-  /* background-color:red; */
-}
-
-.import-content .main-box table {
-  width: 100%;
-}
-
-
-.import-content .main-box table th,
-.import-content .main-box table td {
-  padding: 8px;
+#csvContainer{
   text-align: center;
-  /* text-align: left; */
-}
-
-.import-content .main-box table th {
-  background-color: #fff;
-  color: #333;
-}
-
-.import-content .main-box table tbody tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.import-content .main-box table tbody tr:hover {
-  background-color: #ddd;
-}
-
-
-
-/* testing btn */
-
-#contentDisplay {
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-  font-family: Arial, sans-serif;
-}
-
-#contentDisplay p {
-  font-weight: bold;
-}
-
-#contentDisplay pre {
-  white-space: pre-wrap;
-  overflow-x: auto;
-}
-
-/* Add this CSS for the generated HTML table */
-.file-content table {
+}  
+#csvTable{
   width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #ddd; /* Add border to the table */
-  margin-bottom: 10px; /* Add margin at the bottom of the table */
-}
+  margin: auto;
+ 
 
-.file-content th,
-.file-content td {
-  border: 1px solid #ddd;
-  padding: 8px;
 }
-
-.file-content th {
-  background-color: #f2f2f2;
+#csvTable tr , #csvTable td{
+  border: 1px solid #ccc;
+  text-align: left;
 }
+#tableContainer{
+  text-align: center;
 
-.file-content tr:nth-child(even) {
-  background-color: #f2f2f2;
+}
+#table2{
+  width: 100%;
+  /* margin-left: 35%; */
+}
+#table2 tr , #table2 td, #table2 th{
+  border: 1px solid #ccc;
+  /* text-align: left; */
+  width: 260px;
+}
+#upload{
+  display: none;
 }

@@ -41,8 +41,10 @@
             {% endif %}
           </div>
           <div class="unique-code">
-            {% if request_user.username == request.user%}
-              <p>UNIQUE-ID :</p><span>{{manager_unique_code}}</span>
+            {% comment %} request user :{{request.user}}
+            current user : {{check_user}} {% endcomment %}
+            {% if request.user == check_user %}
+              <p>UNIQUE-ID :</p><span>{{unique.UniqueId}}</span>
             {% else %}
               <p>UNIQUE-ID :</p><span>{{uniqueid}}</span>
             {% endif %}
