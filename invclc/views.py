@@ -109,11 +109,6 @@ def index_view(request):
     except Person.DoesNotExist:
         unique_code = "Please Update Your Profile"
         unique_id = "Please Update Your Profile"
-        
-    try:
-        Medicalname = Person.objects.get(user=current_user)
-    except Person.DoesNotExist:
-        Medicalname = ''
 
     try:
         #Getting Request sender is a currentuser 
@@ -145,6 +140,7 @@ def index_view(request):
                         unique_code_id = Person.objects.get(user = collaborator_admin)
                         print("User name : ",check_user)
                         print("unique code :",unique_code_id.UniqueId)
+                        print("REQUEST TYPE",request.user.username)
                 except Exception as a:
                     print("Collaborating Error : ", a)
                 print(f"Collaborate username: {collaborator_sender_username}")
@@ -164,17 +160,28 @@ def index_view(request):
         ModifiedHistory = "No Updatation Found"
         
     Storename = None
-    try:
-        Storename = Person.objects.get(user=current_user)
-        modifiedStore = convert_Medical(Storename.MedicalShopName)
-    except Person.DoesNotExist:
-        if Storename:
-            modifiedStore = convert_Medical(Storename.MedicalShopName)
-        else:
-            # Handle the case where Storename is not found
-            modifiedStore = "Not Found"
 
-        
+    try:
+        if check_user == str(request.user): 
+            Storename = Person.objects.get(user=collaborator_admin)
+            print("Store Type : ",Storename)
+        else:
+            print("Using request.user")
+            Storename = Person.objects.get(user=request.user)
+
+        modifiedStore = convert_Medical(Storename.MedicalShopName)
+        print(Storename.MedicalShopName)
+    except Person.DoesNotExist:
+        modifiedStore = "Not Found"
+
+
+    try:
+        if check_user == str(request.user): 
+            Medicalname = Person.objects.get(user=collaborator_admin)
+        else:
+            Medicalname = Person.objects.get(user=current_user)
+    except Person.DoesNotExist:
+        Medicalname = ''
     
 # print(history_entries.history_user)
 
@@ -234,8 +241,9 @@ def index_view(request):
                'check_user':check_user,
                'check_admin':check_admin,
                'unique':unique_code_id,
-               'current_user':request.user,
-            #    'convert_Medical': convert_Medical,
+               'current_user':str(request.user),
+               'admin_storename':Storename.MedicalShopName,
+               #    'convert_Medical': convert_Medical,
                }
     return render(request,'invclc/index.html',context)
 
