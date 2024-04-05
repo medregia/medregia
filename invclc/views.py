@@ -272,7 +272,7 @@ def index_view(request):
                'check_admin':check_admin,
                'unique':unique_code_id,
                'current_user':str(request.user),
-               'admin_storename':Storename.MedicalShopName,
+            #    'admin_storename':Storename.MedicalShopName,
                'admin_invoice':admin_invoices,
                'full_paid':full_paid,
                'edit_paid':edit_paid,
