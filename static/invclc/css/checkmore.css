@@ -105,9 +105,13 @@ span.status{
   .scrollable-cell {
     max-height: 40px;
     max-width: 90px;
+    margin-left: auto;
     overflow-y: auto;
+    text-align:center;
 }
 
 .expand{
-    max-width: 150px;
+    margin-left: auto;
+    max-width: 120px;
+    text-align: center;
 }

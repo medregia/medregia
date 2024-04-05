@@ -107,8 +107,8 @@ def index_view(request):
         unique_code = Person.objects.get(user = request.user)
         unique_id = unique_code.UniqueId
     except Person.DoesNotExist:
-        unique_code = "Please Update Your Profile"
-        unique_id = "Please Update Your Profile"
+        unique_code =f"'{request.user}' Please Update Your Profile"
+        unique_id = f"'{request.user}' Please Update Your Profile"
 
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
@@ -252,7 +252,8 @@ def index_view(request):
             else:
                 invoice = invoice_form.save(commit=False)
                 invoice.user = request.user
-            
+            invoice.updated_by = request.user
+
             # Save the Invoice object
             invoice.save()
 
@@ -588,19 +589,113 @@ def checkmore_view(request):
 @login_required(login_url='/')
 def paymore_view(request):
     current_user = request.user
-    invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+    check_user = None 
+    collaborator_admin = None
+    
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            print('Get_Admin_name', get_admin_name)
+            print(f"Collaborator request sender username: {collaborator_request_username}")
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            print("collaborator_admin : ", collaborator_admin)
+            print("new : ", collaborator_request_sender)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                except Exception as a:
+                    print("Collaborating Error : ", a)
+            
+    except Exception as e:
+        print("Something Wrong in 540 ", e)
+    if collaborator_admin and collaborator_admin is not None:
+        invoices = Invoice.objects.filter(Q(user=collaborator_admin ), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+    else:
+        invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
     return render(request, 'invclc/paymore.html',{'invoices': invoices})
 
 @login_required(login_url='/')
 def updatemore_view(request):
     current_user = request.user
-    invoices = Invoice.objects.filter(user = current_user).order_by('-id')
+    check_user = None 
+    collaborator_admin = None
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            print('Get_Admin_name', get_admin_name)
+            print(f"Collaborator request sender username: {collaborator_request_username}")
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            print("collaborator_admin : ", collaborator_admin)
+            print("new : ", collaborator_request_sender)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                except Exception as a:
+                    print("Collaborating Error : ", a)
+            
+    except Exception as e:
+        print("Something Wrong in 540 ", e)
+    if collaborator_admin and collaborator_admin is not None:
+        invoices = Invoice.objects.filter(user = collaborator_admin).order_by('-id')
+    else:
+        invoices = Invoice.objects.filter(user = current_user).order_by('-id')
     return render(request, 'invclc/updatemore.html',{'invoices': invoices})
 
 @login_required(login_url='/')
 def unpaid_debt(request):
     current_user = request.user
-    invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
+    check_user = None 
+    collaborator_admin = None
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            print('Get_Admin_name', get_admin_name)
+            print(f"Collaborator request sender username: {collaborator_request_username}")
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            print("collaborator_admin : ", collaborator_admin)
+            print("new : ", collaborator_request_sender)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                except Exception as a:
+                    print("Collaborating Error : ", a)
+            
+    except Exception as e:
+        print("Something Wrong in 540 ", e)
+    if collaborator_admin is not None:
+        invoices = Invoice.objects.filter(Q(user=collaborator_admin), ~Q(balance_amount=0.00), Q(payment_amount=0))
+    else:
+        invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
     return render(request, 'invclc/unpaid_debt.html',{'invoices': invoices})
 
 def update_invoice(request, invoice_id):

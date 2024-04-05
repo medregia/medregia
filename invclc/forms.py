@@ -9,7 +9,7 @@ class InvoiceForm(forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = ['pharmacy_name', 'invoice_number', 'invoice_date', 'invoice_amount', 'balance_amount', 'payment_amount','today_date']
+        fields = ['pharmacy_name', 'invoice_number', 'invoice_date', 'invoice_amount', 'balance_amount', 'payment_amount','today_date','updated_by']
         widgets = {
             'pharmacy_name': forms.TextInput(attrs={'placeholder': 'Pharmacy Name','class':'pharmacy_name'}),
             'invoice_number': forms.TextInput(attrs={'placeholder': 'Invoice Number','value':'IV-','class':'invoice_number'}),
@@ -18,6 +18,7 @@ class InvoiceForm(forms.ModelForm):
             'payment_amount': forms.NumberInput(attrs={'placeholder': '0','title':'Default 0 ','class':'payment_amount'}),
             'today_date':forms.DateInput(attrs={'type':'hidden'}),
             'current_time':forms.TimeInput(attrs={'type':'hidden'}),
+            'updated_by':forms.TextInput(attrs={'type':'hidden',}),
         }
 
 class UploadFileForm(forms.Form):
