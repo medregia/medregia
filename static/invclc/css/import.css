@@ -133,6 +133,22 @@ body{
   /* text-align: left; */
   width: 260px;
 }
-#upload{
-  display: none;
+
+
+#Upload{
+  /* height: 45px; */
+  width: 100%;
+  /* background-color: red; */
+  margin-top: 8px;
+  
+}
+#Upload button{
+  height: 35px;
+  width: 80px;
+  background-color: blue;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
 }
