@@ -1,5 +1,6 @@
 from django import template
 from invclc.models import ModifiedInvoice
+from authentication.models import CustomUser,Person
 
 register = template.Library()
 
@@ -16,3 +17,19 @@ def convert_medical(value):
         return words[0][0].upper()
     else:
         return "####"
+
+
+def check_medicals(medicals):
+    # Logic to check if value exists in the database
+    medical_exists = Person.objects.filter(MedicalShopName=medicals).exists()
+    
+    if medical_exists:
+        try:
+            get_medical = Person.objects.get(MedicalShopName=medicals)
+            check_medicals = True  # or your logic to determine if value exists
+        except Person.DoesNotExist:
+            check_medicals = False
+    else:
+        check_medicals = False
+    
+    return {'check_medicals': check_medicals}

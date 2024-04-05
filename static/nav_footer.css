@@ -245,6 +245,17 @@ ul li a:hover {
   display:none
 }
 
+span.notify-alert{
+  display:inline-block;
+  height:10px;
+  width:10px;
+  border-radius:50%;
+  background-color:red;
+  position:absolute;
+  top:2px;
+  right:2px;
+}
+
 /* mediaquery */
 
 @media(max-width:1000px){

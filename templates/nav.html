@@ -9,7 +9,11 @@
   </div>
 
   <div class="nav-links">
-      <span class="bell"><i id="bell" class="fa-regular fa-bell"></i></span>  
+      {% if notifications|length >= 1 %}
+        <span class="bell"><i id="bell" class="fa-regular fa-bell"></i><span class="notify-alert"></span></span>  
+      {% else %}
+        <span class="bell"><i id="bell" class="fa-regular fa-bell"></i></span>  
+      {% endif %}
 
       {% if request.user.is_superuser or request.user.is_staff %}
         <a href="{% url 'admin:index' %}">Admin</a>
