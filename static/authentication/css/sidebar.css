@@ -69,7 +69,7 @@ a{
 .sidebar {
   width: 150px;
   height: 100vh;
-  margin-left: -10px;
+  /* margin-left: -10px; */
   background-color: #033b4a;
   color: #fff;
   overflow-x: hidden;
@@ -98,7 +98,7 @@ span.nav-item{
 }
 
 .sidebar-closed {
-  width: 55px;
+  width: 50px;
 }
 
 .sidebar-closed .arrow {

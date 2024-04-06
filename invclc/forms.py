@@ -8,7 +8,7 @@ class InvoiceForm(forms.ModelForm):
         super(InvoiceForm, self).__init__(*args, **kwargs)
         
         # Set default value for invoice_date
-        self.fields['invoice_date'].initial = timezone.now().date()
+        # self.fields['invoice_date'].initial = timezone.now().date()
         
         # Calculate current time and add 5 hours and 31 minutes
         current_time = timezone.now() + timedelta(hours=5, minutes=31)

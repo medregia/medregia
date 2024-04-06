@@ -1,13 +1,16 @@
 {% load static %}
 <nav>
-  <div class="header">
-    <a href="{% url 'index' %}">Home</a>
+  <div class="nav-headings">
+    <div class="header">
+      <a href="{% url 'index' %}">Home</a>
+    </div>
+  
+    <div class="nav-heading">
+      <a href="{% url 'index' %}">MedRegiA</a>
+    </div>
+  
   </div>
-
-  <div class="nav-heading">
-    <a href="{% url 'index' %}">MedRegiA</a>
-  </div>
-
+  
   <div class="nav-links">
       {% if notifications|length >= 1 %}
         <span class="bell"><i id="bell" class="fa-regular fa-bell"></i><span class="notify-alert"></span></span>  
@@ -19,11 +22,17 @@
         <a href="{% url 'admin:index' %}">Admin</a>
       {% endif %}
 
-      <a href="{% url 'profile' %}"><span><img src="{% static 'authentication/images/profile.png'%}" class="user-pic" alt="profile" title="{{request.user}}"></span></a>
+      <a href="{% url 'profile' %}"><span class="profile-content"><img src="{% static 'authentication/images/profile.png'%}" class="user-pic" alt="profile" title="{{request.user}}"></span></a>
 
       <a href="{% url 'logout' %}">Logout</a>
   </div>
   
+  <div class="menu">
+    <div class="menu-line"></div>
+    <div class="menu-line"></div>
+    <div class="menu-line"></div>
+  </div>
+
 </nav>
 
 
