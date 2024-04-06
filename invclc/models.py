@@ -15,8 +15,8 @@ class Invoice(models.Model):
     balance_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
     today_date = models.DateField(default=timezone.now)
-    # current_time = models.TimeField(default=(timezone.now() + timedelta(hours=5, minutes=30)).time())
-    current_time = models.TimeField(default=timezone.now)
+    current_time = models.TimeField(default=(timezone.now() + timedelta(hours=5, minutes=31)).time())
+    # current_time = models.TimeField(default=timezone.now)
     updated_by = models.CharField(max_length=20,null=True,blank=True)
 
     def save(self, *args, **kwargs):
