@@ -12,8 +12,7 @@ body{
 .paymore-container{
     height: 100vh;
     width: 100%;
-    position: absolute;
-    
+    position: absolute;  
 }
 .paymore-container-paid{
     /* height: 100vh; */
@@ -31,7 +30,7 @@ body{
 .paymore-container .csvBtn{
     /* color: red; */
     height: 40px;
-    width: 100px;
+    width: 70px;
     cursor: pointer;
     margin-right: 20px;
 
@@ -51,12 +50,15 @@ h3{
 .paymoreTable tr{
     border-bottom: 1px solid #a39f9f ;
 }
-.paymoreTable th , .paymoreTable td{
-    padding: 12px 15px;
+.paymoreTable td{
+    padding: 0px;
     text-align: center;
     border-right: 1px solid #bdb8b8 ;
 }
 .paymoreTable th{
+    padding: 10px 10px;
+    text-align: center;
+    border-right: 1px solid #bdb8b8 ;
     background-color: #6b6060;
     color: white;
 }
@@ -87,15 +89,15 @@ button.pay_btn{
   }
   .paymore-container table tbody tr td input{
     height:30px;
-    width:100px;
+    width:130px;
     border:none;
     font-weight: bold;
     /* background-color:red; */
   }
     
   .paymore-container button{
-    height:40px;
-    width: 70px;
+    height:20px;
+    width: 50px;
     background-color:blue;
     color: #FFF;
     border-radius: 3px;

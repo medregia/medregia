@@ -1,7 +1,7 @@
 {% load static %}
-
 <div class="navbar">
     <div class="sidebar sidebar-closed" id="sidebar">
+        <h3 id="medregiaHeader">Medregia</h3>
         <a href="{% url 'index' %}" class="logo">
             <img src="{% static 'authentication/images/invoice1.png' %}" alt="">
             <span class="nav-item">Invoice</span> 
@@ -19,12 +19,8 @@
 
         <a href="{% url 'import-export' %}" class="logo export">
             <img src="{% static 'authentication/images/import.png' %}" alt="">
-            <span class="nav-item">Export
-                <br>/ Import</span> 
+            <span class="nav-item">Export/Import</span> 
         </a>
-
-
-
 
         <div class="toggle-btn" onclick="toggleSidebar()">
             <div class="arrow">&#9664;</div>

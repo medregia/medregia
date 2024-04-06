@@ -9,9 +9,13 @@
   </div>
 
   <div class="nav-links">
-      <span class="bell"><i id="bell" class="fa-regular fa-bell"></i></span>  
+      {% if notifications|length >= 1 %}
+        <span class="bell"><i id="bell" class="fa-regular fa-bell"></i><span class="notify-alert"></span></span>  
+      {% else %}
+        <span class="bell"><i id="bell" class="fa-regular fa-bell"></i></span>  
+      {% endif %}
 
-      {% if request.user.is_superuser %}
+      {% if request.user.is_superuser or request.user.is_staff %}
         <a href="{% url 'admin:index' %}">Admin</a>
       {% endif %}
 
@@ -20,54 +24,67 @@
       <a href="{% url 'logout' %}">Logout</a>
   </div>
   
-{% comment %} 
-  <ul>
-      <li class="for_a"><i id="bell" class="fa-regular fa-bell"></i></li>
-      {% if request.user.is_superuser %}
-        <li class="for_a"><a href="{% url 'admin:index' %}">Admin</a></li>
-      {% endif %}
-      <li><a href="{% url 'profile' %}"><span><img src="{% static 'authentication/images/profile.png'%}" class="user-pic" alt="profile" /></span></a></li>
-      <li><a href="{% url 'logout' %}">Logout</a></li>
-  </ul>
-{% endcomment %}
-
 </nav>
 
 
 <div class="notifications hide">
-  {% if request.user.username == Admin_form %}
-    <div class="admin-request">
-      <p>Admin Request </p>
-      <h4>Here Admin User Want to Make
-        You as a Admin {{ admin_user }}</h4>
-
-      <form method="post" action="{% url 'confirm_admin' %}" id="admin_action">
-        {% csrf_token %}
-        <input  class="confirm" type="submit" value="Confirm">
-        <input type="button" value="Cancel">
-      </form>
-
+  <div class="notification-count">{{ notifications|length }}</div>
+  {% if notifications %}
+    <!-- Display the count of notifications -->    
+    {% for notify in notifications %}
+      {% if request.user.username == notify.receiver.username %}
+        {% if request.user.is_staff %}
+          <div id="admin-request-message" class="admin-request"> 
+            <p>Collaboration Request</p>
+          
+            <div class="admin-body">
+              <div class="admin-message-header">
+                <h4>User <span>"{{ notify.sender }}"</span> Wants to Collaborate with You <span>"{{ notify.receiver }}"</span></h4>
+              </div>
+  
+              <div class="admin-submit">
+                <form method="post" action="{% url 'confirm_admin' %}" id="admin_action">
+                  {% csrf_token %}
+                  <input class="confirm" type="submit" value="Confirm">
+                </form>
+                <form method="post" action="{% url 'admin_cancel' %}" id="action_cancel">
+                  {% csrf_token %}
+                  <input class="cancel" type="submit" value="cancel">
+                </form>
+              </div>
+            </div>
+  
+          </div>
+          
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  
+  {% else %}
+    <div class="notify-me">
+      <h5>Your Message Notifications Here</h5><br>
+      {% include 'notification_message.html' %}
     </div>
   {% endif %}
-    <h5> Your Message Notifications Here </h5>
-
-  <div class="notify-me">
-    {% include 'notification_message.html' %}
-  </div>
-  
 </div>
 
 
+<script>
+$(document).ready(function() {
+  // When cancel button is clicked, hide the notification
+  $('.cancel').click(function() {
+    $('.admin-request').addClass('cover');
+  });
 
-{% comment %} <div class="user-box hide">
-  <img src="{% static 'authentication/images/profile.png'%}" class="user" alt="profile" >
-  <h3>{{request.user}}</h3>
-  <a href="{% url 'profile' %}">Profile</a>
-  <div class="mail">{{user_mail}}</div>
+  // When confirm button is clicked, submit the form
+  $('.confirm').click(function() {
+    $('#admin_action').submit();
+    // After submitting the form, hide the notification
+    $('.admin-request').addClass('cover');
+  });
+  
+});
+</script>
 
-  <div class="content">
-    <a href="{% url 'password_change' %}">Change Password</a>
-    <a href="{% url 'logout' %}">Logout</a>
-  </div>
-</div> {% endcomment %}
+
 <script src="{% static 'authentication/js/nav.js' %}"></script>

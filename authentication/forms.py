@@ -13,6 +13,7 @@ class SignUpForm(UserCreationForm):
         ('manufacturer', 'Manufacturer'),
         ('pharmacy', 'Pharmacy'),
         ('medical', 'Medical'),
+        ('user','User'),
         ('others', 'Others'),
     ]
     store_type = forms.ChoiceField(choices=STORE_TYPES)
@@ -32,7 +33,6 @@ class SignUpForm(UserCreationForm):
 class LoginAuthenticationForm(AuthenticationForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        if username:
-            return username
-        else:
+        if not username:
             raise forms.ValidationError("Please enter a valid username.")
+        return username

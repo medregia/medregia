@@ -5,6 +5,7 @@ from django.utils import timezone
 from simple_history.models import HistoricalRecords
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in
+from django.contrib.auth.models import Permission
 
 class StateModel(models.Model):
     Pid = models.IntegerField(primary_key=True)
@@ -35,6 +36,7 @@ class CustomUser(AbstractUser):
         ('manufacturer', 'Manufacturer'),
         ('pharmacy', 'Pharmacy'),
         ('medical', 'Medical'),
+        ('user','User'),
         ('others', 'Others'),
     ]
     store_type = models.CharField(max_length=50, choices=STORE_TYPES,null=False,blank=False)
@@ -54,6 +56,12 @@ class CustomUser(AbstractUser):
         verbose_name='user permissions',
         help_text='Specific permissions for this user.',
     )
+    
+    # class Meta:
+    #     permissions = [
+    #         ("view_own_details", "Can view own details"),
+    #     ]
+    
     def _str_(self):
         return self.username
     
@@ -86,10 +94,16 @@ class Person(models.Model):
     def str(self):
         return self.UserName
     
-class MakeUsAdmin(models.Model):
-    newAdmin = models.CharField(max_length = 30)
-    date_joined = models.DateTimeField(default=timezone.now)
+class Notification(models.Model):
+    sender = models.ForeignKey(CustomUser, related_name='sent_notifications', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(CustomUser, related_name='received_notifications', on_delete=models.CASCADE)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    request_status = models.BooleanField(default = True)
+    class Meta:
+        unique_together = ('sender', 'receiver')
     
     def __str__(self):
-        return self.newAdmin
+        return f"Notification from {self.sender.username} to {self.receiver.username}"
     
