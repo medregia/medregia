@@ -104,3 +104,9 @@ span.nav-item{
 .sidebar-closed .arrow {
   transform: rotate(180deg);
 } 
+
+@media (min-width: 320px) and (max-width: 420px){
+  .sidebar-closed .arrow {
+    display:none
+  }
+}

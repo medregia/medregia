@@ -155,6 +155,7 @@ footer .footer-col ul.foot{
 footer .footer-col ul.foot li{
     list-style-type:none;
     width: 100%;
+    font-size:12px;
 }
 
 footer .footer-col ul.foot1{
@@ -214,7 +215,6 @@ li:not(:last-child){
 .foot li a{
     display: block;
     font-size: 19px;
-    
     color: white;
     text-decoration: none;
     transition: 0.4s;
@@ -277,5 +277,10 @@ li:not(:last-child){
 @media (min-width: 320px) and (max-width: 420px) {
     footer{
         margin-top:50vh;
+        width:85%;
+    }
+    .foot li a{
+        max-width:220px;
+        font-size:12px;
     }
 }

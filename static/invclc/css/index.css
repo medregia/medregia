@@ -685,7 +685,7 @@ span.loginstatus{
   }
 }
 
-@media (min-width: 420px) and (max-width: 999px){
+@media (min-width: 425px) and (max-width: 999px){
   .header-bottom form table th,
   .main-body .panel-content .tab button,
   .table-content-left th,
@@ -859,7 +859,7 @@ font-size: 17px;
 cursor: pointer;
 } */
 
-@media (max-width:768px){
+@media (min-width: 500px) and (max-width:768px){
   .main-body .panel-content .tab{
     width:98%;
   }
@@ -933,7 +933,7 @@ cursor: pointer;
   }
 }   
 
-@media (min-width: 421px) and (max-width: 499px) {
+@media (min-width: 425px) and (max-width: 499px) {
   .tabcontent{
     align-items:center;
     flex-direction: column;
@@ -971,12 +971,12 @@ cursor: pointer;
     width: 20%;
     max-width: 24%;
   }
-  .main-container {
-    width:86%;
+  .main-container{
+    width:82%;
   }
 }
 
-@media (min-width: 320px) and (max-width: 420px) {
+@media (min-width: 320px) and (max-width: 424px) {
 
   .tabcontent{
     align-items:center;
@@ -993,6 +993,7 @@ cursor: pointer;
   }
 
   .main-container .main-header{
+    width:98%;
     height:20vh;
   }
 
@@ -1010,17 +1011,69 @@ cursor: pointer;
     max-width: 24%;
   }
   .main-container .main-header .header-top{
-    height:auto;
     flex-direction:column;
   }
 
-  .main-body .panel-content .tab {
+  /* .main-body .panel-content .tab {
     margin-top:20px;
+  } */
+
+  .main-body{
+    margin-top:15px;
   }
 
   .unique-code {
     width:95%;
     justify-content:center;
+  }
+  .main-container .main-header .header-top .header-top-btn {
+    order:2;
+    /* width: 70%;
+    column-gap: 10px; */
+  }
+  .main-container .main-header .header-top .heading {
+    order:1;
+    width:100%
+  }
+  .unique-code{
+    order:3;
+  }
+  .main-container .main-header .header-top .heading h2,
+  .main-container .main-header .header-top .header-top-btn h3{
+    font-size:15px;
+  }
+  .unique-code span{
+    font-size:10px;
+    width:65%;
+  }
+  .header-bottom form table th,
+  .main-body .panel-content .tab button,
+  .table-content-left th,
+  .table-content-right th,
+  .delete-table th,
+   .update-table th{
+    font-size: 12px;
+  }
+
+  .table-cover-right table tbody tr td input, .table-content-left table tbody tr td input{
+    font-size:10px;
+  }
+  .delete-heading h3, .update-heading h3{
+    font-size: 15px;
+  }
+  .table-content-left a button, .table-content-right a button{
+    font-size:10px;
+  }
+  .table-content-left a, .table-content-right a{
+    width:60%;
+  }
+  .main-container{
+    width:82%;
+  }
+}
+@media (min-width:320px) and (max-width:369px){
+  .main-container{
+    width:75%;
   }
 }
 

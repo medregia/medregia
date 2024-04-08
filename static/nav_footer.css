@@ -288,7 +288,7 @@ span.notify-alert{
   }
 }
 
-@media all and (max-width:650px){
+@media (min-width:320px) and (max-width:650px){
   nav{
     flex-direction: column;
 
@@ -323,5 +323,11 @@ span.notify-alert{
 
   .showmenu{
     display: none;
+  }
+}
+
+@media (min-width:320px) and (max-width:369px){
+  nav{
+    align-items: flex-start;
   }
 }
