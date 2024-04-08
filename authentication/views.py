@@ -169,12 +169,7 @@ def profile_view(request):
     except Exception as e:
         print(f"Error: {e}")
         
-<<<<<<< HEAD
-    # permissions = Permission.objects.filter(content_type__model='invoice')
-
-=======
     permissions = Permission.objects.filter(content_type__model='invoice')
->>>>>>> e4384a5737a9dbf2fb54fadac8b345526e4ff813
     # Print permission codenames
     # for permission in permissions:
     #     print(permission.codename)
