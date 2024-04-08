@@ -78,6 +78,7 @@
                     <td>
                       {{form.today_date}}
                       {{form.current_time}}
+                      {{form.updated_by}}
                       <button type="submit" id="saveButton"> Save </button>
                     </td>
                 </tr>
@@ -400,25 +401,6 @@
               </thead>
             
               <tbody>
-                {% if check_user == current_user %}
-                  {% if coloborate_delete == "No Deletion Found" %}
-                  <tr>
-                    <td colspan="6"><h2>No Deleted Details Found ...</h2></td>
-                  </tr>
-                  {% else %}
-                    {% for history in coloborate_delete%}
-                    <tr>
-                      <td>{{history.today_date}}</td>
-                      <td>{{history.pharmacy}}</td>
-                      <td>{{history.number}}</td>
-                      <td>{{history.date}}</td>
-                      <td>{{history.amount}}</td>
-                      <td>{{history.payment}}</td>
-                    </tr>
-                    {% endfor %}
-                  {% endif %}
-                {% else%}
-
                   {% if DeleteHistory == "No Deletion Found" %}
                     <tr>
                       <td colspan="6"><h2>No Deleted Details Found ...</h2></td>
@@ -435,8 +417,6 @@
                     </tr>
                     {% endfor %}
                   {% endif %}
-
-                {% endif %}
               </tbody>
             </table>
   
@@ -461,24 +441,6 @@
               </thead>
             
               <tbody>
-                {% if check_user == current_user %}
-                  {% if colloborate_modified == "No Updatation Found" %}
-                  <tr>
-                    <td colspan="6"><h2>No Modified Details Here ...</h2></td>
-                  </tr>
-                  {% else %}
-                    {% for Modified in colloborate_modified %}
-                      <tr>
-                        <td>{{ Modified.modified_today_date }}</td>
-                        <td>{{ Modified.modified_pharmacy }}</td>
-                        <td>{{ Modified.modified_Invoice_number }}</td>
-                        <td>{{ Modified.modified_Invoice_date }}</td>
-                        <td>{{ Modified.modified_Total_amount }}</td>
-                        <td>{{ Modified.modified_payment }}</td>
-                      </tr>
-                    {% endfor %}
-                  {% endif %}
-                {% else %}
                   {% if ModifiedHistory == "No Updatation Found" %}
                     <tr>
                       <td colspan="6"><h2>No Modified Details Here ...</h2></td>
@@ -495,7 +457,6 @@
                       </tr>
                     {% endfor %}
                   {% endif %}
-                {% endif %}
               </tbody>
             </table>
   

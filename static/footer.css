@@ -118,7 +118,7 @@ li:not(:last-child){
 
 footer{
     min-height:40vh;
-    width: 96%;
+    width: 92%;
     background-color:#033B4A;
     display:flex;
     justify-content:space-around;
@@ -131,7 +131,7 @@ footer{
 }
 
 footer .footer-col{
-    height:30vh;
+    height:35vh;
     width:300px;
     /* background-color:blue; */
     display:flex;
@@ -154,6 +154,8 @@ footer .footer-col ul.foot{
 
 footer .footer-col ul.foot li{
     list-style-type:none;
+    width: 100%;
+    font-size:12px;
 }
 
 footer .footer-col ul.foot1{
@@ -213,12 +215,11 @@ li:not(:last-child){
 .foot li a{
     display: block;
     font-size: 19px;
-    
     color: white;
     text-decoration: none;
     transition: 0.4s;
-    width: 250px;
-    margin-left: 15px;
+    width: 350px;
+    /* margin-left: 15px; */
 }
 .foot li a:hover{
     color: white;
@@ -264,8 +265,22 @@ li:not(:last-child){
         margin-top:50vh;
     }
 }
-@media (min-width: 320px) and (max-width: 425px) {
+
+@media (min-width: 421px) and (max-width: 499px) {
+    footer{
+        width:auto;
+    }
+    .foot li a{
+        max-width:300px;
+    }
+}
+@media (min-width: 320px) and (max-width: 420px) {
     footer{
         margin-top:50vh;
+        width:85%;
+    }
+    .foot li a{
+        max-width:220px;
+        font-size:12px;
     }
 }

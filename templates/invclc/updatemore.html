@@ -38,10 +38,14 @@
                 <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
                     <td><input type="checkbox" id="check"></td>
                     <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
+<<<<<<< HEAD
                     <td><span id="invoice_number">{{data.invoice_number}}</span></td>
                     <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
+=======
+                    <td><input type="text" value="{{ data.invoice_date}}" disabled name="invoice_date"></td>
+>>>>>>> e4384a5737a9dbf2fb54fadac8b345526e4ff813
                     <td><span id="paymentCurrentTime">{{data.current_time}}</span></td>
-                    <td><span id="paymentCurrentUser">{{request.user}}</span></td>
+                    <td><span id="paymentCurrentUser">{{data.updated_by}}</span></td>
                     <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
                     <td><span id="paymentAmountList">{{data.payment_amount}}</span></td>
                     <td><span id="paymentTodayDate">{{data.today_date}}</span></td>

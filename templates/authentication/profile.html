@@ -238,14 +238,14 @@
                                 <div class="profile-admin-name containers">
                                     {% for admin in admins %}
                                         <label for="name">Name</label>
-                                        <input type="text" value="{{ admin.username }}" id="user_name" disabled>
+                                        <input type="text" value="{{ admin_name }}" id="user_name" disabled>
                                     {% endfor %}
                                 </div>
                             
                                 <div class="profile-admin-contact containers">
                                     {% for admin in admins %}
                                         <label for="name">Contact</label>
-                                        <input type="text"id="Contact"  name="Contact" value="{{ admin.phone_num }}" disabled>
+                                        <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -284,6 +284,7 @@
                             {% if request.user.is_superuser or request.user.is_staff %}
                                 <div class="collobarate-message">
                                     <h4>* Please note that if the request receiver rejects the request, you should not send another request to the same receiver *</h4>
+                                    <a href="{% url 'colaborator' %}"><button type="button">List</button></a>
                                 </div>
                                 <form action="#" method="post">
                                     {% csrf_token %}
@@ -318,14 +319,14 @@
                 <div class="profile-admin-name containers">
                     {% for admin in admins %}
                         <label for="name">Name</label>
-                        <input type="text" value="{{ admin.username }}" id="user_name" disabled>
+                        <input type="text" value="{{ admin_name }}" id="user_name" disabled>
                     {% endfor %}
                 </div>
             
                 <div class="profile-admin-contact containers">
                     {% for admin in admins %}
                         <label for="name">Contact</label>
-                        <input type="text"id="Contact"  name="Contact" value="{{ admin.phone_num }}" disabled>
+                        <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
                     {% endfor %}
                 </div>
             </div>

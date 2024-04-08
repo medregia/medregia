@@ -56,6 +56,7 @@
           {% endif %}
       </span>
       </div>
+<<<<<<< HEAD
 
       <div class="form-group">
         <label for="id_password2">Confirm Password</label>
@@ -77,8 +78,20 @@
       </span>
       </div>
 
+=======
+>>>>>>> e4384a5737a9dbf2fb54fadac8b345526e4ff813
       
       
+
+      <div class="form-group">
+        <label for="id_phone_num">Phone Number</label>
+        {{form.phone_num}}
+        <span>
+          {% if form.errors.phone_num %}
+              {{form.errors.phone_num}}
+          {% endif %}
+      </span>
+      </div>
 
       <div class="form-group">
         <label for="id_pin">Pin</label>

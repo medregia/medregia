@@ -105,9 +105,19 @@ span.status{
   .scrollable-cell {
     max-height: 40px;
     max-width: 90px;
+    margin-left: auto;
     overflow-y: auto;
+    text-align:center;
 }
+<<<<<<< HEAD
 div.scrollable-cell.expand,div.scrollable-cell{
     text-align: center;
     margin-left: 25px;
+=======
+
+.expand{
+    margin-left: auto;
+    max-width: 120px;
+    text-align: center;
+>>>>>>> e4384a5737a9dbf2fb54fadac8b345526e4ff813
 }
