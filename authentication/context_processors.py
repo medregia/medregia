@@ -1,18 +1,20 @@
 from django.contrib.auth.models import User
-from .models import MakeUsAdmin
+from authentication.models import Notification,CustomUser
 
 def admin_info(request):
     if request.user.is_authenticated and request.user.is_staff:
         return {'admin_user': request.user}
     else:
         return {}
-    
-def admin_form_data(request):
-    current_admin = MakeUsAdmin.objects.order_by('-date_joined').first()
-    if current_admin:
-        Admin_form = current_admin.newAdmin
+
+
+def nav_message(request):
+    if request.user.is_authenticated:
+        current_user = request.user
+        
+        notifications = Notification.objects.filter(receiver=current_user, is_read=False,request_status=True)
     else:
-        Admin_form = None
-
-    return {'Admin_form': Admin_form, 'admin_filter': current_admin}
-
+        # If the user is not authenticated, return an empty list of notifications
+        notifications = []
+    
+    return {'notifications': notifications}

@@ -1,5 +1,5 @@
 from django import forms
-from .models import StateModel, DistrictModel, Person,MakeUsAdmin
+from .models import StateModel, DistrictModel, Person,Notification
 
 class ProfileForm(forms.ModelForm):
     MedicalShopName = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Medical Shop Name'}))
@@ -24,10 +24,10 @@ class ProfileForm(forms.ModelForm):
         fields = ['MedicalShopName', 'ProprietaryName', 'ProprietaryNumber', 'ProprietaryContact', 'DrugLiceneseNumber1', 'DrugLiceneseNumber2', 'state', 'district', 'City', 'Pincode', 'StreetNumber', 'DoorNumber', 'PharmacistName', 'RegisteredNumber', 'ContactNumber', 'UniqueId']
 
             
-class MakeAdmin(forms.ModelForm):
-    newAdmin = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Enter User Name Want to Admin '}))
+class Notification(forms.ModelForm):
+    message = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Enter User Name Want to Admin '}))
     class Meta:
-        model = MakeUsAdmin
+        model = Notification
         fields = [
-            'newAdmin',
+            'message',
         ]

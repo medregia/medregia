@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} MedRegiA || Coloborator Lists {% endblock title %}
+{% block nav_footer %}{% static 'nav_footer.css' %} {% endblock nav_footer %}
+{% block link %}{% static 'authentication/css/coloborator.css' %} {% endblock link %}
+
+{% block navbar %}
+  {% include 'nav.html' %}
+{% endblock navbar %} 
+
+{% block message %}
+  {% include 'message.html' %}
+{% endblock message %}
+
+{% block content %}
+    Coloborator list with Other User
+    <ul>
+        {% for coloborators in colaborator %}
+            <li>{{coloborators.sender}}</li>
+        {% endfor %}
+    </ul>
+ 
+{% endblock content %}
+

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser,StateModel, DistrictModel, Person,MakeUsAdmin
+from .models import CustomUser,StateModel, DistrictModel, Person,Notification
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
@@ -51,12 +51,13 @@ class PersonAdmin(admin.ModelAdmin):
         'UniqueId',
     ]
     
-class CreateAdmin(admin.ModelAdmin):
-    model = MakeUsAdmin
-    list_display = ('newAdmin','date_joined')
+class NotificationAdmin(admin.ModelAdmin):
+    model = Notification
+    list_display = ('sender','receiver','message','timestamp','is_read','request_status')
+    
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(StateModel, StateModelAdmin)
 admin.site.register(DistrictModel, DistrictModelAdmin)
 admin.site.register(Person, PersonAdmin)
-admin.site.register(MakeUsAdmin, CreateAdmin)
+admin.site.register(Notification, NotificationAdmin)

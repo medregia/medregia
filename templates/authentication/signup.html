@@ -23,8 +23,6 @@
     <a href="{% url 'login'%}"><span><i class="fa-solid fa-arrow-left"></i></span></a>
   </div>
 
-
-
     <div class="header">
       <h1>Sign Up</h1>
     </div>
@@ -58,17 +56,6 @@
           {% endif %}
       </span>
       </div>
-
-      <div class="form-group">
-        <label for="id_phone_num">Phone Number</label>
-        {{form.phone_num}}
-        <span>
-          {% if form.errors.phone_num %}
-              {{form.errors.phone_num}}
-          {% endif %}
-      </span>
-      </div>
-
       
       <div class="form-group">
         <label for="id_password2">Confirm Password</label>
@@ -76,6 +63,16 @@
         <span>
           {% if form.errors.password2 %}
               {{form.errors.password2}}
+          {% endif %}
+      </span>
+      </div>
+
+      <div class="form-group">
+        <label for="id_phone_num">Phone Number</label>
+        {{form.phone_num}}
+        <span>
+          {% if form.errors.phone_num %}
+              {{form.errors.phone_num}}
           {% endif %}
       </span>
       </div>

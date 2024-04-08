@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseNotAllowed
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required,permission_required
 from .forms import SignUpForm
 from django.shortcuts import render, redirect
-from .models import CustomUser,Person,MakeUsAdmin
+from .models import CustomUser,Person,Notification
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
 from .profile import ProfileForm
@@ -23,6 +23,8 @@ from .forms import LoginAuthenticationForm
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
+from .context_processors import nav_message
+from django.template.loader import render_to_string
 
 def signup_view(request):
     form = SignUpForm()
@@ -88,6 +90,12 @@ def signup_view(request):
             # Assign the user to the group
             user.groups.add(user_group)
             user.save()
+            
+            subject = 'Welcome to MedRegia !'
+            message = render_to_string('authentication/welcome_email.html', {'user': user})
+            email_from = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [user.email]
+            send_mail(subject, message, email_from, recipient_list)
 
             messages.success(request, "Signup Success")
             return redirect("/")
@@ -96,13 +104,13 @@ def signup_view(request):
 
 def login_view(request):
     if request.method == "POST":
-        login_form = LoginAuthenticationForm(request, data=request.POST)
+        login_form = AuthenticationForm(request, data=request.POST)
         if login_form.is_valid():
             user = login_form.get_user()
             login(request, user)
             return redirect('index/')
     else:
-        login_form = LoginAuthenticationForm(request)
+        login_form = AuthenticationForm(request)
         login_form.fields['username'].widget.attrs.update({'placeholder': 'Username'})
         login_form.fields['password'].widget.attrs.update({'placeholder': 'Password'})
         
@@ -156,13 +164,12 @@ def profile_view(request):
         print(f"Error: {e}")
         
     permissions = Permission.objects.filter(content_type__model='invoice')
-
     # Print permission codenames
     # for permission in permissions:
     #     print(permission.codename)
 
     current_user = request.user
-    profile_data = CustomUser.objects.filter(username=current_user)
+    profile_data = CustomUser.objects.get(username=current_user)
     district_data = DistrictModel.objects.all()
     form = ProfileForm()
 
@@ -174,33 +181,64 @@ def profile_view(request):
 
     profile.UniqueId = unique_id
     profile.save()
-
-  
+    existing_admin = None
+    
     profile = Person.objects.get(user=current_user)
-        
+    
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=profile)
-        Admin_form = request.POST.get('admin', None)
-
+        receiver_name = request.POST.get('admin', None)
         try:
-            is_user = CustomUser.objects.get(username = Admin_form)
-            if is_user and Admin_form is not None:
-                admin = MakeUsAdmin(newAdmin = Admin_form,request_sender = request.user)
+            receiver = CustomUser.objects.get(username=receiver_name)
+            if receiver and receiver_name is not None:
+                if receiver == request.user:
+                    messages.error(request, f"Cannot Send Request to Yourself ({receiver_name})")
+                    return redirect("profile")
+                
+                # Check if the sender has already sent a request to the receiver
+                existing_request = Notification.objects.filter(sender=request.user, receiver=receiver).exists()
+                if existing_request:
+                    messages.error(request, f'You have already sent a request to this receiver {receiver_name}.')
+                    return redirect("profile") 
+
+                admin = Notification(sender=request.user, receiver=receiver, message="User Request")
                 admin.save()
-                messages.success(request, f"Collaborate Request Send to Medical '{Admin_form}'")
+                messages.success(request, f"Collaborate Request Sent to User'{receiver}'")
                 return redirect("index")
+
             else: 
-                messages.error(request,f"Admin Request Not sended")
+                messages.error(request, "Admin Request Not Sent")
                 return redirect("profile")
                 
         except CustomUser.DoesNotExist:
-            messages.error(request, f"No User Found in This name {Admin_form}")
-
+            messages.error(request, f"No User Found with the username '{receiver_name}'")
+                        
         if form.is_valid():
             form.save()
             messages.success(request, "You Got It ")
 
         return redirect("profile")
+    
+    existing_admin = Notification.objects.filter(sender=request.user,is_read=True, request_status=True)
+    existing_admin_optional = Notification.objects.filter(sender=request.user,is_read=True, request_status=False)
+    
+    print(existing_admin)
+    if existing_admin.exists():
+        admin_data = CustomUser.objects.get(username=existing_admin.first().receiver)
+        print("Person Admin Name: ", admin_data)
+        admin_name = admin_data.username
+        admin_ph = admin_data.phone_num
+        print("Admin Name: ", admin_name)
+        print("Admin Phone Number: ", admin_ph)
+        
+    elif existing_admin_optional.exists():
+        admin_data = CustomUser.objects.get(username=request.user)
+        admin_name = admin_data.username
+        admin_ph = admin_data.phone_num
+    else:
+        admin_data = CustomUser.objects.get(username=request.user)
+        admin_name = admin_data.username
+        admin_ph = admin_data.phone_num
         
     admins = CustomUser.objects.filter(is_staff=True).order_by('-date_joined')[:1]
     context = {
@@ -209,9 +247,11 @@ def profile_view(request):
         'admins': admins, # sending Admin details
         'district_data': district_data,
         'unique_code':profile.UniqueId, 
-        'data':profile,    # use when you want data from Person Model
-        
+        'data':profile,
+        'admin_name':admin_name,
+        'admin_ph':admin_ph
     }
+    
     return render(request, 'authentication/profile.html', context)
 
 
@@ -263,27 +303,49 @@ def get_districts(request):
 
 @login_required(login_url='/')
 def confirm_admin(request):
-    # Get the most recent MakeUsAdmin object
-    collaborator = MakeUsAdmin.objects.order_by('-date_joined').first()
-
-    # Check if there's a collaborator request
-    if collaborator:
-        # Check if the current user's username matches the new admin's username
-        if request.user.username == collaborator.newAdmin:
-            # Demote the previous admin to a normal user
-            previous_admin =CustomUser.objects.get(username=collaborator.request_sender)
-            admin_group = Group.objects.get(name='Admin Group')
-            previous_admin.groups.remove(admin_group)
-            previous_admin.is_staff = False
-            previous_admin.save()
-
-            messages.success(request, f"You have become collaborator with {previous_admin}")
-        else:
-            messages.error(request, "You are not authorized to become an admin.")
+    collaborator_requests = Notification.objects.filter(receiver=request.user, is_read=False)
+    admin_manager = CustomUser.objects.get(username=request.user)
+    if collaborator_requests.exists():
+        # Assuming a user can have multiple pending collaborator requests
+        for collaborator in collaborator_requests:
+            receiver = collaborator.receiver
+            sender = collaborator.sender
+            # Check if the current user's username matches the new admin's username
+            if request.user.username == receiver.username:
+                admin_group = Group.objects.get(name='Admin Group')
+                sender.groups.remove(admin_group)
+                sender.is_staff = False
+                collaborator.is_read = True
+                sender.save()
+                collaborator.save()                
+                messages.success(request, f"You have become a collaborator with {sender}.")
+                request_user = CustomUser.objects.get(username=sender)
+                
+            else:
+                messages.error(request, "You are not authorized to become an admin.")
     else:
         messages.error(request, "There are no pending collaborator requests.")
-
+    
     return redirect('index')
+
+@login_required(login_url='/')
+def admin_cancel(request):
+    try:
+        notification = get_object_or_404(Notification, receiver=request.user, is_read=False, request_status=True)
+        notification.request_status = False
+        notification.save()
+        return redirect('index')
+    except Exception as e:
+        print("Admin Cancel Error", e)
+        
+@login_required(login_url='/')
+def colaborator_list(request):
+    try:
+        colaborator = Notification.objects.filter(receiver=request.user)
+    except Exception as a:
+        colaborator = None
+        
+    return render(request,'authentication/colaborator.html',{'colaborator':colaborator})
 
 @login_required(login_url='/login/')
 def clinic_page(request):

@@ -1,7 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
   const notify = document.querySelector(".notifications");
   const bell_icon = document.querySelector("#bell");
-
+  const menu = document.querySelector('.menu div')
+  const navLinks = document.querySelector('.nav-links')
+  const userPic = document.querySelector('.user-pic')
+  const profileContent = document.querySelector('.profile-content')
   // Check if bell_icon exists before adding event listener
   if (bell_icon) {
     bell_icon.addEventListener("click", () => {
@@ -26,4 +29,11 @@ document.addEventListener("DOMContentLoaded", function() {
       admin.classList.add('hide');  // hides the form when it's submitted
     });
   }
+
+  navLinks.classList.add('showmenu')
+  menu.addEventListener('click',()=>{
+    navLinks.classList.toggle('showmenu')
+    userPic.classList.toggle('showmenu')
+    profileContent.textContent = "Profile"
+  })
 });

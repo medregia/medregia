@@ -20,224 +20,242 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 
-<div class="box-container">
-  <div class="panel">
-    <div class="tab">
-      <button class="tablinks active" onclick="openTab(event, 'Export')">Export</button>
-      <button class="tablinks" onclick="openTab(event, 'Import')">Import</button>
-    </div>
+<div class="tab">
+  <button class="tablinks" onclick="opentab(event, 'Export')">Export</button>
+  <button class="tablinks" onclick="opentab(event, 'Import')">Import</button>
+  <!-- <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button> -->
+</div>
 
-    <div id="Export" class="tabcontent">
-      {% comment %} <h3>EXPORT</h3> {% endcomment %}
-      <div class="box-container1">
-        <div id="print_page">
-          <div class="address-container1">
-            <div class="address-details1">  
-              <h2>Admin Address Details</h2>
-              {% for admin in admin_data %}
-              <p> Name : {{admin.username}}</p>
-              <p> City : {{admin_person.City}}</p>
-              <p> PhoneNumber : {{admin.phone_num}}</p>
-              <p> UniqueId : {{admin_person.UniqueId}}</p>
-              {% endfor %}
-            </div>
-            <div class="logo">
-              <!-- add logo -->
-            </div>
-            <div class="address-details2">
-              <h2>User Address Details</h2>
-              <p> Name : {{user.username}}</p>
-              <p> City : {{city}}</p>
-              <p> PhoneNumber : {{user.phone_num}}</p>
-              <p> UniqueId : {{unique_id}}</p>
-            </div>
+<!-- Tab content -->
+<div id="Export" class="tabcontent">
+  <div class="box-container">
+      <div class="export1">
+          <div id="print_page">
+              <div class="address-container">
+                  <div class="address-details">
+                      <h2>User Address Details</h2>
+                      <p> Name : {{user.username}}</p>
+                      <p> City : {{city}}</p>
+                      <p> PhoneNumber : {{user.phone_num}}</p>
+                      <p> UniqueId : {{unique_id}}</p>
+                  </div>
+              </div>
+
+              <div class="export-content">
+                  <table>
+                      <thead>
+                          <tr>
+                              <th><input type="checkbox"></th>
+                              <th>INVOICE No.</th>
+                              <th>Invoice Date</th>
+                              <th>Upload by</th>
+                              <th>Upload on</th>
+                              <th>Payment</th>
+                              <th>STATUS</th>
+                              <th>Remarks</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for data in datas %}
+                          <tr>
+                              <td><input type="checkbox" id="check"></td>
+                              <td>{{data.invoice_number}}</td>
+                              <td>{{data.invoice_amount}}</td>
+                              <td>{{data.today_date}}</td>
+                              <td>{{data.payment_amount}}</td>
+                              <td>payment</td>
+                              {% if data.balance_amount == 0 %}
+                              <td>Paid</td>
+                              {% else %}
+                              <td>Pending</td>
+                              {% endif %}
+                              <td>remark</td>
+
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
           </div>
-          <div class="unique1">
-            <label for="unique_id">UNIQUE ID :</label>
-            <input value="{{unique_id}}" id="unique_id" class="unique" disabled>
+          <div class="print_less_page">
+              <form>
+                  <div class="box-print1">
+                      <div class="btn csv">
+                          <a href="{% url 'exports_to_csv' %}" class="export-link"
+                              target="_blank"><button>CSV</button></a>
+                      </div>
+                      <div class="btn xlsx">
+                          <a href="{% url 'exports_to_xlsx' %}" class="export-link"
+                              target="_blank"><button>XLSX</button></a>
+                      </div>
+                      <div class="btn mysql">
+                          <a href="{% url 'exports_to_json' %}" class="export-link"
+                              target="_blank"><button>JSON</button></a>
+                      </div>
+                      <div class="btn">
+                          <button type="button" onclick="window.print()">Print / PDF</button>
+                      </div>
+                  </div>
+              </form>
           </div>
-          
-          <div class="export-content">
-            <table>
-              <thead>
-                <tr>
-                  <th>INVOICE No.</th>
-                  <th>TOTAL AMOUNT</th>
-                  <th>LAST PAYMENT DATE</th>
-                  <th>PAYED</th>
-                  <th colspan="2">STATUS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for data in datas %}
-                <tr>
-                  <td>{{data.invoice_number}}</td>
-                  <td>{{data.invoice_amount}}</td>
-                  <td>{{data.today_date}}</td>
-                  <td>{{data.payment_amount}}</td>
-                  {% if data.balance_amount == 0 %}
-                  <td>Paid</td>
-                  {% else %}
-                  <td>Pending</td>
-                  {% endif %}
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>    
-        </div>
-        <div class="print_less_page">
-          <form>
-            <div class="box-print1">
-              <div class="btn csv">
-                <a href="{% url 'exports_to_csv' %}" class="export-link" target="_blank"><button>CSV</button></a>
-              </div>
-              <div class="btn xlsx">
-                <a href="{% url 'exports_to_xlsx' %}" class="export-link" target="_blank"><button>XLSX</button></a>
-              </div>
-              <div class="btn mysql">
-                <a href="{% url 'exports_to_json' %}" class="export-link" target="_blank"><button>JSON</button></a>
-              </div>
-              <div class="btn">
-                <button type="button" onclick="window.print()">Print / PDF</button>
-              </div>
-            </div>
-          </form>
-        </div>
       </div>
-    </div>
+      <div class="export2">
+          <div class="export2-box1">
+              <div>
+                  <input type="checkbox">
+                  <label>completed</label>
+              </div>
 
-    <div id="Import" class="import-content tabcontent">
-      <div class="panel-container">
-        <div class="box2">
-          <form action="#" method="post" id="uploadForm">
-            {% csrf_token %}
-            <div class="btn csv">
-                <input type="file" id="csvFile" style="display: none;" accept=".csv" onchange="displayFileContent(this)">
-                <label for="csvFile">Choose CSV</label>
-            </div>
-          </form>
-        <div id="contentDisplay"></div>
-        
-            {% comment %} <div class="btn pdf">
-              <input type="file" id="pdfFile" style="display: none;" accept=".pdf" onchange="displayFileContent(this)">
-              <button type="button" onclick="document.getElementById('pdfFile').click()">Choose PDF</button>
-            </div>
-            <div class="btn xlsx">
-              <input type="file" id="xlsxFile" style="display: none;" accept=".xlsx" onchange="displayFileContent(this)">
-              <button type="button" onclick="document.getElementById('xlsxFile').click()">Choose Excel</button>
-            </div>
-          </form> {% endcomment %}
-        </div>
+              <div>
+                  <input type="checkbox">
+                  <label>All (Not paid/Not Completed)</label>
+              </div>
+          </div>
+
+          <div class="export2-box2">
+              <h3>Category Based</h3>
+              <div class="export2-box2-content">
+                  <div>
+                      <input type="checkbox">
+                      <label>Pharmacy</label>
+                  </div>
+
+                  <div>
+                      <input type="checkbox">
+                      <label>Dealer</label>
+                  </div>
+
+                  <div>
+                      <input type="checkbox">
+                      <label>Agency</label>
+                  </div>
+              </div>
+              <div class="other">
+                  <input type="checkbox">
+                  <label>Others :</label>
+                  <input type="text" style="height: 26px; width: 200px; background-color: #ebe2e2;">
+              </div>
+
+          </div>
+
+
+          <div class="export2-box3">
+              <table id="checkboxTable">
+                  <tr>
+                      <th>Select</th>
+                      <th>Medical List</th>
+                  </tr>
+                  <tr>
+                      <td><input type="checkbox" class="checkbox"></td>
+                      <td>Dummy Data 1</td>
+                  </tr>
+                  <tr>
+                      <td><input type="checkbox" class="checkbox"></td>
+                      <td>Dummy Data 2</td>
+                  </tr>
+                  <tr>
+                      <td><input type="checkbox" class="checkbox"></td>
+                      <td>Dummy Data 3</td>
+                  </tr>
+
+              </table>
+
+          </div>
       </div>
-    </div>
-    
-    {% comment %} <div id="contentDisplay"></div> {% endcomment %}
-    
-    <script>
-      
 
-      function displayFileContent(input) {
-        const file = input.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const content = e.target.result;
-            const fileType = file.type;
-            const displayArea = document.getElementById('contentDisplay');
-            const contentElement = document.createElement('div');
-            contentElement.classList.add('file-content'); // General class
-            if (fileType === 'text/csv') {
-                contentElement.classList.add('csv-content'); // Add CSV specific class
-                contentElement.innerHTML = `<p>CSV content:</p><pre>${parseCSV(content)}</pre>`; // Example function call for parsing CSV
-                const uploadButton = document.createElement('button');
-                uploadButton.textContent = 'Upload to Database';
-                uploadButton.addEventListener('click', function() {
-                    uploadCSVContent(content); // Call function to upload CSV content
-                });
-                displayArea.appendChild(uploadButton);
-            } else if (fileType === 'application/pdf') {
-                contentElement.classList.add('pdf-content'); // Add PDF specific class
-                contentElement.innerHTML = `<p>PDF content:</p><pre>${content}</pre>`; // Display PDF content as is
-            } else if (fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-                contentElement.classList.add('xlsx-content'); // Add Excel specific class
-                contentElement.innerHTML = `<p>Excel content:</p><pre>${content}</pre>`; // Display Excel content as is
-            }
-            displayArea.appendChild(contentElement);
-        };
-        reader.readAsText(file);
-    }
-    
-    function uploadCSVContent(csvContent) {
-        // AJAX request to send CSV content to Django backend
-        const formData = new FormData();
-        formData.append('csv_content', csvContent);
-        const csrftoken = getCookie('csrftoken'); // Retrieve CSRF token correctly
-        
-        fetch('/import-export/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': csrftoken // Ensure CSRF token is included
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('CSV content uploaded successfully:', data);
-        })
-        .catch(error => {
-            console.error('There was a problem with your fetch operation:', error);
-        });
-    }
-    
-    // Function to parse CSV content into an HTML table
-    function parseCSV(csvContent) {
-        const rows = csvContent.split('\n');
-        let tableHTML = '<table>';
-        rows.forEach(row => {
-            const columns = row.split(',');
-            tableHTML += '<tr>';
-            columns.forEach(column => {
-                tableHTML += `<td>${column}</td>`;
-            });
-            tableHTML += '</tr>';
-        });
-        tableHTML += '</table>';
-        return tableHTML;
-    }
-    
-    // Function to get CSRF token from cookie
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Check if this cookie name is the one we want
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    
-    
-    
-      
-    </script>
-    
-    
-    
-    
-       
   </div>
 </div>
+
+<div id="Import" class="tabcontent" style="display: none;">
+  <div class="lastbox">
+      <div class="lastbox-content">
+          <!-- Form for selecting options -->
+          <div class="lastbox-center">
+              <div class="lastbox-content-formate">
+                  <label for="tableSelector">Choose</label>
+                  <select id="tableSelector">
+                      <option value="format1">Format 1</option>
+                      <option value="format2">Format 2</option>
+                  </select>
+              </div>
+              <div class="lastbox-content-agency" style="display: none;">
+                  <label for="user">Store Type</label>
+                  <input type="text" id="user"
+                      value="{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}"
+                      placeholder="Agencyname" disabled>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="panel-container">
+      <div class="box2">
+          <!-- Buttons to choose different file types -->
+          <div class="btn csv">
+              <input type="file" id="csv_file_input" accept=".csv" name="csv_file" style="display: none;">
+              <button type="button" onclick="document.getElementById('csv_file_input').click()">Choose
+                  CSV</button>
+          </div>
+          <div class="btn pdf">
+              <input type="file" name="pdf_file" id="pdf_file_input" accept=".pdf" style="display: none;"
+                  onchange="handleFileSelect('pdf_file_input')">
+              <button type="button" onclick="document.getElementById('pdf_file_input').click()">Choose
+                  PDF</button>
+          </div>
+          <div class="btn xlsx">
+              <input type="file" name="excel_file" id="excel_file_input" accept=".xls, .xlsx"
+                  style="display: none;" onchange="handleFileSelect('excel_file_input')">
+              <button type="button" onclick="document.getElementById('excel_file_input').click()">Choose
+                  Excel</button>
+          </div>
+      </div>
+  </div>
+  <div id="csvContainer">
+    <table id="csvTable"></table>
+    <div id="Upload">
+        <button>Upload</button>
+    </div>
+  </div>
+  <div id="tableContainer" style="display: none;">
+      <table id="table2" >
+          <!-- Data for Format 2 -->
+          <thead>
+              <tr>
+                  <th>Agency name</th>
+                  <th>Invoice Number</th>
+                  <th>Invoice Date</th>
+                  <th>Total</th>
+                  <th>Paid/Pending</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for data in datas %}
+              <tr>
+                  <td>{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}</td>
+                  <td>{{ data.invoice_number }}</td>
+                  <td>{{ data.invoice_date }}</td>
+                  <td>{{ data.invoice_amount }}</td>
+                  <td>{% if data.balance_amount == 0 %}Paid{% else %}Pending{% endif %}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  </div>
+
+
+      
+  
+</div>
+</div>
+
+
+  
+
+
+
+
+ 
+
 
 
 <script src="{% static 'invclc/js/import-export.js' %}"></script>
@@ -245,92 +263,4 @@
 
 
 
-{% comment %} <div class="panel-container">
-          <div class="box2">
-              <!-- Buttons to choose different file types -->
-              <div class="btn csv">
-                  <input type="file" name="csv_file" id="csv_file_input" accept=".csv" style="display: none;" onchange="handleFileSelect('csv_file_input')">
-                  <button type="button" onclick="document.getElementById('csv_file_input').click()">Choose CSV</button>
-              </div>
-              <div class="btn pdf">
-                  <input type="file" name="pdf_file" id="pdf_file_input" accept=".pdf" style="display: none;" onchange="handleFileSelect('pdf_file_input')">
-                  <button type="button" onclick="document.getElementById('pdf_file_input').click()">Choose PDF</button>
-              </div>
-              <div class="btn xlsx">
-                  <input type="file" name="excel_file" id="excel_file_input" accept=".xls, .xlsx" style="display: none;" onchange="handleFileSelect('excel_file_input')">
-                  <button type="button" onclick="document.getElementById('excel_file_input').click()">Choose Excel</button>
-              </div>
-          </div>
-      </div>
-  
-      <div class="file-choose">
-        <form action="#" method="post">
-          {% csrf_token %}
-          {{form.as_p}}
-          <button type="submit">Import</button>
-        </form>
-        
-      </div>
 
-      <div class="lastbox">
-          <div class="lastbox-content">
-              <!-- Form for selecting options -->
-              <div class="lastbox-center">
-                  <div class="lastbox-content-formate">
-                      <label for="user">Choose</label>
-                      <select id="tableSelector">
-                          <option value="table1">Format 1</option>
-                          <option value="table2">Format 2</option>
-                      </select>
-                  </div>
-                  <div class="lastbox-content-agency">
-                      <label for="user">Store Type</label>
-                      {% if request.user.store_type == 'others' %}
-                          <input type="text" id="user" value="{{ request.user.other_value }}" placeholder="Agencyname" disabled>
-                      {% else %}
-                          <input type="text" id="user" value="{{ request.user.store_type }}" placeholder="Agencyname" disabled>
-                      {% endif %}
-                  </div>
-              </div>
-          </div>
-          <!-- Table for displaying data -->
-          <div class="box main-box">
-              <table id="table1">
-                  <thead id="file_data">
-                  <!-- Data will be dynamically added here -->
-                  </thead>
-              </table>
-              <table id="table2" style="display: none;">
-                  <!-- Data for Format 2 -->
-                  <thead>
-                  <tr>
-                      <th>Agency name</th>
-                      <th>Invoice Number</th>
-                      <th>Invoice Date</th>
-                      <th>Total</th>
-                      <th>Paid/Pending</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {% for data in datas %}
-                  <tr>
-                      {% if request.user.store_type == 'others' %}
-                      <td>{{ request.user.other_value }}</td>
-                      {% else %}
-                      <td>{{ request.user.store_type }}</td>
-                      {% endif %}
-                      <td>{{ data.invoice_number }}</td>
-                      <td>{{ data.invoice_date }}</td>
-                      <td>{{ data.invoice_amount }}</td>
-                      {% if data.balance_amount == 0 %}
-                      <td>Paid</td>
-                      {% else %}
-                      <td>Pending</td>
-                      {% endif %}
-                  </tr>
-                  {% endfor %}
-                  </tbody>
-              </table>
-          </div>
-      </div> 
-    </div>{% endcomment %} 
