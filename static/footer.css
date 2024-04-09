@@ -118,7 +118,7 @@ li:not(:last-child){
 
 footer{
     min-height:40vh;
-    width: 92%;
+    width: 96%;
     background-color:#033B4A;
     display:flex;
     justify-content:space-around;

@@ -1,10 +1,26 @@
-body{
-  font-family: 'Times New Roman';
-}
+
 .admin-request{
-  height:50px;
-  width:90%;
+  height: 180px;
+  width: 315px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: orangered; */
 }
+
+.admin-submit{
+  height:40px;
+  width: 200px;
+  display:flex;
+  justify-content:space-evenly;
+  align-items:center;
+  /* background-color: red; */
+}
+
+.admin-message-header span{
+  color:green;
+}
+
 .admin-request p{
   /* color: red; */
   text-align: center;
@@ -16,8 +32,25 @@ body{
 .notifications h5{
   color: red;
   font-weight: bold;
-  margin-top: 60px;
 }
+
+.admin-body{
+  height:120px;
+  width:300px;
+  display: flex;
+  justify-content:space-around;
+  align-items:center;
+  flex-direction: column;
+  /* background-color: #04aa6d; */
+}
+
+.admin-message-header{
+  height: 50px;
+  width: 100%;
+  text-align:center;
+  /* background-color: yellow; */
+}
+
 .notifications{
   height: 200px;
   width: 350px;
@@ -43,28 +76,25 @@ body{
 }
 
 .admin-request form input{
-  width: 50px;
-  margin-left: 20px; 
+  height:30px;
+  width: 60px;
   /* margin-bottom: 5px; */
   background-color: blue; 
   color: white;
-  border: 1px solid white;
+  border:none;
+  border-radius:3px;
+  cursor:pointer;
 }
-.admin-request form .confirm{
-/* color: red; */
+/* .admin-request form .confirm{
 margin-left: 20px;
-}
-.admin-request form{
+} */
+/* .admin-request form{
   height: 30px;
   width: 100%;
-  margin-top: 5px;
-  /* background-color: red; */
-  display: flex;
-  flex-direction: row;
-}
+} */
 
 nav {
-  height: 50px;
+  min-height: 50px;
   width: 100%;
   font-family: 'Times New Roman';
   background-color: #033b4a;
@@ -84,7 +114,6 @@ nav {
   align-items: center;
   margin-left: 6%;
 }
-
 .nav-heading{
   height: 50px;
   width: 20%;
@@ -101,7 +130,7 @@ nav {
 } */
 
 .nav-links {
-  height: 50px;
+  min-height: 50px;
   width: 20%;
   /* background-color: red; */
   display: flex;
@@ -129,24 +158,6 @@ nav {
   justify-content:center;
   align-items:center;
 }
-
-/* .nav-heading{
-  letter-spacing: 3px;
-} */
-/* .nav-links{
-  height: 40px;
-  width: 17%;
-} */
-
-/* .nav-links ul{
-  height: 40px;
-  width: 100%;
-  gap: 10px;
-  padding: 10px;
-  display: flex;
-  justify-content: left;
-  align-items: center;
-} */
 /* .for_a{
   position: relative;
   top: 2px;
@@ -222,7 +233,7 @@ a {
   background-position: top;
 }
 .hide {
-  transform: translateY(-140%);
+  transform: translateY(-250%);
   opacity: 0.2;
 }
 
@@ -230,29 +241,93 @@ ul li a:hover {
   color: #04aa6d;
 }
 
+.cover{
+  display:none
+}
 
+span.notify-alert{
+  display:inline-block;
+  height:10px;
+  width:10px;
+  border-radius:50%;
+  background-color:red;
+  position:absolute;
+  top:2px;
+  right:2px;
+}
 
+.menu-line{
+  height:3px;
+  width:20px;
+  background-color: #FFF;
+  margin-bottom: 4px;
+}
+
+.nav-headings{
+  height: 50px;
+  width: 55%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.menu{
+  cursor: pointer;
+  display: none;
+}
 /* mediaquery */
 
-@media (max-width:1401px){
-  ul {
-    height: 50px;
-    width: 15%;
-    margin: 0px 10px 0px 0px; 
-    gap: 5px;
-  }
-}
-@media (max-width:1301px){
-  ul{
-    margin: 0px 20px 0px 0px;
-    gap: 5px;
-  }
-}
-@media (max-width:1101px){
-  .container {
-    width: auto;
+@media(max-width:1000px){
+  .nav-links{
+    width:23%
   }
 }
 
+@media(max-width:768px){
+  .nav-links{
+    width:30%;
+  }
+}
 
+@media (min-width:320px) and (max-width:650px){
+  nav{
+    flex-direction: column;
 
+  }
+
+  /* nav div{
+    display: block;
+    text-align: center;
+  } */
+
+/* 
+  .nav-heading{
+    align-self: flex-start;
+    order: 1;
+    margin: 10px 0px 0px 30px;
+  }
+  .header{
+    order: 2;
+  } */
+  .nav-links{
+    /* background-color: red; */
+    flex-direction: column;
+    row-gap: 10px;
+    /* display: none; */
+  }
+  .menu{
+    display: block;
+    position: absolute;
+    right: 20px;
+    top:20px;
+  }
+
+  .showmenu{
+    display: none;
+  }
+}
+
+@media (min-width:320px) and (max-width:369px){
+  nav{
+    align-items: flex-start;
+  }
+}

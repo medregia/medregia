@@ -1,6 +1,7 @@
 from django import template
 from invclc.models import ModifiedInvoice
 from authentication.models import CustomUser,Person
+from django.core.exceptions import ObjectDoesNotExist
 
 register = template.Library()
 
@@ -18,18 +19,23 @@ def convert_medical(value):
     else:
         return "####"
 
+@register.filter
+def medical_signup(medicals):
+    try:
+        medical_exists = Person.objects.filter(MedicalShopName=medicals).exists()
+        person = Person.objects.get(MedicalShopName=medicals)
+        user = person.user.username
+        person_check = CustomUser.objects.filter(username=user).exists()
 
-def check_medicals(medicals):
-    # Logic to check if value exists in the database
-    medical_exists = Person.objects.filter(MedicalShopName=medicals).exists()
-    
-    if medical_exists:
-        try:
-            get_medical = Person.objects.get(MedicalShopName=medicals)
-            check_medicals = True  # or your logic to determine if value exists
-        except Person.DoesNotExist:
-            check_medicals = False
-    else:
-        check_medicals = False
-    
-    return {'check_medicals': check_medicals}
+        if person_check:
+            if medical_exists:
+                return "green"
+            else:
+                return "yellow"
+        else:
+            return "red"
+        
+    except Person.DoesNotExist:
+        return "red"
+
+
