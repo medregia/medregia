@@ -146,7 +146,7 @@
                                     <span class="loginstatus"></span>
                                 {% else %}
                                     <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                    <span class="statusfailed"></span>
+                                    <span class="statusfailed">{{ data.pharmacy_name|medical_signup}}</span>
                                 {% endif %}
                             {% else %}
                                 <input type="text" value="Not Found" disabled>
@@ -168,7 +168,7 @@
                             {% if data.pharmacy_name %}
                                 {% if request.user.is_authenticated %}
                                     <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                    <span class="loginstatus"></span>
+                                    <span class="loginstatus" style="background-color:{{data.pharmacy_name|medical_signup}};"></span>
                                 {% else %}
                                     <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
                                     <span class="statusfailed"></span>
@@ -188,6 +188,7 @@
             </div>  
             <a href="{% url 'checkmore' %}"><button type="button">more details</button></a>
           </div>
+          
 
           <div class="table-content-right">
             <div class="table-panel">
