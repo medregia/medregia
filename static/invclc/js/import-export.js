@@ -44,8 +44,12 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Open the default tab on window load
-  document.querySelector(".tablinks.active").click();
+  var activeTab = document.querySelector(".tablinks.active");
+  if (activeTab) {
+    activeTab.click();
+  }
 });
+
 
 function openTab(evt, TabName) {
   var i, tabcontent, tablinks;

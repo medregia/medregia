@@ -25,7 +25,7 @@ from import_export.results import RowResult
 from import_export.formats.base_formats import DEFAULT_FORMATS,XLSX
 from import_export import resources
 from .forms import UploadFileForm
-
+from django.core.serializers import serialize
 
 # views.py
 from django.http import JsonResponse
@@ -49,48 +49,177 @@ def upload_csv(request):
 
 @login_required(login_url='/')
 def exports_to_csv(request):
-    currentuser = request.user
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
+    check_user = None
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            print('Get_Admin_name', get_admin_name)
+            print(f"Collaborator request sender username: {collaborator_request_username}")
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            print("collaborator_admin : ", collaborator_admin)
+            print("new : ", collaborator_request_sender)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                        print("check_user : ",check_user)
+                except Exception as a:
+                    print("Collaborating Error : ", a)
+    except Exception as e:
+        print("Error : ", e)
+    
+    if check_user == str(request.user):
+        currentuser = request.user
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
 
-    writer = csv.writer(response)
-    writer.writerow(['IN. No.', 'Total Amount', 'Last Payment Date', 'Payed', 'Paid/Pending'])
-    for obj in Invoice.objects.filter(user=request.user):
-        if obj.balance_amount == 0:
-            status = 'paid'
-        else:
-            status = 'pending'
-        writer.writerow([obj.invoice_number, obj.invoice_amount, obj.today_date, obj.payment_amount, status])
+        writer = csv.writer(response)
+        writer.writerow(['IN. No.', 'Total Amount', 'Last Payment Date', 'Payed', 'Paid/Pending'])
+        for obj in Invoice.objects.filter(user=collaborator_admin ):
+            if obj.balance_amount == 0:
+                status = 'paid'
+            else:
+                status = 'pending'
+            writer.writerow([obj.invoice_number, obj.invoice_amount, obj.today_date, obj.payment_amount, status])
 
-    return response
+        return response
+    else:
+        currentuser = request.user
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['IN. No.', 'Total Amount', 'Last Payment Date', 'Payed', 'Paid/Pending'])
+        for obj in Invoice.objects.filter(user=request.user):
+            if obj.balance_amount == 0:
+                status = 'paid'
+            else:
+                status = 'pending'
+            writer.writerow([obj.invoice_number, obj.invoice_amount, obj.today_date, obj.payment_amount, status])
+
+        return response
 
 
-def exports_to_xlsx(request):
-    currentuser = request.user
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = f'attachment; filename="Import_DataXLSX_{currentuser}.xlsx"'
+def exports_to_xlsx(request):   
+    check_user = None
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            print('Get_Admin_name', get_admin_name)
+            print(f"Collaborator request sender username: {collaborator_request_username}")
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            print("collaborator_admin : ", collaborator_admin)
+            print("new : ", collaborator_request_sender)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                        print("check_user : ",check_user)
+                except Exception as a:
+                    print("Collaborating Error : ", a)
+    except Exception as e:
+        print("Error : ", e)
+        
+    if check_user == str(request.user):
+        currentuser = request.user
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="ImportData{currentuser}.xlsx"'
 
-    workbook = Workbook()
-    worksheet = workbook.active
-    worksheet.append(['IN. No.', 'Total Amount', 'Last Payment Date', 'Payed', 'Paid/Pending'])
-    for obj in Invoice.objects.filter(user=request.user):
-        if obj.balance_amount == 0:
-            status = 'paid'
-        else:
-            status = 'pending'
-        worksheet.append([obj.invoice_number, obj.invoice_amount, obj.today_date, obj.payment_amount, status])
+        workbook = Workbook()
+        worksheet = workbook.active
+        worksheet.append(['IN. No.', 'Total Amount', 'Last Payment Date', 'Payed', 'Paid/Pending'])
+        for obj in Invoice.objects.filter(user=collaborator_admin):
+            if obj.balance_amount == 0:
+                status = 'paid'
+            else:
+                status = 'pending'
+            worksheet.append([obj.invoice_number, obj.invoice_amount, obj.today_date, obj.payment_amount, status])
 
-    workbook.save(response)
-    return response
+        workbook.save(response)
+        return response
+
+    else:
+        currentuser = request.user
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="ImportDataXLSX_{currentuser}.xlsx"'
+
+        workbook = Workbook()
+        worksheet = workbook.active
+        worksheet.append(['IN. No.', 'Total Amount', 'Last Payment Date', 'Payed', 'Paid/Pending'])
+        for obj in Invoice.objects.filter(user=request.user):
+            if obj.balance_amount == 0:
+                status = 'paid'
+            else:
+                status = 'pending'
+            worksheet.append([obj.invoice_number, obj.invoice_amount, obj.today_date, obj.payment_amount, status])
+
+        workbook.save(response)
+        return response
 
 
 @login_required(login_url='/')
 def exports_to_json(request):
-    currentuser = request.user
-    response = HttpResponse(content_type='application/json')
-    response['Content-Disposition'] = f'attachment; filename="Import_DataJSON_{currentuser}.json"'
-    call_command('dumpdata', 'invclc.Invoice', format='json', stdout=response)  
-    return response
+    check_user = None
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            print('Get_Admin_name', get_admin_name)
+            print(f"Collaborator request sender username: {collaborator_request_username}")
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            print("collaborator_admin : ", collaborator_admin)
+            print("new : ", collaborator_request_sender)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                        print("check_user : ",check_user)
+                except Exception as a:
+                    print("Collaborating Error : ", a)
+    except Exception as e:
+        print("Error : ", e)
+        
+    if check_user == str(request.user):
+        invoices = Invoice.objects.filter(user=collaborator_admin)
+        json_data = serialize('json', invoices)
+        response = HttpResponse(json_data, content_type='application/json')
+        response['Content-Disposition'] = f'attachment; filename="invoices_{collaborator_admin}.json"'
+        
+        return response
+    else:
+        current_user = request.user
+        invoices = Invoice.objects.filter(user=current_user)
+        json_data = serialize('json', invoices)
+        response = HttpResponse(json_data, content_type='application/json')
+        response['Content-Disposition'] = f'attachment; filename="invoices_{current_user.username}.json"'
+        
+        return response
 
 @login_required(login_url='/')
 def index_view(request):
@@ -272,7 +401,7 @@ def index_view(request):
             messages.success(request, " Payment Success")
             return redirect("index")
         else:
-            messages.error(request, "Failed to save Invoice")
+            messages.error(request, "Failed to save Invoice Number want to Unique ")
 
     else:
         invoice_form = InvoiceForm()
@@ -471,28 +600,99 @@ class InvoiceResource(ModelResource):
 
 @login_required(login_url='/')
 def import_view(request):
+    check_user = None
+    data = None
+    admin_city = None  # Initialize admin_city variable
+    admin_ph = None
+    admin_uniqueid = None
+    admin_person = None
+    user_city =None
+    user_ph =None
+    unique_id = None
+    collaborator_admin = None
     try:
-        person = Person.objects.get(user=request.user)
-        city = person.City
-        unique_id = person.UniqueId
-        admin_user = CustomUser.objects.filter(is_staff=True).order_by('-date_joined')[:1]
-        admin_person = Person.objects.get(user=admin_user)
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
-        user = request.user
-        data = Invoice.objects.filter(user=request.user).order_by('id')
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            print('Get_Admin_name', get_admin_name)
+            print(f"Collaborator request sender username: {collaborator_request_username}")
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            print("collaborator_admin : ", collaborator_admin)
+            print("new : ", collaborator_request_sender)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                        print("check_user : ",check_user)
+                except Exception as a:
+                    print("Collaborating Error : ", a)
     except Exception as e:
-        return HttpResponse("Update Your Profile", e)
+        print("Error : ", e)
     
+    if str(request.user) == check_user:        
+        try:
+            person = Person.objects.get(user=collaborator_admin)
+            print("Person : ", person)
+            city = person.City
+            print("City", city)
+            unique_id = person.UniqueId
+            admin_person = person.user.username
+            print(admin_person)
+            admin_city = person.City
+            get_admin_ph = CustomUser.objects.get(username=collaborator_admin) 
+            admin_ph = get_admin_ph.phone_num
+            admin_uniqueid = person.UniqueId
+            
+            user = Person.objects.get(user=request.user)
+            print("User : ", user)
+            user_city = user.City
+            print(user_city)
+            get_user_ph = CustomUser.objects.get(username=request.user)
+            user_ph = get_user_ph.phone_num 
+            unique_id = user.UniqueId
+            
+            data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
+        except Exception as a:
+            print("Exception : ",a)
+    else:        
+        try:
+            user = Person.objects.get(user=request.user)
+            print("User : ", user)
+            user_city = user.City
+            print(user_city)
+            get_user_ph = CustomUser.objects.get(username=request.user)
+            user_ph = get_user_ph.phone_num 
+            unique_id = user.UniqueId
+            data = Invoice.objects.filter(user=request.user).order_by('id')
+        except Exception as e:
+            print("Currect User : ",e)
+        
+    user_name = request.user
     
     context = {
         'datas': data,
-        'admin_data': admin_user,
-        'city': city,
+        'check_user': check_user,
+        'request_user': str(request.user),
+        'admin_city': admin_city,
+        'admin_ph': admin_ph,
+        'admin_id': admin_uniqueid,
+        'user_city': user_city,
+        'user_ph': user_ph,
         'admin_person': admin_person,
-        'user': user,
+        'user': user_name,
         'unique_id': unique_id,
     }
     return render(request, 'invclc/import-export.html', context)
+
+
 
 @login_required(login_url = '/')
 def payment_view(request,payment_id):
