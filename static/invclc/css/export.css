@@ -27,6 +27,7 @@ body{
   font-size: 20px;
 }
 
+
 /* Change background color of buttons on hover */
 .tab button:hover {
   background-color: #ddd;
@@ -37,10 +38,11 @@ body{
   background-color: #ccc;
 }
 
+
 /* Style the tab content */
 .tabcontent {
   height: 100vh;
-  width: 98%;
+  width: 100%;
   display: block;
   padding: 6px 12px;
   border: 1px solid #ccc;
@@ -64,7 +66,7 @@ body{
   /* background-color: beige; */
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
 
 }
@@ -148,14 +150,29 @@ form{
   background-color:#0056b3;
 }
 /* export2 */
+
 .export2{
   height: 100vh;
   width: 25%;
-  background-color: #efefef;
-  box-shadow:0px 0px 10px 0px black;
+  background-color: #ccc;
   display:flex;
   flex-direction: column;
   align-items: center;
+}
+.export2 form{
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: #007bff; */
+
+}
+.check-list{
+  height:4vh;
+  width: 70%;
+  /* background-color: #007bff; */
+
 }
 .export2-box1{
   height: 10vh;
@@ -210,30 +227,4 @@ form{
 
 .selected {
   background-color:#ccc;
-}
-
-.check-list{
-  height:4vh;
-  width:70%;
-  /* background-color:red; */
-}
-
-.export2 form{
-  height: 100vh;
-  width: 25%;
-  display: flex;
-  flex-direction: column;
-
-}
-
-@media print{
-  body{
-    border:1px solid black;
-  }
-  .navbar,.tab,.export2,.box-print1{
-    display:none;
-  }
-  .export1{
-    width:96%;
-  }
 }
