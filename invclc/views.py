@@ -676,6 +676,32 @@ def import_view(request):
             print("Currect User : ",e)
         
     user_name = request.user
+    if request.method == 'POST':
+        completed = request.POST.get('completed', False)
+        category = request.POST.get('category', '')  # Get category as comma-separated string
+        others = request.POST.get('others', False)
+        print(others)
+        # Split category string into a list
+        category_list = category.split(',')
+
+        # Here, you would filter your data based on the parameters received and return the filtered data.
+        # Replace the code below with your actual data filtering logic.
+        # Example filtering logic:
+        data = Invoice.objects.all()  # Assuming YourModel is your model name
+        if completed:
+            data = data.filter(balance_amount = 0,user=request.user)
+            print("user data : ",data)
+        if category_list:
+            print(category_list)
+            users_with_category = CustomUser.objects.filter(store_type__in=category_list)
+            # Iterate over each user in the queryset to access their username
+            for user in users_with_category:
+                print("Category User : ", user.username)
+            data = data.filter(user__in=users_with_category)
+        else:
+            print("Hii")
+       # You can add more filters based on 'others' if needed
+       # Render the filtered data to the template
     
     context = {
         'datas': data,

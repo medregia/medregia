@@ -202,3 +202,59 @@ function clearTable() {
 csvTable.innerHTML = ""; // Clear CSV table
 // You may want to clear data in the table for format 2 here as well
 } 
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to fetch filtered data
+    function fetchData(completed, category, others) {
+        var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+        fetch('/import-export/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrfToken
+            },
+            body: 'completed=' + completed + '&category=' + category + '&others=' + others + '&csrfmiddlewaretoken=' + csrfToken
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('export-data').innerHTML = data;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Listen for changes in checkboxes
+    document.querySelectorAll('.export2 input[type="checkbox"]').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            var completed = document.querySelector('.export2-box1 input[name="completed"]').checked;
+            var all = document.querySelector('.export2-box1 input[name="all"]').checked;
+            var pharmacy = document.querySelector('.export2-box2 input[name="pharmacy"]').checked;
+            var medical = document.querySelector('.export2-box2 input[name="medical"]').checked;
+            var agency = document.querySelector('.export2-box2 input[name="agency"]').checked;
+            var others = document.querySelector('.export2-box2 input[name="others"]').checked;
+
+            // Construct category based on selected checkboxes
+            var category = [];
+            if (pharmacy) category.push('Pharmacy');
+            if (medical) category.push('medical');
+            if (agency) category.push('Agency');
+
+            // If Others checkbox is checked, add its value to category
+            if (others) {
+                var otherValue = document.querySelector('.export2-box2 input[name="other_value"]').value;
+                if (otherValue.trim() !== '') {
+                    category.push(otherValue.trim());
+                }
+            }
+
+            // Join category array into a comma-separated string
+            var categoryString = category.join(',');
+
+            // Fetch filtered data
+            fetchData(completed, categoryString, others);
+        });
+    });
+});

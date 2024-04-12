@@ -141,38 +141,40 @@
           </div>
       </div>
       <div class="export2">
-          <div class="export2-box1">
+        <form action="#" method="post">
+            {% csrf_token %}
+            <div class="export2-box1">
               <div class="check-list">
-                  <input type="checkbox">
+                  <input type="checkbox" name="completed">
                   <label>completed</label>
               </div>
 
               <div class="check-list">
-                  <input type="checkbox">
+                  <input type="checkbox" name="all">
                   <label>All (Not paid/Not Completed)</label>
               </div>
-          </div>
+            </div>
 
-          <div class="export2-box2">
+            <div class="export2-box2">
               <h3>Category Based</h3>
               <div class="export2-box2-content">
                   <div>
-                      <input type="checkbox">
+                      <input type="checkbox" name="pharmacy">
                       <label>Pharmacy</label>
                   </div>
 
                   <div>
-                      <input type="checkbox">
-                      <label>Dealer</label>
+                      <input type="checkbox" name="medical">
+                      <label>Medical</label>
                   </div>
 
                   <div>
-                      <input type="checkbox">
+                      <input type="checkbox" name="agency">
                       <label>Agency</label>
                   </div>
               </div>
               <div class="other">
-                  <input type="checkbox">
+                  <input type="checkbox" name="others">
                   <label>Others :</label>
                   <input type="text" style="height: 26px; width: 200px; background-color: #ebe2e2;">
               </div>
@@ -202,6 +204,7 @@
               </table>
 
           </div>
+        </form>
       </div>
 
   </div>
@@ -269,7 +272,7 @@
                   <th>Paid/Pending</th>
               </tr>
           </thead>
-          <tbody>
+          <tbody id="export-data">
               {% for data in datas %}
               <tr>
                   <td>{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}</td>
