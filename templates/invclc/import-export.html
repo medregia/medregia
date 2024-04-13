@@ -238,64 +238,72 @@
             <div class="box2">
                 <!-- Buttons to choose different file types -->
                 <div class="btn csv">
-                    {% comment %} <input type="file" id="csv_file_input" accept=".csv" name="csv_file" style="display: none;"> {% endcomment %}
+                    {% comment %} <input type="file" id="csv_file_input" accept=".csv" name="csv_file"
+                        style="display: none;"> {% endcomment %}
                     {{form.file}}
                     <button type="submit">Choose
                         CSV</button>
                 </div>
-                <div class="btn pdf">
-                    <input type="file" name="pdf_file" id="pdf_file_input" accept=".pdf" style="display: none;"
-                        onchange="handleFileSelect('pdf_file_input')">
-                    <button type="button" onclick="document.getElementById('pdf_file_input').click()">Choose
-                        PDF</button>
-                </div>
+        </form>
+        <form action=" " method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="box2">
+                <!-- Buttons to choose different file types -->
                 <div class="btn xlsx">
+                    {% comment %} <input type="file" id="excel_file_input" accept=".xls,.xlsx" name="excel_file"
+                        style="display: none;"> {% endcomment %}
+                    {{form.file}}
+                    <button type="submit">Choose
+                        excel</button>
+                </div>
+        </form>
+        <!-- <div class="btn xlsx">
                     <input type="file" name="excel_file" id="excel_file_input" accept=".xls, .xlsx" style="display: none;"
                         onchange="handleFileSelect('excel_file_input')">
                     <button type="button" onclick="document.getElementById('excel_file_input').click()">Choose
                         Excel</button>
-                </div>            
-        </div>
+                </div>             -->
     </div>
-    <div id="csvContainer">
-        <table id="csvTable"></table>
-        <div id="Upload">
-            <button type="submit">Upload</button>
-        </div>
-</form>
+</div>
+<div id="csvContainer">
+    <table id="csvTable"></table>
+    <div id="Upload">
+        <button type="submit">Upload</button>
+    </div>
 
-    </div>
-    <div id="tableContainer" style="display: none;">
-        <table id="table2">
-            <!-- Data for Format 2 -->
-            <thead>
-                <tr>
-                    <th>Agency name</th>
-                    <th>Invoice Number</th>
-                    <th>Invoice Date</th>
-                    <th>Total</th>
-                    <th>Paid/Pending</th>
-                </tr>
-            </thead>
-            <tbody id="export-data">
-                {% for data in datas %}
-                <tr>
-                    <td>
-                        {% if request.user.store_type == 'others' %}
-                            {{ request.user.other_value }}
-                        {% else %}
-                            {{request.user.store_type }}
-                        {% endif %}
-                    </td>
-                    <td>{{ data.invoice_number }}</td>
-                    <td>{{ data.invoice_date }}</td>
-                    <td>{{ data.invoice_amount }}</td>
-                    <td>{% if data.balance_amount == 0 %}Paid{% else %}Pending{% endif %}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+
+</div>
+<div id="tableContainer" style="display: none;">
+    <table id="table2">
+        <!-- Data for Format 2 -->
+        <thead>
+            <tr>
+                <th>Agency name</th>
+                <th>Invoice Number</th>
+                <th>Invoice Date</th>
+                <th>Total</th>
+                <th>Paid/Pending</th>
+            </tr>
+        </thead>
+        <tbody id="export-data">
+            {% for data in datas %}
+            <tr>
+                <td>
+                    {% if request.user.store_type == 'others' %}
+                    {{ request.user.other_value }}
+                    {% else %}
+                    {{request.user.store_type }}
+                    {% endif %}
+                </td>
+                <td>{{ data.invoice_number }}</td>
+                <td>{{ data.invoice_date }}</td>
+                <td>{{ data.invoice_amount }}</td>
+                <td>{% if data.balance_amount == 0 %}Paid{% else %}Pending{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 </div>
 </div>
 
