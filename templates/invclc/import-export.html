@@ -235,34 +235,38 @@
     <div class="panel-container">
         <form action="{% url 'upload_csv' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="box2">
-                <!-- Buttons to choose different file types -->
-                <div class="btn csv">
-                    {% comment %} <input type="file" id="csv_file_input" accept=".csv" name="csv_file"
-                        style="display: none;"> {% endcomment %}
-                    {{form.file}}
-                    <button type="submit">Choose
-                        CSV</button>
-                </div>
+
+            <!-- Buttons to choose different file types -->
+            <div class="btn csv">
+                {% comment %} <input type="file" id="csv_file_input" accept=".csv" name="csv_file"
+                    style="display: none;"> {% endcomment %}
+                <!-- {{form.file}} -->
+                <!-- <button type="submit">Choose
+                        CSV</button> -->
+                <label class="file-input">
+                    {{ form.file }}
+                    Choose CSV
+                </label>
+            </div>
+
         </form>
-        <form action=" " method="post" enctype="multipart/form-data">
+        <form action="" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="box2">
-                <!-- Buttons to choose different file types -->
-                <div class="btn xlsx">
-                    {% comment %} <input type="file" id="excel_file_input" accept=".xls,.xlsx" name="excel_file"
-                        style="display: none;"> {% endcomment %}
-                    {{form.file}}
-                    <button type="submit">Choose
-                        excel</button>
-                </div>
+
+            <div class="btn xlsx">
+                {% comment %} <input type="file" name="excel_file" id="excel_file_input" accept=".xls, .xlsx"
+                    style="display: none;" onchange="handleFileSelect('excel_file_input')"> {% endcomment %}
+                <!-- {{form.file}} -->
+                <!-- <button type="submit">Upload XlSX</button> -->
+                {% comment %} <button type="button" onclick="document.getElementById('excel_file_input').click()">Choose
+                    Excel</button> {% endcomment %}
+                <label class="file-input">
+                    {{ form.file }}
+                    Choose xlsx
+                </label>
+            </div>
+
         </form>
-        <!-- <div class="btn xlsx">
-                    <input type="file" name="excel_file" id="excel_file_input" accept=".xls, .xlsx" style="display: none;"
-                        onchange="handleFileSelect('excel_file_input')">
-                    <button type="button" onclick="document.getElementById('excel_file_input').click()">Choose
-                        Excel</button>
-                </div>             -->
     </div>
 </div>
 <div id="csvContainer">
@@ -270,7 +274,6 @@
     <div id="Upload">
         <button type="submit">Upload</button>
     </div>
-
 
 </div>
 <div id="tableContainer" style="display: none;">
