@@ -40,4 +40,4 @@ class UploadFileForm(forms.Form):
             'accept': '.csv',
             'class':'csv-field',
         })
-    )
+    )   

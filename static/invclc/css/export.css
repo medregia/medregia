@@ -231,6 +231,7 @@ form{
 
 @media print{
   body{
+    height:100vh;
     border:1px solid black;
   }
   .navbar,.tab,.export2,.box-print1{

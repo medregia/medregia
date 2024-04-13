@@ -78,15 +78,15 @@ const lastboxAgency = document.querySelector(".lastbox-content-agency");
 uploadButton.style.display = "none";
 
 // Event listener for CSV file input change
-csvFileInput.addEventListener("change", function() {
-// If a file is selected, show the upload button
-if (csvFileInput.files.length > 0) {
-  uploadButton.style.display = "block";
-} else {
-  // Otherwise, hide the upload button
-  uploadButton.style.display = "none";
-}
-});
+// csvFileInput.addEventListener("change", function() {
+// // If a file is selected, show the upload button
+// if (csvFileInput.files.length > 0) {
+//   uploadButton.style.display = "block";
+// } else {
+//   // Otherwise, hide the upload button
+//   uploadButton.style.display = "none";
+// }
+// });
 
 
 // Event listener for table selector change
@@ -141,15 +141,15 @@ tableSelector.addEventListener("change", function() {
 
 
 // Event listener for CSV file input change
-csvFileInput.addEventListener("change", function() {
-  // If a file is selected and the format is set to format1, show the upload button
-  if (csvFileInput.files.length > 0 && tableSelector.value === "format1") {
-      uploadButton.style.display = "block";
-  } else {
-      // Otherwise, hide the upload button
-      uploadButton.style.display = "none";
-  }
-});
+// csvFileInput.addEventListener("change", function() {
+//   // If a file is selected and the format is set to format1, show the upload button
+//   if (csvFileInput.files.length > 0 && tableSelector.value === "format1") {
+//       uploadButton.style.display = "block";
+//   } else {
+//       // Otherwise, hide the upload button
+//       uploadButton.style.display = "none";
+//   }
+// });
 
 
 const trElements = csvTable.getElementsByTagName("tr");
@@ -170,9 +170,9 @@ thElements[i].style.border = "1px solid #ccc";
 }
 
 
-csvFileInput.addEventListener("change", function() {
-loadCSV();
-});
+// csvFileInput.addEventListener("change", function() {
+// loadCSV();
+// });
 
 function loadCSV() {
 const file = csvFileInput.files[0];
@@ -258,17 +258,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
-
- fetch('/upload_csv/')
-  .then(response => response.json())
-  .then(data => {
-      // var messageDiv = document.getElementById('message');
-      // if (data.message) {
-      //     messageDiv.innerHTML = '<p>' + data.message + '</p>';
-      // }
-      console.log(data)
-  })
-  .catch(error => {
-      console.error('Error:', error);
-  });

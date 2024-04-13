@@ -240,9 +240,15 @@
                 <div class="btn csv">
                     {% comment %} <input type="file" id="csv_file_input" accept=".csv" name="csv_file" style="display: none;"> {% endcomment %}
                     {{form.file}}
-                    <button type="submit">Choose
-                        CSV</button>
                 </div>
+                <div id="csvContainer">
+                    <table id="csvTable"></table>
+                    <div id="Upload">
+                        <button type="submit">Upload</button>
+                    </div>
+                </div>
+                <button type="submit">Upload CSV</button>
+
         </form>
         <form action="" method="post" enctype="multipart/form-data" >
             {% csrf_token %}
@@ -256,13 +262,6 @@
             </div>      
         </form>      
         </div>
-    </div>
-    <div id="csvContainer">
-        <table id="csvTable"></table>
-        <div id="Upload">
-            <button type="submit">Upload</button>
-        </div>
-
     </div>
     <div id="tableContainer" style="display: none;">
         <table id="table2">
