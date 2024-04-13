@@ -34,10 +34,9 @@ class InvoiceForm(forms.ModelForm):
         }
 
 class UploadFileForm(forms.Form):
-    file = forms.FileField(label='Select a file')
-
-    def clean_file(self):
-        file = self.cleaned_data['file']
-        if not file.name.endswith(('.csv', '.json')):
-            raise forms.ValidationError("File format not supported. Please upload a CSV or JSON file.")
-        return file
+    file = forms.FileField(
+        label='Select a file',
+        widget=forms.FileInput(attrs={
+            'accept': '.csv',
+        })
+    )

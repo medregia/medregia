@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var pharmacy = document.querySelector('.export2-box2 input[name="pharmacy"]').checked;
             var medical = document.querySelector('.export2-box2 input[name="medical"]').checked;
             var agency = document.querySelector('.export2-box2 input[name="agency"]').checked;
-            var others = document.querySelector('.export2-box2 input[name="others"]').checked;
+            var others = document.querySelector('.export2-box2 input[name="others"]');
 
             // Construct category based on selected checkboxes
             var category = [];
@@ -258,3 +258,17 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+ fetch('/upload_csv/')
+  .then(response => response.json())
+  .then(data => {
+      // var messageDiv = document.getElementById('message');
+      // if (data.message) {
+      //     messageDiv.innerHTML = '<p>' + data.message + '</p>';
+      // }
+      console.log(data)
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });

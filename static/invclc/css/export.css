@@ -40,7 +40,7 @@ body{
 /* Style the tab content */
 .tabcontent {
   height: 100vh;
-  width: 100%;
+  width: 98%;
   display: block;
   padding: 6px 12px;
   border: 1px solid #ccc;
@@ -64,7 +64,7 @@ body{
   /* background-color: beige; */
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 
 }
@@ -110,7 +110,7 @@ form{
   display: flex;
   align-items: center;
   margin-top: 40px;
-  background-color: #ccc;
+  background-color: floralwhite;
 }
   
   
@@ -152,7 +152,8 @@ form{
 .export2{
   height: 100vh;
   width: 25%;
-  background-color: #ccc;
+  background-color: #fffcfc;
+  box-shadow:0px 0px 10px 0px black;
   display:flex;
   flex-direction: column;
   align-items: center;
@@ -172,13 +173,14 @@ form{
 
 }
 .export2-box1{
-  height: 10vh;
   width: 100%;
-  background-color: #c7c7c7;
+  /* background-color: rgba(8, 39, 216,0.6); */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border-bottom:1px solid black;
+  box-shadow:0px 2px 2px 0px black;
 }
 .export2-box2{
   height: 20vh;
@@ -218,12 +220,12 @@ form{
 }
 
 #checkboxTable th {
-  background-color: #f2f2f2;
+  background-color: #ffffff;
 }
 
 
 .selected {
-  background-color:#ccc;
+  background-color:#ffffff;
 }
 
 

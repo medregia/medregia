@@ -27,5 +27,5 @@ urlpatterns = [
     path('updatemore/', views.updatemore_view, name='updatemore'),
     path('unpaid_debt/', views.unpaid_debt, name='unpaid_debt'),
 
-    path('upload-csv/', views.upload_csv, name='upload_csv'),
+    path('upload_csv/', views.upload_csv, name='upload_csv'),
 ]

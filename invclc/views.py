@@ -31,20 +31,59 @@ from django.core.serializers import serialize
 from django.http import JsonResponse
 from .models import Invoice
 
+
 def upload_csv(request):
-    if request.method == 'POST' and request.FILES.get('csv_content'):
-        csv_content = request.FILES['csv_content'].read().decode('utf-8')
-        # Assuming you have a way to get the current user (e.g., request.user)
-        current_user = request.user
-        # Create or update the invoice with the CSV content
-        invoice = Invoice.objects.create(
-            user=current_user,
-            csv_content=csv_content  # Assuming your Invoice model has a field named csv_content
-        )
-        return JsonResponse({'message': 'CSV content uploaded successfully'})
+    if request.method == 'POST' and request.FILES.get('file'):
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = request.FILES['file']
+            if file.name.endswith(('.csv')):
+                try:
+                    csv_data = file.read().decode('utf-8').splitlines()
+                    csv_reader = csv.DictReader(csv_data)
+                    
+                    # Assuming you have a way to get the current user (e.g., request.user)
+                    current_user = request.user
+                    
+                    for row in csv_reader:
+                        # Convert date string to datetime object
+                        invoice_date = datetime.strptime(row['invoice_date'], '%d/%m/%Y').date()
+                        
+                        # Convert string values to integers
+                        invoice_amount = int(row['invoice_amount'])
+                        payment_amount = int(row['payment_amount'])
+                        
+                        # Calculate balance amount
+                        balance_amount = invoice_amount - payment_amount
+                        
+                        # Get the current date and time
+                        current_date = datetime.now().date()
+                        current_time = datetime.now().time()
+                        
+                        # Create Invoice object for each row in the CSV file
+                        invoice = Invoice.objects.create(
+                            user=current_user,
+                            pharmacy_name=row['pharmacy_name'],
+                            invoice_number=row['invoice_number'],
+                            invoice_date=invoice_date,
+                            invoice_amount=invoice_amount,
+                            payment_amount=payment_amount,
+                            balance_amount=balance_amount,
+                            today_date=current_date,  # Use current date
+                            current_time=current_time,  # Use current time
+                            updated_by=row['updated_by']
+                        )
+
+                    
+                    return JsonResponse({'message': 'CSV content uploaded successfully'})
+                except Exception as e:
+                    return JsonResponse({'error': f'Error processing CSV file: {str(e)}'}, status=500)
+            else:
+                return JsonResponse({'error': 'File format not supported. Please upload a CSV file.'}, status=400)
+        else:
+            return JsonResponse({'error': 'Form is not valid'}, status=400)
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
-
 
 
 @login_required(login_url='/')
@@ -78,35 +117,41 @@ def exports_to_csv(request):
         print("Error : ", e)
     
     if check_user == str(request.user):
-        currentuser = request.user
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
+        try:
+            currentuser = request.user
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
 
-        writer = csv.writer(response)
-        writer.writerow(['IN. No.', 'Total Amount', 'Last Payment Date', 'Payed', 'Paid/Pending'])
-        for obj in Invoice.objects.filter(user=collaborator_admin ):
-            if obj.balance_amount == 0:
-                status = 'paid'
-            else:
-                status = 'pending'
-            writer.writerow([obj.invoice_number, obj.invoice_amount, obj.today_date, obj.payment_amount, status])
+            writer = csv.writer(response)
+            writer.writerow(['invoice_number','invoice_amount', 'payment_amount','updated_by','updated_date', 'Paid/Pending Status'])
+            for obj in Invoice.objects.filter(user=collaborator_admin ):
+                if obj.balance_amount == 0:
+                    status = 'paid'
+                else:
+                    status = 'pending'
+                writer.writerow([obj.invoice_number, obj.invoice_amount,obj.payment_amount,obj.updated_by, obj.today_date,  status])
 
-        return response
+            return response
+        except Exception as e:
+            print ("Exception : ",e)
     else:
-        currentuser = request.user
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
+        try:
+            currentuser = request.user
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
 
-        writer = csv.writer(response)
-        writer.writerow(['IN. No.', 'Total Amount', 'Last Payment Date', 'Payed', 'Paid/Pending'])
-        for obj in Invoice.objects.filter(user=request.user):
-            if obj.balance_amount == 0:
-                status = 'paid'
-            else:
-                status = 'pending'
-            writer.writerow([obj.invoice_number, obj.invoice_amount, obj.today_date, obj.payment_amount, status])
+            writer = csv.writer(response)
+            writer.writerow(['invoice_number','invoice_amount', 'payment_amount','updated_by','updated_date', 'Paid/Pending Status'])
+            for obj in Invoice.objects.filter(user=currentuser ):
+                if obj.balance_amount == 0:
+                    status = 'paid'
+                else:
+                    status = 'pending'
+                writer.writerow([obj.invoice_number, obj.invoice_amount,obj.payment_amount,obj.updated_by, obj.today_date,  status])
 
-        return response
+            return response
+        except Exception as a:
+            print("Exception : ",a)
 
 
 def exports_to_xlsx(request):   
@@ -600,6 +645,7 @@ class InvoiceResource(ModelResource):
 
 @login_required(login_url='/')
 def import_view(request):
+    upload_csv_file = UploadFileForm
     check_user = None
     data = None
     admin_city = None  # Initialize admin_city variable
@@ -673,7 +719,7 @@ def import_view(request):
             unique_id = user.UniqueId
             data = Invoice.objects.filter(user=request.user).order_by('id')
         except Exception as e:
-            print("Currect User : ",e)
+            print("Current User : ",e)
         
     user_name = request.user
     if request.method == 'POST':
@@ -715,6 +761,7 @@ def import_view(request):
         'admin_person': admin_person,
         'user': user_name,
         'unique_id': unique_id,
+        'form':upload_csv_file,
     }
     return render(request, 'invclc/import-export.html', context)
 
