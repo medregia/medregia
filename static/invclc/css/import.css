@@ -23,7 +23,7 @@ body{
  
 .panel-container .box2{
   height:18vh;
-  width:50%;
+  width:100%;
   display:flex;
   justify-content:center;
   align-items:center;
@@ -41,7 +41,7 @@ body{
   /* background-color:#FFFF; */
 }
 
-.panel-container .box2 .btn button{
+/* .panel-container .box2 .btn button{
   height:60px;
   width:200px;
   border:none;
@@ -49,8 +49,8 @@ body{
   cursor:pointer;
   border-radius:3px;  
   font-size:18px;
-  /* background-color:pink; */
-}
+  background-color:pink;
+} */
 
 .panel-container .box2 .btn button:active{
   box-shadow:0px 0px 20px 0px black;
@@ -142,7 +142,7 @@ body{
   margin-top: 8px;
   
 }
-#Upload button{
+/* #Upload button{
   height: 35px;
   width: 80px;
   background-color: blue;
@@ -151,4 +151,14 @@ body{
   border-radius: 5px;
   cursor: pointer;
   font-weight: bold;
+} */
+
+input.csv-field{
+  height:60px;
+  width:500px;
+  border:none;
+  box-shadow:0px 0px 10px 0px black;
+  cursor:pointer;
+  border-radius:3px;  
+  font-size:18px;
 }
