@@ -15,7 +15,7 @@ function opentab(evt, cityName) {
     
   }
   // Show the current tab, and add an "active" class to the button that opened the tab
-  document.getElementById(cityName).style.display = "block";
+  document.getElementById(cityName).style.display = "inline-flex";
   evt.currentTarget.className += " active";
 }
 
@@ -66,16 +66,16 @@ function openTab(evt, TabName) {
 }
 
 const tableSelector = document.getElementById("tableSelector");
-const csvFileInput = document.getElementById("csv_file_input");
+const csvFileInput = document.querySelector('input[type="file"]');
 const csvContainer = document.getElementById("csvContainer");
 const tableContainer = document.getElementById("table2");
 const table = document.getElementById("tableContainer");
 const csvTable = document.getElementById("csvTable");
-const uploadButton = document.getElementById("Upload");
+const uploadButton = document.getElementById("Upload-btn");
 const lastboxAgency = document.querySelector(".lastbox-content-agency");
 
 // Initially hide the upload button
-uploadButton.style.display = "none";
+// uploadButton.style.display = "none";
 
 // Event listener for CSV file input change
 // csvFileInput.addEventListener("change", function() {
@@ -90,6 +90,10 @@ uploadButton.style.display = "none";
 
 
 // Event listener for table selector change
+// Assuming csvFileInput is the input element for CSV files
+
+// Assuming uploadButton is the submit button
+
 tableSelector.addEventListener("change", function() {
   if (tableSelector.value === "format1") {
       // Show the panel-container for format 1
@@ -107,14 +111,15 @@ tableSelector.addEventListener("change", function() {
       csvTable.style.margin = "0 auto";
 
       // Show the upload button when format1 is selected and a file is chosen
-      if (csvFileInput.files.length > 0) {
+      if (csvFileInput && csvFileInput.files.length > 0) {
           uploadButton.style.display = "block";
-      } else {
-          uploadButton.style.display = "none";
-      }
+      } 
+      // else {
+      //     uploadButton.style.display = "none";
+      // }
 
       // Show the buttons to choose CSV, PDF, and Excel files for format 1
-      document.querySelectorAll(".btn.csv, .btn.pdf, .btn.xlsx").forEach(function(btn) {
+      document.querySelectorAll(".btn.pdf, .btn.xlsx").forEach(function(btn) {
           btn.style.display = "block";
       });
   } else if (tableSelector.value === "format2") {
@@ -127,14 +132,15 @@ tableSelector.addEventListener("change", function() {
       table.style.display = "block";
 
       // Hide the upload button when format2 is selected
-      uploadButton.style.display = "none";
+      // uploadButton.style.display = "none";
 
       // Hide the buttons to choose CSV, PDF, and Excel files for format 2
-      document.querySelectorAll(".btn.csv, .btn.pdf, .btn.xlsx").forEach(function(btn) {
+      document.querySelectorAll(".btn.pdf, .btn.xlsx").forEach(function(btn) {
           btn.style.display = "none";
       });
   }
 });
+
 
 
 
@@ -152,56 +158,54 @@ tableSelector.addEventListener("change", function() {
 // });
 
 
-const trElements = csvTable.getElementsByTagName("tr");
-for (let i = 0; i < trElements.length; i++) {
-trElements[i].style.border = "1px solid #ccc";
-}
+// const trElements = csvTable.getElementsByTagName("tr");
+// for (let i = 0; i < trElements.length; i++) {
+// trElements[i].style.border = "1px solid #ccc";
+// }
 
-// Add border to td elements
-const tdElements = csvTable.getElementsByTagName("td");
-for (let i = 0; i < tdElements.length; i++) {
-tdElements[i].style.border = "1px solid #ccc";
-}
+// // Add border to td elements
+// const tdElements = csvTable.getElementsByTagName("td");
+// for (let i = 0; i < tdElements.length; i++) {
+// tdElements[i].style.border = "1px solid #ccc";
+// }
 
-// Add border to th elements
-const thElements = csvTable.getElementsByTagName("th");
-for (let i = 0; i < thElements.length; i++) {
-thElements[i].style.border = "1px solid #ccc";
-}
+// // Add border to th elements
+// const thElements = csvTable.getElementsByTagName("th");
+// for (let i = 0; i < thElements.length; i++) {
+// thElements[i].style.border = "1px solid #ccc";
+// }
 
 
 // csvFileInput.addEventListener("change", function() {
 // loadCSV();
 // });
 
-function loadCSV() {
-const file = csvFileInput.files[0];
-if (file) {
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const lines = e.target.result.split('\n');
-    csvTable.innerHTML = ""; // Clear previous table data
-    lines.forEach(line => {
-      const cells = line.split(',');
-      const row = csvTable.insertRow();
-      cells.forEach(cell => {
-        const cellElement = row.insertCell();
-        cellElement.textContent = cell;
-      });
-    });
-  };
-  reader.readAsText(file);
-}
-}
+// function loadCSV() {
+// const file = csvFileInput.files[0];
+// if (file) {
+//   const reader = new FileReader();
+//   reader.onload = function(e) {
+//     const lines = e.target.result.split('\n');
+//     csvTable.innerHTML = ""; // Clear previous table data
+//     lines.forEach(line => {
+//       const cells = line.split(',');
+//       const row = csvTable.insertRow();
+//       cells.forEach(cell => {
+//         const cellElement = row.insertCell();
+//         cellElement.textContent = cell;
+//       });
+//     });
+//   };
+//   reader.readAsText(file);
+// }
+// }
 
-function loadTable() {
-// You need to implement the logic to load the table data for format 2 here
-}
+// function loadTable() {
+// }
 
-function clearTable() {
-csvTable.innerHTML = ""; // Clear CSV table
-// You may want to clear data in the table for format 2 here as well
-} 
+// function clearTable() {
+// csvTable.innerHTML = ""; 
+// } 
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -258,3 +262,82 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+function displayCSV(file) {
+        // Create a FileReader object
+        var reader = new FileReader();
+
+        // Define the onload event handler
+        reader.onload = function(event) {
+            // Parse CSV content
+            var csv = event.target.result;
+            var rows = csv.split('\n');
+
+            // Clear existing table content
+            var table = document.getElementById('csvTable');
+            table.innerHTML = '';
+
+            // Loop through CSV rows and create table rows
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i].split(',');
+                var tr = document.createElement('tr');
+
+                // Create table cells
+                for (var j = 0; j < row.length; j++) {
+                    var td = document.createElement('td');
+                    td.textContent = row[j];
+                    tr.appendChild(td);
+                }
+
+                // Append row to table
+                table.appendChild(tr);
+            }
+        };
+
+        // Read the uploaded file as text
+        reader.readAsText(file);
+    }
+
+    // Add event listener to file input
+    var fileInput = document.querySelector('input[type="file"]');
+    const csvButton = document.querySelector('.upload-btn')
+    fileInput.addEventListener('change', function(event) {
+        var file = event.target.files[0];
+        if (file) {
+            displayCSV(file);
+            csvButton.classList.toggle('vanish')
+        }
+    });
+
+document.getElementById("uploadBtn").addEventListener("click", function() {
+    let form = document.getElementById("uploadForm");
+    let formData = new FormData(form)
+    fetch('/upload_csv/', {
+        method: "POST",
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json(); // Parse response JSON
+        } else {
+            // console.log(response)
+            throw new Error('File upload failed',response); // Throw error for failed response
+        }
+    })
+    .then(data => {
+        // Check if the response contains an error key
+        if (data.error) {
+            console.error('Error:', data.error); // Log error message
+            if (response.status === 500) {
+                console.log("Please check your data");
+            }
+        } else {
+            console.log("File uploaded successfully", data);
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+});
+

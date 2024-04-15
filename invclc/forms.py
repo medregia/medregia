@@ -39,5 +39,6 @@ class UploadFileForm(forms.Form):
         widget=forms.FileInput(attrs={
             'accept': '.csv',
             'class':'csv-field',
+            'id':'fileInput',
         })
     )   

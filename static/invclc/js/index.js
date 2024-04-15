@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function () {
           payBtn.textContent = 'Pay';
           cancelBtn.style.display = 'none'; // Hide cancel button after saving
           inputFields.forEach(input => {
-            input.setAttribute('disabled', 'true');
+            input.setAttribute('disabled', 'true'); 
             input.classList.remove('border-active');
           });
 

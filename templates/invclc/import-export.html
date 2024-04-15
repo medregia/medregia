@@ -210,91 +210,119 @@
     </div>
 </div>
 
-<div id="Import" class="tabcontent" style="display: none;">
-    <div class="lastbox">
-        <div class="lastbox-content">
-            <!-- Form for selecting options -->
-            <div class="lastbox-center">
-                <div class="lastbox-content-formate">
-                    <label for="tableSelector">Choose</label>
-                    <select id="tableSelector">
-                        <option value="format1">Format 1</option>
-                        <option value="format2">Format 2</option>
-                    </select>
-                </div>
-                <div class="lastbox-content-agency" style="display: none;">
-                    <label for="user">Store Type</label>
-                    <input type="text" id="user"
-                        value="{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}"
-                        placeholder="Agencyname" disabled>
+<div id="Import" class="tabcontent import" style="display: none;">
+    <div class="content1">
+        <div class="lastbox">
+            <div class="lastbox-content">
+                <!-- Form for selecting options -->
+                <div class="lastbox-center">
+                    <div class="lastbox-content-formate">
+                        <label for="tableSelector">Choose</label>
+                        <select id="tableSelector">
+                            <option value="format1">Format 1</option>
+                            <option value="format2">Format 2</option>
+                        </select>
+                    </div>
+                    <div class="lastbox-content-agency" style="display: none;">
+                        <label for="user">Store Type</label>
+                        <input type="text" id="user"
+                            value="{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}"placeholder="Agencyname" disabled>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="panel-container">
-        <form action="{% url 'upload_csv' %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="box2">
+        <div class="panel-container">
+
+            <form action="{% url 'upload_csv'%}" method="post" enctype="multipart/form-data" id="uploadForm">
+                
+                {% csrf_token %}
+            
                 <!-- Buttons to choose different file types -->
                 <div class="btn csv">
-                    {% comment %} <input type="file" id="csv_file_input" accept=".csv" name="csv_file" style="display: none;"> {% endcomment %}
-                    {{form.file}}
+                    <label class="file-input">
+                        {{ form.file }}
+                        Choose CSV
+                    </label>
                 </div>
-                <div id="csvContainer">
-                    <table id="csvTable"></table>
-                    <div id="Upload">
-                        <button type="submit">Upload</button>
-                    </div>
-                </div>
-                <button type="submit">Upload CSV</button>
 
-        </form>
-        <form action="" method="post" enctype="multipart/form-data" >
-            {% csrf_token %}
-            <div class="btn xlsx">
-                {% comment %} <input type="file" name="excel_file" id="excel_file_input" accept=".xls, .xlsx" style="display: none;"
-                    onchange="handleFileSelect('excel_file_input')"> {% endcomment %}
-                {{form.file}}
-                <button type="submit">Upload XlSX</button>
-                {% comment %} <button type="button" onclick="document.getElementById('excel_file_input').click()">Choose
-                    Excel</button> {% endcomment %}
-            </div>      
-        </form>      
+            {% comment %} <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="btn xlsx">
+                    <label class="file-input">
+                        {{ form.file }}
+                        Choose XLSX
+                    </label>
+                </div>      
+            </form>       {% endcomment %}
+        </div>
+        <div id="csvContainer">
+            <table id="csvTable"></table>
+            <button type="button" class="upload-btn vanish" id="uploadBtn">Upload</button>
+
+        </div>
+    </form>
+
+        <div id="tableContainer" style="display: none;">
+            <table id="table2">
+                <!-- Data for Format 2 -->
+                <thead>
+                    <tr>
+                        <th>Agency name</th>
+                        <th>Invoice Number</th>
+                        <th>Invoice Date</th>
+                        <th>Total</th>
+                        <th>Paid/Pending</th>
+                    </tr>
+                </thead>
+                <tbody id="export-data">
+                    {% for data in datas %}
+                    <tr>
+                        <td>
+                            {% if request.user.store_type == 'others' %}
+                                {{ request.user.other_value }}
+                            {% else %}
+                                {{request.user.store_type }}
+                            {% endif %}
+                        </td>
+                        <td>{{ data.invoice_number }}</td>
+                        <td>{{ data.invoice_date }}</td>
+                        <td>{{ data.invoice_amount }}</td>
+                        <td>{% if data.balance_amount == 0 %}Paid{% else %}Pending{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-    <div id="tableContainer" style="display: none;">
-        <table id="table2">
-            <!-- Data for Format 2 -->
-            <thead>
-                <tr>
-                    <th>Agency name</th>
-                    <th>Invoice Number</th>
-                    <th>Invoice Date</th>
-                    <th>Total</th>
-                    <th>Paid/Pending</th>
-                </tr>
-            </thead>
-            <tbody id="export-data">
-                {% for data in datas %}
-                <tr>
-                    <td>
-                        {% if request.user.store_type == 'others' %}
-                            {{ request.user.other_value }}
-                        {% else %}
-                            {{request.user.store_type }}
-                        {% endif %}
-                    </td>
-                    <td>{{ data.invoice_number }}</td>
-                    <td>{{ data.invoice_date }}</td>
-                    <td>{{ data.invoice_amount }}</td>
-                    <td>{% if data.balance_amount == 0 %}Paid{% else %}Pending{% endif %}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+
+    <div class="content2">
+       <h4 class="warning"> <span>Warning:</span> Invalid File Format Detected!</h4>
+
+        <p>Please ensure that you are uploading a <span>CSV file</span> or <span>XLSX file </span>with the correct header format. The header must include the following columns exactly as shown:</p>
+
+        <ul>
+            <li>pharmacy_name</li>
+            <li>invoice_number</li>
+            <li>invoice_date</li>
+            <li>invoice_amount</li>
+            <li>payment_amount</li>
+            <li>updated_by</li>
+        </ul>
+
+        <p class="resolve">If your file does not meet these requirements, please make the necessary adjustments and try uploading again. Thank you!</p>
+
+        <div class="download-empty-csv">
+            <h5>Here You Download a Sample Csv File </h5>
+            <a href="{% url 'empty_csv' %}"><button type="submit">Sample CSV</button></a>
+        </div>
+
+        <div class="download-empty-xlsx">
+            <h5>Here You Download a Sample XLSX File </h5>
+            <a href="{% url 'empty_xlsx' %}"><button type="submit"> Sample XLSX </button></a>
+        </div>
     </div>
-</div>
 </div>
 
 

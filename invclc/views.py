@@ -26,64 +26,112 @@ from import_export.formats.base_formats import DEFAULT_FORMATS,XLSX
 from import_export import resources
 from .forms import UploadFileForm
 from django.core.serializers import serialize
-
+import openpyxl
+import logging
 # views.py
 from django.http import JsonResponse
 from .models import Invoice
 
-
+logger = logging.getLogger(__name__)
 def upload_csv(request):
-    if request.method == 'POST' and request.FILES.get('file'):
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            file = request.FILES['file']
-            if file.name.endswith(('.csv')):
+    
+    check_user = None  # Define check_user here
+        
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            print('Get_Admin_name', get_admin_name)
+            print(f"Collaborator request sender username: {collaborator_request_username}")
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            print("collaborator_admin : ", collaborator_admin)
+            print("new : ", collaborator_request_sender)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
                 try:
-                    csv_data = file.read().decode('utf-8').splitlines()
-                    csv_reader = csv.DictReader(csv_data)
-                    
-                    # Assuming you have a way to get the current user (e.g., request.user)
-                    current_user = request.user
-                    
-                    for row in csv_reader:
-                        # Convert date string to datetime object
-                        invoice_date = datetime.strptime(row['invoice_date'], '%d/%m/%Y').date()
-                        
-                        # Convert string values to integers
-                        invoice_amount = int(row['invoice_amount'])
-                        payment_amount = int(row['payment_amount'])
-                        
-                        # Calculate balance amount
-                        balance_amount = invoice_amount - payment_amount
-                        
-                        # Get the current date and time
-                        current_date = datetime.now().date()
-                        current_time = datetime.now().time()
-                        
-                        # Create Invoice object for each row in the CSV file
-                        invoice = Invoice.objects.create(
-                            user=current_user,
-                            pharmacy_name=row['pharmacy_name'],
-                            invoice_number=row['invoice_number'],
-                            invoice_date=invoice_date,
-                            invoice_amount=invoice_amount,
-                            payment_amount=payment_amount,
-                            balance_amount=balance_amount,
-                            today_date=current_date,  # Use current date
-                            current_time=current_time,  # Use current time
-                            updated_by=row['updated_by']
-                        )
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                except Exception as a:
+                    print("Collaborating Error : ", a)
+            
 
-                    
-                    return JsonResponse({'message': 'CSV content uploaded successfully'})
-                except Exception as e:
-                    return JsonResponse({'error': f'Error processing CSV file: {str(e)}'}, status=500)
+            
+        if request.method == 'POST' and request.FILES.get('file'):
+            form = UploadFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = request.FILES['file']
+                if file.name.endswith(('.csv')):
+                    try:
+                        csv_data = file.read().decode('utf-8').splitlines()
+                        csv_reader = csv.DictReader(csv_data)
+                        
+                        # Assuming you have a way to get the current user (e.g., request.user)
+                        current_user = request.user
+                        
+                        for row in csv_reader:
+                            # Convert date string to datetime object
+                            invoice_date = datetime.strptime(row['invoice_date'], '%d/%m/%Y').date()
+                            
+                            # Convert string values to integers
+                            invoice_amount = int(row['invoice_amount'])
+                            payment_amount = int(row['payment_amount'])
+                            
+                            # Calculate balance amount
+                            balance_amount = invoice_amount - payment_amount
+                            
+                            # Get the current date and time
+                            current_date = datetime.now().date()
+                            current_time = datetime.now().time()
+                            
+                            # Create Invoice object for each row in the CSV file
+                            if str(request.user) == check_user:
+                                invoice = Invoice.objects.create(
+                                    user=collaborator_admin,
+                                    pharmacy_name=row['pharmacy_name'],
+                                    invoice_number=row['invoice_number'],
+                                    invoice_date=invoice_date,
+                                    invoice_amount=invoice_amount,
+                                    payment_amount=payment_amount,
+                                    balance_amount=balance_amount,
+                                    today_date=current_date,  # Use current date
+                                    current_time=current_time,  # Use current time
+                                    updated_by=row['updated_by']
+                                )
+                            else:
+                                invoice = Invoice.objects.create(
+                                    user=current_user,
+                                    pharmacy_name=row['pharmacy_name'],
+                                    invoice_number=row['invoice_number'],
+                                    invoice_date=invoice_date,
+                                    invoice_amount=invoice_amount,
+                                    payment_amount=payment_amount,
+                                    balance_amount=balance_amount,
+                                    today_date=current_date,  # Use current date
+                                    current_time=current_time,  # Use current time
+                                    updated_by=row['updated_by']
+                                )
+
+                        
+                        return JsonResponse({'message': 'CSV content uploaded successfully'})
+                    except Exception as e:
+                        logger.exception("Error processing CSV file")
+                        return JsonResponse({'error': f'Error processing CSV file: {str(e)}'}, status=500)
+                else:
+                    return JsonResponse({'error': 'File format not supported. Please upload a CSV file.'}, status=400)
             else:
-                return JsonResponse({'error': 'File format not supported. Please upload a CSV file.'}, status=400)
+                return JsonResponse({'error': 'Form is not valid'}, status=400)
         else:
-            return JsonResponse({'error': 'Form is not valid'}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
+            return JsonResponse({'error': 'Invalid request'}, status=400)
+    except Exception as e:
+        logger.exception("Error in upload_csv view")
+        return JsonResponse({'error': 'Server error'}, status=500)
 
 
 @login_required(login_url='/')
@@ -1261,3 +1309,38 @@ def payment_invoice(request,payment_id):
     except Exception as e:
         messages.error(request,"payment Failed",e)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
+
+
+def empty_csv(request):
+    # Define header row
+    header = ['pharmacy_name', 'invoice_number', 'invoice_date', 'invoice_amount', 'payment_amount', 'updated_by']
+    
+    # Create CSV response
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="sample_data.csv"'
+
+    # Write header row to CSV
+    writer = csv.writer(response)
+    writer.writerow(header)
+
+    return response
+
+def empty_xlsx(request):
+    # Define header row
+    header = ['pharmacy_name', 'invoice_number', 'invoice_date', 'invoice_amount', 'payment_amount', 'updated_by']
+    
+    # Create a new workbook and add a worksheet
+    workbook = openpyxl.Workbook()
+    worksheet = workbook.active
+
+    # Write header row to worksheet
+    worksheet.append(header)
+
+    # Create HttpResponse object with XLSX content type
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="sample_data.xlsx"'
+
+    # Save workbook to HttpResponse
+    workbook.save(response)
+
+    return response
