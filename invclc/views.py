@@ -77,7 +77,10 @@ def upload_csv(request):
                         
                         for row in csv_reader:
                             # Convert date string to datetime object
-                            invoice_date = datetime.strptime(row['invoice_date'], '%d/%m/%Y').date()
+                            try:
+                                invoice_date = datetime.strptime(row['invoice_date'], '%d/%m/%Y').date()
+                            except ValueError:
+                                invoice_date = datetime.strptime(row['invoice_date'], '%d-%m-%Y').date()
                             
                             # Convert string values to integers
                             invoice_amount = int(row['invoice_amount'])
