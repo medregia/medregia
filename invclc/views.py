@@ -119,7 +119,7 @@ def upload_csv(request):
                                 )
 
                         
-                        return JsonResponse({'message': 'CSV content uploaded successfully'})
+                        return JsonResponse({'message': 'CSV Data uploaded successfully'})
                     except Exception as e:
                         logger.exception("Error processing CSV file")
                         return JsonResponse({'error': f'Error processing CSV file: {str(e)}'}, status=500)

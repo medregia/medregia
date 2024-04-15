@@ -291,3 +291,10 @@ input.csv-field {
   border-radius:2px;
   /* font-size:1.2rem; */
 }
+
+.upload-msg{
+  height:10vh;
+  width:30%;
+  text-align:center;
+  /* background-color:red; */
+}

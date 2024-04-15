@@ -311,33 +311,37 @@ function displayCSV(file) {
     });
 
 document.getElementById("uploadBtn").addEventListener("click", function() {
+    const uploadMsg = document.querySelector(".upload-msg");
     let form = document.getElementById("uploadForm");
-    let formData = new FormData(form)
+    let formData = new FormData(form);
     fetch('/upload_csv/', {
         method: "POST",
         body: formData
     })
     .then(response => {
         if (response.ok) {
-            return response.json(); // Parse response JSON
+            return response.json();
         } else {
-            // console.log(response)
-            throw new Error('File upload failed',response); // Throw error for failed response
+            uploadMsg.textContent = "File Upload Failed Due to Duplicate Entry of Invoice Number or Incorrect Date Format";
+            uploadMsg.style.color = "red";
+            throw new Error('File Upload Failed Due to Duplicate Entry of Invoice Number or Incorrect Date Format');
         }
     })
     .then(data => {
-        // Check if the response contains an error key
         if (data.error) {
-            console.error('Error:', data.error); // Log error message
+            console.error('Error:', data.error);
             if (response.status === 500) {
-                console.log("Please check your data");
+                uploadMsg.textContent = "! Please check your data. Your data must satisfy the following requirements !";
+                uploadMsg.style.color = "orange";
             }
         } else {
-            console.log("File uploaded successfully", data);
+            uploadMsg.textContent = data.message;
+            uploadMsg.style.color = "green";
         }
     })
     .catch(error => {
-        console.error("Error:", error);
+        console.error('File Upload Error:', error);
+        uploadMsg.textContent = error;
+        uploadMsg.style.color = "red";
     });
 });
-
