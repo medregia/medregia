@@ -156,6 +156,7 @@ footer .footer-col ul.foot li{
     list-style-type:none;
     width: 100%;
     font-size:12px;
+    display: flex;
 }
 
 footer .footer-col ul.foot1{
@@ -167,6 +168,10 @@ footer .footer-col ul.foot1{
     justify-content:space-around;
     align-items:center;
     padding:1px;
+}
+
+a{
+    font-size: 18px;
 }
 
 footer .footer-col ul.foot1 li{
@@ -219,7 +224,8 @@ li:not(:last-child){
     text-decoration: none;
     transition: 0.4s;
     width: 350px;
-    /* margin-left: 15px; */
+    font-size: 16px;
+    margin-left: 10px;
 }
 .foot li a:hover{
     color: white;
