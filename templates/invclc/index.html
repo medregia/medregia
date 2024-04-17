@@ -171,7 +171,7 @@
                                     <span class="loginstatus" style="background-color:{{data.pharmacy_name|medical_signup}};"></span>
                                 {% else %}
                                     <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                    <span class="statusfailed"></span>
+                                    <span style="background-color:{{data.pharmacy_name|medical_signup}};"></span>
                                 {% endif %}
                             {% else %}
                                 <input type="text" value="Not Found" disabled>

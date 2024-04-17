@@ -224,7 +224,6 @@
                         </select>
                     </div>
                     <div class="lastbox-content-agency" style="display: none;">
-                        <label for="user">Store Type</label>
                         <input type="text" id="user"
                             value="{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}"placeholder="Agencyname" disabled>
                     </div>
