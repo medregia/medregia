@@ -605,6 +605,34 @@ body{
     color:#FFF;
     cursor:pointer;
   }
+.profile-message{
+  height: 40px;
+  width: 17%;
+  background-color: #04aa6d;
+  color: #ffff;
+  position: absolute;
+  top: 1%;
+  left: 60%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 15px;
+  z-index:999;
+}
+
+.close-button {
+  font-size: 20px;
+  padding:10px;
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  cursor:pointer;
+}
+
+span ul.errorlist li{
+  color:red;
+  font-size:14px;
+}
 
   @media (min-width: 820px) and (max-width: 997px){
     .select2-container--default .select2-selection--single{

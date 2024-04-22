@@ -437,9 +437,13 @@ def index_view(request):
             tracking_payment.save()
 
             messages.success(request, " Payment Success")
+            try:
+                check_data = Person.objects.get(user=request.user)
+            except Person.DoesNotExist:
+                messages.error(request, "Please Update Your Profile")
             return redirect("index")
         else:
-            messages.error(request, "Failed to save Invoice Number want to Unique ")
+            messages.error(request, "Failed to save Invoice Number Must be Unique ")
 
     else:
         invoice_form = InvoiceForm()
@@ -712,12 +716,21 @@ def import_view(request):
             # Iterate over each user in the queryset to access their username
             for user in users_with_category:
                 data = data.filter(user__in=users_with_category)
-    
+
+    overall_medicals = CustomUser.objects.filter(store_type='medical').select_related('person')
+
+    medicals = []  # Initialize an empty list to store medical shop names
+
+    for medical_user in overall_medicals:
+        get_user_profile = medical_user.person
+        medicals.append(get_user_profile.MedicalShopName)
+
     context = {
         'datas': data,
+        'medicals':medicals,
         'check_user': check_user,
         'request_user': str(request.user),
-        'admin_city': admin_city,
+        'admin_city': admin_city,   
         'admin_ph': admin_ph,
         'admin_id': admin_uniqueid,
         'user_city': user_city,
@@ -934,7 +947,7 @@ def update_invoice(request, invoice_id):
         invoice.invoice_date = invoice_date
 
         # Update the payment_amount based on the balance_amount
-        invoice.payment_amount = invoice.invoice_amount - invoice.balance_amount
+        invoice.balance_amount = invoice.invoice_amount - invoice.payment_amount
 
         # Save the updated Invoice
         invoice.save()

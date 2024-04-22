@@ -188,22 +188,16 @@
                             <th>Select</th>
                             <th>Medical List</th>
                         </tr>
-                        <tr>
-                            <td><input type="checkbox" class="checkbox"></td>
-                            <td>Dummy Data 1</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="checkbox"></td>
-                            <td>Dummy Data 2</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="checkbox"></td>
-                            <td>Dummy Data 3</td>
-                        </tr>
-
+                        {% for medical in medicals %}
+                            {% if medical != '' %}
+                                <tr>
+                                    <td><input type="checkbox" class="checkbox"></td>
+                                    <td>{{ medical }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
                     </table>
-
-                </div>
+                </div>                
             </form>
         </div>
 

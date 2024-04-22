@@ -163,7 +163,7 @@ body{
 
 .panel-container form {
   height: 10vh;
-  /* background-color: red; */
+  background-color: #fff;
   width: 20%;
   margin-top:0px;
   display:flex;

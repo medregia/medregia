@@ -166,7 +166,6 @@ def profile_view(request):
     current_user = request.user
     profile_data = CustomUser.objects.get(username=current_user)
     district_data = DistrictModel.objects.all()
-    form = ProfileForm()
 
     profile , created =  Person.objects.get_or_create(user=current_user)
 
@@ -179,6 +178,7 @@ def profile_view(request):
     
     profile = Person.objects.get(user=current_user)
     
+    form = ProfileForm(instance=profile)
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=profile)
         receiver_name = request.POST.get('admin', None)
@@ -210,8 +210,13 @@ def profile_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, "You Got It ")
+            return redirect("profile")
+            
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error} Please Return to Home Page and Try Again ...")
 
-        return redirect("profile")
     
     existing_admin = Notification.objects.filter(sender=request.user,is_read=True, request_status=True)
     existing_admin_optional = Notification.objects.filter(sender=request.user,is_read=True, request_status=False)

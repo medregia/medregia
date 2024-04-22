@@ -33,6 +33,6 @@ def medical_signup(medicals):
             return "yellow"
         
     except Person.DoesNotExist:
-        return "orange"
+        return "red"
 
 
