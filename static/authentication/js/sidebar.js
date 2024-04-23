@@ -11,7 +11,7 @@ function toggleSidebar() {
         medregiaHeader.style.transition = 'opacity 1s';
         mainContent.style.marginLeft = '170px'; // Adjust this value according to your sidebar width
         mainContent.style.width = '85%';
-        mainContent.style.transition = '1s';
+        // mainContent.style.transition = '0.3s';
         
     } else {
         sidebar.classList.remove('sidebar-open');
