@@ -97,23 +97,40 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for data in datas %}
-                            <tr>
-                                <td><input type="checkbox" id="check"></td>
-                                <td>{{data.invoice_number}}</td>
-                                <td>{{data.invoice_amount}}</td>
-                                <td>{{data.updated_by}}</td>
-                                <td>{{data.today_date}}</td>
-                                <td>{{data.payment_amount}}</td>
-                                {% if data.balance_amount == 0 %}
-                                <td>Paid</td>
-                                {% else %}
-                                <td>Pending</td>
-                                {% endif %}
-                                <td>remark</td>
-
-                            </tr>
-                            {% endfor %}
+                            {% if completed_data %}
+                                {% for item in completed_data %}
+                                    <tr>
+                                        <td><input type="checkbox" id="check_{{ forloop.counter }}"></td>
+                                        <td>{{ item.invoice_number }}</td>
+                                        <td>{{ item.invoice_amount }}</td>
+                                        <td>{{ item.updated_by }}</td>
+                                        <td>{{ item.today_date }}</td>
+                                        <td>{{ item.payment_amount }}</td>
+                                        {% if item.balance_amount == 0 %}
+                                            <td>Paid</td>
+                                        {% else %}
+                                            <td>Pending</td>
+                                        {% endif %}
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                {% for data in datas %}
+                                    <tr>
+                                        <td><input type="checkbox" id="check_{{ forloop.counter }}"></td>
+                                        <td>{{ data.invoice_number }}</td>
+                                        <td>{{ data.invoice_amount }}</td>
+                                        <td>{{ data.updated_by }}</td>
+                                        <td>{{ data.today_date }}</td>
+                                        <td>{{ data.payment_amount }}</td>
+                                        {% if data.balance_amount == 0 %}
+                                            <td>Paid</td>
+                                        {% else %}
+                                            <td>Pending</td>
+                                        {% endif %}
+                                        <td></td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>

@@ -635,9 +635,11 @@ class InvoiceResource(ModelResource):
         model = Invoice
         fields = ('user', 'pharmacy_name', 'invoice_number', 'invoice_date', 'balance_amount', 'payment_amount')
 
+
+# TODO: Import View ..
 @login_required(login_url='/')
 def import_view(request):
-    upload_csv_file = UploadFileForm
+    upload_csv_file = UploadFileForm()
     check_user = None
     data = None
     admin_city = None  # Initialize admin_city variable
@@ -648,6 +650,8 @@ def import_view(request):
     user_ph =None
     unique_id = None
     collaborator_admin = None
+    completed_data = None
+    
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
         
@@ -672,7 +676,6 @@ def import_view(request):
     if str(request.user) == check_user:        
         try:
             person = Person.objects.get(user=collaborator_admin)
-            city = person.City
             unique_id = person.UniqueId
             admin_person = person.user.username
             admin_city = person.City
@@ -688,17 +691,22 @@ def import_view(request):
             
             data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
         except Exception as a:
-            return messages.error(request,"Something Wrong Please Check",a)
+            return messages.error(request,"Something Wrong Please Check",a)    
     else:        
         try:
             user = Person.objects.get(user=request.user)
-            user_city = user.City
+            user_city = user.City            
             get_user_ph = CustomUser.objects.get(username=request.user)
             user_ph = get_user_ph.phone_num 
             unique_id = user.UniqueId
+            
             data = Invoice.objects.filter(user=request.user).order_by('id')
-        except Exception as e:
-            return messages.error(request,"Something Wrong",e)
+        except CustomUser.DoesNotExist:
+            return messages.error(request, "CustomUser does not exist")
+        except Person.DoesNotExist:
+            messages.error(request, "Please Update Your Profile and try agin to import export page")
+            return redirect("profile")
+
         
     user_name = request.user
     if request.method == 'POST':
@@ -707,27 +715,35 @@ def import_view(request):
         others = request.POST.get('others', False)
         # Split category string into a list
         category_list = category.split(',')
-        
-        data = Invoice.objects.all()
-        if completed:
-            data = data.filter(balance_amount = 0,user=request.user)
+        print("completed:",completed)
+        print("category:",category_list)
+        print("others:",others)
+            
+        if completed == 'true':
+            completed_data = Invoice.objects.filter(balance_amount=0, user=request.user)
         if category_list:
             users_with_category = CustomUser.objects.filter(store_type__in=category_list)
             # Iterate over each user in the queryset to access their username
             for user in users_with_category:
-                data = data.filter(user__in=users_with_category)
-
+                medical_data = user 
+                print("medical data : ",medical_data)
+        
+    print("completed_data 2: ",completed_data)
+        
     overall_medicals = CustomUser.objects.filter(store_type='medical').select_related('person')
 
-    medicals = []  # Initialize an empty list to store medical shop names
+    # medicals = []  # Initialize an empty list to store medical shop names
 
-    for medical_user in overall_medicals:
-        get_user_profile = medical_user.person
-        medicals.append(get_user_profile.MedicalShopName)
+    # for medical_user in overall_medicals:
+    #     get_user_profile = medical_user.person
+    #     medicals.append(get_user_profile.MedicalShopName)
+        
+    # print("medicals : ", medicals)
 
     context = {
         'datas': data,
-        'medicals':medicals,
+        # 'medicals':medicals,
+        'completed_data':completed_data,
         'check_user': check_user,
         'request_user': str(request.user),
         'admin_city': admin_city,   
