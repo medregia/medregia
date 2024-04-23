@@ -328,7 +328,7 @@ body {
 
 .table-content-left th {
   /* height: 50px; */
-  background-color: #bebebe;
+  background-color: #cfc8c8;
   /* color: white; */
   border-left: 1px solid black;
   position: sticky;
@@ -384,7 +384,7 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 
 .table-content-right th {
   /* height: 35px; */
-  background-color: #bebebe;
+  background-color: #cfc8c8;
   /* color: white; */
   border-left: 1px solid black;
   position: sticky;
