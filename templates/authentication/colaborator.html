@@ -13,12 +13,16 @@
 {% endblock message %}
 
 {% block content %}
-    Coloborator list with Other User
-    <ul>
-        {% for coloborators in colaborator %}
-            <li>{{coloborators.sender}}</li>
-        {% endfor %}
-    </ul>
+    <h2 class="head">Coloborator list with Other User</h2>
+    <div class="coloborate">
+      <div class="listbox">
+          <h2>Collaborate list</h2>
+          {% for coloborators in colaborator %}
+            <ul>
+                <li><span>{{coloborators.id}}</span>{{coloborators.sender}}</li>
+            </ul>
+          {% endfor %}
+      </div>
+    </div>
  
 {% endblock content %}
-

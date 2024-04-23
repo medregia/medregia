@@ -215,7 +215,7 @@ def profile_view(request):
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, f"{field}: {error} Please Return to Home Page and Try Again ...")
+                    messages.error(request,"Please Return to Home Page and Try Again ...")
 
     
     existing_admin = Notification.objects.filter(sender=request.user,is_read=True, request_status=True)
@@ -235,11 +235,16 @@ def profile_view(request):
         admin_name = admin_data.username
         admin_ph = admin_data.phone_num
         
-    admins = CustomUser.objects.filter(is_staff=True).order_by('-date_joined')[:1]
+    try:
+        hide_colaborator = Notification.objects.filter(receiver=request.user, is_read=True, request_status=True).exists()
+    except Notification.DoesNotExist:
+        hide_colaborator = None
+
+        
     context = {
         'profile': form, 
+        'hide_colaborator':hide_colaborator,
         'user_profile_data': profile_data,
-        'admins': admins, # sending Admin details
         'district_data': district_data,
         'unique_code':profile.UniqueId, 
         'data':profile,

@@ -24,7 +24,7 @@ class InvoiceForm(forms.ModelForm):
         fields = ['pharmacy_name', 'invoice_number', 'invoice_date', 'invoice_amount', 'balance_amount', 'payment_amount', 'today_date', 'current_time', 'updated_by']
         widgets = {
             'pharmacy_name': forms.TextInput(attrs={'placeholder': 'Pharmacy Name','class':'pharmacy_name'}),
-            'invoice_number': forms.TextInput(attrs={'placeholder': 'Invoice Number','value':'IV-','class':'invoice_number'}),
+            'invoice_number': forms.TextInput(attrs={'placeholder': 'Invoice Number','class':'invoice_number'}),
             'invoice_amount': forms.NumberInput(attrs={'placeholder': 'Invoice Amount','class':'invoice_amount'}),
             'balance_amount': forms.TextInput(attrs={'placeholder': 'Balance Amount', 'disabled': True,'class':'balance_amount'}),
             'payment_amount': forms.NumberInput(attrs={'placeholder': '0','title':'Default 0 ','class':'payment_amount'}),

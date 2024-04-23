@@ -634,6 +634,11 @@ span ul.errorlist li{
   font-size:14px;
 }
 
+.unable-to-request{
+  color:red;
+  font-size: 13px;
+}
+
   @media (min-width: 820px) and (max-width: 997px){
     .select2-container--default .select2-selection--single{
       width:80%;
