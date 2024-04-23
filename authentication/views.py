@@ -23,6 +23,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 from .context_processors import nav_message
 from django.template.loader import render_to_string
+from django.db.utils import IntegrityError
 
 def signup_view(request):
     form = SignUpForm()
@@ -206,6 +207,9 @@ def profile_view(request):
                 
         except CustomUser.DoesNotExist:
             messages.error(request, f"No User Found with the username '{receiver_name}'")
+        except IntegrityError as e:
+            messages.error(request, "Error: Duplicate entry for Drug License Number")
+            return redirect("profile") 
                         
         if form.is_valid():
             form.save()
