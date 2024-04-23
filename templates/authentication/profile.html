@@ -281,17 +281,13 @@
                         
                             <div class="profile-admin-main">
                                 <div class="profile-admin-name containers">
-                                    {% for admin in admins %}
-                                        <label for="name">Name</label>
-                                        <input type="text" value="{{ admin_name }}" id="user_name" disabled>
-                                    {% endfor %}
+                                    <label for="name">Name</label>
+                                    <input type="text" value="{{ admin_name }}" id="user_name" disabled>
                                 </div>
                             
                                 <div class="profile-admin-contact containers">
-                                    {% for admin in admins %}
-                                        <label for="name">Contact</label>
-                                        <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
-                                    {% endfor %}
+                                    <label for="name">Contact</label>
+                                    <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
                                 </div>
                             </div>
                         </div>
@@ -324,23 +320,31 @@
                             </div>
                         </div>
                     
-
-                        <div class="makeus-admin">
-                            {% if request.user.is_superuser or request.user.is_staff %}
+                        {% if hide_colaborator and hide_colaborator is not None %}
+                            <div class="makeus-admin">
+                                <h4 class="unable-to-request">"You are unable to send a collaboration request to another user as you are already an administrator for a different user." </h4>
                                 <div class="collobarate-message">
-                                    <h4>* Please note that if the request receiver rejects the request, you should not send another request to the same receiver *</h4>
                                     <a href="{% url 'colaborator' %}"><button type="button">List</button></a>
                                 </div>
-                                <form action="#" method="post">
-                                    {% csrf_token %}
-                                    <label for="Username">Collaborate:</label>
-                                    <div class="makeus-admin-container">
-                                        <input type="text" placeholder="Enter User Name Want to Admin " name="admin">
-                                        <button class="button-paper" role="submit">Send Request</button></a>   
+                            </div> 
+                        {% else %}
+                            <div class="makeus-admin">
+                                {% if request.user.is_superuser or request.user.is_staff %}
+                                    <div class="collobarate-message">
+                                        <h4>* Please note that if the request receiver rejects the request, you should not send another request to the same receiver *</h4>
+                                        <a href="{% url 'colaborator' %}"><button type="button">List</button></a>
                                     </div>
-                                </form>
-                            {% endif %}
-                        </div>
+                                    <form action="#" method="post">
+                                        {% csrf_token %}
+                                        <label for="Username">Collaborate:</label>
+                                        <div class="makeus-admin-container">
+                                            <input type="text" placeholder="Enter User Name Want to Admin " name="admin">
+                                            <button class="button-paper" role="submit">Send Request</button></a>   
+                                        </div>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        {% endif %}
 
                     </div>
                 </div>
