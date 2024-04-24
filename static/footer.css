@@ -190,6 +190,9 @@ footer .footer-col .links{
 
 footer .footer-col .links a i{
     font-size:1.5em;
+    color: white;
+    margin-left: 1px;
+    margin-top: 8px;
 }
 
 footer h4{

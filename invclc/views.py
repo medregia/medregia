@@ -721,6 +721,7 @@ def import_view(request):
             
         if completed == 'true':
             completed_data = Invoice.objects.filter(balance_amount=0, user=request.user)
+            
         if category_list:
             users_with_category = CustomUser.objects.filter(store_type__in=category_list)
             # Iterate over each user in the queryset to access their username
