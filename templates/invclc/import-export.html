@@ -10,304 +10,343 @@
 
 {% block nav_footer%}{% static 'invclc/css/nav.css' %}{% endblock nav_footer %}
 
+{% block side %}{% static 'invclc/css/import_sidebar.css' %}{% endblock side %}
+
+
+
 {% block navbar %}
-<div class="navbar">
-    {% include "nav.html" %}
-</div>
+{% include 'nav.html' %}
 {% endblock navbar %}
+
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock sidebar %}
 
 {% block content %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 
-<div class="tab">
-    <button class="tablinks" onclick="opentab(event, 'Export')">Export</button>
-    <button class="tablinks" onclick="opentab(event, 'Import')">Import</button>
-    <!-- <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button> -->
-</div>
+<div class="imp_exp_container" id="imp_exp_content">
 
-<!-- Tab content -->
-<div id="Export" class="tabcontent">
-    <div class="box-container">
-        <div class="export1">
-            <div id="print_page">
-                <div class="address-container">
-                    {% if request_user == check_user %}
-                    <div class="address-details">
-                        {% if admin_person is not None %}
-                        <h2>Admin Address Details</h2>
-                        <p> Name : {{admin_person}}</p>
-                        {% endif %}
-                        {% if admin_person is not None %}
-                        <p> City : {{admin_city}}</p>
-                        {% endif %}
-                        {% if admin_person is not None %}
-                        <p> PhoneNumber : {{admin_ph}}</p>
-                        {% endif %}
-                        {% if admin_person is not None %}
-                        <p> UniqueId : {{admin_id}}</p>
-                        {% endif %}
-                    </div>
-                    <div class="address-details">
-                        {% if user.username is not None %}
-                        <h2>User Address Details</h2>
-                        <p> Name : {{user.username}}</p>
-                        {% endif %}
-                        {% if user_city is not None %}
-                        <p> City : {{user_city}}</p>
-                        {% endif %}
-                        {% if user_ph is not None %}
-                        <p> PhoneNumber : {{user_ph}}</p>
-                        {% endif %}
-                        {% if unique_id is not None %}
-                        <p> UniqueId : {{unique_id}}</p>
-                        {% endif %}
-                    </div>
-                    {% else %}
-                    <div class="address-details">
-                        <h2>Admin Address Details</h2>
-                        {% if user.username is not None %}
-                        <p> Name: {{ user.username }}</p>
-                        {% endif %}
-                        {% if user_city is not None %}
-                        <p> City: {{ user_city }}</p>
-                        {% endif %}
-                        {% if user_ph is not None %}
-                        <p> PhoneNumber: {{ user_ph }}</p>
-                        {% endif %}
-                        {% if unique_id is not None %}
-                        <p> UniqueId: {{ unique_id }}</p>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-                </div>
 
-                <div class="export-content">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox"></th>
-                                <th>INVOICE No.</th>
-                                <th>Invoice Amount</th>
-                                <th>Upload by</th>
-                                <th>Upload on</th>
-                                <th>Payment</th>
-                                <th>Status</th>
-                                <th>Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for data in datas %}
-                            <tr>
-                                <td><input type="checkbox" id="check"></td>
-                                <td>{{data.invoice_number}}</td>
-                                <td>{{data.invoice_amount}}</td>
-                                <td>{{data.updated_by}}</td>
-                                <td>{{data.today_date}}</td>
-                                <td>{{data.payment_amount}}</td>
-                                {% if data.balance_amount == 0 %}
-                                <td>Paid</td>
+    <div class="tab">
+        <button class="tablinks" onclick="opentab(event, 'Export')">Export</button>
+        <button class="tablinks" onclick="opentab(event, 'Import')">Import</button>
+        <!-- <button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button> -->
+    </div>
+
+    <!-- Tab content -->
+    <div id="Export" class="tabcontent">
+        <div class="box-container">
+            <div class="export1">
+                <div id="print_page">
+                    <div class="address-container">
+                        {% if request_user == check_user %}
+                        <div class="address-details">
+                            {% if admin_person is not None %}
+                            <h2>Admin Address Details</h2>
+                            <p> Name : {{admin_person}}</p>
+                            {% endif %}
+                            {% if admin_person is not None %}
+                            <p> City : {{admin_city}}</p>
+                            {% endif %}
+                            {% if admin_person is not None %}
+                            <p> PhoneNumber : {{admin_ph}}</p>
+                            {% endif %}
+                            {% if admin_person is not None %}
+                            <p> UniqueId : {{admin_id}}</p>
+                            {% endif %}
+                        </div>
+                        <div class="address-details">
+                            {% if user.username is not None %}
+                            <h2>User Address Details</h2>
+                            <p> Name : {{user.username}}</p>
+                            {% endif %}
+                            {% if user_city is not None %}
+                            <p> City : {{user_city}}</p>
+                            {% endif %}
+                            {% if user_ph is not None %}
+                            <p> PhoneNumber : {{user_ph}}</p>
+                            {% endif %}
+                            {% if unique_id is not None %}
+                            <p> UniqueId : {{unique_id}}</p>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="address-details">
+                            <h2>Admin Address Details</h2>
+                            {% if user.username is not None %}
+                            <p> Name: {{ user.username }}</p>
+                            {% endif %}
+                            {% if user_city is not None %}
+                            <p> City: {{ user_city }}</p>
+                            {% endif %}
+                            {% if user_ph is not None %}
+                            <p> PhoneNumber: {{ user_ph }}</p>
+                            {% endif %}
+                            {% if unique_id is not None %}
+                            <p> UniqueId: {{ unique_id }}</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="export-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox"></th>
+                                    <th>INVOICE No.</th>
+                                    <th>Invoice Amount</th>
+                                    <th>Upload by</th>
+                                    <th>Upload on</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if completed_data %}
+                                {% for item in completed_data %}
+                                <tr>
+                                    <td><input type="checkbox" id="check_{{ forloop.counter }}"></td>
+                                    <td>{{ item.invoice_number }}</td>
+                                    <td>{{ item.invoice_amount }}</td>
+                                    <td>{{ item.updated_by }}</td>
+                                    <td>{{ item.today_date }}</td>
+                                    <td>{{ item.payment_amount }}</td>
+                                    {% if item.balance_amount == 0 %}
+                                    <td>Paid</td>
+                                    {% else %}
+                                    <td>Pending</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
                                 {% else %}
-                                <td>Pending</td>
+                                {% for data in datas %}
+                                <tr>
+                                    <td><input type="checkbox" id="check_{{ forloop.counter }}"></td>
+                                    <td>{{ data.invoice_number }}</td>
+                                    <td>{{ data.invoice_amount }}</td>
+                                    <td>{{ data.updated_by }}</td>
+                                    <td>{{ data.today_date }}</td>
+                                    <td>{{ data.payment_amount }}</td>
+                                    {% if data.balance_amount == 0 %}
+                                    <td>Paid</td>
+                                    {% else %}
+                                    <td>Pending</td>
+                                    {% endif %}
+                                    <td></td>
+                                </tr>
+                                {% endfor %}
                                 {% endif %}
-                                <td>remark</td>
-
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="print_less_page">
+                    <form>
+                        <div class="box-print1">
+                            <div class="btn csv">
+                                <a href="{% url 'exports_to_csv' %}" class="export-link"
+                                    target="_blank"><button>CSV</button></a>
+                            </div>
+                            <div class="btn xlsx">
+                                <a href="{% url 'exports_to_xlsx' %}" class="export-link"
+                                    target="_blank"><button>XLSX</button></a>
+                            </div>
+                            <div class="btn mysql">
+                                <a href="{% url 'exports_to_json' %}" class="export-link"
+                                    target="_blank"><button>JSON</button></a>
+                            </div>
+                            <div class="btn">
+                                <button type="button" onclick="window.print()">Print / PDF</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="print_less_page">
-                <form>
-                    <div class="box-print1">
-                        <div class="btn csv">
-                            <a href="{% url 'exports_to_csv' %}" class="export-link"
-                                target="_blank"><button>CSV</button></a>
+            <div class="export2">
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <div class="export2-box1">
+                        <div class="check-list">
+                            <input type="checkbox" name="completed">
+                            <label>completed</label>
                         </div>
-                        <div class="btn xlsx">
-                            <a href="{% url 'exports_to_xlsx' %}" class="export-link"
-                                target="_blank"><button>XLSX</button></a>
+
+                        <div class="check-list">
+                            <input type="checkbox" name="all">
+                            <label>All (Not paid/Not Completed)</label>
                         </div>
-                        <div class="btn mysql">
-                            <a href="{% url 'exports_to_json' %}" class="export-link"
-                                target="_blank"><button>JSON</button></a>
+                    </div>
+
+                    <div class="export2-box2">
+                        <h3>Category Based</h3>
+                        <div class="export2-box2-content">
+                            <div>
+                                <input type="checkbox" name="pharmacy">
+                                <label>Pharmacy</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" name="medical">
+                                <label>Medical</label>
+                            </div>
+
+                            <div>
+                                <input type="checkbox" name="agency">
+                                <label>Agency</label>
+                            </div>
                         </div>
-                        <div class="btn">
-                            <button type="button" onclick="window.print()">Print / PDF</button>
+                        <div class="other">
+                            <!-- <input type="checkbox" name="others"> -->
+                            <label>Others :</label>
+                            <input type="text" style="height: 26px; width: 200px; background-color: #ebe2e2;">
                         </div>
+
+                    </div>
+
+
+                    <div class="export2-box3">
+                        <table id="checkboxTable">
+                            <tr>
+                                <th>Select</th>
+                                <th>Medical List</th>
+                            </tr>
+                            {% for medical in medicals %}
+                            {% if medical != '' %}
+                            <tr>
+                                <td><input type="checkbox" class="checkbox"></td>
+                                <td>{{ medical }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </table>
                     </div>
                 </form>
             </div>
+
         </div>
-        <div class="export2">
-            <form action="#" method="post">
-                {% csrf_token %}
-                <div class="export2-box1">
-                    <div class="check-list">
-                        <input type="checkbox" name="completed">
-                        <label>completed</label>
-                    </div>
+    </div>
 
-                    <div class="check-list">
-                        <input type="checkbox" name="all">
-                        <label>All (Not paid/Not Completed)</label>
-                    </div>
-                </div>
-
-                <div class="export2-box2">
-                    <h3>Category Based</h3>
-                    <div class="export2-box2-content">
-                        <div>
-                            <input type="checkbox" name="pharmacy">
-                            <label>Pharmacy</label>
+    <div id="Import" class="tabcontent import" style="display: none;">
+        <div class="content1">
+            <div class="lastbox">
+                <div class="lastbox-content">
+                    <!-- Form for selecting options -->
+                    <div class="lastbox-center">
+                        <div class="lastbox-content-formate">
+                            <label for="tableSelector">Choose</label>
+                            <select id="tableSelector">
+                                <option value="format1">Format 1</option>
+                                <option value="format2">Format 2</option>
+                            </select>
                         </div>
-
-                        <div>
-                            <input type="checkbox" name="medical">
-                            <label>Medical</label>
-                        </div>
-
-                        <div>
-                            <input type="checkbox" name="agency">
-                            <label>Agency</label>
+                        <div class="lastbox-content-agency" style="display: none;">
+                            <input type="text" id="user"
+                                value="{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}"
+                                placeholder="Agencyname" disabled>
                         </div>
                     </div>
-                    <div class="other">
-                        <!-- <input type="checkbox" name="others"> -->
-                        <label>Others :</label>
-                        <input type="text" style="height: 26px; width: 200px; background-color: #ebe2e2;">
+                </div>
+                <div class="upload-msg"></div>
+            </div>
+
+            <div class="panel-container">
+
+                <form action="{% url 'upload_csv'%}" method="post" enctype="multipart/form-data" id="uploadForm">
+
+                    {% csrf_token %}
+
+                    <!-- Buttons to choose different file types -->
+                    <div class="btn csv">
+                        <label class="file-input">
+                            {{ form.file }}
+                            Choose CSV
+                        </label>
                     </div>
 
-                </div>
+                    {% comment %} <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
 
+                        <div class="btn xlsx">
+                            <label class="file-input">
+                                {{ form.file }}
+                                Choose XLSX
+                            </label>
+                        </div>
+                    </form> {% endcomment %}
+            </div>
+            <div id="csvContainer">
+                <table id="csvTable"></table>
+                <button type="button" class="upload-btn vanish" id="uploadBtn">Upload</button>
 
-                <div class="export2-box3">
-                    <table id="checkboxTable">
-                        <tr>
-                            <th>Select</th>
-                            <th>Medical List</th>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="checkbox"></td>
-                            <td>Dummy Data 1</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="checkbox"></td>
-                            <td>Dummy Data 2</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="checkbox"></td>
-                            <td>Dummy Data 3</td>
-                        </tr>
-
-                    </table>
-
-                </div>
+            </div>
             </form>
-        </div>
 
-    </div>
-</div>
-
-<div id="Import" class="tabcontent" style="display: none;">
-    <div class="lastbox">
-        <div class="lastbox-content">
-            <!-- Form for selecting options -->
-            <div class="lastbox-center">
-                <div class="lastbox-content-formate">
-                    <label for="tableSelector">Choose</label>
-                    <select id="tableSelector">
-                        <option value="format1">Format 1</option>
-                        <option value="format2">Format 2</option>
-                    </select>
-                </div>
-                <div class="lastbox-content-agency" style="display: none;">
-                    <label for="user">Store Type</label>
-                    <input type="text" id="user"
-                        value="{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}"
-                        placeholder="Agencyname" disabled>
-                </div>
+            <div id="tableContainer" style="display: none;">
+                <table id="table2">
+                    <!-- Data for Format 2 -->
+                    <thead>
+                        <tr>
+                            <th>Agency name</th>
+                            <th>Invoice Number</th>
+                            <th>Invoice Date</th>
+                            <th>Total</th>
+                            <th>Paid/Pending</th>
+                        </tr>
+                    </thead>
+                    <tbody id="export-data">
+                        {% for data in datas %}
+                        <tr>
+                            <td>
+                                {% if request.user.store_type == 'others' %}
+                                {{ request.user.other_value }}
+                                {% else %}
+                                {{request.user.store_type }}
+                                {% endif %}
+                            </td>
+                            <td>{{ data.invoice_number }}</td>
+                            <td>{{ data.invoice_date }}</td>
+                            <td>{{ data.invoice_amount }}</td>
+                            <td>{% if data.balance_amount == 0 %}Paid{% else %}Pending{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
 
-    <div class="panel-container">
-        <form action="{% url 'upload_csv' %}" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+        <div class="content2">
+            <h4 class="warning"> <span>Warning:</span> Invalid File Format Detected!</h4>
 
-            <!-- Buttons to choose different file types -->
-            <div class="btn csv">
-                {% comment %} <input type="file" id="csv_file_input" accept=".csv" name="csv_file"
-                    style="display: none;"> {% endcomment %}
-                <!-- {{form.file}} -->
-                <!-- <button type="submit">Choose
-                        CSV</button> -->
-                <label class="file-input">
-                    {{ form.file }}
-                    Choose CSV
-                </label>
+            <p>Please ensure that you are uploading a <span>CSV file</span> or <span>XLSX file </span>with the correct
+                header format. The header must include the following columns exactly as shown:</p>
+
+            <ul>
+                <li>pharmacy_name</li>
+                <li>invoice_number</li>
+                <li>invoice_date</li>
+                <li>invoice_amount</li>
+                <li>payment_amount</li>
+                <li>updated_by</li>
+            </ul>
+
+            <p class="resolve">If your file does not meet these requirements, please make the necessary adjustments and
+                try uploading again. Thank you!</p>
+
+            <div class="download-empty-csv">
+                <h5>Here You Download a Sample Csv File </h5>
+                <a href="{% url 'empty_csv' %}"><button type="submit">Sample CSV</button></a>
             </div>
 
-        </form>
-        <form action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            <div class="btn xlsx">
-                {% comment %} <input type="file" name="excel_file" id="excel_file_input" accept=".xls, .xlsx"
-                    style="display: none;" onchange="handleFileSelect('excel_file_input')"> {% endcomment %}
-                <!-- {{form.file}} -->
-                <!-- <button type="submit">Upload XlSX</button> -->
-                {% comment %} <button type="button" onclick="document.getElementById('excel_file_input').click()">Choose
-                    Excel</button> {% endcomment %}
-                <label class="file-input">
-                    {{ form.file }}
-                    Choose xlsx
-                </label>
+            <div class="download-empty-xlsx">
+                <h5>Here You Download a Sample XLSX File </h5>
+                <a href="{% url 'empty_xlsx' %}"><button type="submit"> Sample XLSX </button></a>
             </div>
-
-        </form>
+        </div>
     </div>
-</div>
-<div id="csvContainer">
-    <table id="csvTable"></table>
-    <div id="Upload">
-        <button type="submit">Upload</button>
-    </div>
-
-</div>
-<div id="tableContainer" style="display: none;">
-    <table id="table2">
-        <!-- Data for Format 2 -->
-        <thead>
-            <tr>
-                <th>Agency name</th>
-                <th>Invoice Number</th>
-                <th>Invoice Date</th>
-                <th>Total</th>
-                <th>Paid/Pending</th>
-            </tr>
-        </thead>
-        <tbody id="export-data">
-            {% for data in datas %}
-            <tr>
-                <td>
-                    {% if request.user.store_type == 'others' %}
-                    {{ request.user.other_value }}
-                    {% else %}
-                    {{request.user.store_type }}
-                    {% endif %}
-                </td>
-                <td>{{ data.invoice_number }}</td>
-                <td>{{ data.invoice_date }}</td>
-                <td>{{ data.invoice_amount }}</td>
-                <td>{% if data.balance_amount == 0 %}Paid{% else %}Pending{% endif %}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-</div>
 </div>
 
 
@@ -321,4 +360,5 @@
 
 
 <script src="{% static 'invclc/js/import-export.js' %}"></script>
+<script src="{% static 'authentication/js/import_sidebar.js' %}"></script>  
 {% endblock content %}

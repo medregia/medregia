@@ -1,7 +1,7 @@
 function toggleSidebar() {
     var sidebar = document.getElementById('sidebar');
     var medregiaHeader = document.getElementById('medregiaHeader');
-    var mainContent = document.getElementById('mainContent');
+    var staticcontent = document.getElementById('staticcontent');
     
     if (sidebar.classList.contains('sidebar-closed')) {
         sidebar.classList.remove('sidebar-closed');
@@ -9,8 +9,8 @@ function toggleSidebar() {
         medregiaHeader.style.display = 'block';
         medregiaHeader.style.opacity = '1'; // Show slowly
         medregiaHeader.style.transition = 'opacity 1s';
-        mainContent.style.marginLeft = '170px'; // Adjust this value according to your sidebar width
-        mainContent.style.width = '85%';
+        staticcontent.style.marginLeft = '150px'; // Adjust this value according to your sidebar width
+        staticcontent.style.width = '89%';
         // mainContent.style.transition = '0.3s';
         
     } else {
@@ -19,7 +19,7 @@ function toggleSidebar() {
         medregiaHeader.style.display = 'none';
         medregiaHeader.style.opacity = '0'; // Hide slowly
         medregiaHeader.style.transition = 'opacity 1s';
-        mainContent.style.marginLeft = '70px';
-        mainContent.style.width = '94%';
+        staticcontent.style.marginLeft = '50px';
+        staticcontent.style.width = '96%';
     }
 }

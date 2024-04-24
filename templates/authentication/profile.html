@@ -16,7 +16,7 @@
  
 {% block content%} 
 
-{% include 'message.html' %}
+{% include 'profile_message.html' %}
 
 <!-- Include the Select2 CSS and JS files -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
@@ -44,6 +44,11 @@
                                 {% else %}
                                     {{profile.MedicalShopName}}
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.MedicalShopName %}
+                                        {{profile.errors.MedicalShopName}}
+                                    {% endif %}
+                                </span>
                             </div>                            
 
                             <div class="left-pharmacy-name left-top-containers">
@@ -55,6 +60,11 @@
                                 {% else %}
                                     {{profile.ProprietaryName }}
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.ProprietaryName %}
+                                        {{profile.errors.ProprietaryName}}
+                                    {% endif %}
+                                </span>
                             </div>
 
                             <div class="left-drug-1 left-top-containers">
@@ -66,6 +76,11 @@
                                 {% else %}
                                     {{profile.DrugLiceneseNumber1}}
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.DrugLiceneseNumber1 %}
+                                        {{profile.errors.DrugLiceneseNumber1}}
+                                    {% endif %}
+                                </span>
                             </div>
 
                             <div class="left-proprietary-number left-top-containers">
@@ -77,6 +92,11 @@
                                 {% else %}
                                     {{profile.ProprietaryNumber}}
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.ProprietaryNumber %}
+                                        {{profile.errors.ProprietaryNumber}}
+                                    {% endif %}
+                                </span>
                             </div>
 
                             <div class="left-drug-2 left-top-containers">
@@ -88,6 +108,11 @@
                                 {% else %}
                                     {{profile.DrugLiceneseNumber2}}
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.DrugLiceneseNumber2 %}
+                                        {{profile.errors.DrugLiceneseNumber2}}
+                                    {% endif %}
+                                </span>
                             </div>
 
                             <div class="left-proprietary-contact left-top-containers">
@@ -99,6 +124,11 @@
                                 {% else %}
                                     {{profile.ProprietaryContact}}
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.ProprietaryContact %}
+                                        {{profile.errors.ProprietaryContact}}
+                                    {% endif %}
+                                </span>
                             </div>
 
                         </div>
@@ -202,6 +232,11 @@
                             {% else %}
                                 {{profile.PharmacistName}}
                             {% endif %}
+                            <span>
+                                {% if profile.errors.PharmacistyName %}
+                                    {{profile.errors.PharmacistName}}
+                                {% endif %}
+                            </span>
                         </div>
 
                         <div class="profile-right-register right-top-containers">
@@ -213,6 +248,11 @@
                             {% else %}
                                 {{profile.RegisteredNumber}}
                             {% endif %}
+                            <span>
+                                {% if profile.errors.RegisteredNumber %}
+                                    {{profile.errors.RegisteredNumber}}
+                                {% endif %}
+                            </span>
                         </div>
 
                         <div class="profile-right-contactnumber right-top-containers">
@@ -224,6 +264,11 @@
                             {% else %}
                                 {{profile.ContactNumber}}
                             {% endif %}
+                            <span>
+                                {% if profile.errors.ContactNumber %}
+                                    {{profile.errors.ContactNumber}}
+                                {% endif %}
+                            </span>
                         </div>
                     </div>
                     </form>     
@@ -236,17 +281,13 @@
                         
                             <div class="profile-admin-main">
                                 <div class="profile-admin-name containers">
-                                    {% for admin in admins %}
-                                        <label for="name">Name</label>
-                                        <input type="text" value="{{ admin_name }}" id="user_name" disabled>
-                                    {% endfor %}
+                                    <label for="name">Name</label>
+                                    <input type="text" value="{{ admin_name }}" id="user_name" disabled>
                                 </div>
                             
                                 <div class="profile-admin-contact containers">
-                                    {% for admin in admins %}
-                                        <label for="name">Contact</label>
-                                        <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
-                                    {% endfor %}
+                                    <label for="name">Contact</label>
+                                    <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
                                 </div>
                             </div>
                         </div>
@@ -279,31 +320,43 @@
                             </div>
                         </div>
                     
-
-                        <div class="makeus-admin">
-                            {% if request.user.is_superuser or request.user.is_staff %}
+                        {% if hide_colaborator and hide_colaborator is not None %}
+                            <div class="makeus-admin">
+                                <h4 class="unable-to-request">"You are unable to send a collaboration request to another user as you are already an administrator for a different user." </h4>
                                 <div class="collobarate-message">
-                                    <h4>* Please note that if the request receiver rejects the request, you should not send another request to the same receiver *</h4>
                                     <a href="{% url 'colaborator' %}"><button type="button">List</button></a>
                                 </div>
-                                <form action="#" method="post">
-                                    {% csrf_token %}
-                                    <label for="Username">Collaborate:</label>
-                                    <div class="makeus-admin-container">
-                                        <input type="text" placeholder="Enter User Name Want to Admin " name="admin">
-                                        <button class="button-paper" role="submit">Send Request</button></a>   
+                            </div> 
+                        {% else %}
+                            <div class="makeus-admin">
+                                {% if request.user.is_superuser or request.user.is_staff %}
+                                    <div class="collobarate-message">
+                                        <h4>* Please note that if the request receiver rejects the request, you should not send another request to the same receiver *</h4>
+                                        <a href="{% url 'colaborator' %}"><button type="button">List</button></a>
                                     </div>
-                                </form>
-                            {% endif %}
-                        </div>
+                                    <form action="#" method="post">
+                                        {% csrf_token %}
+                                        <label for="Username">Collaborate:</label>
+                                        <div class="makeus-admin-container">
+                                            <input type="text" placeholder="Enter User Name Want to Admin " name="admin">
+                                            <button class="button-paper" role="submit">Send Request</button></a>   
+                                        </div>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        {% endif %}
 
                     </div>
                 </div>
                 
         </div>
-        <div class="btn_container">
-            <button id="button" class="submit_btn" type="submit"></button>
-        </div>
+        {% if data.RegisteredNumber and data.RegisteredNumber != "" %}
+
+        {% else %}
+            <div class="btn_container">
+                <button id="button" class="submit_btn" type="submit"></button>
+            </div>
+        {% endif %}
     </div>
 
 {% endif %}
@@ -317,10 +370,8 @@
         
             <div class="profile-admin-main">
                 <div class="profile-admin-name containers">
-                    {% for admin in admins %}
-                        <label for="name">Name</label>
-                        <input type="text" value="{{ admin_name }}" id="user_name" disabled>
-                    {% endfor %}
+                    <label for="name">Name</label>
+                    <input type="text" value="{{ admin_name }}" id="user_name" disabled>
                 </div>
             
                 <div class="profile-admin-contact containers">

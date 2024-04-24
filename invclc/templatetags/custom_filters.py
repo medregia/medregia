@@ -27,13 +27,10 @@ def medical_signup(medicals):
         user = person.user.username
         person_check = CustomUser.objects.filter(username=user).exists()
 
-        if person_check:
-            if medical_exists:
-                return "green"
-            else:
-                return "yellow"
+        if medical_exists:
+            return "green"
         else:
-            return "red"
+            return "yellow"
         
     except Person.DoesNotExist:
         return "red"

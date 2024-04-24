@@ -14,9 +14,7 @@ import json
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.core.management import call_command
-from django.http import HttpResponse
 from decimal import Decimal
-from datetime import datetime
 from openpyxl import Workbook
 from import_export.resources import ModelResource
 from import_export.fields import Field
@@ -26,83 +24,22 @@ from import_export.formats.base_formats import DEFAULT_FORMATS,XLSX
 from import_export import resources
 from .forms import UploadFileForm
 from django.core.serializers import serialize
+import openpyxl
+import logging
 
-# views.py
-from django.http import JsonResponse
-from .models import Invoice
-
-
+logger = logging.getLogger(__name__)
 def upload_csv(request):
-    if request.method == 'POST' and request.FILES.get('file'):
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            file = request.FILES['file']
-            if file.name.endswith(('.csv')):
-                try:
-                    csv_data = file.read().decode('utf-8').splitlines()
-                    csv_reader = csv.DictReader(csv_data)
-                    
-                    # Assuming you have a way to get the current user (e.g., request.user)
-                    current_user = request.user
-                    
-                    for row in csv_reader:
-                        # Convert date string to datetime object
-                        invoice_date = datetime.strptime(row['invoice_date'], '%d/%m/%Y').date()
-                        
-                        # Convert string values to integers
-                        invoice_amount = int(row['invoice_amount'])
-                        payment_amount = int(row['payment_amount'])
-                        
-                        # Calculate balance amount
-                        balance_amount = invoice_amount - payment_amount
-                        
-                        # Get the current date and time
-                        current_date = datetime.now().date()
-                        current_time = datetime.now().time()
-                        
-                        # Create Invoice object for each row in the CSV file
-                        invoice = Invoice.objects.create(
-                            user=current_user,
-                            pharmacy_name=row['pharmacy_name'],
-                            invoice_number=row['invoice_number'],
-                            invoice_date=invoice_date,
-                            invoice_amount=invoice_amount,
-                            payment_amount=payment_amount,
-                            balance_amount=balance_amount,
-                            today_date=current_date,  # Use current date
-                            current_time=current_time,  # Use current time
-                            updated_by=row['updated_by']
-                        )
-
-                    
-                    return JsonResponse({'message': 'CSV content uploaded successfully'})
-                except Exception as e:
-                    return JsonResponse({'error': f'Error processing CSV file: {str(e)}'}, status=500)
-            else:
-                return JsonResponse({'error': 'File format not supported. Please upload a CSV file.'}, status=400)
-        else:
-            return JsonResponse({'error': 'Form is not valid'}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid request'}, status=400)
-
-
-@login_required(login_url='/')
-def exports_to_csv(request):
+    
     check_user = None
-    try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)        
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name', get_admin_name)
-            print(f"Collaborator request sender username: {collaborator_request_username}")
             
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
             collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-            print("collaborator_admin : ", collaborator_admin)
-            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
@@ -110,11 +47,107 @@ def exports_to_csv(request):
                     current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
                     if current_user and collaborator_admin:
                         check_user = current_user.username
-                        print("check_user : ",check_user)
                 except Exception as a:
-                    print("Collaborating Error : ", a)
+                    return messages.error(request,"Collaborating Error : ", a)
+            
+
+            
+        if request.method == 'POST' and request.FILES.get('file'):
+            form = UploadFileForm(request.POST, request.FILES)
+            if form.is_valid():
+                file = request.FILES['file']
+                if file.name.endswith(('.csv')):
+                    try:
+                        csv_data = file.read().decode('utf-8').splitlines()
+                        csv_reader = csv.DictReader(csv_data)
+                        
+                        current_user = request.user
+                        
+                        for row in csv_reader:
+                            # Convert date string to datetime object
+                            try:
+                                invoice_date = datetime.strptime(row['invoice_date'], '%d/%m/%Y').date()
+                            except ValueError:
+                                invoice_date = datetime.strptime(row['invoice_date'], '%d-%m-%Y').date()
+                            
+                            # Convert string values to integers
+                            invoice_amount = int(row['invoice_amount'])
+                            payment_amount = int(row['payment_amount'])
+                            
+                            # Calculate balance amount
+                            balance_amount = invoice_amount - payment_amount
+                            
+                            # Get the current date and time
+                            current_date = datetime.now().date()
+                            current_time = datetime.now().time()
+                            
+                            # Create Invoice object for each row in the CSV file
+                            if str(request.user) == check_user:
+                                invoice = Invoice.objects.create(
+                                    user=collaborator_admin,
+                                    pharmacy_name=row['pharmacy_name'],
+                                    invoice_number=row['invoice_number'],
+                                    invoice_date=invoice_date,
+                                    invoice_amount=invoice_amount,
+                                    payment_amount=payment_amount,
+                                    balance_amount=balance_amount,
+                                    today_date=current_date,  # Use current date
+                                    current_time=current_time,  # Use current time
+                                    updated_by=row['updated_by']
+                                )
+                            else:
+                                invoice = Invoice.objects.create(
+                                    user=current_user,
+                                    pharmacy_name=row['pharmacy_name'],
+                                    invoice_number=row['invoice_number'],
+                                    invoice_date=invoice_date,
+                                    invoice_amount=invoice_amount,
+                                    payment_amount=payment_amount,
+                                    balance_amount=balance_amount,
+                                    today_date=current_date,  # Use current date
+                                    current_time=current_time,  # Use current time
+                                    updated_by=row['updated_by']
+                                )
+
+                        
+                        return JsonResponse({'message': 'CSV Data uploaded successfully'})
+                    except Exception as e:
+                        logger.exception("Error processing CSV file")
+                        return JsonResponse({'error': f'Error processing CSV file: {str(e)}'}, status=500)
+                else:
+                    return JsonResponse({'error': 'File format not supported. Please upload a CSV file.'}, status=400)
+            else:
+                return JsonResponse({'error': 'Form is not valid'}, status=400)
+        else:
+            return JsonResponse({'error': 'Invalid request'}, status=400)
     except Exception as e:
-        print("Error : ", e)
+        logger.exception("Error in upload_csv view")
+        return JsonResponse({'error': 'Server error'}, status=500)
+
+
+@login_required(login_url='/')
+def exports_to_csv(request):
+    check_user = None
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                except Exception as a:
+                    return messages.error(request,"Collaborating Error : ", a)
+    except Exception as e:
+        return messages.error(request,"Error in Exporting CSV : ", e)
     
     if check_user == str(request.user):
         try:
@@ -133,7 +166,7 @@ def exports_to_csv(request):
 
             return response
         except Exception as e:
-            print ("Exception : ",e)
+            return messages.error(request,"Collaborating Error : ", e)
     else:
         try:
             currentuser = request.user
@@ -151,25 +184,20 @@ def exports_to_csv(request):
 
             return response
         except Exception as a:
-            print("Exception : ",a)
+            return messages.error(request,"Collaborating Error : ", a)
 
 
 def exports_to_xlsx(request):   
     check_user = None
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name', get_admin_name)
-            print(f"Collaborator request sender username: {collaborator_request_username}")
             
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
             collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-            print("collaborator_admin : ", collaborator_admin)
-            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
@@ -177,11 +205,10 @@ def exports_to_xlsx(request):
                     current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
                     if current_user and collaborator_admin:
                         check_user = current_user.username
-                        print("check_user : ",check_user)
                 except Exception as a:
-                    print("Collaborating Error : ", a)
+                    return messages.error(request,"Collaborating Error : ", a)
     except Exception as e:
-        print("Error : ", e)
+        return messages.error(request,"Error in exports_to_xlsx : ", e)
         
     if check_user == str(request.user):
         currentuser = request.user
@@ -225,18 +252,13 @@ def exports_to_json(request):
     check_user = None
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name', get_admin_name)
-            print(f"Collaborator request sender username: {collaborator_request_username}")
             
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
             collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-            print("collaborator_admin : ", collaborator_admin)
-            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
@@ -244,11 +266,11 @@ def exports_to_json(request):
                     current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
                     if current_user and collaborator_admin:
                         check_user = current_user.username
-                        print("check_user : ",check_user)
                 except Exception as a:
-                    print("Collaborating Error : ", a)
+                    return messages.error(request,"Something Wrong Whlie Exporting Json ", a)
     except Exception as e:
-        print("Error : ", e)
+        return messages.error(request,"Something Wrong Whlie Exporting Json ", e)
+
         
     if check_user == str(request.user):
         invoices = Invoice.objects.filter(user=collaborator_admin)
@@ -286,18 +308,13 @@ def index_view(request):
 
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name', get_admin_name)
-            print(f"Collaborator request sender username: {collaborator_request_username}")
             
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
             collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-            print("collaborator_admin : ", collaborator_admin)
-            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
@@ -308,16 +325,11 @@ def index_view(request):
                         # Use filter instead of get
                         check_admin = Invoice.objects.filter(user=collaborator_admin).first()
                         unique_code_id = Person.objects.get(user=collaborator_admin)
-                        print("User name : ", check_user)
-                        print("unique code :", unique_code_id.UniqueId)
-                        print("REQUEST TYPE", request.user.username)
                 except Exception as a:
-                    print("Collaborating Error : ", a)
-                print(f"Collaborate username: {collaborator_sender_username}")
-                print(f"Admin username: {current_user.username if current_user else None}")
+                   return messages.error(request,"Somthing Wrong",a)
 
     except Exception as e:
-        print("Error When Collaborating the User", e)
+        return messages.error(request,"Error Accure in Collabarating to User ",e)
 
 
     if str(request.user) == check_user:
@@ -341,13 +353,10 @@ def index_view(request):
     try:
         if check_user == str(request.user): 
             Storename = Person.objects.get(user=collaborator_admin)
-            print("Store Type : ",Storename)
         else:
-            print("Using request.user")
             Storename = Person.objects.get(user=request.user)
 
         modifiedStore = convert_Medical(Storename.MedicalShopName)
-        print(Storename.MedicalShopName)
     except Person.DoesNotExist:
         modifiedStore = "Not Found"
 
@@ -373,22 +382,6 @@ def index_view(request):
         partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
         debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
         
-        # delete_history = DeletedInvoice.objects.filter(user=collaborator_admin).order_by('-id')
-        # if not delete_history.exists():
-        #     delete_history = "No Deletion Found"
-            
-        # modified_history = ModifiedInvoice.objects.filter(user = collaborator_admin).order_by('-id')
-        # if not modified_history.exists():
-        #     modified_history = "No Updatation Found"
-            
-        if full_paid.exists():
-            print("payment :", full_paid)
-        else:
-            print("No fully paid invoices found for the collaborator admin.", collaborator_admin)
-    else:
-        print("Current user is not a collaborator admin.")
-
-
     if request.method == 'POST':
         query = request.POST.get('payment_list')
         if query is not None:
@@ -444,9 +437,13 @@ def index_view(request):
             tracking_payment.save()
 
             messages.success(request, " Payment Success")
+            try:
+                check_data = Person.objects.get(user=request.user)
+            except Person.DoesNotExist:
+                messages.error(request, "Please Update Your Profile")
             return redirect("index")
         else:
-            messages.error(request, "Failed to save Invoice Number want to Unique ")
+            messages.error(request, "Failed to save Invoice Number Must be Unique ")
 
     else:
         invoice_form = InvoiceForm()
@@ -514,18 +511,13 @@ def check_view(request, id):
         
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name', get_admin_name)
-            print(f"Collaborator request sender username: {collaborator_request_username}")
             
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
             collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-            print("collaborator_admin : ", collaborator_admin)
-            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
@@ -534,10 +526,10 @@ def check_view(request, id):
                     if current_user and collaborator_admin:
                         check_user = current_user.username
                 except Exception as a:
-                    print("Collaborating Error : ", a)
+                    return messages.error(request,"Something Wrong Please Check",a)
             
     except Exception as e:
-        print("Something Wrong in 540 ", e)
+        return messages.error(request,"Something Wrong ",e)
         
     if str(request.user) == check_user:
         try:
@@ -643,9 +635,11 @@ class InvoiceResource(ModelResource):
         model = Invoice
         fields = ('user', 'pharmacy_name', 'invoice_number', 'invoice_date', 'balance_amount', 'payment_amount')
 
+
+# TODO: Import View ..
 @login_required(login_url='/')
 def import_view(request):
-    upload_csv_file = UploadFileForm
+    upload_csv_file = UploadFileForm()
     check_user = None
     data = None
     admin_city = None  # Initialize admin_city variable
@@ -656,20 +650,17 @@ def import_view(request):
     user_ph =None
     unique_id = None
     collaborator_admin = None
+    completed_data = None
+    
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name', get_admin_name)
-            print(f"Collaborator request sender username: {collaborator_request_username}")
             
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
             collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-            print("collaborator_admin : ", collaborator_admin)
-            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
@@ -677,83 +668,86 @@ def import_view(request):
                     current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
                     if current_user and collaborator_admin:
                         check_user = current_user.username
-                        print("check_user : ",check_user)
                 except Exception as a:
-                    print("Collaborating Error : ", a)
+                    return messages.error(request,"Something Wrong Please Check",a)
     except Exception as e:
-        print("Error : ", e)
+        return messages.error(request,"Something Wrong",e)
     
     if str(request.user) == check_user:        
         try:
             person = Person.objects.get(user=collaborator_admin)
-            print("Person : ", person)
-            city = person.City
-            print("City", city)
             unique_id = person.UniqueId
             admin_person = person.user.username
-            print(admin_person)
             admin_city = person.City
             get_admin_ph = CustomUser.objects.get(username=collaborator_admin) 
             admin_ph = get_admin_ph.phone_num
             admin_uniqueid = person.UniqueId
             
             user = Person.objects.get(user=request.user)
-            print("User : ", user)
             user_city = user.City
-            print(user_city)
             get_user_ph = CustomUser.objects.get(username=request.user)
             user_ph = get_user_ph.phone_num 
             unique_id = user.UniqueId
             
             data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
         except Exception as a:
-            print("Exception : ",a)
+            return messages.error(request,"Something Wrong Please Check",a)    
     else:        
         try:
             user = Person.objects.get(user=request.user)
-            print("User : ", user)
-            user_city = user.City
-            print(user_city)
+            user_city = user.City            
             get_user_ph = CustomUser.objects.get(username=request.user)
             user_ph = get_user_ph.phone_num 
             unique_id = user.UniqueId
+            
             data = Invoice.objects.filter(user=request.user).order_by('id')
-        except Exception as e:
-            print("Current User : ",e)
+        except CustomUser.DoesNotExist:
+            return messages.error(request, "CustomUser does not exist")
+        except Person.DoesNotExist:
+            messages.error(request, "Please Update Your Profile and try agin to import export page")
+            return redirect("profile")
+
         
     user_name = request.user
     if request.method == 'POST':
         completed = request.POST.get('completed', False)
-        category = request.POST.get('category', '')  # Get category as comma-separated string
+        category = request.POST.get('category', '')
         others = request.POST.get('others', False)
-        print(others)
         # Split category string into a list
         category_list = category.split(',')
-
-        # Here, you would filter your data based on the parameters received and return the filtered data.
-        # Replace the code below with your actual data filtering logic.
-        # Example filtering logic:
-        data = Invoice.objects.all()  # Assuming YourModel is your model name
-        if completed:
-            data = data.filter(balance_amount = 0,user=request.user)
-            print("user data : ",data)
+        print("completed:",completed)
+        print("category:",category_list)
+        print("others:",others)
+            
+        if completed == 'true':
+            completed_data = Invoice.objects.filter(balance_amount=0, user=request.user)
+            
         if category_list:
-            print(category_list)
             users_with_category = CustomUser.objects.filter(store_type__in=category_list)
             # Iterate over each user in the queryset to access their username
             for user in users_with_category:
-                print("Category User : ", user.username)
-            data = data.filter(user__in=users_with_category)
-        else:
-            print("Hii")
-       # You can add more filters based on 'others' if needed
-       # Render the filtered data to the template
-    
+                medical_data = user 
+                print("medical data : ",medical_data)
+        
+    print("completed_data 2: ",completed_data)
+        
+    overall_medicals = CustomUser.objects.filter(store_type='medical').select_related('person')
+
+    # medicals = []  # Initialize an empty list to store medical shop names
+
+    # for medical_user in overall_medicals:
+    #     get_user_profile = medical_user.person
+    #     medicals.append(get_user_profile.MedicalShopName)
+        
+    # print("medicals : ", medicals)
+
     context = {
         'datas': data,
+        # 'medicals':medicals,
+        'completed_data':completed_data,
         'check_user': check_user,
         'request_user': str(request.user),
-        'admin_city': admin_city,
+        'admin_city': admin_city,   
         'admin_ph': admin_ph,
         'admin_id': admin_uniqueid,
         'user_city': user_city,
@@ -806,18 +800,13 @@ def checkmore_view(request):
         
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name', get_admin_name)
-            print(f"Collaborator request sender username: {collaborator_request_username}")
             
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
             collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-            print("collaborator_admin : ", collaborator_admin)
-            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
@@ -826,10 +815,10 @@ def checkmore_view(request):
                     if current_user and collaborator_admin:
                         check_user = current_user.username
                 except Exception as a:
-                    print("Collaborating Error : ", a)
+                    return messages.error(request,"Something Wrong Please Check",a)
             
     except Exception as e:
-        print("Something Wrong in 540 ", e)
+        return messages.error(request,"Something Wrong Please Check",e)
     
     if check_user == str(request.user):
         try:
@@ -867,18 +856,13 @@ def paymore_view(request):
     
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name', get_admin_name)
-            print(f"Collaborator request sender username: {collaborator_request_username}")
-            
+
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
             collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-            print("collaborator_admin : ", collaborator_admin)
-            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
@@ -887,10 +871,10 @@ def paymore_view(request):
                     if current_user and collaborator_admin:
                         check_user = current_user.username
                 except Exception as a:
-                    print("Collaborating Error : ", a)
+                    return messages.error(request,"Something Wrong Please Check",a)
             
     except Exception as e:
-        print("Something Wrong in 540 ", e)
+        return messages.error(request,"Something Wrong",e)
     if collaborator_admin and collaborator_admin is not None:
         invoices = Invoice.objects.filter(Q(user=collaborator_admin ), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
     else:
@@ -904,18 +888,13 @@ def updatemore_view(request):
     collaborator_admin = None
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name', get_admin_name)
-            print(f"Collaborator request sender username: {collaborator_request_username}")
             
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
             collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-            print("collaborator_admin : ", collaborator_admin)
-            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
@@ -924,10 +903,10 @@ def updatemore_view(request):
                     if current_user and collaborator_admin:
                         check_user = current_user.username
                 except Exception as a:
-                    print("Collaborating Error : ", a)
+                    return messages.error(request,"Something Wrong Please Check",a)
             
     except Exception as e:
-        print("Something Wrong in 540 ", e)
+        return messages.error(request,"Something Wrong ",e)
     if collaborator_admin and collaborator_admin is not None:
         invoices = Invoice.objects.filter(user = collaborator_admin).order_by('-id')
     else:
@@ -941,18 +920,13 @@ def unpaid_debt(request):
     collaborator_admin = None
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        print(f"Number of collaborator requests found: {collaborator_requests.count()}")
         
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
-            print('Get_Admin_name', get_admin_name)
-            print(f"Collaborator request sender username: {collaborator_request_username}")
             
             collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
             collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-            print("collaborator_admin : ", collaborator_admin)
-            print("new : ", collaborator_request_sender)
             
             for user in collaborator_request_sender:
                 collaborator_sender_username = user.username
@@ -961,10 +935,10 @@ def unpaid_debt(request):
                     if current_user and collaborator_admin:
                         check_user = current_user.username
                 except Exception as a:
-                    print("Collaborating Error : ", a)
+                    return messages.error(request,"Something Wrong",a)
             
     except Exception as e:
-        print("Something Wrong in 540 ", e)
+        return messages.error(request,"Something Wrong",e)
     if collaborator_admin is not None:
         invoices = Invoice.objects.filter(Q(user=collaborator_admin), ~Q(balance_amount=0.00), Q(payment_amount=0))
     else:
@@ -990,7 +964,7 @@ def update_invoice(request, invoice_id):
         invoice.invoice_date = invoice_date
 
         # Update the payment_amount based on the balance_amount
-        invoice.payment_amount = invoice.invoice_amount - invoice.balance_amount
+        invoice.balance_amount = invoice.invoice_amount - invoice.payment_amount
 
         # Save the updated Invoice
         invoice.save()
@@ -999,18 +973,13 @@ def update_invoice(request, invoice_id):
         
         try:
             collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-            print(f"Number of collaborator requests found: {collaborator_requests.count()}")
             
             for notification in collaborator_requests:
                 collaborator_request_username = notification.sender.username
                 get_admin_name = notification.receiver.username
-                print('Get_Admin_name', get_admin_name)
-                print(f"Collaborator request sender username: {collaborator_request_username}")
                 
                 collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
                 collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-                print("collaborator_admin : ", collaborator_admin)
-                print("new : ", collaborator_request_sender)
                 
                 for user in collaborator_request_sender:
                     collaborator_sender_username = user.username
@@ -1019,10 +988,10 @@ def update_invoice(request, invoice_id):
                         if current_user and collaborator_admin:
                             check_user = current_user.username
                     except Exception as a:
-                        print("Collaborating Error : ", a)
+                        return messages.error(request,"Something Wrong Please Check",a)
                 
         except Exception as e:
-            print("Something Wrong in 540 ", e)
+            return messages.error(request,"Something Wrong",e)
             
         if check_user == str(request.user):
             modified_invoice = ModifiedInvoice(
@@ -1075,25 +1044,11 @@ def parse_date(date_string):
 
     raise ValueError("Date string does not match any expected format")
 
-# Example usage:
 try:
     result = parse_date("June 10, 2024")
 except ValueError as e:
     messages.error(" Date Formate Not Accessable")
 
-
-# @require_POST
-# def update_invoice(request, invoice_id):
-#     invoice = get_object_or_404(Invoice, pk=invoice_id)
-    
-#     form = InvoiceForm(request.POST, instance=invoice)
-
-#     if form.is_valid():
-#         form.save()
-#         return JsonResponse({'status': 'success', 'message': 'Invoice updated successfully'})
-#     else:
-#         errors = form.errors.as_json()
-#         return JsonResponse({'status': 'error', 'message': errors})
     
 @login_required(login_url='/')
 def delete_invoice(request, invoice_id):
@@ -1105,18 +1060,13 @@ def delete_invoice(request, invoice_id):
         
         try:
             collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-            print(f"Number of collaborator requests found: {collaborator_requests.count()}")
             
             for notification in collaborator_requests:
                 collaborator_request_username = notification.sender.username
                 get_admin_name = notification.receiver.username
-                print('Get_Admin_name', get_admin_name)
-                print(f"Collaborator request sender username: {collaborator_request_username}")
                 
                 collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
                 collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
-                print("collaborator_admin : ", collaborator_admin)
-                print("new : ", collaborator_request_sender)
                 
                 for user in collaborator_request_sender:
                     collaborator_sender_username = user.username
@@ -1125,10 +1075,10 @@ def delete_invoice(request, invoice_id):
                         if current_user and collaborator_admin:
                             check_user = current_user.username
                     except Exception as a:
-                        print("Collaborating Error : ", a)
+                        return messages.error(request,"Something Wrong Please Check",a)
                 
         except Exception as e:
-            print("Something Wrong in 540 ", e)
+            return messages.error(request,"Something Wrong",e)
 
         # Create a DeletedInvoice object with a unique number (using timestamp)
         if check_user == str(request.user):
@@ -1167,10 +1117,8 @@ def delete_invoice(request, invoice_id):
         messages.erroe(request,"Deletion Failed ")
         return JsonResponse({'error': 'Invoice not found'}, status=404)
 
-    except Exception as e:
-        # Log the error for debugging purposes
-        print(f"Error deleting invoice with id {invoice_id}: {str(e)}")
-        
+    except Exception as e:      
+        messages.error(request,f'Error deleting invoice: {str(e)}')
         return JsonResponse({'error': f'Error deleting invoice: {str(e)}'}, status=500)
 
     
@@ -1215,7 +1163,6 @@ def pay_invoice(request, invoice_id):
             return JsonResponse({'message': 'Invoice updated successfully'})
 
     except Exception as e:
-        print("Error",e)
         messages.error(request,"Payment Falied")
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
@@ -1261,3 +1208,38 @@ def payment_invoice(request,payment_id):
     except Exception as e:
         messages.error(request,"payment Failed",e)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
+
+
+def empty_csv(request):
+    # Define header row
+    header = ['pharmacy_name', 'invoice_number', 'invoice_date', 'invoice_amount', 'payment_amount', 'updated_by']
+    
+    # Create CSV response
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="sample_data.csv"'
+
+    # Write header row to CSV
+    writer = csv.writer(response)
+    writer.writerow(header)
+
+    return response
+
+def empty_xlsx(request):
+    # Define header row
+    header = ['pharmacy_name', 'invoice_number', 'invoice_date', 'invoice_amount', 'payment_amount', 'updated_by']
+    
+    # Create a new workbook and add a worksheet
+    workbook = openpyxl.Workbook()
+    worksheet = workbook.active
+
+    # Write header row to worksheet
+    worksheet.append(header)
+
+    # Create HttpResponse object with XLSX content type
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="sample_data.xlsx"'
+
+    # Save workbook to HttpResponse
+    workbook.save(response)
+
+    return response

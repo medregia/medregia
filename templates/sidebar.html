@@ -3,23 +3,31 @@
     <div class="sidebar sidebar-closed" id="sidebar">
         <h3 id="medregiaHeader">Medregia</h3>
         <a href="{% url 'index' %}" class="logo">
-            <img src="{% static 'authentication/images/invoice1.png' %}" alt="">
-            <span class="nav-item">Invoice</span> 
+            <!-- <img src="{% static 'authentication/images/invoice1.png' %}" alt=""> -->
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+            <!-- <span class="nav-item">Invoice</span>  -->
+            <p class="nav-item"> Invoice</p>
         </a>
 
         <a href="{% url 'statics' %}" class="logo">
-            <img src="{% static 'authentication/images/static.png' %}" alt="">
-            <span class="nav-item">Static</span> 
+            <!-- <img src="{% static 'authentication/images/static.png' %}" alt=""> -->
+            <i class="fa-solid fa-chart-pie"></i>
+            <!-- <span class="nav-item">Static</span>  -->
+            <p class="nav-item"> Static</p>
         </a>
 
         <a href="{% url 'clinic' %}" class="logo">
-            <img src="{% static 'authentication/images/clinic.png' %}" alt="">
-            <span class="nav-item">Clinic</span> 
+            <!-- <img src="{% static 'authentication/images/clinic.png' %}" alt=""> -->
+            <i class="fa-solid fa-house-chimney-medical"></i>
+            <!-- <span class="nav-item">Clinic</span>  -->
+            <p class="nav-item"> Clinic</p>
         </a>
 
-        <a href="{% url 'import-export' %}" class="logo export">
-            <img src="{% static 'authentication/images/import.png' %}" alt="">
-            <span class="nav-item">Export/Import</span> 
+        <a href="{% url 'import-export' %}" class="logo expo">
+            <!-- <img src="{% static 'authentication/images/import.png' %}" alt=""> -->
+            <i class="fa-solid fa-boxes-packing"></i>
+            <!-- <span class="nav-item">Export/Import</span>  -->
+            <p class="nav-item ">Export/Import</p>
         </a>
 
         <div class="toggle-btn" onclick="toggleSidebar()">

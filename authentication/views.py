@@ -14,8 +14,6 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 from invclc.models import Invoice,DeletedInvoice,ModifiedInvoice,TrackingPayment
 import json 
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.exceptions import MultipleObjectsReturned
 from .models import StateModel, DistrictModel
 from django.http import HttpResponse,JsonResponse
 from .UniqueCode import User_code
@@ -25,6 +23,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 from .context_processors import nav_message
 from django.template.loader import render_to_string
+from django.db.utils import IntegrityError
 
 def signup_view(request):
     form = SignUpForm()
@@ -161,23 +160,18 @@ def profile_view(request):
                     district_instance = DistrictModel.objects.create(Pid=items['Pid'], LocationType=items['LocationType'], districtname=items['districtname'], state=state_instance)  # set the state field to the state instance
 
     except Exception as e:
-        print(f"Error: {e}")
+        return messages.error(request,"Error State and District upload to Database",e)
         
     permissions = Permission.objects.filter(content_type__model='invoice')
-    # Print permission codenames
-    # for permission in permissions:
-    #     print(permission.codename)
 
     current_user = request.user
     profile_data = CustomUser.objects.get(username=current_user)
     district_data = DistrictModel.objects.all()
-    form = ProfileForm()
 
     profile , created =  Person.objects.get_or_create(user=current_user)
 
     user_data = User_code(profile)
     unique_id = user_data.display()
-    # print(unique_id)
 
     profile.UniqueId = unique_id
     profile.save()
@@ -185,6 +179,7 @@ def profile_view(request):
     
     profile = Person.objects.get(user=current_user)
     
+    form = ProfileForm(instance=profile)
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=profile)
         receiver_name = request.POST.get('admin', None)
@@ -212,24 +207,28 @@ def profile_view(request):
                 
         except CustomUser.DoesNotExist:
             messages.error(request, f"No User Found with the username '{receiver_name}'")
+        except IntegrityError as e:
+            messages.error(request, "Error: Duplicate entry for Drug License Number")
+            return redirect("profile") 
                         
         if form.is_valid():
             form.save()
             messages.success(request, "You Got It ")
+            return redirect("profile")
+            
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request,"Please Return to Home Page and Try Again ...")
 
-        return redirect("profile")
     
     existing_admin = Notification.objects.filter(sender=request.user,is_read=True, request_status=True)
     existing_admin_optional = Notification.objects.filter(sender=request.user,is_read=True, request_status=False)
     
-    print(existing_admin)
     if existing_admin.exists():
         admin_data = CustomUser.objects.get(username=existing_admin.first().receiver)
-        print("Person Admin Name: ", admin_data)
         admin_name = admin_data.username
         admin_ph = admin_data.phone_num
-        print("Admin Name: ", admin_name)
-        print("Admin Phone Number: ", admin_ph)
         
     elif existing_admin_optional.exists():
         admin_data = CustomUser.objects.get(username=request.user)
@@ -240,11 +239,16 @@ def profile_view(request):
         admin_name = admin_data.username
         admin_ph = admin_data.phone_num
         
-    admins = CustomUser.objects.filter(is_staff=True).order_by('-date_joined')[:1]
+    try:
+        hide_colaborator = Notification.objects.filter(receiver=request.user, is_read=True, request_status=True).exists()
+    except Notification.DoesNotExist:
+        hide_colaborator = None
+
+        
     context = {
         'profile': form, 
+        'hide_colaborator':hide_colaborator,
         'user_profile_data': profile_data,
-        'admins': admins, # sending Admin details
         'district_data': district_data,
         'unique_code':profile.UniqueId, 
         'data':profile,
@@ -277,8 +281,6 @@ def change_pin(request):
         new_pin = request.POST.get('new_pin')
         confirm_new_pin = request.POST.get('confirm_new_pin')
         
-        # print(f'current_pin: {current_pin}, type: {type(current_pin)}')
-        # print(f'User_request.pin: {User_request.pin}, type: {type(User_request.pin)}')
         if current_pin == User_request.pin:
             if new_pin == confirm_new_pin:
                 request.user.pin = new_pin
@@ -306,16 +308,20 @@ def confirm_admin(request):
     collaborator_requests = Notification.objects.filter(receiver=request.user, is_read=False)
     admin_manager = CustomUser.objects.get(username=request.user)
     if collaborator_requests.exists():
-        # Assuming a user can have multiple pending collaborator requests
         for collaborator in collaborator_requests:
             receiver = collaborator.receiver
             sender = collaborator.sender
-            # Check if the current user's username matches the new admin's username
+            
+            grand_accesses = Invoice.objects.filter(user__username=sender.username)
+            
             if request.user.username == receiver.username:
                 admin_group = Group.objects.get(name='Admin Group')
                 sender.groups.remove(admin_group)
                 sender.is_staff = False
                 collaborator.is_read = True
+                for grand_access in grand_accesses:
+                    grand_access.user = receiver
+                    grand_access.save()
                 sender.save()
                 collaborator.save()                
                 messages.success(request, f"You have become a collaborator with {sender}.")
@@ -336,7 +342,7 @@ def admin_cancel(request):
         notification.save()
         return redirect('index')
     except Exception as e:
-        print("Admin Cancel Error", e)
+        return messages.error(request,"Somthing Wrong in Admin Cancel Request",e)
         
 @login_required(login_url='/')
 def colaborator_list(request):

@@ -6,6 +6,7 @@ from simple_history.models import HistoricalRecords
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in
 from django.contrib.auth.models import Permission
+from django.core.exceptions import ValidationError
 
 class StateModel(models.Model):
     Pid = models.IntegerField(primary_key=True)
@@ -66,33 +67,62 @@ class CustomUser(AbstractUser):
         return self.username
     
 class Person(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,null=True)
-    MedicalShopName = models.CharField(max_length=100 ,blank=False,null=False)
-    ProprietaryName = models.CharField(max_length=100 ,blank=False,null=False)
-    ProprietaryNumber = models.CharField(max_length=100 ,blank=False,null=False)
-    ProprietaryContact = models.CharField(max_length=100 ,blank=False,null=False)
-    DrugLiceneseNumber1 = models.CharField(max_length=100 ,blank=False,null=False)
-    DrugLiceneseNumber2 = models.CharField(max_length=100 ,blank=False,null=False)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
+    MedicalShopName = models.CharField(max_length=100, blank=False, null=False,)
+    ProprietaryName = models.CharField(max_length=100, blank=False, null=False,)
+    ProprietaryNumber = models.CharField(max_length=100, blank=False, null=False,)
+    ProprietaryContact = models.CharField(max_length=100, blank=False, null=False)
+    DrugLiceneseNumber2 = models.CharField(max_length=100, blank=False, null=False,)
+    DrugLiceneseNumber1 = models.CharField(max_length=100, blank=False, null=False,)
 
-    #Registered Address
-    state = models.ForeignKey(StateModel, on_delete=models.SET_NULL, null=True,blank=True)
-    district = models.ForeignKey(DistrictModel, on_delete=models.SET_NULL, null=True,blank=True)
-    City = models.CharField(max_length=100 ,blank=False,null=False)
-    Pincode = models.CharField(max_length=100 ,blank=False,null=False)
-    StreetNumber = models.CharField(max_length=100 ,blank=True,null=True)
-    DoorNumber = models.CharField(max_length=100 ,blank=True,null=True)
+    # Registered Address
+    state = models.ForeignKey(StateModel, on_delete=models.SET_NULL, null=True, blank=True)
+    district = models.ForeignKey(DistrictModel, on_delete=models.SET_NULL, null=True, blank=True)
+    City = models.CharField(max_length=100, blank=False, null=False)
+    Pincode = models.CharField(max_length=100, blank=False, null=False)
+    StreetNumber = models.CharField(max_length=100, blank=True, null=True)
+    DoorNumber = models.CharField(max_length=100, blank=True, null=True)
+
+    PharmacistName = models.CharField(max_length=100, blank=False, null=False)
+    RegisteredNumber = models.CharField(max_length=100, blank=False, null=False,)
+    ContactNumber = models.CharField(max_length=15, blank=False, null=False)
+
+    UniqueId = models.CharField(max_length=100, blank=True, null=False,)
+
+    def __str__(self):
+        return self.MedicalShopName
     
-    PharmacistName =  models.CharField(max_length=100 ,blank=False,null=False)
-    RegisteredNumber =  models.CharField(max_length=100 ,blank=False,null=False)
-    ContactNumber =  models.CharField( max_length = 15, blank=False,null=False)
-    
-    #Admin Details
-    # UserName =  models.CharField(max_length=100 ,blank=False,null=False)
-    # UserNumber =  models.CharField(max_length=100 ,blank=False,null=False)
-    
-    UniqueId = models.CharField(max_length=100 ,blank=True,null=True)    
-    def str(self):
-        return self.UserName
+    def clean(self):
+        # Check if DrugLiceneseNumber1 is not empty or None
+        if self.DrugLiceneseNumber1:
+            # Check if there is any other Person object with the same DrugLiceneseNumber1
+            if Person.objects.exclude(pk=self.pk).filter(DrugLiceneseNumber1=self.DrugLiceneseNumber1).exists():
+                raise ValidationError({'DrugLiceneseNumber1': 'This value must be unique.'})
+
+        if self.ProprietaryName:
+            # Check if there is any other Person object with the same ProprietaryName
+            if Person.objects.exclude(pk=self.pk).filter(ProprietaryName=self.ProprietaryName).exists():
+                raise ValidationError({'ProprietaryName': 'This value must be unique.'})
+            
+        if self.ProprietaryNumber:
+            # Check if there is any other Person object with the same ProprietaryName
+            if Person.objects.exclude(pk=self.pk).filter(ProprietaryNumber=self.ProprietaryNumber).exists():
+                raise ValidationError({'ProprietaryNumber': 'This value must be unique.'})
+            
+        if self.ProprietaryContact:
+            # Check if there is any other Person object with the same ProprietaryName
+            if Person.objects.exclude(pk=self.pk).filter(ProprietaryContact=self.ProprietaryContact).exists():
+                raise ValidationError({'ProprietaryContact': 'This value must be unique.'})
+            
+        if self.DrugLiceneseNumber2:
+            # Check if there is any other Person object with the same ProprietaryName
+            if Person.objects.exclude(pk=self.pk).filter(DrugLiceneseNumber2=self.DrugLiceneseNumber2).exists():
+                raise ValidationError({'DrugLiceneseNumber2': 'This value must be unique.'})
+            
+        if self.RegisteredNumber:
+            # Check if there is any other Person object with the same ProprietaryName
+            if Person.objects.exclude(pk=self.pk).filter(RegisteredNumber=self.RegisteredNumber).exists():
+                raise ValidationError({'RegisteredNumber': 'This value must be unique.'})
     
 class Notification(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_notifications', on_delete=models.CASCADE)

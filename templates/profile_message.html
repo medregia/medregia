@@ -1,0 +1,14 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'authentication/css/profile.css' %}"> 
+{% for msg in messages %}
+<div class="profile-message">
+  {{msg}}
+  <button
+    class="close-button"
+    onclick="this.parentElement.style.display='none';"
+  >
+    x
+  </button>
+</div>
+{% endfor %}

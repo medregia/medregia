@@ -82,7 +82,7 @@ function openpanel(evt, panels) {
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
-    tabcontent[i].style.backgroundColor="rgb(83 78 78 / 60%)";
+    tabcontent[i].style.backgroundColor="#cfc8c8";
   }
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {
@@ -95,7 +95,7 @@ function openpanel(evt, panels) {
   }
   if (evt.currentTarget.className.indexOf("active") === -1) {
     evt.currentTarget.className += " active";
-    evt.currentTarget.style.backgroundColor = "rgb(83 78 78 / 60%)";
+    evt.currentTarget.style.backgroundColor = "#cfc8c8";
   }
   else {
     evt.currentTarget.style.backgroundColor = "#fff"; 
@@ -314,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function () {
           payBtn.textContent = 'Pay';
           cancelBtn.style.display = 'none'; // Hide cancel button after saving
           inputFields.forEach(input => {
-            input.setAttribute('disabled', 'true');
+            input.setAttribute('disabled', 'true'); 
             input.classList.remove('border-active');
           });
 
