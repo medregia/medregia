@@ -6,15 +6,20 @@
 
 {% block nav_footer %}{% static 'invclc/css/nav.css' %} {% endblock nav_footer %}
 {% block link2 %}{% static 'invclc/css/static.css' %} {% endblock link2 %}
+{% block side %}{% static 'invclc/css/static_sidebar.css' %}{% endblock side %}
 
 {% block navbar %} 
   {% include 'nav.html' %}
 {% endblock navbar %}
  
+{% block sidebar %}
+  {% include 'sidebar.html' %}
+{% endblock sidebar %}
+
 {% block content %}
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-<div class="static-container">
+<div class="static-container" id="staticcontent">
     <div class="left-side">
         <div class="left-box">
             <div class="mainbox">
@@ -118,6 +123,7 @@
 </div>
 
 <script src="{% static 'invclc/js/static.js' %}"></script> 
+<script src="{% static 'authentication/js/static_sidebar.js' %}"></script>  
     
 
 {% endblock %}
