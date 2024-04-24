@@ -210,7 +210,7 @@ tableSelector.addEventListener("change", function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Function to fetch filtered data
-    function fetchData(completed, category, others) {
+    function fetchData(completed, category, others,all) {
         var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
         fetch('/import-export/', {
@@ -219,14 +219,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrfToken
             },
-            body: 'completed=' + completed + '&category=' + category + '&others=' + others + '&csrfmiddlewaretoken=' + csrfToken
+            body: 'completed=' + completed + '&category=' + category + '&others=' + others + '&csrfmiddlewaretoken=' + csrfToken + '&all=' + all
         })
-        .then(response => response.text())
+        .then(response => response.json()) // Parse response as JSON
         .then(data => {
-            document.getElementById('export-data').innerHTML = data;
+            console.log("Data : ",data)
+            if (data.completed_data){
+                updateTableWithData(data.completed_data); // Call updateTableWithData with JSON data
+                // console.log(data.completed_data)
+            }
+            else if (data.not_paid_data){
+                console.log("not_paid_data : ",data.not_paid_data);
+                updateTableWithData(data.not_paid_data)
+            }
+            else{
+                updateTableWithData(data.previous_data);
+                // console.log(data.previous_data)
+            }
+
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.warn('Error:', error);
         });
     }
 
@@ -258,10 +271,41 @@ document.addEventListener('DOMContentLoaded', function() {
             var categoryString = category.join(',');
 
             // Fetch filtered data
-            fetchData(completed, categoryString, others);
+            fetchData(completed, categoryString, others,all);
         });
     });
 });
+
+
+// Function to update table with JSON data
+function updateTableWithData(data) {
+    var tableBody = document.querySelector('#export-data tbody');
+    if (tableBody) {
+        tableBody.innerHTML = ''; // Clear existing rows
+        if (data !== null && data !== undefined && Array.isArray(data)) {
+            data.forEach(function(item) {
+                var row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="checkbox"></td>
+                    <td>${item.invoice_number}</td>
+                    <td>${item.invoice_amount}</td>
+                    <td>${item.updated_by}</td>
+                    <td>${item.today_date}</td>
+                    <td>${item.payment_amount}</td>
+                    <td>${item.balance_amount == 0 ? 'Paid' : 'Pending'}</td>
+                    <td></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } else {
+            console.error('Data is not an array or is null/undefined.');
+        }
+    } else {
+        console.error('#export-data tbody not found');
+    }
+}
+
+
 
 
 function displayCSV(file) {

@@ -651,6 +651,7 @@ def import_view(request):
     unique_id = None
     collaborator_admin = None
     completed_data = None
+    previous_data = None
     
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
@@ -713,22 +714,35 @@ def import_view(request):
         completed = request.POST.get('completed', False)
         category = request.POST.get('category', '')
         others = request.POST.get('others', False)
+        not_paid = request.POST.get('all',False)
         # Split category string into a list
         category_list = category.split(',')
         print("completed:",completed)
         print("category:",category_list)
         print("others:",others)
+        print("Not Paid : ",not_paid)
+        
+        try:
+            if completed == 'true':
+                completed_data = list(Invoice.objects.filter(balance_amount=0, user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                return JsonResponse({"completed_data": completed_data})
+            elif not_paid == 'true':
+                not_paid_datas = list(Invoice.objects.filter(Q(user=request.user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                print(not_paid_datas)
+                return JsonResponse({"not_paid_data": not_paid_datas})
+            else:
+                previous_data = list(Invoice.objects.filter(user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                return JsonResponse({"previous_data": previous_data})
+        except Exception as e:
+            print("Error in Completed : ",e)
             
-        if completed == 'true':
-            completed_data = Invoice.objects.filter(balance_amount=0, user=request.user)
+        
         if category_list:
             users_with_category = CustomUser.objects.filter(store_type__in=category_list)
             # Iterate over each user in the queryset to access their username
             for user in users_with_category:
                 medical_data = user 
                 print("medical data : ",medical_data)
-        
-    print("completed_data 2: ",completed_data)
         
     overall_medicals = CustomUser.objects.filter(store_type='medical').select_related('person')
 
