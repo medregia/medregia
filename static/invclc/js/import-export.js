@@ -223,12 +223,17 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json()) // Parse response as JSON
         .then(data => {
+            console.log(data)
             if (data.completed_data){
                 updateTableWithData(data.completed_data); // Call updateTableWithData with JSON data
                 // console.log(data.completed_data)
             }
             else if (data.not_paid_data){
                 updateTableWithData(data.not_paid_data)
+            }
+            else if (data.category_list){
+                updateTableWithCategoryData(data.category_list)
+                console.log(data.category_list)
             }
             else{
                 updateTableWithData(data.previous_data);
@@ -248,14 +253,14 @@ document.addEventListener('DOMContentLoaded', function() {
             var all = document.querySelector('.export2-box1 input[name="all"]').checked;
             var pharmacy = document.querySelector('.export2-box2 input[name="pharmacy"]').checked;
             var medical = document.querySelector('.export2-box2 input[name="medical"]').checked;
-            var agency = document.querySelector('.export2-box2 input[name="agency"]').checked;
+            var retailer = document.querySelector('.export2-box2 input[name="retailer"]').checked;
             var others = document.querySelector('.export2-box2 input[name="others"]');
 
             // Construct category based on selected checkboxes
             var category = [];
             if (pharmacy) category.push('Pharmacy');
             if (medical) category.push('medical');
-            if (agency) category.push('Agency');
+            if (retailer) category.push('retailer');
 
             // If Others checkbox is checked, add its value to category
             if (others) {
@@ -278,31 +283,77 @@ document.addEventListener('DOMContentLoaded', function() {
 // Function to update table with JSON data
 function updateTableWithData(data) {
     var tableBody = document.querySelector('#export-data tbody');
-    if (tableBody) {
+    var tableHeader = document.querySelector('#export-data thead tr');
+
+    if (tableBody && tableHeader) {
         tableBody.innerHTML = ''; // Clear existing rows
-        if (data !== null && data !== undefined && Array.isArray(data)) {
+
+        if (data !== null && data !== undefined && Array.isArray(data) && data.length > 0) {
+            // Clear existing header
+            tableHeader.innerHTML = '';
+
+            // Get keys from the first item in the data
+            var keys = Object.keys(data[0]);
+
+            // Update table header
+            keys.forEach(function(key) {
+                var th = document.createElement('th');
+                th.textContent = key;
+                tableHeader.appendChild(th);
+            });
+
+            // Populate table rows
             data.forEach(function(item) {
                 var row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><input type="checkbox"></td>
-                    <td>${item.invoice_number}</td>
-                    <td>${item.invoice_amount}</td>
-                    <td>${item.updated_by}</td>
-                    <td>${item.today_date}</td>
-                    <td>${item.payment_amount}</td>
-                    <td>${item.balance_amount == 0 ? 'Paid' : 'Pending'}</td>
-                    <td></td>
-                `;
+
+                // Create table cells based on keys
+                keys.forEach(function(key) {
+                    var cell = document.createElement('td');
+                    cell.textContent = item[key];
+                    row.appendChild(cell);
+                });
+
                 tableBody.appendChild(row);
             });
         } else {
-            console.error('Data is not an array or is null/undefined.');
+            console.error('Data is not an array or is null/undefined, or the array is empty.');
         }
     } else {
-        console.error('#export-data tbody not found');
+        console.error('#export-data tbody or thead tr not found');
     }
 }
 
+
+function updateTableWithCategoryData(data) {
+    var tableHeader = document.querySelector('#export-data thead tr');
+    var tableBody = document.querySelector('#export-data tbody');
+
+    if (tableHeader && tableBody) {
+        tableHeader.innerHTML = ''; // Clear existing header
+        tableBody.innerHTML = ''; // Clear existing body
+
+        // Construct new header
+        var headers = Object.keys(data[0]);
+        headers.forEach(function(header) {
+            var th = document.createElement('th');
+            th.textContent = header;
+            tableHeader.appendChild(th);
+        });
+
+        // Construct body with category data
+        data.forEach(function(item) {
+            var row = document.createElement('tr');
+            headers.forEach(function(header) {
+                var td = document.createElement('td');
+                td.textContent = item[header];
+                row.appendChild(td);
+            });
+            tableBody.appendChild(row);
+        });
+    } else {
+        console.error('#export-data thead tr or tbody not found');
+    }
+}
 
 
 
@@ -393,7 +444,7 @@ var allCheckbox = document.querySelector('input[name="all"]');
 var completedCheckbox = document.querySelector('input[name="completed"]');
 var pharmacyCheckbox = document.querySelector('input[name="pharmacy"]');
 var medicalCheckbox = document.querySelector('input[name="medical"]');
-var agencyCheckbox = document.querySelector('input[name="agency"]');
+var retailerCheckbox = document.querySelector('input[name="retailer"]');
 
 allCheckbox.addEventListener("click", function() {
     if (completedCheckbox.checked) {
@@ -405,8 +456,8 @@ allCheckbox.addEventListener("click", function() {
     if (medicalCheckbox.checked) {
         medicalCheckbox.checked = false;
     }
-    if (agencyCheckbox.checked) {
-        agencyCheckbox.checked = false;
+    if (retailerCheckbox.checked) {
+        retailerCheckbox.checked = false;
     }
 });
 
@@ -420,8 +471,8 @@ completedCheckbox.addEventListener("click", function() {
     if (medicalCheckbox.checked) {
         medicalCheckbox.checked = false;
     }
-    if (agencyCheckbox.checked) {
-        agencyCheckbox.checked = false;
+    if (retailerCheckbox.checked) {
+        retailerCheckbox.checked = false;
     }
 });
 
@@ -435,8 +486,8 @@ pharmacyCheckbox.addEventListener("click", function() {
     if (medicalCheckbox.checked) {
         medicalCheckbox.checked = false;
     }
-    if (agencyCheckbox.checked) {
-        agencyCheckbox.checked = false;
+    if (retailerCheckbox.checked) {
+        retailerCheckbox.checked = false;
     }
 });
 
@@ -450,12 +501,12 @@ medicalCheckbox.addEventListener("click", function() {
     if (pharmacyCheckbox.checked) {
         pharmacyCheckbox.checked = false;
     }
-    if (agencyCheckbox.checked) {
-        agencyCheckbox.checked = false;
+    if (retailerCheckbox.checked) {
+        retailerCheckbox.checked = false;
     }
 });
 
-agencyCheckbox.addEventListener("click", function() {
+retailerCheckbox.addEventListener("click", function() {
     if (allCheckbox.checked) {
         allCheckbox.checked = false;
     }

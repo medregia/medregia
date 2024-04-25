@@ -717,6 +717,7 @@ def import_view(request):
         not_paid = request.POST.get('all',False)
         # Split category string into a list
         category_list = category.split(',')
+
         
         try:
             if completed == 'true':
@@ -725,6 +726,9 @@ def import_view(request):
             elif not_paid == 'true':
                 not_paid_datas = list(Invoice.objects.filter(Q(user=request.user) &~Q(balance_amount=0.00) &(~Q(balance_amount=F('invoice_amount')) |Q(payment_amount=0))).order_by('-id').values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                 return JsonResponse({"not_paid_data": not_paid_datas})
+            elif category:
+                users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
+                return JsonResponse({"category_list": users_with_category})
             else:
                 previous_data = list(Invoice.objects.filter(user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                 return JsonResponse({"previous_data": previous_data})
@@ -732,12 +736,7 @@ def import_view(request):
             print("Error in Completed : ",e)
             
         
-        if category_list:
-            users_with_category = CustomUser.objects.filter(store_type__in=category_list)
-            # Iterate over each user in the queryset to access their username
-            for user in users_with_category:
-                medical_data = user 
-                print("medical data : ",medical_data)
+        
         
     overall_medicals = CustomUser.objects.filter(store_type='medical').select_related('person')
 
