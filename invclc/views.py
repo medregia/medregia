@@ -718,22 +718,38 @@ def import_view(request):
         # Split category string into a list
         category_list = category.split(',')
 
-        
-        try:
-            if completed == 'true':
-                completed_data = list(Invoice.objects.filter(balance_amount=0, user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
-                return JsonResponse({"completed_data": completed_data})
-            elif not_paid == 'true':
-                not_paid_datas = list(Invoice.objects.filter(Q(user=request.user) &~Q(balance_amount=0.00) &(~Q(balance_amount=F('invoice_amount')) |Q(payment_amount=0))).order_by('-id').values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
-                return JsonResponse({"not_paid_data": not_paid_datas})
-            elif category:
-                users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
-                return JsonResponse({"category_list": users_with_category})
-            else:
-                previous_data = list(Invoice.objects.filter(user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
-                return JsonResponse({"previous_data": previous_data})
-        except Exception as e:
-            print("Error in Completed : ",e)
+        if str(request.user) == check_user:
+            try:
+                if completed == 'true':
+                    completed_data = list(Invoice.objects.filter(balance_amount=0, user=collaborator_admin).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"completed_data": completed_data})
+                elif not_paid == 'true':
+                    not_paid_datas = list(Invoice.objects.filter(Q(user=collaborator_admin) &~Q(balance_amount=0.00) &(~Q(balance_amount=F('invoice_amount')) |Q(payment_amount=0))).order_by('-id').values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"not_paid_data": not_paid_datas})
+                elif category:
+                    users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
+                    return JsonResponse({"category_list": users_with_category})
+                else:
+                    previous_data = list(Invoice.objects.filter(user=collaborator_admin).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"previous_data": previous_data})
+            except Exception as e:
+                print("Error in Completed : ",e)
+        else:
+            try:
+                if completed == 'true':
+                    completed_data = list(Invoice.objects.filter(balance_amount=0, user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"completed_data": completed_data})
+                elif not_paid == 'true':
+                    not_paid_datas = list(Invoice.objects.filter(Q(user=request.user) &~Q(balance_amount=0.00) &(~Q(balance_amount=F('invoice_amount')) |Q(payment_amount=0))).order_by('-id').values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"not_paid_data": not_paid_datas})
+                elif category:
+                    users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
+                    return JsonResponse({"category_list": users_with_category})
+                else:
+                    previous_data = list(Invoice.objects.filter(user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"previous_data": previous_data})
+            except Exception as e:
+                print("Error in Completed : ",e)
             
         
         
