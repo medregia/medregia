@@ -717,18 +717,13 @@ def import_view(request):
         not_paid = request.POST.get('all',False)
         # Split category string into a list
         category_list = category.split(',')
-        print("completed:",completed)
-        print("category:",category_list)
-        print("others:",others)
-        print("Not Paid : ",not_paid)
         
         try:
             if completed == 'true':
                 completed_data = list(Invoice.objects.filter(balance_amount=0, user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                 return JsonResponse({"completed_data": completed_data})
             elif not_paid == 'true':
-                not_paid_datas = list(Invoice.objects.filter(Q(user=request.user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
-                print(not_paid_datas)
+                not_paid_datas = list(Invoice.objects.filter(Q(user=request.user) &~Q(balance_amount=0.00) &(~Q(balance_amount=F('invoice_amount')) |Q(payment_amount=0))).order_by('-id').values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                 return JsonResponse({"not_paid_data": not_paid_datas})
             else:
                 previous_data = list(Invoice.objects.filter(user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))

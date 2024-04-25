@@ -223,13 +223,11 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json()) // Parse response as JSON
         .then(data => {
-            console.log("Data : ",data)
             if (data.completed_data){
                 updateTableWithData(data.completed_data); // Call updateTableWithData with JSON data
                 // console.log(data.completed_data)
             }
             else if (data.not_paid_data){
-                console.log("not_paid_data : ",data.not_paid_data);
                 updateTableWithData(data.not_paid_data)
             }
             else{
@@ -388,4 +386,86 @@ document.getElementById("uploadBtn").addEventListener("click", function() {
         uploadMsg.textContent = error;
         uploadMsg.style.color = "red";
     });
+});
+
+
+var allCheckbox = document.querySelector('input[name="all"]');
+var completedCheckbox = document.querySelector('input[name="completed"]');
+var pharmacyCheckbox = document.querySelector('input[name="pharmacy"]');
+var medicalCheckbox = document.querySelector('input[name="medical"]');
+var agencyCheckbox = document.querySelector('input[name="agency"]');
+
+allCheckbox.addEventListener("click", function() {
+    if (completedCheckbox.checked) {
+        completedCheckbox.checked = false;
+    }
+    if (pharmacyCheckbox.checked) {
+        pharmacyCheckbox.checked = false;
+    }
+    if (medicalCheckbox.checked) {
+        medicalCheckbox.checked = false;
+    }
+    if (agencyCheckbox.checked) {
+        agencyCheckbox.checked = false;
+    }
+});
+
+completedCheckbox.addEventListener("click", function() {
+    if (allCheckbox.checked) {
+        allCheckbox.checked = false;
+    }
+    if (pharmacyCheckbox.checked) {
+        pharmacyCheckbox.checked = false;
+    }
+    if (medicalCheckbox.checked) {
+        medicalCheckbox.checked = false;
+    }
+    if (agencyCheckbox.checked) {
+        agencyCheckbox.checked = false;
+    }
+});
+
+pharmacyCheckbox.addEventListener("click", function() {
+    if (allCheckbox.checked) {
+        allCheckbox.checked = false;
+    }
+    if (completedCheckbox.checked) {
+        completedCheckbox.checked = false;
+    }
+    if (medicalCheckbox.checked) {
+        medicalCheckbox.checked = false;
+    }
+    if (agencyCheckbox.checked) {
+        agencyCheckbox.checked = false;
+    }
+});
+
+medicalCheckbox.addEventListener("click", function() {
+    if (allCheckbox.checked) {
+        allCheckbox.checked = false;
+    }
+    if (completedCheckbox.checked) {
+        completedCheckbox.checked = false;
+    }
+    if (pharmacyCheckbox.checked) {
+        pharmacyCheckbox.checked = false;
+    }
+    if (agencyCheckbox.checked) {
+        agencyCheckbox.checked = false;
+    }
+});
+
+agencyCheckbox.addEventListener("click", function() {
+    if (allCheckbox.checked) {
+        allCheckbox.checked = false;
+    }
+    if (completedCheckbox.checked) {
+        completedCheckbox.checked = false;
+    }
+    if (pharmacyCheckbox.checked) {
+        pharmacyCheckbox.checked = false;
+    }
+    if (medicalCheckbox.checked) {
+        medicalCheckbox.checked = false;
+    }
 });
