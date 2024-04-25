@@ -97,32 +97,32 @@ class Person(models.Model):
         if self.DrugLiceneseNumber1:
             # Check if there is any other Person object with the same DrugLiceneseNumber1
             if Person.objects.exclude(pk=self.pk).filter(DrugLiceneseNumber1=self.DrugLiceneseNumber1).exists():
-                raise ValidationError({'DrugLiceneseNumber1': 'This value must be unique.'})
+                raise ValidationError({'DrugLiceneseNumber1': 'DrugLiceneseNumber1 has already recorded'})
 
         if self.ProprietaryName:
             # Check if there is any other Person object with the same ProprietaryName
             if Person.objects.exclude(pk=self.pk).filter(ProprietaryName=self.ProprietaryName).exists():
-                raise ValidationError({'ProprietaryName': 'This value must be unique.'})
+                raise ValidationError({'ProprietaryName': 'ProprietaryName has already recorded'})
             
         if self.ProprietaryNumber:
             # Check if there is any other Person object with the same ProprietaryName
             if Person.objects.exclude(pk=self.pk).filter(ProprietaryNumber=self.ProprietaryNumber).exists():
-                raise ValidationError({'ProprietaryNumber': 'This value must be unique.'})
+                raise ValidationError({'ProprietaryNumber': 'ProprietaryNumber has already recorded'})
             
         if self.ProprietaryContact:
             # Check if there is any other Person object with the same ProprietaryName
             if Person.objects.exclude(pk=self.pk).filter(ProprietaryContact=self.ProprietaryContact).exists():
-                raise ValidationError({'ProprietaryContact': 'This value must be unique.'})
+                raise ValidationError({'ProprietaryContact': 'ProprietaryContact has already recorded'})
             
         if self.DrugLiceneseNumber2:
             # Check if there is any other Person object with the same ProprietaryName
             if Person.objects.exclude(pk=self.pk).filter(DrugLiceneseNumber2=self.DrugLiceneseNumber2).exists():
-                raise ValidationError({'DrugLiceneseNumber2': 'This value must be unique.'})
+                raise ValidationError({'DrugLiceneseNumber2': 'DrugLiceneseNumber2 has already recorded'})
             
         if self.RegisteredNumber:
             # Check if there is any other Person object with the same ProprietaryName
             if Person.objects.exclude(pk=self.pk).filter(RegisteredNumber=self.RegisteredNumber).exists():
-                raise ValidationError({'RegisteredNumber': 'This value must be unique.'})
+                raise ValidationError({'RegisteredNumber': 'RegisteredNumber has already recorded'})
     
 class Notification(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_notifications', on_delete=models.CASCADE)

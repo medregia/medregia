@@ -4,6 +4,12 @@ body{
   box-sizing: border-box;
 }
 
+.imp_exp_container{
+  height: 100vh;
+  width: 96%;
+  margin-left: 50px;
+}
+
 .tab {
   width: 100%;
   overflow: hidden;
