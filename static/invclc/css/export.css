@@ -234,6 +234,10 @@ form{
   background-color:#ffffff;
 }
 
+span.sidePanelErrors{
+  background-color:red;
+  color:#FFF;
+}
 
 @media print{
   body{

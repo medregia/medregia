@@ -152,6 +152,7 @@
             <form action="#" method="post">
                 {% csrf_token %}
                 <div class="export2-box1">
+                    <span class="sidePanelErrors"></span>
                     <div class="check-list">
                         <input type="checkbox" name="completed">
                         <label>completed</label>
@@ -184,8 +185,9 @@
                         <div class="other">
                             <!-- <input type="checkbox" name="others"> -->
                             <label>Others :</label>
-                            <input type="text" style="height: 26px; width: 200px; background-color: #ebe2e2;">
+                            <input type="text" style="height: 26px; width: 200px; background-color: #ebe2e2;" placeholder = "eg : User" name="others">
                         </div>
+                        
 
                     </div>
 
@@ -196,13 +198,11 @@
                                 <th>Select</th>
                                 <th>Medical List</th>
                             </tr>
-                            {% for medical in medicals %}
-                            {% if medical != '' %}
+                            {% for overall_datas in overall_data %}
                             <tr>
                                 <td><input type="checkbox" class="checkbox"></td>
-                                <td>{{ medical }}</td>
+                                <td>{{ overall_datas.pharmacy_name }}</td>
                             </tr>
-                            {% endif %}
                             {% endfor %}
                         </table>
                     </div>

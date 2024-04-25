@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to fetch filtered data
     function fetchData(completed, category, others,all) {
         var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-
+        const spanErrors = document.querySelector('span.sidePanelErrors')
         fetch('/import-export/', {
             method: 'POST',
             headers: {
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json()) // Parse response as JSON
         .then(data => {
-            console.log(data)
+            // console.log(data)
             if (data.completed_data){
                 updateTableWithData(data.completed_data); // Call updateTableWithData with JSON data
                 // console.log(data.completed_data)
@@ -232,17 +232,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateTableWithData(data.not_paid_data)
             }
             else if (data.category_list){
-                updateTableWithCategoryData(data.category_list)
-                console.log(data.category_list)
+                updateTableWithCategoryData(data.category_list);
+                // console.log(data.category_list)
+            }
+            else if (data.otherStores){
+                updateTableWithOthersData(data.otherStores);
             }
             else{
                 updateTableWithData(data.previous_data);
                 // console.log(data.previous_data)
             }
-
+            spanErrors.innerHTML = "";
         })
         .catch(error => {
-            console.warn('Error:', error);
+            if (error){
+                spanErrors.innerHTML = "No Such Data Found ..";
+                // console.warn('Error:', error);
+            }
         });
     }
 
@@ -254,7 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
             var pharmacy = document.querySelector('.export2-box2 input[name="pharmacy"]').checked;
             var medical = document.querySelector('.export2-box2 input[name="medical"]').checked;
             var retailer = document.querySelector('.export2-box2 input[name="retailer"]').checked;
-            var others = document.querySelector('.export2-box2 input[name="others"]');
 
             // Construct category based on selected checkboxes
             var category = [];
@@ -263,20 +268,25 @@ document.addEventListener('DOMContentLoaded', function() {
             if (retailer) category.push('retailer');
 
             // If Others checkbox is checked, add its value to category
-            if (others) {
-                var otherValue = document.querySelector('.export2-box2 input[name="other_value"]').value;
-                if (otherValue.trim() !== '') {
-                    category.push(otherValue.trim());
-                }
-            }
+
 
             // Join category array into a comma-separated string
             var categoryString = category.join(',');
 
             // Fetch filtered data
-            fetchData(completed, categoryString, others,all);
+            fetchData(completed, categoryString,'',all);
         });
     });
+
+    var otherDetails = document.querySelector('.export2-box2 input[name="others"]');
+    if (otherDetails) {
+        otherDetails.addEventListener("input", function() {
+            var otherDetail = otherDetails.value.trim();
+            if (otherDetail !== '') {
+                fetchData(false, '', otherDetail, false); // Assuming "completed", "category", and "all" should not be sent when changing the "others" input
+            }
+        });
+    }
 });
 
 
@@ -355,6 +365,36 @@ function updateTableWithCategoryData(data) {
     }
 }
 
+function updateTableWithOthersData(data){
+    var otherHeader = document.querySelector('#export-data thead tr');
+    var otherBody = document.querySelector('#export-data tbody');
+
+    if (otherHeader && otherBody) {
+        otherHeader.innerHTML = ''; // Clear existing header
+        otherBody.innerHTML = ''; // Clear existing body
+
+        // Construct new header
+        var headers = Object.keys(data[0]);
+        headers.forEach(function(header) {
+            var th = document.createElement('th');
+            th.textContent = header;
+            otherHeader.appendChild(th);
+        });
+
+        // Construct body with category data
+        data.forEach(function(item) {
+            var row = document.createElement('tr');
+            headers.forEach(function(header) {
+                var td = document.createElement('td');
+                td.textContent = item[header];
+                row.appendChild(td);
+            });
+            otherBody.appendChild(row);
+        });
+    } else {
+        console.error('#export-data thead tr or tbody not found');
+    }
+}
 
 
 function displayCSV(file) {

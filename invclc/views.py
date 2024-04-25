@@ -691,6 +691,7 @@ def import_view(request):
             unique_id = user.UniqueId
             
             data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
+            overall_data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
         except Exception as a:
             return messages.error(request,"Something Wrong Please Check",a)    
     else:        
@@ -702,6 +703,7 @@ def import_view(request):
             unique_id = user.UniqueId
             
             data = Invoice.objects.filter(user=request.user).order_by('id')
+            overall_data = Invoice.objects.filter(user=request.user).order_by('-id')
         except CustomUser.DoesNotExist:
             return messages.error(request, "CustomUser does not exist")
         except Person.DoesNotExist:
@@ -715,8 +717,6 @@ def import_view(request):
         category = request.POST.get('category', '')
         others = request.POST.get('others', False)
         not_paid = request.POST.get('all',False)
-        # Split category string into a list
-        category_list = category.split(',')
 
         if str(request.user) == check_user:
             try:
@@ -729,11 +729,15 @@ def import_view(request):
                 elif category:
                     users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
                     return JsonResponse({"category_list": users_with_category})
+                elif others and len(others) > 1:
+                    otherStores = list(CustomUser.objects.filter(store_type__iexact=others).values('username', 'phone_num', 'email', 'store_type'))
+                    return JsonResponse({"otherStores": otherStores})                
                 else:
                     previous_data = list(Invoice.objects.filter(user=collaborator_admin).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                     return JsonResponse({"previous_data": previous_data})
+                
             except Exception as e:
-                print("Error in Completed : ",e)
+                return messages.error(request,"Something Wrong Try Again: ",e)
         else:
             try:
                 if completed == 'true':
@@ -745,16 +749,16 @@ def import_view(request):
                 elif category:
                     users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
                     return JsonResponse({"category_list": users_with_category})
+                elif others and len(others) > 1:
+                    otherStores = list(CustomUser.objects.filter(store_type__iexact=others).values('username', 'phone_num', 'email', 'store_type'))
+                    return JsonResponse({"otherStores": otherStores}) 
                 else:
                     previous_data = list(Invoice.objects.filter(user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                     return JsonResponse({"previous_data": previous_data})
             except Exception as e:
-                print("Error in Completed : ",e)
+                return messages.error(request,"Something Wrong Try Again: ",e)
+
             
-        
-        
-        
-    overall_medicals = CustomUser.objects.filter(store_type='medical').select_related('person')
 
     # medicals = []  # Initialize an empty list to store medical shop names
 
@@ -779,6 +783,7 @@ def import_view(request):
         'user': user_name,
         'unique_id': unique_id,
         'form':upload_csv_file,
+        'overall_data':overall_data,
     }
     return render(request, 'invclc/import-export.html', context)
 
