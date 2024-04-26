@@ -19,7 +19,7 @@
 {% endblock navbar %}
 
 {% block sidebar %}
-  {% include 'sidebar.html' %}
+{% include 'sidebar.html' %}
 {% endblock sidebar %}
 
 {% block content %}
@@ -91,22 +91,22 @@
                         {% endif %}
                     </div>
 
-                <div class="export-content">
-                    <table id="export-data">
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox"></th>
-                                <th>INVOICE No.</th>
-                                <th>Invoice Amount</th>
-                                <th>Upload by</th>
-                                <th>Upload on</th>
-                                <th>Payment</th>
-                                <th>Status</th>
-                                <th>Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody> 
-                            {% for data in datas %}
+                    <div class="export-content">
+                        <table id="export-data">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox"></th>
+                                    <th>INVOICE No.</th>
+                                    <th>Invoice Amount</th>
+                                    <th>Upload by</th>
+                                    <th>Upload on</th>
+                                    <th>Payment</th>
+                                    <th>Status</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in datas %}
                                 <tr>
                                     <td><input type="checkbox" id="check_{{ forloop.counter }}"></td>
                                     <td>{{ data.invoice_number }}</td>
@@ -115,48 +115,51 @@
                                     <td>{{ data.today_date }}</td>
                                     <td>{{ data.payment_amount }}</td>
                                     {% if data.balance_amount == 0 %}
-                                        <td>Paid</td>
+                                    <td>Paid</td>
                                     {% else %}
-                                        <td>Pending</td>
+                                    <td>Pending</td>
                                     {% endif %}
                                     <td></td>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="print_less_page">
+                    <form>
+                        <div class="box-print1">
+                            <div class="btn csv">
+                                <a href="{% url 'exports_to_csv' %}" class="export-link"
+                                    target="_blank"><button>CSV</button></a>
+                            </div>
+                            <div class="btn xlsx">
+                                <a href="{% url 'exports_to_xlsx' %}" class="export-link"
+                                    target="_blank"><button>XLSX</button></a>
+                            </div>
+                            <div class="btn mysql">
+                                <a href="{% url 'exports_to_json' %}" class="export-link"
+                                    target="_blank"><button>JSON</button></a>
+                            </div>
+                            <div class="btn">
+                                <button type="button" onclick="window.print()">Print / PDF</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <div class="print_less_page">
-                <form>
-                    <div class="box-print1">
-                        <div class="btn csv">
-                            <a href="{% url 'exports_to_csv' %}" class="export-link"
-                                target="_blank"><button>CSV</button></a>
-                        </div>
-                        <div class="btn xlsx">
-                            <a href="{% url 'exports_to_xlsx' %}" class="export-link"
-                                target="_blank"><button>XLSX</button></a>
-                        </div>
-                        <div class="btn mysql">
-                            <a href="{% url 'exports_to_json' %}" class="export-link"
-                                target="_blank"><button>JSON</button></a>
-                        </div>
-                        <div class="btn">
-                            <button type="button" onclick="window.print()">Print / PDF</button>
-                        </div>
+            <div class="export2">
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <div class="error">
+                        <span class="sidePanelErrors"></span>
                     </div>
-                </form>
-            </div>
-        </div>
-        <div class="export2">
-            <form action="#" method="post">
-                {% csrf_token %}
-                <div class="export2-box1">
-                    <span class="sidePanelErrors"></span>
-                    <div class="check-list">
-                        <input type="checkbox" name="completed">
-                        <label>completed</label>
-                    </div>
+                    <div class="export2-box1">
+                        <!-- <span class="sidePanelErrors"></span> -->
+                        <div class="check-list">
+                            <input type="checkbox" name="completed">
+                            <label>completed</label>
+                        </div>
 
                         <div class="check-list">
                             <input type="checkbox" name="all">
@@ -165,7 +168,7 @@
                     </div>
 
                     <div class="export2-box2">
-                        <h3>Category Based</h3>
+                        <h3>Category Based :</h3>
                         <div class="export2-box2-content">
                             <div>
                                 <input type="checkbox" name="pharmacy">
@@ -185,26 +188,30 @@
                         <div class="other">
                             <!-- <input type="checkbox" name="others"> -->
                             <label>Others :</label>
-                            <input type="text" style="height: 26px; width: 200px; background-color: #ebe2e2;" placeholder = "eg : User" name="others">
+                            <input type="text"
+                                style="height: 26px; width: 200px; background-color: #FFF;border-radius: 5px;"
+                                placeholder="eg : User" name="others">
                         </div>
-                        
+
 
                     </div>
 
 
                     <div class="export2-box3">
-                        <table id="checkboxTable">
-                            <tr>
-                                <th>Select</th>
-                                <th>Medical List</th>
-                            </tr>
-                            {% for overall_datas in overall_data %}
-                            <tr>
-                                <td><input type="checkbox" class="checkbox"></td>
-                                <td>{{ overall_datas.pharmacy_name }}</td>
-                            </tr>
-                            {% endfor %}
-                        </table>
+                        <div class="export2-box3_table">
+                            <table id="checkboxTable">
+                                <tr>
+                                    <th>Select</th>
+                                    <th>Medical List</th>
+                                </tr>
+                                {% for overall_datas in overall_data %}
+                                <tr>
+                                    <td><input type="checkbox" class="checkbox"></td>
+                                    <td>{{ overall_datas.pharmacy_name }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -342,5 +349,5 @@
 
 
 <script src="{% static 'invclc/js/import-export.js' %}"></script>
-<script src="{% static 'authentication/js/import_sidebar.js' %}"></script>  
+<script src="{% static 'authentication/js/import_sidebar.js' %}"></script>
 {% endblock content %}

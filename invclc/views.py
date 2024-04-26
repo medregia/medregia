@@ -730,8 +730,13 @@ def import_view(request):
                     users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
                     return JsonResponse({"category_list": users_with_category})
                 elif others and len(others) > 1:
-                    otherStores = list(CustomUser.objects.filter(store_type__iexact=others).values('username', 'phone_num', 'email', 'store_type'))
-                    return JsonResponse({"otherStores": otherStores})                
+                    otherStores = list(CustomUser.objects.filter(store_type__icontains=others).values('username', 'phone_num', 'email', 'store_type'))
+                    if not otherStores:
+                        otherStoreType = CustomUser.objects.filter(other_value__icontains=others).exists()
+                        if otherStoreType:
+                            storeTypeList = list(CustomUser.objects.filter(other_value__icontains=others).values('username', 'phone_num', 'email', 'other_value'))
+                            return JsonResponse({"storeTypeList": storeTypeList})
+                    return JsonResponse({"otherStores": otherStores}) 
                 else:
                     previous_data = list(Invoice.objects.filter(user=collaborator_admin).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                     return JsonResponse({"previous_data": previous_data})
@@ -750,7 +755,12 @@ def import_view(request):
                     users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
                     return JsonResponse({"category_list": users_with_category})
                 elif others and len(others) > 1:
-                    otherStores = list(CustomUser.objects.filter(store_type__iexact=others).values('username', 'phone_num', 'email', 'store_type'))
+                    otherStores = list(CustomUser.objects.filter(store_type__icontains=others).values('username', 'phone_num', 'email', 'store_type'))
+                    if not otherStores:
+                        otherStoreType = CustomUser.objects.filter(other_value__iexact=others).exists()
+                        if otherStoreType:
+                            storeTypeList = list(CustomUser.objects.filter(other_value__iexact=others).values('username', 'phone_num', 'email', 'other_value'))
+                            return JsonResponse({"storeTypeList": storeTypeList})
                     return JsonResponse({"otherStores": otherStores}) 
                 else:
                     previous_data = list(Invoice.objects.filter(user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))

@@ -11,51 +11,6 @@ body{
 
 }
 
-/* .panel-container{
-  min-height:20vh;
-  width:100%;
-  font-family: 'Times New Roman';
-  /* background-color:red; *
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
- 
-.panel-container .box2{
-  height:18vh;
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background-color:rgba(223, 223, 223, 0.3);
-  column-gap:10px;
-  border-radius:3px;
-} */
-
-/* .panel-container .box2 .btn{
-  height:65px;
-  width:31%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  /* background-color:#FFFF; *
-} */
-
-/* .panel-container .box2 .btn button{
-  height:60px;
-  width:200px;
-  border:none;
-  box-shadow:0px 0px 10px 0px black;
-  cursor:pointer;
-  border-radius:3px;  
-  font-size:18px;
-  background-color:pink;
-} */
-
-/* .panel-container .box2 .btn button:active{
-  box-shadow:0px 0px 20px 0px black;
-} */
-
 .lastbox .lastbox-content{
   /* height:20vh; */
   width:100%;
@@ -64,12 +19,7 @@ body{
   align-items:center;
   /* background-color:blue; */
 }
-/* table#table1{
-  width:100%;
-  justify-content:center;
-  align-items:center;
-  margin-left: 35%;
-} */
+
 .lastbox .lastbox-content .lastbox-center{
   height:18vh;
   width:50%;
@@ -142,16 +92,7 @@ body{
   margin-top: 8px;
   
 }
-/* #Upload button{
-  height: 35px;
-  width: 80px;
-  background-color: blue;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-} */
+
 .panel-container {
   height: 15vh;
   width: 100%;
