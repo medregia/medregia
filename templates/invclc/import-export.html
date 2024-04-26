@@ -149,71 +149,74 @@
                 </div>
             </div>
             <div class="export2">
-                <form action="#" method="post">
-                    {% csrf_token %}
-                    <div class="error">
+                <div class="export-overall">
+                    <div class="export-error">
                         <span class="sidePanelErrors"></span>
                     </div>
-                    <div class="export2-box1">
-                        <!-- <span class="sidePanelErrors"></span> -->
-                        <div class="check-list">
-                            <input type="checkbox" name="completed">
-                            <label>completed</label>
-                        </div>
+                
+                    <form action="#" method="post">
+                        {% csrf_token %}
 
-                        <div class="check-list">
-                            <input type="checkbox" name="all">
-                            <label>All (Not paid/Not Completed)</label>
-                        </div>
-                    </div>
-
-                    <div class="export2-box2">
-                        <h3>Category Based :</h3>
-                        <div class="export2-box2-content">
-                            <div>
-                                <input type="checkbox" name="pharmacy">
-                                <label>Pharmacy</label>
+                        <div class="export2-box1">
+                            <!-- <span class="sidePanelErrors"></span> -->
+                            <h3>Payment Based</h3>
+                            <div class="check-list">
+                                <input type="checkbox" name="completed">
+                                <label>completed</label>
                             </div>
 
-                            <div>
-                                <input type="checkbox" name="medical">
-                                <label>Medical</label>
-                            </div>
-
-                            <div>
-                                <input type="checkbox" name="retailer">
-                                <label>Retailer</label>
+                            <div class="check-list">
+                                <input type="checkbox" name="all">
+                                <label>All (Not paid/Not Completed)</label>
                             </div>
                         </div>
-                        <div class="other">
-                            <!-- <input type="checkbox" name="others"> -->
-                            <label>Others :</label>
-                            <input type="text"
-                                style="height: 26px; width: 200px; background-color: #FFF;border-radius: 5px;"
-                                placeholder="eg : User" name="others">
+
+                        <div class="export2-box2">
+                            <h3>Category Based :</h3>
+                            <div class="export2-box2-content">
+                                <div class="export-boxes">
+                                    <input type="checkbox" name="pharmacy">
+                                    <label>Pharmacy</label>
+                                </div>
+
+                                <div class="export-boxes">
+                                    <input type="checkbox" name="medical">
+                                    <label>Medical</label>
+                                </div>
+
+                                <div class="export-boxes">
+                                    <input type="checkbox" name="retailer">
+                                    <label>Retailer</label>
+                                </div>
+                            </div>
+                            <div class="other">
+                                <!-- <input type="checkbox" name="others"> -->
+                                <label>Others :</label>
+                                <input type="text" placeholder="eg : User" name="others">
+                            </div>
                         </div>
 
 
-                    </div>
-
-
-                    <div class="export2-box3">
-                        <div class="export2-box3_table">
-                            <table id="checkboxTable">
-                                <tr>
-                                    <th>Select</th>
-                                    <th>Medical List</th>
-                                </tr>
-                                {% for overall_datas in overall_data %}
-                                <tr>
-                                    <td><input type="checkbox" class="checkbox"></td>
-                                    <td>{{ overall_datas.pharmacy_name }}</td>
-                                </tr>
-                                {% endfor %}
-                            </table>
+                        <div class="export2-box3">
+                            <div class="export2-box3_table">
+                                <table id="checkboxTable">
+                                    <thead>
+                                        <th>Select</th>
+                                        <th>Medical List</th>
+                                    </thead>
+                                    <tbody>
+                                        {% for overall_datas in overall_data %}
+                                        <tr>
+                                            <td><input type="checkbox" class="checkbox"></td>
+                                            <td>{{ overall_datas.pharmacy_name }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
 
         </div>

@@ -223,7 +223,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json()) // Parse response as JSON
         .then(data => {
-            console.log(data)
             if (data.completed_data){
                 updateTableWithData(data.completed_data); // Call updateTableWithData with JSON data
                 // console.log(data.completed_data)
@@ -236,11 +235,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // console.log(data.category_list)
             }
             else if (data.storeTypeList){
-                console.log(data.storeTypeList)
                 updateTableWithOthersData(data.storeTypeList);
             }
             else if (data.otherStores){
-                console.log(data.otherStores)
                 updateTableWithOthersData(data.otherStores);
             }
 

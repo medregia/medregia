@@ -709,7 +709,6 @@ def import_view(request):
         except Person.DoesNotExist:
             messages.error(request, "Please Update Your Profile and try agin to import export page")
             return redirect("profile")
-
         
     user_name = request.user
     if request.method == 'POST':
@@ -757,9 +756,9 @@ def import_view(request):
                 elif others and len(others) > 1:
                     otherStores = list(CustomUser.objects.filter(store_type__icontains=others).values('username', 'phone_num', 'email', 'store_type'))
                     if not otherStores:
-                        otherStoreType = CustomUser.objects.filter(other_value__iexact=others).exists()
+                        otherStoreType = CustomUser.objects.filter(other_value__icontains=others).exists()
                         if otherStoreType:
-                            storeTypeList = list(CustomUser.objects.filter(other_value__iexact=others).values('username', 'phone_num', 'email', 'other_value'))
+                            storeTypeList = list(CustomUser.objects.filter(other_value__icontains=others).values('username', 'phone_num', 'email', 'other_value'))
                             return JsonResponse({"storeTypeList": storeTypeList})
                     return JsonResponse({"otherStores": otherStores}) 
                 else:
