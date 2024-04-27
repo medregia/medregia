@@ -6,7 +6,11 @@
 
 {% block navbar %}
     {% include 'nav.html' %} 
- {% endblock navbar %}
+{% endblock navbar %}
+
+{% block message %}
+ {% include 'invoice_message.html' %}
+{% endblock message %}
 
 {% block content %}
 <div class="create-container">

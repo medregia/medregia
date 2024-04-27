@@ -443,7 +443,12 @@ def index_view(request):
                 messages.error(request, "Please Update Your Profile")
             return redirect("index")
         else:
-            messages.error(request, "Failed to save Invoice Number Must be Unique ")
+            if 'payment_amount' in invoice_form.errors:
+                messages.error(request, "Payment Not Valid ... ")
+            if 'invoice_number' in invoice_form.errors:
+                messages.error(request, "Failed to save. Invoice number must be unique.")
+            if 'invoice_date' in invoice_form.errors:
+                messages.error(request, "Date formate DD/MM/YYYY or DD-MM-YYYY")
 
     else:
         invoice_form = InvoiceForm()
@@ -620,7 +625,7 @@ def create_view(request):
             create_form.save()
             return redirect('index')
         else:
-            messages.error(" Invoice Number Must be Unique")
+            messages.error(request,"Invoice Number Must be Unique")
     return render(request, 'invclc/create.html', {'form': form})
 
 
@@ -1071,7 +1076,7 @@ def update_invoice(request, invoice_id):
 
 
 def parse_date(date_string):
-    date_formats = ['%b. %d, %Y', '%d/%m/%Y', '%d-%m-%y', '%B %d, %Y']
+    date_formats = ['%b. %d, %Y', '%d/%m/%Y', '%d-%m-%y', '%B %d, %Y', '%b. %d, %Y']
 
     for date_format in date_formats:
         try:
@@ -1081,10 +1086,6 @@ def parse_date(date_string):
 
     raise ValueError("Date string does not match any expected format")
 
-try:
-    result = parse_date("June 10, 2024")
-except ValueError as e:
-    messages.error(" Date Formate Not Accessable")
 
     
 @login_required(login_url='/')

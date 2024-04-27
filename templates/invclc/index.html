@@ -30,6 +30,13 @@
             <a href="{% url 'create' %}"><h3>{{request.user}}</h3></a>
             {% comment %} <a href="{% url 'create' %}"><button type="button">Overall</button></a> {% endcomment %}
             <div class="header-messages">
+              {% if form.errors.invoice_number%}
+                <span class="header-error"> {{form.errors.invoice_number}}</span>
+              {% elif form.errors.payment_amount%}
+                <span class="header-error">{{form.errors.payment_amount }}</span>
+              {% elif form.errors.invoice_date%}
+                <span class="header-error">{{form.errors.invoice_date }}</span>
+              {% endif %}
 
             </div>
           </div>

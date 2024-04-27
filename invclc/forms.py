@@ -16,8 +16,31 @@ class InvoiceForm(forms.ModelForm):
 
     invoice_date = forms.DateField(
         input_formats=['%d/%m/%Y', '%d-%m-%Y'],
-        widget=forms.DateInput(format='%d/%m/%Y', attrs={'placeholder': 'DD/MM/YYYY', 'title': 'Default today Date'})
+        widget=forms.DateInput(format='%d/%m/%Y', attrs={'placeholder': 'DD/MM/YYYY'})
     )
+    
+    def clean_invoice_date(self):
+        invoice_date = self.cleaned_data.get("invoice_date")
+        if not invoice_date:
+            raise forms.ValidationError("Invoice date format is not valid.")
+        return invoice_date
+
+    def clean(self):
+        cleaned_data = super().clean()
+        invoice_amount = cleaned_data.get("invoice_amount")
+        payment_amount = cleaned_data.get("payment_amount")
+
+        if payment_amount is not None and invoice_amount is not None:
+            if payment_amount > invoice_amount:
+                raise forms.ValidationError({"payment_amount":"The payment amount not Valid."})
+        
+        return cleaned_data
+    
+    def clean_invoice_number(self):
+        invoice_number = self.cleaned_data.get("invoice_number")
+        if Invoice.objects.filter(invoice_number=invoice_number).exists():
+            raise forms.ValidationError("Invoice number must be unique.")
+        return invoice_number
 
     class Meta:
         model = Invoice
