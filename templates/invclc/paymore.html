@@ -12,6 +12,10 @@
     {% include 'nav.html' %} 
 {% endblock navbar%} 
 
+{% block message %}
+    {% include 'invoice_message.html' %}
+{% endblock message %}
+
 {% block content %}
     <div class=" paymore-container">
         <h3> Partially Paid More details</h3>

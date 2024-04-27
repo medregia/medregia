@@ -1076,7 +1076,8 @@ def update_invoice(request, invoice_id):
 
 
 def parse_date(date_string):
-    date_formats = ['%b. %d, %Y', '%d/%m/%Y', '%d-%m-%y', '%B %d, %Y', '%b. %d, %Y']
+    date_string = date_string.strip()
+    date_formats = ['%b. %d, %Y', '%d/%m/%Y', '%d-%m-%y', '%B %d, %Y']
 
     for date_format in date_formats:
         try:
@@ -1170,14 +1171,22 @@ def pay_invoice(request, invoice_id):
         data = json.loads(request.body)
         updated_payment_amount = Decimal(data.get('payment_amount', invoice.payment_amount))
 
-        # Adding the previous payment_amount and Updated payment_amount and Saved into Payment_amount
-        invoice.payment_amount = updated_payment_amount + invoice.payment_amount
+        if updated_payment_amount <= 0:
+            # Ensure payment amount is positive
+            messages.error(request,"Payment amount must be greater than zero")
+            return JsonResponse({'error': 'Payment amount must be greater than zero'}, status=422)
 
+        if invoice.payment_amount + updated_payment_amount > invoice.invoice_amount:
+            # Check if the total payment exceeds the invoice amount
+            messages.error(request,"payment Amount Not Valid..")
+            return JsonResponse({'error': 'Total payment exceeds invoice amount'}, status=409)
+
+        invoice.payment_amount += updated_payment_amount
         if invoice.payment_amount >= invoice.invoice_amount:
             invoice.payment_amount = invoice.invoice_amount
-
-        if invoice.balance_amount <= 0:
             invoice.balance_amount = 0
+        else:
+            invoice.balance_amount -= updated_payment_amount
 
         invoice.save()
         
@@ -1213,6 +1222,16 @@ def payment_invoice(request,payment_id):
         data = json.loads(request.body)
 
         pay_amount = Decimal(data.get('payment_amount', invoice.payment_amount))
+        
+        if pay_amount <= 0:
+            # Ensure payment amount is positive
+            messages.error(request,"Payment amount must be greater than zero")
+            return JsonResponse({'error': 'Payment amount must be greater than zero'}, status=422)
+
+        if invoice.payment_amount + pay_amount > invoice.invoice_amount:
+            # Check if the total payment exceeds the invoice amount
+            messages.error(request,"payment Amount Not Valid..")
+            return JsonResponse({'error': 'Total payment exceeds invoice amount'}, status=409)
         
         invoice.payment_amount = pay_amount + invoice.payment_amount
 

@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
           payment_amount: paymentField.value,
         };
 
-        fetch(`/payment_invoice/${invoiceId}/`, {
+        fetch(`/pay_invoice/${invoiceId}/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

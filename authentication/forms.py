@@ -2,11 +2,15 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
+from django.core.validators import MaxValueValidator
 
 class SignUpForm(UserCreationForm):
     username = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'placeholder':'Enter Your Username'}))
     phone_num = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'Enter your phone number'}))
-    pin = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'Enter your pin'}))
+    pin = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'placeholder': 'Enter your pin'}),
+        validators=[MaxValueValidator(9999)]
+    )
     STORE_TYPES = [
         ('', 'Select'),
         ('retailer', 'Retailer'),

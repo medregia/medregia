@@ -290,6 +290,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    const resetExport = document.querySelector(".export-reset")
+    resetExport.addEventListener("click",()=>{
+        location.reload()
+    })
 });
 
 
