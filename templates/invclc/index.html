@@ -211,6 +211,7 @@
               <table>
                 <thead>
                   <th>Pharmacy Name</th>
+                  <th>Invoice Number</th>
                   <th>Invoice Amount</th>
                   <th>Paid Date</th>
                   <th>Balance Amount</th>
@@ -223,6 +224,7 @@
                       {% for data in edit_paid %}
                       <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
                           <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
+                          <td><input type="text" value="{{data.invoice_number}}" disabled name="invoice_number"></td>
                           <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
                           <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
                           <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
@@ -242,6 +244,7 @@
                       {% for data in payment %}
                       <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
                           <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
+                          <td><input type="text" value="{{data.invoice_number}}" disabled name="invoice_number"></td>
                           <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
                           <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
                           <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
