@@ -82,7 +82,7 @@ function openpanel(evt, panels) {
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
-    tabcontent[i].style.backgroundColor="#cfc8c8";
+    tabcontent[i].style.backgroundColor="rgb(238, 243, 245";
   }
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {
@@ -95,7 +95,7 @@ function openpanel(evt, panels) {
   }
   if (evt.currentTarget.className.indexOf("active") === -1) {
     evt.currentTarget.className += " active";
-    evt.currentTarget.style.backgroundColor = "#cfc8c8";
+    evt.currentTarget.style.backgroundColor = "rgb(238, 243, 245";
   }
   else {
     evt.currentTarget.style.backgroundColor = "#fff"; 
@@ -461,4 +461,38 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
   });
+});
+document.addEventListener('DOMContentLoaded', function() {
+  var invoiceDateInput = document.getElementById('id_invoice_date');
+  invoiceDateInput.addEventListener('input', function() {
+      var formattedValue = this.value.replace(/[^\d\/]/g, ''); // Remove all characters except digits and slashes
+      if (formattedValue.length > 10) {
+          formattedValue = formattedValue.substr(0, 10); // Limit to 10 characters
+      }
+      if (formattedValue.length >= 2 && formattedValue.indexOf('/') === -1) {
+          formattedValue = formattedValue.substr(0, 2) + '/' + formattedValue.substr(2);
+      }
+      if (formattedValue.length >= 5 && formattedValue.indexOf('/', 3) === -1) {
+          formattedValue = formattedValue.substr(0, 5) + '/' + formattedValue.substr(5);
+      }
+      this.value = formattedValue;
+  });
+
+  // Handle backspace and delete key events
+  invoiceDateInput.addEventListener('keydown', function(event) {
+      if (event.key === 'Backspace' || event.key === 'Delete') {
+          var caretStart = this.selectionStart;
+          var caretEnd = this.selectionEnd;
+          var value = this.value;
+          if (caretStart === caretEnd) {
+              if (event.key === 'Backspace' && value.charAt(caretStart - 1) === '/') {
+                  this.value = value.slice(0, caretStart - 1) + value.slice(caretStart);
+                  event.preventDefault();
+              } else if (event.key === 'Delete' && value.charAt(caretStart) === '/') {
+                  this.value = value.slice(0, caretStart) + value.slice(caretStart + 1);
+                  event.preventDefault();
+              }
+          }
+      }
+    });
 });

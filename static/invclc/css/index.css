@@ -29,11 +29,11 @@ body {
   margin-left: 70px;
 }
 .main-container .main-header {
-  height: 30vh;
+  height: 22vh;
   width: 100%;
 }
 .main-container .main-header .header-top {
-  height: 10vh;
+  height: 8vh;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -112,14 +112,14 @@ body {
 }
 
 .header-bottom {
-  height: 20vh;
+  height: 14vh;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .header-bottom form {
-  height: 20vh;
+  height: 19vh;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -130,7 +130,7 @@ body {
   height: 15vh;
   width: 99%;
   border-radius: 5px;
-  box-shadow: 0px 0px 10px 0px black;
+  /* box-shadow: 0px 0px 10px 0px black; */
   border-collapse: collapse;
 }
 .header-bottom form table td,
@@ -272,14 +272,14 @@ body {
 }
 
 .tabcontent {
-  min-height: 55vh;
+  min-height: 60vh;
   width: 99%;
   display: flex;
   /* box-shadow:0px 0px 10px 0px black; */
   border-radius:5px;
   justify-content: space-evenly;
   /* align-items: center; */
-  /* margin-top: -55px; */
+  margin-top: -5px;
 }
 
 .tabcontent:active{
@@ -302,6 +302,7 @@ body {
   flex-direction: column;
   background-color: transparent;
   border-radius: 5px;
+  margin-top: 12px;
 }
 .table-cover-left{
   height:40vh;
@@ -588,7 +589,7 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 
 .delete-table th ,
 .update-table th{
-  background-color: rgb(160, 160, 160);
+  background-color:  #cfc8c8;
   position: sticky;
   top: -20px;
   text-align:center;
@@ -677,7 +678,23 @@ span.header-error{
     margin-top: -41px;
   }
 } */
+@media(max-width:1441px){
+  .header-bottom form {
+    height: 15vh;
+}
+.main-body .panel-content .tab {
+  height: 4vh;
+}
+.tabcontent {
+  margin-top: -28px;
+}
+}
 
+@media(max-width:1025px){
+  .header-bottom form {
+    height: 12vh;
+}
+}
 
 @media (max-width:1020px){
   .unique-code {

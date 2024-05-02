@@ -487,7 +487,6 @@ document.getElementById("uploadBtn").addEventListener("click", function() {
     });
 });
 
-
 var allCheckbox = document.querySelector('input[name="all"]');
 var completedCheckbox = document.querySelector('input[name="completed"]');
 var pharmacyCheckbox = document.querySelector('input[name="pharmacy"]');
@@ -567,4 +566,44 @@ retailerCheckbox.addEventListener("click", function() {
     if (medicalCheckbox.checked) {
         medicalCheckbox.checked = false;
     }
+});
+
+
+// Get all checkboxes
+const checkboxes = document.querySelectorAll('.checkbox');
+
+// Add event listener to each checkbox
+checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('click', function() {
+        if (this.checked) {
+            checkboxes.forEach(otherCheckbox => {
+                if (otherCheckbox !== this) {
+                    otherCheckbox.checked = false;
+                }
+            });
+        }
+    });
+});
+
+
+// const pharmacyCheckbox = document.getElementById('pharmacyCheckbox');
+
+
+const otherCheckboxes = document.querySelectorAll('.checkbox:not(#pharmacyCheckbox)');
+
+
+pharmacyCheckbox.addEventListener('click', function() {
+    if (this.checked) {
+        otherCheckboxes.forEach(otherCheckbox => {
+            otherCheckbox.checked = false;
+        });
+    }
+});
+
+otherCheckboxes.forEach(otherCheckbox => {
+    otherCheckbox.addEventListener('click', function() {
+        if (this.checked) {
+            pharmacyCheckbox.checked = false;
+        }
+    });
 });

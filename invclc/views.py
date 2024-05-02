@@ -287,7 +287,6 @@ def exports_to_json(request):
         response['Content-Disposition'] = f'attachment; filename="invoices_{current_user.username}.json"'
         
         return response
-
 @login_required(login_url='/')
 def index_view(request):
     current_user = request.user
@@ -378,7 +377,7 @@ def index_view(request):
     if check_user == str(request.user):
         admin_invoices = Invoice.objects.filter(user=collaborator_admin)
         full_paid = admin_invoices.filter(balance_amount=0.00).order_by('-id')
-        edit_paid = admin_invoices.filter().order_by('-id')
+        edit_paid = invoices.filter(~Q(balance_amount=F('invoice_number'))).order_by('-id')
         partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
         debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
         
@@ -456,6 +455,7 @@ def index_view(request):
 
     context = {'form':invoice_form,
                'payment':payment_details,
+               'edit_paid': edit_paid, 
                'payed_details':payed_details,
                'q':q_details,
                'search':search_details,
@@ -479,6 +479,7 @@ def index_view(request):
                #    'convert_Medical': convert_Medical,
                }
     return render(request,'invclc/index.html',context)
+
 
 def convert_Medical(shopname):
      words = shopname.split()
