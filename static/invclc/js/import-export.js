@@ -210,23 +210,48 @@ tableSelector.addEventListener("change", function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Function to fetch filtered data
-    function fetchData(completed, category, others) {
+    function fetchData(completed, category, others,all) {
         var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-
+        const spanErrors = document.querySelector('span.sidePanelErrors')
         fetch('/import-export/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrfToken
             },
-            body: 'completed=' + completed + '&category=' + category + '&others=' + others + '&csrfmiddlewaretoken=' + csrfToken
+            body: 'completed=' + completed + '&category=' + category + '&others=' + others + '&csrfmiddlewaretoken=' + csrfToken + '&all=' + all
         })
-        .then(response => response.text())
+        .then(response => response.json()) // Parse response as JSON
         .then(data => {
-            document.getElementById('export-data').innerHTML = data;
+            if (data.completed_data){
+                updateTableWithData(data.completed_data); // Call updateTableWithData with JSON data
+                // console.log(data.completed_data)
+            }
+            else if (data.not_paid_data){
+                updateTableWithData(data.not_paid_data)
+            }
+            else if (data.category_list){
+                updateTableWithCategoryData(data.category_list);
+                // console.log(data.category_list)
+            }
+            else if (data.storeTypeList){
+                updateTableWithOthersData(data.storeTypeList);
+            }
+            else if (data.otherStores){
+                updateTableWithOthersData(data.otherStores);
+            }
+
+            else{
+                updateTableWithData(data.previous_data);
+                // console.log(data.previous_data)
+            }
+            spanErrors.innerHTML = "";
         })
         .catch(error => {
-            console.error('Error:', error);
+            if (error){
+                spanErrors.innerHTML = "No Such Data Found ..";
+                // console.warn('Error:', error);
+            }
         });
     }
 
@@ -237,31 +262,147 @@ document.addEventListener('DOMContentLoaded', function() {
             var all = document.querySelector('.export2-box1 input[name="all"]').checked;
             var pharmacy = document.querySelector('.export2-box2 input[name="pharmacy"]').checked;
             var medical = document.querySelector('.export2-box2 input[name="medical"]').checked;
-            var agency = document.querySelector('.export2-box2 input[name="agency"]').checked;
-            var others = document.querySelector('.export2-box2 input[name="others"]');
+            var retailer = document.querySelector('.export2-box2 input[name="retailer"]').checked;
 
             // Construct category based on selected checkboxes
             var category = [];
             if (pharmacy) category.push('Pharmacy');
             if (medical) category.push('medical');
-            if (agency) category.push('Agency');
+            if (retailer) category.push('retailer');
 
             // If Others checkbox is checked, add its value to category
-            if (others) {
-                var otherValue = document.querySelector('.export2-box2 input[name="other_value"]').value;
-                if (otherValue.trim() !== '') {
-                    category.push(otherValue.trim());
-                }
-            }
+
 
             // Join category array into a comma-separated string
             var categoryString = category.join(',');
 
             // Fetch filtered data
-            fetchData(completed, categoryString, others);
+            fetchData(completed, categoryString,'',all);
         });
     });
+
+    var otherDetails = document.querySelector('.export2-box2 input[name="others"]');
+    if (otherDetails) {
+        otherDetails.addEventListener("input", function() {
+            var otherDetail = otherDetails.value.trim();
+            if (otherDetail !== '') {
+                fetchData(false, '', otherDetail, false); // Assuming "completed", "category", and "all" should not be sent when changing the "others" input
+            }
+        });
+    }
+
+    const resetExport = document.querySelector(".export-reset")
+    resetExport.addEventListener("click",()=>{
+        location.reload()
+    })
 });
+
+
+// Function to update table with JSON data
+function updateTableWithData(data) {
+    var tableBody = document.querySelector('#export-data tbody');
+    var tableHeader = document.querySelector('#export-data thead tr');
+
+    if (tableBody && tableHeader) {
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        if (data !== null && data !== undefined && Array.isArray(data) && data.length > 0) {
+            // Clear existing header
+            tableHeader.innerHTML = '';
+
+            // Get keys from the first item in the data
+            var keys = Object.keys(data[0]);
+
+            // Update table header
+            keys.forEach(function(key) {
+                var th = document.createElement('th');
+                th.textContent = key;
+                tableHeader.appendChild(th);
+            });
+
+            // Populate table rows
+            data.forEach(function(item) {
+                var row = document.createElement('tr');
+
+                // Create table cells based on keys
+                keys.forEach(function(key) {
+                    var cell = document.createElement('td');
+                    cell.textContent = item[key];
+                    row.appendChild(cell);
+                });
+
+                tableBody.appendChild(row);
+            });
+        } else {
+            console.error('Data is not an array or is null/undefined, or the array is empty.');
+        }
+    } else {
+        console.error('#export-data tbody or thead tr not found');
+    }
+}
+
+
+function updateTableWithCategoryData(data) {
+    var tableHeader = document.querySelector('#export-data thead tr');
+    var tableBody = document.querySelector('#export-data tbody');
+
+    if (tableHeader && tableBody) {
+        tableHeader.innerHTML = ''; // Clear existing header
+        tableBody.innerHTML = ''; // Clear existing body
+
+        // Construct new header
+        var headers = Object.keys(data[0]);
+        headers.forEach(function(header) {
+            var th = document.createElement('th');
+            th.textContent = header;
+            tableHeader.appendChild(th);
+        });
+
+        // Construct body with category data
+        data.forEach(function(item) {
+            var row = document.createElement('tr');
+            headers.forEach(function(header) {
+                var td = document.createElement('td');
+                td.textContent = item[header];
+                row.appendChild(td);
+            });
+            tableBody.appendChild(row);
+        });
+    } else {
+        console.error('#export-data thead tr or tbody not found');
+    }
+}
+
+function updateTableWithOthersData(data){
+    var otherHeader = document.querySelector('#export-data thead tr');
+    var otherBody = document.querySelector('#export-data tbody');
+
+    if (otherHeader && otherBody) {
+        otherHeader.innerHTML = ''; // Clear existing header
+        otherBody.innerHTML = ''; // Clear existing body
+
+        // Construct new header
+        var headers = Object.keys(data[0]);
+        headers.forEach(function(header) {
+            var th = document.createElement('th');
+            th.textContent = header;
+            otherHeader.appendChild(th);
+        });
+
+        // Construct body with category data
+        data.forEach(function(item) {
+            var row = document.createElement('tr');
+            headers.forEach(function(header) {
+                var td = document.createElement('td');
+                td.textContent = item[header];
+                row.appendChild(td);
+            });
+            otherBody.appendChild(row);
+        });
+    } else {
+        console.error('#export-data thead tr or tbody not found');
+    }
+}
 
 
 function displayCSV(file) {
@@ -344,4 +485,86 @@ document.getElementById("uploadBtn").addEventListener("click", function() {
         uploadMsg.textContent = error;
         uploadMsg.style.color = "red";
     });
+});
+
+
+var allCheckbox = document.querySelector('input[name="all"]');
+var completedCheckbox = document.querySelector('input[name="completed"]');
+var pharmacyCheckbox = document.querySelector('input[name="pharmacy"]');
+var medicalCheckbox = document.querySelector('input[name="medical"]');
+var retailerCheckbox = document.querySelector('input[name="retailer"]');
+
+allCheckbox.addEventListener("click", function() {
+    if (completedCheckbox.checked) {
+        completedCheckbox.checked = false;
+    }
+    if (pharmacyCheckbox.checked) {
+        pharmacyCheckbox.checked = false;
+    }
+    if (medicalCheckbox.checked) {
+        medicalCheckbox.checked = false;
+    }
+    if (retailerCheckbox.checked) {
+        retailerCheckbox.checked = false;
+    }
+});
+
+completedCheckbox.addEventListener("click", function() {
+    if (allCheckbox.checked) {
+        allCheckbox.checked = false;
+    }
+    if (pharmacyCheckbox.checked) {
+        pharmacyCheckbox.checked = false;
+    }
+    if (medicalCheckbox.checked) {
+        medicalCheckbox.checked = false;
+    }
+    if (retailerCheckbox.checked) {
+        retailerCheckbox.checked = false;
+    }
+});
+
+pharmacyCheckbox.addEventListener("click", function() {
+    if (allCheckbox.checked) {
+        allCheckbox.checked = false;
+    }
+    if (completedCheckbox.checked) {
+        completedCheckbox.checked = false;
+    }
+    if (medicalCheckbox.checked) {
+        medicalCheckbox.checked = false;
+    }
+    if (retailerCheckbox.checked) {
+        retailerCheckbox.checked = false;
+    }
+});
+
+medicalCheckbox.addEventListener("click", function() {
+    if (allCheckbox.checked) {
+        allCheckbox.checked = false;
+    }
+    if (completedCheckbox.checked) {
+        completedCheckbox.checked = false;
+    }
+    if (pharmacyCheckbox.checked) {
+        pharmacyCheckbox.checked = false;
+    }
+    if (retailerCheckbox.checked) {
+        retailerCheckbox.checked = false;
+    }
+});
+
+retailerCheckbox.addEventListener("click", function() {
+    if (allCheckbox.checked) {
+        allCheckbox.checked = false;
+    }
+    if (completedCheckbox.checked) {
+        completedCheckbox.checked = false;
+    }
+    if (pharmacyCheckbox.checked) {
+        pharmacyCheckbox.checked = false;
+    }
+    if (medicalCheckbox.checked) {
+        medicalCheckbox.checked = false;
+    }
 });

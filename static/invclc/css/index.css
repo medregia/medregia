@@ -649,6 +649,13 @@ span.loginstatus{
   list-style-type:none;
 }
 
+span.header-error{
+  height:5px;
+  width:100%;
+  color:red;
+  font-size:16px;
+}
+
 /* mediaquery */
 /* @media (min-width:1300px) and (max-width:1351px){
   .tabcontent {

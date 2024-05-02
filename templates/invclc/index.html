@@ -27,9 +27,16 @@
       <div class="main-header">
         <div class="header-top">
           <div class="header-top-btn">
-            <a href="{% url 'create' %}"><h3>{{request.user}}</h3></a>
+            <h3>{{request.user}}</h3>
             {% comment %} <a href="{% url 'create' %}"><button type="button">Overall</button></a> {% endcomment %}
             <div class="header-messages">
+              {% if form.errors.invoice_number%}
+                <span class="header-error"> {{form.errors.invoice_number}}</span>
+              {% elif form.errors.payment_amount%}
+                <span class="header-error">{{form.errors.payment_amount }}</span>
+              {% elif form.errors.invoice_date%}
+                <span class="header-error">{{form.errors.invoice_date }}</span>
+              {% endif %}
 
             </div>
           </div>

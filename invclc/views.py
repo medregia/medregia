@@ -443,7 +443,12 @@ def index_view(request):
                 messages.error(request, "Please Update Your Profile")
             return redirect("index")
         else:
-            messages.error(request, "Failed to save Invoice Number Must be Unique ")
+            if 'payment_amount' in invoice_form.errors:
+                messages.error(request, "Payment Not Valid ... ")
+            if 'invoice_number' in invoice_form.errors:
+                messages.error(request, "Failed to save. Invoice number must be unique.")
+            if 'invoice_date' in invoice_form.errors:
+                messages.error(request, "Date formate DD/MM/YYYY or DD-MM-YYYY")
 
     else:
         invoice_form = InvoiceForm()
@@ -620,7 +625,7 @@ def create_view(request):
             create_form.save()
             return redirect('index')
         else:
-            messages.error(" Invoice Number Must be Unique")
+            messages.error(request,"Invoice Number Must be Unique")
     return render(request, 'invclc/create.html', {'form': form})
 
 
@@ -651,6 +656,7 @@ def import_view(request):
     unique_id = None
     collaborator_admin = None
     completed_data = None
+    previous_data = None
     
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
@@ -690,6 +696,7 @@ def import_view(request):
             unique_id = user.UniqueId
             
             data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
+            overall_data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
         except Exception as a:
             return messages.error(request,"Something Wrong Please Check",a)    
     else:        
@@ -701,37 +708,71 @@ def import_view(request):
             unique_id = user.UniqueId
             
             data = Invoice.objects.filter(user=request.user).order_by('id')
+            overall_data = Invoice.objects.filter(user=request.user).order_by('-id')
         except CustomUser.DoesNotExist:
             return messages.error(request, "CustomUser does not exist")
         except Person.DoesNotExist:
             messages.error(request, "Please Update Your Profile and try agin to import export page")
             return redirect("profile")
-
         
     user_name = request.user
     if request.method == 'POST':
         completed = request.POST.get('completed', False)
         category = request.POST.get('category', '')
         others = request.POST.get('others', False)
-        # Split category string into a list
-        category_list = category.split(',')
-        print("completed:",completed)
-        print("category:",category_list)
-        print("others:",others)
+        not_paid = request.POST.get('all',False)
+
+        if str(request.user) == check_user:
+            try:
+                if completed == 'true':
+                    completed_data = list(Invoice.objects.filter(balance_amount=0, user=collaborator_admin).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"completed_data": completed_data})
+                elif not_paid == 'true':
+                    not_paid_datas = list(Invoice.objects.filter(Q(user=collaborator_admin) &~Q(balance_amount=0.00) &(~Q(balance_amount=F('invoice_amount')) |Q(payment_amount=0))).order_by('-id').values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"not_paid_data": not_paid_datas})
+                elif category:
+                    users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
+                    return JsonResponse({"category_list": users_with_category})
+                elif others and len(others) > 1:
+                    otherStores = list(CustomUser.objects.filter(store_type__icontains=others).values('username', 'phone_num', 'email', 'store_type'))
+                    if not otherStores:
+                        otherStoreType = CustomUser.objects.filter(other_value__icontains=others).exists()
+                        if otherStoreType:
+                            storeTypeList = list(CustomUser.objects.filter(other_value__icontains=others).values('username', 'phone_num', 'email', 'other_value'))
+                            return JsonResponse({"storeTypeList": storeTypeList})
+                    return JsonResponse({"otherStores": otherStores}) 
+                else:
+                    previous_data = list(Invoice.objects.filter(user=collaborator_admin).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"previous_data": previous_data})
+                
+            except Exception as e:
+                return messages.error(request,"Something Wrong Try Again: ",e)
+        else:
+            try:
+                if completed == 'true':
+                    completed_data = list(Invoice.objects.filter(balance_amount=0, user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"completed_data": completed_data})
+                elif not_paid == 'true':
+                    not_paid_datas = list(Invoice.objects.filter(Q(user=request.user) &~Q(balance_amount=0.00) &(~Q(balance_amount=F('invoice_amount')) |Q(payment_amount=0))).order_by('-id').values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"not_paid_data": not_paid_datas})
+                elif category:
+                    users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
+                    return JsonResponse({"category_list": users_with_category})
+                elif others and len(others) > 1:
+                    otherStores = list(CustomUser.objects.filter(store_type__icontains=others).values('username', 'phone_num', 'email', 'store_type'))
+                    if not otherStores:
+                        otherStoreType = CustomUser.objects.filter(other_value__icontains=others).exists()
+                        if otherStoreType:
+                            storeTypeList = list(CustomUser.objects.filter(other_value__icontains=others).values('username', 'phone_num', 'email', 'other_value'))
+                            return JsonResponse({"storeTypeList": storeTypeList})
+                    return JsonResponse({"otherStores": otherStores}) 
+                else:
+                    previous_data = list(Invoice.objects.filter(user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    return JsonResponse({"previous_data": previous_data})
+            except Exception as e:
+                return messages.error(request,"Something Wrong Try Again: ",e)
+
             
-        if completed == 'true':
-            completed_data = Invoice.objects.filter(balance_amount=0, user=request.user)
-            
-        if category_list:
-            users_with_category = CustomUser.objects.filter(store_type__in=category_list)
-            # Iterate over each user in the queryset to access their username
-            for user in users_with_category:
-                medical_data = user 
-                print("medical data : ",medical_data)
-        
-    print("completed_data 2: ",completed_data)
-        
-    overall_medicals = CustomUser.objects.filter(store_type='medical').select_related('person')
 
     # medicals = []  # Initialize an empty list to store medical shop names
 
@@ -756,6 +797,7 @@ def import_view(request):
         'user': user_name,
         'unique_id': unique_id,
         'form':upload_csv_file,
+        'overall_data':overall_data,
     }
     return render(request, 'invclc/import-export.html', context)
 
@@ -1034,6 +1076,7 @@ def update_invoice(request, invoice_id):
 
 
 def parse_date(date_string):
+    date_string = date_string.strip()
     date_formats = ['%b. %d, %Y', '%d/%m/%Y', '%d-%m-%y', '%B %d, %Y']
 
     for date_format in date_formats:
@@ -1044,10 +1087,6 @@ def parse_date(date_string):
 
     raise ValueError("Date string does not match any expected format")
 
-try:
-    result = parse_date("June 10, 2024")
-except ValueError as e:
-    messages.error(" Date Formate Not Accessable")
 
     
 @login_required(login_url='/')
@@ -1132,14 +1171,22 @@ def pay_invoice(request, invoice_id):
         data = json.loads(request.body)
         updated_payment_amount = Decimal(data.get('payment_amount', invoice.payment_amount))
 
-        # Adding the previous payment_amount and Updated payment_amount and Saved into Payment_amount
-        invoice.payment_amount = updated_payment_amount + invoice.payment_amount
+        if updated_payment_amount <= 0:
+            # Ensure payment amount is positive
+            messages.error(request,"Payment amount must be greater than zero")
+            return JsonResponse({'error': 'Payment amount must be greater than zero'}, status=422)
 
+        if invoice.payment_amount + updated_payment_amount > invoice.invoice_amount:
+            # Check if the total payment exceeds the invoice amount
+            messages.error(request,"payment Amount Not Valid..")
+            return JsonResponse({'error': 'Total payment exceeds invoice amount'}, status=409)
+
+        invoice.payment_amount += updated_payment_amount
         if invoice.payment_amount >= invoice.invoice_amount:
             invoice.payment_amount = invoice.invoice_amount
-
-        if invoice.balance_amount <= 0:
             invoice.balance_amount = 0
+        else:
+            invoice.balance_amount -= updated_payment_amount
 
         invoice.save()
         
@@ -1175,6 +1222,16 @@ def payment_invoice(request,payment_id):
         data = json.loads(request.body)
 
         pay_amount = Decimal(data.get('payment_amount', invoice.payment_amount))
+        
+        if pay_amount <= 0:
+            # Ensure payment amount is positive
+            messages.error(request,"Payment amount must be greater than zero")
+            return JsonResponse({'error': 'Payment amount must be greater than zero'}, status=422)
+
+        if invoice.payment_amount + pay_amount > invoice.invoice_amount:
+            # Check if the total payment exceeds the invoice amount
+            messages.error(request,"payment Amount Not Valid..")
+            return JsonResponse({'error': 'Total payment exceeds invoice amount'}, status=409)
         
         invoice.payment_amount = pay_amount + invoice.payment_amount
 

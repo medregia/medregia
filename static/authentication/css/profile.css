@@ -639,6 +639,10 @@ span ul.errorlist li{
   font-size: 13px;
 }
 
+span.importent{
+  color: red;
+}
+
   @media (min-width: 820px) and (max-width: 997px){
     .select2-container--default .select2-selection--single{
       width:80%;

@@ -19,7 +19,7 @@
 {% endblock navbar %}
 
 {% block sidebar %}
-  {% include 'sidebar.html' %}
+{% include 'sidebar.html' %}
 {% endblock sidebar %}
 
 {% block content %}
@@ -92,7 +92,7 @@
                     </div>
 
                     <div class="export-content">
-                        <table>
+                        <table id="export-data">
                             <thead>
                                 <tr>
                                     <th><input type="checkbox"></th>
@@ -106,23 +106,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% if completed_data %}
-                                {% for item in completed_data %}
-                                <tr>
-                                    <td><input type="checkbox" id="check_{{ forloop.counter }}"></td>
-                                    <td>{{ item.invoice_number }}</td>
-                                    <td>{{ item.invoice_amount }}</td>
-                                    <td>{{ item.updated_by }}</td>
-                                    <td>{{ item.today_date }}</td>
-                                    <td>{{ item.payment_amount }}</td>
-                                    {% if item.balance_amount == 0 %}
-                                    <td>Paid</td>
-                                    {% else %}
-                                    <td>Pending</td>
-                                    {% endif %}
-                                </tr>
-                                {% endfor %}
-                                {% else %}
                                 {% for data in datas %}
                                 <tr>
                                     <td><input type="checkbox" id="check_{{ forloop.counter }}"></td>
@@ -139,7 +122,6 @@
                                     <td></td>
                                 </tr>
                                 {% endfor %}
-                                {% endif %}
                             </tbody>
                         </table>
                     </div>
@@ -167,64 +149,77 @@
                 </div>
             </div>
             <div class="export2">
-                <form action="#" method="post">
-                    {% csrf_token %}
-                    <div class="export2-box1">
-                        <div class="check-list">
-                            <input type="checkbox" name="completed">
-                            <label>completed</label>
-                        </div>
-
-                        <div class="check-list">
-                            <input type="checkbox" name="all">
-                            <label>All (Not paid/Not Completed)</label>
-                        </div>
+                <div class="export-overall">
+                    <div class="export-error">
+                        <span class="sidePanelErrors"></span>
                     </div>
+                
+                    <form action="#" method="post">
+                        {% csrf_token %}
 
-                    <div class="export2-box2">
-                        <h3>Category Based</h3>
-                        <div class="export2-box2-content">
-                            <div>
-                                <input type="checkbox" name="pharmacy">
-                                <label>Pharmacy</label>
+                        <div class="export2-box1">
+                            <!-- <span class="sidePanelErrors"></span> -->
+                            <h3>Payment Based</h3>
+                            <div class="check-list">
+                                <input type="checkbox" name="completed">
+                                <label>completed</label>
                             </div>
 
-                            <div>
-                                <input type="checkbox" name="medical">
-                                <label>Medical</label>
+                            <div class="check-list">
+                                <input type="checkbox" name="all">
+                                <label>All (Not paid/Not Completed)</label>
                             </div>
 
-                            <div>
-                                <input type="checkbox" name="agency">
-                                <label>Agency</label>
+                            <button type="button" class="export-reset">Reset</button>
+
+                        </div>
+
+                        <div class="export2-box2">
+                            <h3>Category Based :</h3>
+                            <div class="export2-box2-content">
+                                <div class="export-boxes">
+                                    <input type="checkbox" name="pharmacy">
+                                    <label>Pharmacy</label>
+                                </div>
+
+                                <div class="export-boxes">
+                                    <input type="checkbox" name="medical">
+                                    <label>Medical</label>
+                                </div>
+
+                                <div class="export-boxes">
+                                    <input type="checkbox" name="retailer">
+                                    <label>Retailer</label>
+                                </div>
+                            </div>
+                            <div class="other">
+                                <!-- <input type="checkbox" name="others"> -->
+                                <label>Others :</label>
+                                <input type="text" placeholder="eg : User" name="others">
                             </div>
                         </div>
-                        <div class="other">
-                            <!-- <input type="checkbox" name="others"> -->
-                            <label>Others :</label>
-                            <input type="text" style="height: 26px; width: 200px; background-color: #ebe2e2;">
+
+
+                        <div class="export2-box3">
+                            <div class="export2-box3_table">
+                                <table id="checkboxTable">
+                                    <thead>
+                                        <th>Select</th>
+                                        <th>Medical List</th>
+                                    </thead>
+                                    <tbody>
+                                        {% for overall_datas in overall_data %}
+                                        <tr>
+                                            <td><input type="checkbox" class="checkbox"></td>
+                                            <td>{{ overall_datas.pharmacy_name }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-
-                    </div>
-
-
-                    <div class="export2-box3">
-                        <table id="checkboxTable">
-                            <tr>
-                                <th>Select</th>
-                                <th>Medical List</th>
-                            </tr>
-                            {% for medical in medicals %}
-                            {% if medical != '' %}
-                            <tr>
-                                <td><input type="checkbox" class="checkbox"></td>
-                                <td>{{ medical }}</td>
-                            </tr>
-                            {% endif %}
-                            {% endfor %}
-                        </table>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
 
         </div>
@@ -360,5 +355,5 @@
 
 
 <script src="{% static 'invclc/js/import-export.js' %}"></script>
-<script src="{% static 'authentication/js/import_sidebar.js' %}"></script>  
+<script src="{% static 'authentication/js/import_sidebar.js' %}"></script>
 {% endblock content %}

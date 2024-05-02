@@ -274,10 +274,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputFields = row.querySelectorAll('input');
 
     payBtn.addEventListener('click', function () {
-      console.log('Pay button clicked');
 
       if (payBtn.textContent === 'Save') {
-        console.log('Save operation initiated');
         const invoiceId = row.dataset.invoiceId;
         const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
 
@@ -299,14 +297,10 @@ document.addEventListener('DOMContentLoaded', function () {
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
-          console.log(`first Responce :  ${response}`)
-          console.log(`first Responce Json :  ${response.json}`)
           return response.json();
         })
         .then(data => {
-          console.log('Row updated successfully:', data);
           headerMessages.textContent = "Payment Processed Successfully .."
-          console.log(headerMessages)
 
           // Update the payment field with the returned data
           paymentField.value = data.payment_amount;
@@ -327,9 +321,9 @@ document.addEventListener('DOMContentLoaded', function () {
           headerMessages.textContent = "Payment Failed .."
           headerMessages.style.color = "red"
           payBtn.textContent = 'Save'; // Handle error scenario, if needed
+          location.reload();
         });
       } else {
-        console.log('Edit operation initiated');
         cancelBtn.style.display = 'inline-block';
 
         // Enable only the payment field for editing
@@ -355,7 +349,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   cancelButtons.forEach(cancelBtn => {
     cancelBtn.addEventListener('click', function () {
-      console.log('Cancel button clicked');
       this.style.display = 'none';
 
       const row = this.closest('tr');
@@ -461,7 +454,8 @@ document.addEventListener('DOMContentLoaded', function () {
           .catch(error => {
             console.error('Error updating payment:', error);
             headerMessages.style.color = "red"
-            headerMessages.textContent = `Paied Failed `
+            headerMessages.textContent = `Paied Failed : Check Your Payment Amount `
+            location.reload();
           });
         }
       });

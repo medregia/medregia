@@ -12,11 +12,17 @@
     {% include 'nav.html' %} 
 {% endblock navbar%} 
 
+{% block message %}
+    {% include 'invoice_message.html' %}
+{% endblock message %}
+
 {% block content %}
     <div class="unpaid-container">
       <h3>Unpaid Debts More details</h3>
       <div class="unpaid-container-payment">
       <div class="unpaid-container-btn"><button type="button" class="csvBtn">Print CSV</button></div>
+        <form action="" method="post">
+          {% csrf_token %}
           <table class="unpaidmoretable">
               <thead>
                 <th><input type="checkbox"></th>
@@ -42,6 +48,7 @@
                 {% endfor %}
               </tbody>
           </table>
+        </form>
       </div>
     </div>
     <script src="{% static 'invclc/js/unpaid_debt.js' %}"></script>

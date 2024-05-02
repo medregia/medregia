@@ -168,4 +168,7 @@ td a button{
     nav, .btn, .tablinks {
       display: none; 
   } 
+  nav.invclc-nav{
+    display:none;
+  }
   }

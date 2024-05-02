@@ -52,7 +52,7 @@
                             </div>                            
 
                             <div class="left-pharmacy-name left-top-containers">
-                                <label for="Medicalshop Name">Proprietary Name :</label>
+                                <label for="Medicalshop Name">Proprietary Name <span class="importent">*</span>:</label>
                                 {% if data.ProprietaryName and data.ProprietaryName != "" %}
                                     <div class="profile-data">
                                         {{data.ProprietaryName }}
@@ -68,7 +68,7 @@
                             </div>
 
                             <div class="left-drug-1 left-top-containers">
-                                <label for="Medicalshop Name">Drug Licenese Number1 :</label>
+                                <label for="Medicalshop Name">Drug Licenese Number1 <span class="importent">*</span>:</label>
                                 {% if data.DrugLiceneseNumber1 and data.DrugLiceneseNumber1 != "" %}
                                     <div class="profile-data">
                                         {{data.DrugLiceneseNumber1 }}
@@ -84,7 +84,7 @@
                             </div>
 
                             <div class="left-proprietary-number left-top-containers">
-                                <label for="Medicalshop Name">Proprietary Number :</label>
+                                <label for="Medicalshop Name">Proprietary Number <span class="importent">*</span>:</label>
                                 {% if data.ProprietaryNumber and data.ProprietaryNumber != "" %}
                                     <div class="profile-data">
                                         {{data.ProprietaryNumber }}
@@ -100,7 +100,7 @@
                             </div>
 
                             <div class="left-drug-2 left-top-containers">
-                                <label for="Medicalshop Name">Drug Licenese Number2 :</label>
+                                <label for="Medicalshop Name">Drug Licenese Number2 <span class="importent">*</span>:</label>
                                 {% if data.DrugLiceneseNumber2 and data.DrugLiceneseNumber2 != "" %}
                                     <div class="profile-data">
                                         {{data.DrugLiceneseNumber2 }}
@@ -116,7 +116,7 @@
                             </div>
 
                             <div class="left-proprietary-contact left-top-containers">
-                                <label for="Medicalshop Name">Proprietary Contact Number :</label>
+                                <label for="Medicalshop Name">Proprietary Contact Number <span class="importent">*</span>:</label>
                                 {% if data.ProprietaryContact and data.ProprietaryContact != "" %}
                                     <div class="profile-data">
                                         {{data.ProprietaryContact }}
@@ -215,6 +215,7 @@
                                     <input type="text" value="{{unique_code}}" id="unique_id" readonly>
                                     <span></span>
                                 </div>
+                                <span><span class="importent">*</span> Must be Unique</span>
                             </div>
                         </div>
 
@@ -240,7 +241,7 @@
                         </div>
 
                         <div class="profile-right-register right-top-containers">
-                            <label for="Medicalshop Name">Registered Number :</label>
+                            <label for="Medicalshop Name">Registered Number <span class="importent">*</span>:</label>
                             {% if data.RegisteredNumber and data.RegisteredNumber != "" %}
                                 <div class="profile-data">
                                     {{data.RegisteredNumber }}
