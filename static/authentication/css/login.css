@@ -256,7 +256,17 @@ body{
   align-items: center;
 }
 
-.login-btn button,
+.login-btn button{
+  height: 40px;
+  width: 100%;
+  background-color: blue;
+  color: #FFFF;
+  border: none;
+  padding:5px 13px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
 .signup-btn button{
   height: 40px;
   width: 100%;
@@ -267,6 +277,12 @@ body{
   font-size: 0.9rem;
   border-radius: 4px;
   cursor: pointer;
+}
+
+.login-btn a,
+.signup-btn a{
+  height: 40px;
+  width:100%;
 }
 
 .bottom-field{

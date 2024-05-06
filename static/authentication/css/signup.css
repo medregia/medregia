@@ -86,7 +86,7 @@ form{
 }
 .form-group{
   height: 78px;
-  width: 35%;
+  width: 40%;
   /* background-colohwb(240 0% 0%)240, 100%, 50%)lue; */
   display: flex;
   justify-content: center;
@@ -208,7 +208,15 @@ align-items:center;
 margin-right: 10px;
 }
 
-
+.signup-bottom-field{
+  height: 10vh;
+  width: 100%;
+  /* background-color: orangered; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
 @media (min-width: 449px) and (max-width: 870px) {
   body{
     min-height:80vh;

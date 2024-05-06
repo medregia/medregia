@@ -29,18 +29,18 @@ body {
   margin-left: 70px;
 }
 .main-container .main-header {
-  height: 30vh;
+  height: 20vh;
   width: 100%;
 }
 .main-container .main-header .header-top {
-  height: 10vh;
+  height: 5vh;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 .main-container .main-header .header-top .heading {
-  height: 9vh;
+  height: 5vh;
   width: 33%;
   display: flex;
   justify-content: center;
@@ -55,7 +55,7 @@ body {
   color: #04aa6d;
 }
 .main-container .main-header .header-top .header-top-btn {
-  height: 9vh;
+  height: 5vh;
   width: 33%;
   display: flex;
   justify-content: space-between;
@@ -70,7 +70,7 @@ body {
 }
 
 .main-container .main-header .header-top .header-top-btn .header-messages{
-  height: 9vh;
+  height: 5vh;
   width: 70%;
   color: rgb(4, 214, 4);
   /* background-color: blue; */
@@ -82,7 +82,7 @@ body {
 
 .unique-code{
   width: 33%;
-  height: 9vh;
+  height: 5vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -112,19 +112,19 @@ body {
 }
 
 .header-bottom {
-  height: 20vh;
+  height: 15vh;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .header-bottom form {
-  height: 20vh;
+  height: 15vh;
   width: 100%;
   display: flex;
   justify-content: center;
   /* align-items: center; */
-  align-items:flex-end;
+  align-items:flex-start;
 }
 .header-bottom form table {
   height: 15vh;
@@ -182,7 +182,7 @@ body {
   border-radius: 5px;
 }
 .main-body .panel-content {
-  height: 11vh;
+  height: auto;
   width: 99%;
   /* background-color: #d3d3d3; */
   /* box-shadow:0px 0px 10px 0px black;
@@ -192,7 +192,7 @@ body {
   align-items: center;
 }
 .main-body .panel-content .tab {
-  height: 10vh;
+  height: auto;
   width: 100%;
   display: flex;
   justify-content: space-evenly;
@@ -272,12 +272,13 @@ body {
 }
 
 .tabcontent {
-  min-height: 55vh;
+  min-height: 65vh;
   width: 99%;
   display: flex;
   /* box-shadow:0px 0px 10px 0px black; */
   border-radius:5px;
-  justify-content: space-evenly;
+  column-gap: 5px;
+  justify-content: center;
   /* align-items: center; */
   /* margin-top: -55px; */
 }
@@ -294,7 +295,7 @@ body {
 
 .tabcontent .table-content-left,
 .tabcontent .table-content-right {
-  height: 50vh;
+  height:65vh;
   width: 48%;
   display: flex;
   justify-content: flex-start;
@@ -588,7 +589,7 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 
 .delete-table th ,
 .update-table th{
-  background-color: rgb(160, 160, 160);
+  background-color: #cfc8c8;
   position: sticky;
   top: -20px;
   text-align:center;
@@ -629,8 +630,8 @@ span.loginstatus{
   background-color: #04aa6d;
   color: #ffff;
   position: absolute;
-  top: 93%;
-  right: 40%;
+  top: 88%;
+  right: 38%;
   display: flex;
   justify-content: space-evenly;
   align-items: center;

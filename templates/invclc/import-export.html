@@ -47,13 +47,19 @@
                             <h2>Admin Address Details</h2>
                             <p> Name : {{admin_person}}</p>
                             {% endif %}
-                            {% if admin_person is not None %}
-                            <p> City : {{admin_city}}</p>
+                            {% if admin_email is not None %}
+                            <p>Email : {{admin_email}}</p>
                             {% endif %}
-                            {% if admin_person is not None %}
+                            {% if admin_city is not None and admin_street is not None and admin_pincode is not None %}
+                            <p> Address : {{admin_street}} ,{{ admin_city }} - {{admin_pincode}}.</p>
+                            {% endif %}
+                            {% if admin_ph is not None %}
                             <p> PhoneNumber : {{admin_ph}}</p>
                             {% endif %}
-                            {% if admin_person is not None %}
+                            {% if admin_dl1 is not None and admin_dl2 is not None %}
+                            <p> Drug Licenese Numbers : {{admin_dl1}} & {{admin_dl2}}</p>
+                            {% endif %}
+                            {% if admin_id is not None %}
                             <p> UniqueId : {{admin_id}}</p>
                             {% endif %}
                         </div>
@@ -62,15 +68,29 @@
                             <h2>User Address Details</h2>
                             <p> Name : {{user.username}}</p>
                             {% endif %}
-                            {% if user_city is not None %}
-                            <p> City : {{user_city}}</p>
+                            {% if user_email is not None %}
+                            <p>Email : {{user_email}}</p>
+                            {% endif %}
+                            {% if user_city is not None and user_street is not None and user_pincode is not None %}
+                            <p> Address : {{user_street}} ,{{ user_city }} - {{user_pincode}}.</p>
+                            {% else %}
+                            <p> Address : {{admin_street}} ,{{ admin_city }} - {{admin_pincode}}.</p>
                             {% endif %}
                             {% if user_ph is not None %}
                             <p> PhoneNumber : {{user_ph}}</p>
                             {% endif %}
-                            {% if unique_id is not None %}
-                            <p> UniqueId : {{unique_id}}</p>
+                            {% if dl1 and dl2 %}
+                            <p>Drug License Numbers: {{ dl1 }} & {{ dl2 }}</p>
+                            {% else %}
+                                <p>Drug License Numbers: {{ admin_dl1 }} & {{ admin_dl2 }}</p>
                             {% endif %}
+                        
+                            {% if unique_id is not None and "####" not in unique_id %}
+                                <p> UniqueId : {{unique_id}}</p>
+                            {% else %}
+                                <p> UniqueId : {{admin_id}}</p>
+                            {% endif %}
+
                         </div>
                         {% else %}
                         <div class="address-details">
@@ -78,14 +98,20 @@
                             {% if user.username is not None %}
                             <p> Name: {{ user.username }}</p>
                             {% endif %}
-                            {% if user_city is not None %}
-                            <p> City: {{ user_city }}</p>
+                            {% if user_email is not None %}
+                            <p>Email : {{user_email}}</p>
+                            {% endif %}
+                            {% if user_city is not None and user_street is not None and user_pincode is not None %}
+                            <p> Address : {{user_street}} ,{{ user_city }} - {{user_pincode}}.</p>
                             {% endif %}
                             {% if user_ph is not None %}
-                            <p> PhoneNumber: {{ user_ph }}</p>
+                            <p> Ph No. : {{ user_ph }}</p>
+                            {% endif %}
+                            {% if dl1 is not None and dl2 is not None %}
+                            <p> Drug Licenese Numbers : {{dl1}} & {{dl2}}</p>
                             {% endif %}
                             {% if unique_id is not None %}
-                            <p> UniqueId: {{ unique_id }}</p>
+                            <p> UniqueId : {{ unique_id }}</p>
                             {% endif %}
                         </div>
                         {% endif %}
