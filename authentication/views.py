@@ -215,11 +215,6 @@ def profile_view(request):
             form.save()
             messages.success(request, "You Got It ")
             return redirect("profile")
-            
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request,"Please Return to Home Page and Try Again ...")
 
     
     existing_admin = Notification.objects.filter(sender=request.user,is_read=True, request_status=True)

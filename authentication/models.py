@@ -37,7 +37,6 @@ class CustomUser(AbstractUser):
         ('manufacturer', 'Manufacturer'),
         ('pharmacy', 'Pharmacy'),
         ('medical', 'Medical'),
-        ('user','User'),
         ('others', 'Others'),
     ]
     store_type = models.CharField(max_length=50, choices=STORE_TYPES,null=False,blank=False)

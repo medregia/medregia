@@ -49,369 +49,350 @@
             {% endif %}
       </div>
 
-      <div class="unique-code">
-        {% if check_user == current_user %}
-        <p>UNIQUE-ID :</p><span>{{ unique.UniqueId }}</span>
-        {% else %}
-        <p>UNIQUE-ID :</p><span>{{ uniqueid }}</span>
-        {% endif %}
-      </div>
-
-    </div>
-
-    <div class="header-bottom">
-      <form action="" method="post">
-        {% csrf_token %}
-        <table class="tableCreate">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Invoice Number</th>
-              <th>Invoice Date</th>
-              <th>Invoice Amount</th>
-              <th>Balance</th>
-              <th>Due Pay</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{form.pharmacy_name}}</td>
-              <td>{{form.invoice_number}}</td>
-              <td>{{form.invoice_date}}</td>
-              <td>{{form.invoice_amount}}</td>
-              <td>{{form.balance_amount}}</td>
-              <td>{{form.payment_amount}}</td>
-              {% comment %} <td>{{form.today_date}}</td> {% endcomment %}
-              <td>
-                {{form.today_date}}
-                {{form.current_time}}
-                {{form.updated_by}}
-                <button type="submit" id="saveButton"> Save </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </form>
-
-    </div>
-  </div>
-
-  <div class="main-body">
-
-    <div class="panel-content">
-      <div class="tab">
-        <button class="tablinks active" onclick="openpanel(event, 'Current Update')">Current Update</button>
-        <button class="tablinks" onclick="openpanel(event, 'Payment Details')" data-panel="Payment Details">Payment
-          Details</button>
-        <button class="tablinks active" onclick="openpanel(event, 'DeleteHistory')">Delete History</button>
-        <button class="tablinks" onclick="openpanel(event, 'UpdateHistory')">Modified History</button>
-      </div>
-    </div>
-
-    <div id="Current Update" class="tabcontent">
-
-      <div class="table-content-left">
-        <div class="table-panel">
-          <h2 class="panel-heading">Paid Records</h2>
-
+          <div class="unique-code">
+            {% if check_user == current_user %}
+              <p>UNIQUE-ID :</p><span>{{ unique.UniqueId }}</span>
+            {% else %}
+                <p>UNIQUE-ID :</p><span>{{ uniqueid }}</span>
+            {% endif %}
+        </div>
+                       
+        </div>
+  
+        <div class="header-bottom">
           <form action="" method="post">
             {% csrf_token %}
-            <input type="text" name="payed" id="payment_list" placeholder="Search"
-              title="Search 'all' to get Full Data">
-            <button type="submit">Search</button>
-          </form>
-        </div>
-        <div class="table-cover-left">
-          <table>
-            <thead>
-              <tr class="table_tr">
-                <th>Pharmacy Name</th>
-                <th>Invoice Number</th>
-                <th colspan="2">Status</th>
-                <th>Records</th>
-              </tr>
-              <tr class="table_tr">
-                <th></th>
-                <th></th>
-                <th>Current Medical</th>
-                <th>Invoice Medical</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {% if check_user == current_user %}
-              {% for data in full_paid %}
-              <tr>
-                <td><input type="text" value="{{ data.pharmacy_name }}" disabled></td>
-                <td><input type="text" value="{{ data.invoice_number }}" disabled></td>
-                <td class="medicalstatus">
-                  <input type="text" value="{{ MedicalStatus }} Accepted" disabled>
-                  <span class="status"></span>
-                </td>
-                <td class="pharmacystatus">
-                  {% if data.pharmacy_name %}
-                  {% if request.user.is_authenticated %}
-                  <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                  <span class="loginstatus"></span>
-                  {% else %}
-                  <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                  <span class="statusfailed">{{ data.pharmacy_name|medical_signup}}</span>
-                  {% endif %}
-                  {% else %}
-                  <input type="text" value="Not Found" disabled>
-                  {% endif %}
-                </td>
-                <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td>
-              </tr>
-              {% endfor %}
-              {% else %}
-              {% for data in payed_details %}
-              <tr>
-                <td><input type="text" value="{{ data.pharmacy_name }}" disabled></td>
-                <td><input type="text" value="{{ data.invoice_number }}" disabled></td>
-                <td class="medicalstatus">
-                  <input type="text" value="{{ MedicalStatus }} Accepted" disabled>
-                  <span class="status"></span>
-                </td>
-                <td class="pharmacystatus">
-                  {% if data.pharmacy_name %}
-                  {% if request.user.is_authenticated %}
-                  <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                  <span class="loginstatus" style="background-color:{{data.pharmacy_name|medical_signup}};"></span>
-                  {% else %}
-                  <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                  <span style="background-color:{{data.pharmacy_name|medical_signup}};"></span>
-                  {% endif %}
-                  {% else %}
-                  <input type="text" value="Not Found" disabled>
-                  {% endif %}
-                </td>
-                <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td>
-              </tr>
-              {% endfor %}
-              {% endif %}
-            </tbody>
-
-          </table>
-
-        </div>
-        <a href="{% url 'checkmore' %}"><button type="button">more details</button></a>
-      </div>
-
-
-      <div class="table-content-right">
-        <div class="table-panel">
-          <h2 class="panel-heading">Update</h2>
-
-          <form action="" method="post">
-            {% csrf_token %}
-            <input type="text" name="payment_list" id="payment_list" placeholder="Search"
-              title="Search 'all' to get Full Data">
-            <button type="submit">Search</button>
-          </form>
-        </div>
-        <div class="table-cover-right">
-          <table>
-            <thead>
-              <th>Pharmacy Name</th>
-              <th>Invoice Number</th>
-              <th>Invoice Amount</th>
-              <th>Paid Date</th>
-              <th>Balance Amount</th>
-              <th>Action</th>
-            </thead>
-            <tbody id="updatePaymentTable">
-              {% if check_user == current_user %}
-              <form action="" method="post" id="update_delete_id">
-                {% csrf_token %}
-                {% for data in edit_paid %}
-                <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
-                  <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
-                  <td>{{ data.invoice_number }}</td> <!-- Display invoice_number here -->
-                  <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
-                  <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled
-                      name="invoice_amount"></td>
-                  <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
-                  <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
-                  <input type="hidden" class="updatePay" value="{{data.payment_amount}}">
-                  <td>
-                    <button type="button" class="editBtn">Edit</button>
-                    <button type="button" class="deleteBtn">Delete</button>
-                    <button type="button" class="saveBtn" data-invoice-id="{{ data.id }}"
-                      style="display: none;">Save</button>
-                    <button type="button" class="cancelBtn" style="display: none;">Cancel</button>
-                  </td>
+            <table class="tableCreate">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Invoice Number</th>
+                  <th>Invoice Date</th>
+                  <th>Invoice Amount</th>
+                  <th>Balance</th>
+                  <th>Due Pay</th> 
+                  <th>Action</th>
                 </tr>
-                {% endfor %}
-              </form>
-              {% else %}
-              <form action="" method="post" id="update_delete_id">
-                {% csrf_token %}
-                {% for data in payment %}
-                <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
-                  <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
-                  <td>{{ data.invoice_number }}</td> <!-- Display invoice_number here -->
-                  <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled
-                      name="invoice_amount"></td>
-                  <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
-                  <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
-                  <input type="hidden" class="updatePay" value="{{data.payment_amount}}">
-                  <td>
-                    <button type="button" class="editBtn">Edit</button>
-                    <button type="button" class="deleteBtn">Delete</button>
-                    <button type="button" class="saveBtn" data-invoice-id="{{ data.id }}"
-                      style="display: none;">Save</button>
-                    <button type="button" class="cancelBtn" style="display: none;">Cancel</button>
-                  </td>
+              </thead>
+              <tbody> 
+                <tr>
+                    <td>{{form.pharmacy_name}}</td>
+                    <td>{{form.invoice_number}}</td>
+                    <td>{{form.invoice_date}}</td>
+                    <td>{{form.invoice_amount}}</td>
+                    <td>{{form.balance_amount}}</td>
+                    <td>{{form.payment_amount}}</td>                    
+                    {% comment %} <td>{{form.today_date}}</td> {% endcomment %}
+                    <td>
+                      {{form.today_date}}
+                      {{form.current_time}}
+                      {{form.updated_by}}
+                      <button type="submit" id="saveButton"> Save </button>
+                    </td>
                 </tr>
-                {% endfor %}
-              </form>
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
-
-        <a href="{% url 'updatemore' %}"><button>more details</button></a>
-      </div>
-    </div>
-
-    <div id="Payment Details" class="tabcontent">
-      <div class="table-content-left">
-        <div class="table-panel">
-          <h2 class="panel-heading">Partially Paid</h2>
-
-          <form action="" method="post">
-            {% csrf_token %}
-            <input type="text" name="q" id="search" placeholder="Search" title="Search 'all' to get Full Data">
-            <button type="submit">Search</button>
+              </tbody>
+            </table>
           </form>
+          
         </div>
-        <div class="table-cover-left">
-          <table>
-            <thead>
-              <th>Name</th>
-              <th>IV / No.</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Pending</th>
-              <th>Payment</tha>
-              <th>Action</th>
-            </thead>
-            <tbody id="paymentTableBody">
-              {% if check_user == current_user %}
-              {% for data in partially_paid %}
-              <tr data-invoice-id="{{ data.id }}">
-                <!-- Add name attributes to your input fields -->
-                <td><input type="text" name="pharmacy_name" value="{{ data.pharmacy_name }}" disabled></td>
-                <td><input type="text" name="invoice_number" value="{{ data.invoice_number }}" disabled></td>
-                <td><input type="text" class="partiallyTotal" name="invoice_amount" value="{{ data.invoice_amount }}"
-                    disabled></td>
-                {% if data.balance_amount == 0 %}
-                <td><input type="text" value="Paid" disabled></td>
-                {% else %}
-                <td><input type="text" value="Pending" disabled></td>
-                {% endif %}
-                <td><input type="text" class="partiallyBalance" name="balance_amount" value="{{ data.balance_amount }}"
-                    disabled></td>
-                <td><input type="text" class="partiallyPayment" name="payment_amount" value="{{ data.payment_amount }}"
-                    disabled></td>
-
-                <td>
-                  <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
-                  <button class="cancelBtn" type="button" style="display: none;">Cancel</button>
-                </td>
-              </tr>
-              {% endfor %}
-              {% else %}
-              {% for data in q %}
-              <tr data-invoice-id="{{ data.id }}">
-                <!-- Add name attributes to your input fields -->
-                <td><input type="text" name="pharmacy_name" value="{{ data.pharmacy_name }}" disabled></td>
-                <td><input type="text" name="invoice_number" value="{{ data.invoice_number }}" disabled></td>
-                <td><input type="text" class="partiallyTotal" name="invoice_amount" value="{{ data.invoice_amount }}"
-                    disabled></td>
-                {% if data.balance_amount == 0 %}
-                <td><input type="text" value="Paid" disabled></td>
-                {% else %}
-                <td><input type="text" value="Pending" disabled></td>
-                {% endif %}
-                <td><input type="text" class="partiallyBalance" name="balance_amount" value="{{ data.balance_amount }}"
-                    disabled></td>
-                <td><input type="text" class="partiallyPayment" name="payment_amount" value="{{ data.payment_amount }}"
-                    disabled></td>
-
-                <td>
-                  <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
-                  <button class="cancelBtn" type="button" style="display: none;">Cancel</button>
-                </td>
-              </tr>
-              {% endfor %}
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
-        <a href="{% url 'paymore' %}"><button>more details</button></a>
       </div>
-
-      <div class="table-content-right">
-        <div class="table-panel">
-          <h2 class="panel-heading">Payment List</h2>
-
-          <form action="" method="post">
-            {% csrf_token %}
-            <input type="text" name="search" id="search" placeholder="Search" title="Search 'all' to get Full Data">
-            <button type="submit">Search</button>
-          </form>
+  
+      <div class="main-body">
+  
+        <div class="panel-content">
+          <div class="tab">
+            <button class="tablinks active" onclick="openpanel(event, 'Current Update')">Current Update</button>
+            <button class="tablinks" onclick="openpanel(event, 'Payment Details')" data-panel="Payment Details">Payment Details</button>
+            <button class="tablinks active" onclick="openpanel(event, 'DeleteHistory')">Delete History</button>
+            <button class="tablinks" onclick="openpanel(event, 'UpdateHistory')">Modified History</button>
+          </div>  
         </div>
-        <div class="table-cover-right">
-          <table>
-            <thead>
-              <th>Pharmacy Name</th>
-              <th>Invoice Amount</th>
-              <th>Balance Amount</th>
-              <th>Paid Amount</th>
-              <th>Action</th>
-            </thead>
-            <tbody id="payTableBody">
-              {% if check_user == current_user %}
-              {% for data in debt_paid %}
-              <tr>
-                <td><input type="text" name="phmy_name" value="{{data.pharmacy_name}}" disabled></td>
-                <td><input type="text" name="iv_amount" value="{{data.invoice_amount}}" disabled></td>
-                <td><input type="text" class="bal_amount" name="bal_amount" value="{{data.balance_amount}}" disabled>
-                </td>
-                <td><input type="text" class="pmnt_amount" name="pmnt_amount" value="{{data.payment_amount}}" disabled>
-                </td>
-                <td>
-                  <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
-                  <button class="cancelBtn" type="button" style="display: none;">Cancel</button>
-                </td>
-              </tr>
-              {% endfor %}
-              {% else %}
-              {% for data in search %}
-              <tr>
-                <td><input type="text" name="phmy_name" value="{{data.pharmacy_name}}" disabled></td>
-                <td><input type="text" name="iv_amount" value="{{data.invoice_amount}}" disabled></td>
-                <td><input type="text" class="bal_amount" name="bal_amount" value="{{data.balance_amount}}" disabled>
-                </td>
-                <td><input type="text" class="pmnt_amount" name="pmnt_amount" value="{{data.payment_amount}}" disabled>
-                </td>
-                <td>
-                  <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
-                  <button class="cancelBtn" type="button" style="display: none;">Cancel</button>
-                </td>
-              </tr>
-              {% endfor %}
-              {% endif %}
-            </tbody>
-          </table>
-        </div>
+  
+        <div id="Current Update" class="tabcontent">
+  
+          <div class="table-content-left">
+            <div class="table-panel">
+              <h2 class="panel-heading">Paid Records</h2>
+  
+              <!-- <form action="" method="post">
+                  {% csrf_token %}
+                  <input type="text" name="payed" id="payment_list" placeholder="Search" title= "Search 'all' to get Full Data">
+                  <button type="submit">Search</button>
+              </form> -->
+            </div>
+            <div class="table-cover-left">
+              <table>
+                <thead>
+                  <tr class="table_tr">
+                    <th>Pharmacy Name</th>
+                    <th>Invoice Number</th>
+                    <th colspan="2">Status</th> 
+                    <th>Records</th>
+                  </tr>
+                  <tr class="table_tr">
+                    <th></th>
+                    <th></th>
+                    <th>Current Medical</th>
+                    <th>Invoice Medical</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% if check_user == current_user %}
+                    {% for data in full_paid %}
+                    <tr>
+                        <td><input type="text" value="{{ data.pharmacy_name }}" disabled></td>
+                        <td><input type="text" value="{{ data.invoice_number }}" disabled></td>
+                        <td class="medicalstatus">
+                            <input type="text" value="{{ MedicalStatus }} Accepted" disabled>
+                            <span class="status"></span>
+                        </td>
+                        <td class="pharmacystatus">
+                            {% if data.pharmacy_name %}
+                                {% if request.user.is_authenticated %}
+                                    <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
+                                    <span class="loginstatus"></span>
+                                {% else %}
+                                    <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
+                                    <span class="statusfailed">{{ data.pharmacy_name|medical_signup}}</span>
+                                {% endif %}
+                            {% else %}
+                                <input type="text" value="Not Found" disabled>
+                            {% endif %}
+                        </td>
+                        <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    {% for data in payed_details %}
+                    <tr>
+                        <td><input type="text" value="{{ data.pharmacy_name }}" disabled></td>
+                        <td><input type="text" value="{{ data.invoice_number }}" disabled></td>
+                        <td class="medicalstatus">
+                            <input type="text" value="{{ MedicalStatus }} Accepted" disabled>
+                            <span class="status"></span>
+                        </td>
+                        <td class="pharmacystatus">
+                            {% if data.pharmacy_name %}
+                                {% if request.user.is_authenticated %}
+                                    <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
+                                    <span class="loginstatus" style="background-color:{{data.pharmacy_name|medical_signup}};"></span>
+                                {% else %}
+                                    <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
+                                    <span style="background-color:{{data.pharmacy_name|medical_signup}};"></span>
+                                {% endif %}
+                            {% else %}
+                                <input type="text" value="Not Found" disabled>
+                            {% endif %}
+                        </td>
+                        <td><a href="{% url 'check' data.id %}"><button type="button">Check</button></a></td>
+                    </tr>
+                    {% endfor %}
+                  {% endif %}
+              </tbody>
+              
+              </table>
+              
+            </div>  
+            <a href="{% url 'checkmore' %}"><button type="button">more details</button></a>
+          </div>
+          
 
-        <a href="{% url 'unpaid_debt' %}"><button>more details</button></a>
-      </div>
-    </div>
+          <div class="table-content-right">
+            <div class="table-panel">
+              <h2 class="panel-heading">Update</h2>
+  
+              <!-- <form action="" method="post">
+                  {% csrf_token %}
+                  <input type="text" name="payment_list" id="payment_list" placeholder="Search" title= "Search 'all' to get Full Data">
+                  <button type="submit">Search</button>
+              </form> -->
+            </div>
+            <div class="table-cover-right">
+              <table>
+                <thead>
+                  <th>Pharmacy Name</th>
+                  <th>Invoice Number</th>
+                  <th>Invoice Amount</th>
+                  <th>Paid Date</th>
+                  <th>Balance Amount</th>
+                  <th>Action</th>
+                </thead>
+                <tbody id="updatePaymentTable">
+                  {% if check_user == current_user %}
+                    <form action="" method="post" id="update_delete_id">
+                      {% csrf_token %}
+                      {% for data in edit_paid %}
+                      <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
+                          <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
+                          <td><input type="text" value="{{data.invoice_number}}" disabled name="invoice_number"></td>
+                          <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
+                          <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
+                          <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
+                          <input type="hidden" class="updatePay" value="{{data.payment_amount}}">
+                          <td>
+                              <button type="button" class="editBtn">Edit</button>
+                              <button type="button" class="deleteBtn">Delete</button>
+                              <button type="button" class="saveBtn" data-invoice-id="{{ data.id }}" style="display: none;">Save</button>
+                              <button type="button" class="cancelBtn" style="display: none;">Cancel</button>
+                          </td>
+                      </tr>
+                      {% endfor %}
+                    </form>
+                  {% else %}
+                    <form action="" method="post" id="update_delete_id">
+                      {% csrf_token %}
+                      {% for data in payment %}
+                      <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
+                          <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
+                          <td><input type="text" value="{{data.invoice_number}}" disabled name="invoice_number"></td>
+                          <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
+                          <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
+                          <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
+                          <input type="hidden" class="updatePay" value="{{data.payment_amount}}">
+                          <td>
+                              <button type="button" class="editBtn">Edit</button>
+                              <button type="button" class="deleteBtn">Delete</button>
+                              <button type="button" class="saveBtn" data-invoice-id="{{ data.id }}" style="display: none;">Save</button>
+                              <button type="button" class="cancelBtn" style="display: none;">Cancel</button>
+                          </td>
+                      </tr>
+                      {% endfor %}
+                    </form> 
+                  {% endif %}
+              </tbody>
+              </table>
+            </div>
+            <a href="{% url 'updatemore' %}"><button>more details</button></a>
+          </div>
+        </div>
+  
+        <div id="Payment Details" class="tabcontent">
+          <div class="table-content-left">
+            <div class="table-panel">
+              <h2 class="panel-heading">Partially Paid</h2>
+  
+              <!-- <form action="" method="post">
+                  {% csrf_token %}
+                  <input type="text" name="q" id="search" placeholder="Search" title= "Search 'all' to get Full Data">
+                  <button type="submit">Search</button>
+              </form> -->
+            </div>
+            <div class="table-cover-left">
+              <table>
+                <thead>
+                  <th>Name</th>
+                  <th>IV / No.</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Pending</th>
+                  <th>Payment</tha>
+                  <th>Action</th>
+                </thead>
+                <tbody id="paymentTableBody">
+                  {% if check_user == current_user %}
+                    {% for data in partially_paid %}
+                    <tr data-invoice-id="{{ data.id }}">
+                      <!-- Add name attributes to your input fields -->
+                      <td><input type="text" name="pharmacy_name" value="{{ data.pharmacy_name }}" disabled></td>
+                      <td><input type="text" name="invoice_number" value="{{ data.invoice_number }}" disabled></td>
+                      <td><input type="text" class="partiallyTotal" name="invoice_amount" value="{{ data.invoice_amount }}" disabled></td>
+                      {% if data.balance_amount == 0 %}
+                        <td><input type="text" value="Paid" disabled></td>
+                      {% else %}
+                        <td><input type="text" value="Pending" disabled></td>
+                      {% endif %}
+                      <td><input type="text" class="partiallyBalance" name="balance_amount" value="{{ data.balance_amount }}" disabled></td>
+                      <td><input type="text" class="partiallyPayment" name="payment_amount" value="{{ data.payment_amount }}" disabled></td>
+                      
+                      <td> 
+                        <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
+                        <button class="cancelBtn" type="button" style="display: none;">Cancel</button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    {% for data in q %}
+                    <tr data-invoice-id="{{ data.id }}">
+                      <!-- Add name attributes to your input fields -->
+                      <td><input type="text" name="pharmacy_name" value="{{ data.pharmacy_name }}" disabled></td>
+                      <td><input type="text" name="invoice_number" value="{{ data.invoice_number }}" disabled></td>
+                      <td><input type="text" class="partiallyTotal" name="invoice_amount" value="{{ data.invoice_amount }}" disabled></td>
+                      {% if data.balance_amount == 0 %}
+                        <td><input type="text" value="Paid" disabled></td>
+                      {% else %}
+                        <td><input type="text" value="Pending" disabled></td>
+                      {% endif %}
+                      <td><input type="text" class="partiallyBalance" name="balance_amount" value="{{ data.balance_amount }}" disabled></td>
+                      <td><input type="text" class="partiallyPayment" name="payment_amount" value="{{ data.payment_amount }}" disabled></td>
+                      
+                      <td> 
+                        <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
+                        <button class="cancelBtn" type="button" style="display: none;">Cancel</button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>  
+            <a href="{% url 'paymore' %}"><button>more details</button></a>
+          </div>
+  
+          <div class="table-content-right">
+            <div class="table-panel">
+              <h2 class="panel-heading">Payment List</h2>
+  
+              <!-- <form action="" method="post">
+                  {% csrf_token %}
+                  <input type="text" name="search" id="search" placeholder="Search" title= "Search 'all' to get Full Data">
+                  <button type="submit">Search</button>
+              </form> -->
+            </div>
+            <div class="table-cover-right">
+              <table>
+                <thead>
+                  <th>Pharmacy Name</th>
+                  <th>Invoice Amount</th>
+                  <th>Balance Amount</th>
+                  <th>Paid Amount</th>
+                  <th>Action</th>
+                </thead>
+                <tbody id="payTableBody">
+                  {% if check_user == current_user %}
+                    {% for data in debt_paid %}
+                    <tr>
+                      <td><input type="text" name="phmy_name" value="{{data.pharmacy_name}}"disabled></td>
+                      <td><input type="text" name="iv_amount" value="{{data.invoice_amount}}"disabled></td>
+                      <td><input type="text" class = "bal_amount" name="bal_amount" value="{{data.balance_amount}}"disabled></td>
+                      <td><input type="text" class = "pmnt_amount" name="pmnt_amount" value="{{data.payment_amount}}"disabled></td>
+                      <td>
+                        <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
+                        <button class="cancelBtn" type="button" style="display: none;">Cancel</button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                    {% for data in search %}
+                    <tr>
+                      <td><input type="text" name="phmy_name" value="{{data.pharmacy_name}}"disabled></td>
+                      <td><input type="text" name="iv_amount" value="{{data.invoice_amount}}"disabled></td>
+                      <td><input type="text" class = "bal_amount" name="bal_amount" value="{{data.balance_amount}}"disabled></td>
+                      <td><input type="text" class = "pmnt_amount" name="pmnt_amount" value="{{data.payment_amount}}"disabled></td>
+                      <td>
+                        <button class="payBtn" type="button" data-pay-id="{{ data.id }}">Pay</button>
+                        <button class="cancelBtn" type="button" style="display: none;">Cancel</button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+            
+            <a href="{% url 'unpaid_debt' %}"><button>more details</button></a>
+          </div>
+        </div>
 
     <div id="DeleteHistory" class="tabcontent deleted-history">
       <div class="delete-heading">

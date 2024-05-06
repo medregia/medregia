@@ -86,7 +86,7 @@ form{
 }
 .form-group{
   height: 78px;
-  width: 35%;
+  width: 40%;
   /* background-colohwb(240 0% 0%)240, 100%, 50%)lue; */
   display: flex;
   justify-content: center;
@@ -174,7 +174,7 @@ input[type="number"]::-webkit-outer-spin-button{
 
 label~select{
 height:40px;
-width:100%;
+width:92%;
 background-color:transparent;
 color:black;
 border: 1px solid black;
@@ -208,7 +208,15 @@ align-items:center;
 margin-right: 10px;
 }
 
-
+.signup-bottom-field{
+  height: 10vh;
+  width: 100%;
+  /* background-color: orangered; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
 @media (min-width: 449px) and (max-width: 870px) {
   body{
     min-height:80vh;

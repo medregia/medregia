@@ -376,10 +376,8 @@
                 </div>
             
                 <div class="profile-admin-contact containers">
-                    {% for admin in admins %}
                         <label for="name">Contact</label>
                         <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
-                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -394,10 +392,10 @@
                     <i class="fa-solid fa-user"></i>
                     <input type="text"id="currentusername" value="{{request.user}}" name="currentusername" placeholder="Name" readonly>
                 </div>
-            
+             
                 <div class="current-user-phone bottom-containers">
-                    <input type="text"id="Currentphone" value="{{user_profile_data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
                     <i class="fa-solid fa-phone"></i>
+                    <input type="text"id="Currentphone" value="{{user_profile_data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
                 </div>
             
                 <div class="current-user-passwor">

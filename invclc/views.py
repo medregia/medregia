@@ -381,6 +381,13 @@ def index_view(request):
         partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
         debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
         
+    else:
+        admin_invoices = Invoice.objects.filter(user=request.user)
+        full_paid = admin_invoices.filter(balance_amount=0.00).order_by('-id')
+        edit_paid = admin_invoices.filter().order_by('-id')
+        partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+        debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
+        
     if request.method == 'POST':
         query = request.POST.get('payment_list')
         if query is not None:
@@ -451,6 +458,7 @@ def index_view(request):
 
     else:
         invoice_form = InvoiceForm()
+    
 
 
     context = {'form':invoice_form,
@@ -652,13 +660,23 @@ def import_view(request):
     admin_ph = None
     admin_uniqueid = None
     admin_person = None
+    admin_email = None
+    admin_street = None
+    admin_pincode = None
+    admin_dl1 = None
+    admin_dl2 = None
     user_city =None
     user_ph =None
     unique_id = None
     collaborator_admin = None
     completed_data = None
     previous_data = None
-    
+    user_email = None
+    user_street = None
+    user_pincode = None
+    dl1 = None
+    dl2 = None
+
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
         
@@ -686,20 +704,32 @@ def import_view(request):
             unique_id = person.UniqueId
             admin_person = person.user.username
             admin_city = person.City
+            admin_street = person.StreetNumber
+            admin_pincode = person.Pincode
+            admin_dl1 = person.DrugLiceneseNumber1
+            admin_dl2 = person.DrugLiceneseNumber2
+
             get_admin_ph = CustomUser.objects.get(username=collaborator_admin) 
             admin_ph = get_admin_ph.phone_num
             admin_uniqueid = person.UniqueId
-            
+            admin_email = get_admin_ph.email
+
             user = Person.objects.get(user=request.user)
             user_city = user.City
             get_user_ph = CustomUser.objects.get(username=request.user)
             user_ph = get_user_ph.phone_num 
             unique_id = user.UniqueId
+            user_email = get_user_ph.email
+            user_street = user.StreetNumber
+            user_pincode = user.Pincode
+            dl1 = user.DrugLiceneseNumber1
+            dl2 = user.DrugLiceneseNumber2
             
             data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
             overall_data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
         except Exception as a:
-            return messages.error(request,"Something Wrong Please Check",a)    
+            return messages.error(request,"Something Wrong Please Check",a) 
+          
     else:        
         try:
             user = Person.objects.get(user=request.user)
@@ -707,7 +737,12 @@ def import_view(request):
             get_user_ph = CustomUser.objects.get(username=request.user)
             user_ph = get_user_ph.phone_num 
             unique_id = user.UniqueId
-            
+            user_email = get_user_ph.email
+            user_street = user.StreetNumber
+            user_pincode = user.Pincode
+            dl1 = user.DrugLiceneseNumber1
+            dl2 = user.DrugLiceneseNumber2
+
             data = Invoice.objects.filter(user=request.user).order_by('id')
             overall_data = Invoice.objects.filter(user=request.user).order_by('-id')
         except CustomUser.DoesNotExist:
@@ -715,7 +750,7 @@ def import_view(request):
         except Person.DoesNotExist:
             messages.error(request, "Please Update Your Profile and try agin to import export page")
             return redirect("profile")
-        
+
     user_name = request.user
     if request.method == 'POST':
         completed = request.POST.get('completed', False)
@@ -786,6 +821,16 @@ def import_view(request):
     context = {
         'datas': data,
         # 'medicals':medicals,
+        'user_email':user_email,
+        'user_street':user_street,
+        'user_pincode':user_pincode,
+        'dl1':dl1,
+        'dl2':dl2,
+        'admin_email':admin_email,
+        'admin_pincode':admin_pincode,
+        'admin_dl1':admin_dl1,
+        'admin_dl2':admin_dl2,
+        'admin_street':admin_street,
         'completed_data':completed_data,
         'check_user': check_user,
         'request_user': str(request.user),

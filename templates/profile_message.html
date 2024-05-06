@@ -4,11 +4,18 @@
 {% for msg in messages %}
 <div class="profile-message">
   {{msg}}
-  <button
-    class="close-button"
-    onclick="this.parentElement.style.display='none';"
-  >
-    x
-  </button>
 </div>
+
+<script>
+  // Function to hide the message box after 3 seconds
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      var messageDivs = document.querySelectorAll('.profile-message');
+      messageDivs.forEach(function(div) {
+        div.style.display = 'none';
+      });
+    }, 4000); // 3000 milliseconds = 3 seconds
+  });
+</script>
+
 {% endfor %}

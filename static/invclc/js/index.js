@@ -82,7 +82,7 @@ function openpanel(evt, panels) {
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
-    tabcontent[i].style.backgroundColor="rgb(238, 243, 245";
+    tabcontent[i].style.backgroundColor="#EEF3F5";
   }
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {
@@ -95,7 +95,7 @@ function openpanel(evt, panels) {
   }
   if (evt.currentTarget.className.indexOf("active") === -1) {
     evt.currentTarget.className += " active";
-    evt.currentTarget.style.backgroundColor = "rgb(238, 243, 245";
+    evt.currentTarget.style.backgroundColor = "#EEF3F5";
   }
   else {
     evt.currentTarget.style.backgroundColor = "#fff"; 
