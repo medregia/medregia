@@ -179,7 +179,7 @@
                     <div class="export-error">
                         <span class="sidePanelErrors"></span>
                     </div>
-
+                
                     <form action="#" method="post">
                         {% csrf_token %}
 
@@ -187,12 +187,12 @@
                             <!-- <span class="sidePanelErrors"></span> -->
                             <h3>Payment Based</h3>
                             <div class="check-list">
-                                <input type="checkbox" id="completedCheckbox" name="completed" class="checkbox">
+                                <input type="checkbox" name="completed">
                                 <label>completed</label>
                             </div>
 
                             <div class="check-list">
-                                <input type="checkbox" id="AllCheckbox" name="all" class="checkbox">
+                                <input type="checkbox" name="all">
                                 <label>All (Not paid/Not Completed)</label>
                             </div>
 
@@ -204,17 +204,24 @@
                             <h3>Category Based :</h3>
                             <div class="export2-box2-content">
                                 <div class="export-boxes">
-                                    <input type="checkbox" id="pharmacyCheckbox" name="pharmacy" class="checkbox">
-                                    <label for="pharmacyCheckbox">Pharmacy</label>
+                                    <input type="checkbox" name="pharmacy">
+                                    <label>Pharmacy</label>
                                 </div>
+
                                 <div class="export-boxes">
-                                    <input type="checkbox" id="medicalCheckbox" name="medical" class="checkbox">
-                                    <label for="medicalCheckbox">Medical</label>
+                                    <input type="checkbox" name="medical">
+                                    <label>Medical</label>
                                 </div>
+
                                 <div class="export-boxes">
-                                    <input type="checkbox" id="retailerCheckbox" name="retailer" class="checkbox">
-                                    <label for="retailerCheckbox">Retailer</label>
+                                    <input type="checkbox" name="retailer">
+                                    <label>Retailer</label>
                                 </div>
+                            </div>
+                            <div class="other">
+                                <!-- <input type="checkbox" name="others"> -->
+                                <label>Others :</label>
+                                <input type="text" placeholder="eg : User" name="others">
                             </div>
                         </div>
 
