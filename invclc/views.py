@@ -459,6 +459,7 @@ def index_view(request):
 
     else:
         invoice_form = InvoiceForm()
+    
 
 
     context = {'form':invoice_form,
@@ -748,7 +749,7 @@ def import_view(request):
         except Person.DoesNotExist:
             messages.error(request, "Please Update Your Profile and try agin to import export page")
             return redirect("profile")
-    print("dl1 : ",dl1)
+
     user_name = request.user
     if request.method == 'POST':
         completed = request.POST.get('completed', False)

@@ -1,12 +1,23 @@
 {% load static %}
 
 <link rel="stylesheet" href="{% static 'invclc/css/index.css' %}"> 
+
 {% for msg in messages %}
 <div class="overall-message">
   <div class="invoice_message">
-    {{msg}}
+    {{ msg }}
   </div>
-  <button class="close-button" onclick="this.parentElement.style.display='none';"> x </button>
 </div>
-
 {% endfor %}
+
+<script>
+  // Function to hide the message box after 3 seconds
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      var messageDivs = document.querySelectorAll('.overall-message');
+      messageDivs.forEach(function(div) {
+        div.style.display = 'none';
+      });
+    }, 3000); // 3000 milliseconds = 3 seconds
+  });
+</script>
