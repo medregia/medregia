@@ -58,7 +58,7 @@
                                         {{data.ProprietaryName }}
                                     </div>
                                 {% else %}
-                                    <input type="text" name="ProprietaryName" placeholder="ProprietaryName" required id="id_ProprietaryName">
+                                    <input type="text" name="ProprietaryName" placeholder="ProprietaryName" id="id_ProprietaryName">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.ProprietaryName %}
@@ -106,7 +106,7 @@
                                         {{data.DrugLiceneseNumber2 }}
                                     </div>
                                 {% else %}
-                                    <input type="text" name="DrugLiceneseNumber2" placeholder="Drug License Number 2" required id="id_DrugLiceneseNumber2">
+                                    <input type="text" name="DrugLiceneseNumber2" placeholder="Drug License Number 2" id="id_DrugLiceneseNumber2">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.DrugLiceneseNumber2 %}
@@ -122,7 +122,7 @@
                                         {{data.ProprietaryContact }}
                                     </div>
                                 {% else %}
-                                    <input type="text" name="ProprietaryContact" placeholder="Proprietary Contact" required id="id_ProprietaryContact">
+                                    <input type="text" name="ProprietaryContact" placeholder="Proprietary Contact" id="id_ProprietaryContact">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.ProprietaryContact %}
@@ -179,7 +179,7 @@
                                             {{data.City }}
                                         </div>
                                     {% else %}
-                                        {{profile.City}}
+                                        <input type="text" name="City" placeholder="City" id="id_City">
                                     {% endif %}
                                 </div>
 
@@ -190,7 +190,7 @@
                                             {{data.Pincode }}
                                         </div>
                                     {% else %}
-                                        {{profile.Pincode}}
+                                        <input type="text" name="Pincode" placeholder="Pincode" id="id_Pincode">
                                     {% endif %}
                                 </div>
 
@@ -201,7 +201,7 @@
                                             {{data.StreetNumber }}
                                         </div>
                                     {% else %}
-                                        {{profile.StreetNumber}}
+                                        <input type="text" name="StreetNumber" placeholder="Street Name" id="id_StreetNumber">
                                     {% endif %}
                                 </div>
 
@@ -212,7 +212,7 @@
                                             {{data.DoorNumber }}
                                         </div>
                                     {% else %}
-                                        {{profile.DoorNumber}}
+                                        <input type="text" name="DoorNumber" placeholder="Door Number" id="id_DoorNumber">
                                     {% endif %}
                                 </div>
 
@@ -237,7 +237,7 @@
                                     {{data.PharmacistName }}
                                 </div>
                             {% else %}
-                                {{profile.PharmacistName}}
+                                <input type="text" name="PharmacistName" placeholder="Pharmacist Name" id="id_PharmacistName">
                             {% endif %}
                             <span>
                                 {% if profile.errors.PharmacistyName %}
@@ -253,7 +253,7 @@
                                     {{data.RegisteredNumber }}
                                 </div>
                             {% else %}
-                                {{profile.RegisteredNumber}}
+                                <input type="text" name="RegisteredNumber" placeholder="Registered Number" id="id_RegisteredNumber">
                             {% endif %}
                             <span>
                                 {% if profile.errors.RegisteredNumber %}
@@ -269,7 +269,7 @@
                                     {{data.ContactNumber }}
                                 </div>
                             {% else %}
-                                {{profile.ContactNumber}}
+                                <input type="number" name="ContactNumber" placeholder="Contact Number" id="id_ContactNumber">
                             {% endif %}
                             <span>
                                 {% if profile.errors.ContactNumber %}
@@ -362,7 +362,7 @@
 
         {% else %}
             <div class="btn_container">
-                <button id="button" class="submit_btn" type="submit"></button>
+                <button id="submit_button" class="submit_btn" type="button"></button>
             </div>
         {% endif %}
     </div>

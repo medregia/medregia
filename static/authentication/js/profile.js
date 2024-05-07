@@ -87,6 +87,54 @@ fetch('/get-states/') // Endpoint to retrieve states data
         });
     });
 
+
+    // Add an event listener to the button
+  document.getElementById('submit_button').addEventListener('click', function(event) {
+      event.preventDefault(); // Prevent default form submission behavior
+    console.log("clicked")
+      // Get form data
+     const formData = {
+        MedicalShopName: document.getElementById('id_MedicalShopName').value,
+        ProprietaryName: document.getElementById('id_ProprietaryName').value,
+        ProprietaryNumber: document.getElementById('id_ProprietaryNumber').value,
+        ProprietaryContact: document.getElementById('id_ProprietaryContact').value,
+        DrugLiceneseNumber2: document.getElementById('id_DrugLiceneseNumber2').value,
+        DrugLiceneseNumber1: document.getElementById('id_DrugLiceneseNumber1').value,
+        state: document.getElementById('state-dropdown').value,
+        district: document.getElementById('district-dropdown').value,
+        City: document.getElementById('id_City').value,
+        Pincode: document.getElementById('id_Pincode').value,
+        StreetNumber: document.getElementById('id_StreetNumber').value,
+        DoorNumber: document.getElementById('id_DoorNumber').value,
+        PharmacistName: document.getElementById('id_PharmacistName').value,
+        RegisteredNumber: document.getElementById('id_RegisteredNumber').value,
+        ContactNumber: document.getElementById('id_ContactNumber').value
+      };
+
+
+      // Get CSRF token from the page
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+      // Send data to Django backend
+      fetch('/profile/', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken  // Include CSRF token in the header
+          },
+          body: JSON.stringify(formData)
+      })
+      .then(response => response.json())
+      .then(data => {
+          // Handle response from backend if needed
+          console.log(data);
+      })
+      .catch(error => {
+          // Handle errors
+          console.error('Error:', error);
+      });
+  });
+
 });
 
 // for submit button

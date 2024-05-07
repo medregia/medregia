@@ -179,37 +179,69 @@ def profile_view(request):
     
     profile = Person.objects.get(user=current_user)
     
-    form = ProfileForm(instance=profile)
-    if request.method == "POST":
-        form = ProfileForm(request.POST, instance=profile)  
+    if request.method == "POST": 
         data = json.loads(request.body)
         receiver_name = data.get('adminName',None)
+        print("Data : ",data)
+        print("Reciever : ",receiver_name)
         try:
-            receiver = CustomUser.objects.get(username=receiver_name)
-            if receiver and receiver_name is not None:
-                if receiver == request.user:
-                    response_data = {'message': 'Cannot Send Request to Yourself', 'adminName': receiver_name}
-                    # return redirect("profile")
-                    return JsonResponse({'error': response_data}, status=500)
-                
-                # Check if the sender has already sent a request to the receiver
-                existing_request = Notification.objects.filter(sender=request.user, receiver=receiver).exists()
-                if existing_request:
-                    response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
-                    # messages.error(request, f'You have already sent a request to this receiver {receiver_name}.')
-                    # return redirect("profile")
-                    return JsonResponse({'error': response_data}, status=500)
+            if receiver_name is not None:
+                receiver = CustomUser.objects.get(username=receiver_name)
+                if receiver and receiver_name is not None:
+                    if receiver == request.user:
+                        response_data = {'message': 'Cannot Send Request to Yourself', 'adminName': receiver_name}
+                        # return redirect("profile")
+                        return JsonResponse({'error': response_data}, status=500)
 
-                admin = Notification(sender=request.user, receiver=receiver, message="User Request")
-                admin.save()
-                response_data = {'message': 'Request successfully received', 'adminName': receiver_name}
-                return JsonResponse(response_data)
+                    # Check if the sender has already sent a request to the receiver
+                    existing_request = Notification.objects.filter(sender=request.user, receiver=receiver).exists()
+                    if existing_request:
+                        response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
+                        # messages.error(request, f'You have already sent a request to this receiver {receiver_name}.')
+                        # return redirect("profile")
+                        return JsonResponse({'error': response_data}, status=500)
 
-            else:   
+                    admin = Notification(sender=request.user, receiver=receiver, message="User Request")
+                    admin.save()
+                    response_data = {'message': 'Request successfully received', 'adminName': receiver_name}
+                    return JsonResponse(response_data)
+
+                else:   
+                    response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
+                    # messages.error(request, "Admin Request Not Sent")
+                    # return redirect("profile")
+            else:
                 response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
-                # messages.error(request, "Admin Request Not Sent")
-                # return redirect("profile")
-                
+
+            if profile:
+                profile.MedicalShopName = data.get('MedicalShopName', '')  # Ensure single value, with default as empty string
+                profile.ProprietaryName = data.get('ProprietaryName', '')  # Ensure single value, with default as empty string
+                profile.ProprietaryNumber = data.get('ProprietaryNumber', '')  # Ensure single value, with default as empty string
+                profile.ProprietaryContact = data.get('ProprietaryContact', '')  # Ensure single value, with default as empty string
+                profile.DrugLiceneseNumber2 = data.get('DrugLiceneseNumber2', '')  # Ensure single value, with default as empty string
+                profile.DrugLiceneseNumber1 = data.get('DrugLiceneseNumber1', '')  # Ensure single value, with default as empty string
+
+                # Assigning the actual StateModel instance
+                state_id = data.get('state')
+                if state_id:
+                    state_instance = StateModel.objects.get(Pid=state_id)
+                    profile.state = state_instance
+
+                # Similarly for the district field if needed
+
+                profile.City = data.get('City', '')  # Ensure single value, with default as empty string
+                profile.Pincode = data.get('Pincode', '')  # Ensure single value, with default as empty string
+                profile.StreetNumber = data.get('StreetNumber', '')  # Ensure single value, with default as empty string
+                profile.DoorNumber = data.get('DoorNumber', '')  # Ensure single value, with default as empty string
+                profile.PharmacistName = data.get('PharmacistName', '')  # Ensure single value, with default as empty string
+                profile.RegisteredNumber = data.get('RegisteredNumber', '')  # Ensure single value, with default as empty string
+                profile.ContactNumber = data.get('ContactNumber', '')  # Ensure single value, with default as empty string
+
+                profile.save()
+                return JsonResponse({'success': True})
+            else:
+                return JsonResponse({'success': False})
+
         except CustomUser.DoesNotExist:
             response_data = {'message': 'No User Found with the username', 'adminName': receiver_name}
             return JsonResponse({'error': response_data}, status=500)
@@ -219,11 +251,6 @@ def profile_view(request):
             return JsonResponse({'error': response_data}, status=405)
             # messages.error(request, "Error: Duplicate entry for Drug License Number")
             # return redirect("profile") 
-                        
-        if form.is_valid():
-            form.save()
-            messages.success(request, "You Got It ")
-            return redirect("profile")
 
     
     existing_admin = Notification.objects.filter(sender=request.user,is_read=True, request_status=True)
@@ -250,7 +277,6 @@ def profile_view(request):
 
         
     context = {
-        'profile': form, 
         'hide_colaborator':hide_colaborator,
         'user_profile_data': profile_data,
         'district_data': district_data,
