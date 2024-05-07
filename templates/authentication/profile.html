@@ -42,7 +42,7 @@
                                         {{data.MedicalShopName}}
                                     </div>
                                 {% else %}
-                                    {{profile.MedicalShopName}}
+                                    <input type="text" name="MedicalShopName" placeholder="Medical Shop Name" id="id_MedicalShopName">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.MedicalShopName %}
@@ -58,7 +58,7 @@
                                         {{data.ProprietaryName }}
                                     </div>
                                 {% else %}
-                                    {{profile.ProprietaryName }}
+                                    <input type="text" name="ProprietaryName" placeholder="ProprietaryName" required id="id_ProprietaryName">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.ProprietaryName %}
@@ -74,7 +74,7 @@
                                         {{data.DrugLiceneseNumber1 }}
                                     </div>
                                 {% else %}
-                                    {{profile.DrugLiceneseNumber1}}
+                                    <input type="text" name="DrugLiceneseNumber1" placeholder="Drug License Number 1" id="id_DrugLiceneseNumber1">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.DrugLiceneseNumber1 %}
@@ -90,7 +90,7 @@
                                         {{data.ProprietaryNumber }}
                                     </div>
                                 {% else %}
-                                    {{profile.ProprietaryNumber}}
+                                    <input type="text" name="ProprietaryNumber" placeholder="Proprietary Number" id="id_ProprietaryNumber">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.ProprietaryNumber %}
@@ -106,7 +106,7 @@
                                         {{data.DrugLiceneseNumber2 }}
                                     </div>
                                 {% else %}
-                                    {{profile.DrugLiceneseNumber2}}
+                                    <input type="text" name="DrugLiceneseNumber2" placeholder="Drug License Number 2" required id="id_DrugLiceneseNumber2">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.DrugLiceneseNumber2 %}
@@ -122,7 +122,7 @@
                                         {{data.ProprietaryContact }}
                                     </div>
                                 {% else %}
-                                    {{profile.ProprietaryContact}}
+                                    <input type="text" name="ProprietaryContact" placeholder="Proprietary Contact" required id="id_ProprietaryContact">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.ProprietaryContact %}
@@ -146,7 +146,10 @@
                                         </div>
                                     {% else %}
                                         <div class="state_dropdown">
-                                            {{profile.state}}
+                                            <select id="state-dropdown">
+                                                <option value="">Select State</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
                                         </div>
                                     {% endif %}
                                     
@@ -160,7 +163,10 @@
                                         </div>
                                     {% else %}
                                         <div class="district_dropdown">
-                                            {{ profile.district }}
+                                            <select id="district-dropdown">
+                                                <option value="">Select District</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
                                         </div>
                                     {% endif %}
                                     

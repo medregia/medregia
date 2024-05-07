@@ -58,6 +58,34 @@ function sendRequest() {
     .catch(error => console.error("Error:", error));
 }
 
+fetch('/get-states/') // Endpoint to retrieve states data
+    .then(response => response.json())
+    .then(states => {
+        const stateDropdown = document.getElementById('state-dropdown');
+        states.forEach(state => {
+            const option = document.createElement('option');
+            option.value = state.Pid; // Assuming Pid is the ID field
+            option.text = state.Pname;
+            stateDropdown.appendChild(option);
+        });
+    });
+
+    // Event listener for state selection
+    document.getElementById('state-dropdown').addEventListener('change', function() {
+        const stateId = this.value;
+        fetch(`/get-districts/?state=${stateId}`)// Endpoint to retrieve districts based on state
+        .then(response => response.json())
+        .then(districts => {
+            const districtDropdown = document.getElementById('district-dropdown');
+            districtDropdown.innerHTML = '<option value="">Select District</option>'; // Clear previous options
+            districts.forEach(district => {
+                const option = document.createElement('option');
+                option.value = district.Pid; // Assuming Pid is the ID field
+                option.text = district.districtname;
+                districtDropdown.appendChild(option);
+            });
+        });
+    });
 
 });
 

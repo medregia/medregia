@@ -22,8 +22,9 @@ urlpatterns = [
     # password change
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
-    path('get_districts/', views.get_districts, name='get_districts'),
-
+    path('get-states/', views.get_states, name='get_states'),
+    path('get-districts/', views.get_districts, name='get_districts'),
+    path('get-districts/<int:state_id>/', views.get_districts, name='get_districts_by_state'),
 
     #Forget Password Change
     path('reset_password/', auth_views.PasswordResetView.as_view(), name="reset_password"),

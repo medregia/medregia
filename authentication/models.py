@@ -28,9 +28,9 @@ class DistrictModel(models.Model):
         
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=150, unique=True)
-    phone_num = models.CharField(max_length=15, blank=False)
+    phone_num = models.CharField(max_length=15, blank=True)
     email = models.EmailField(unique=True)
-    pin = models.IntegerField(blank=False ,null=True)
+    pin = models.IntegerField(blank=True ,null=True)
     
     STORE_TYPES = [
         ('retailer', 'Retailer'),
@@ -39,7 +39,7 @@ class CustomUser(AbstractUser):
         ('medical', 'Medical'),
         ('others', 'Others'),
     ]
-    store_type = models.CharField(max_length=50, choices=STORE_TYPES,null=False,blank=False)
+    store_type = models.CharField(max_length=50, choices=STORE_TYPES,null=True,blank=True)
     other_value = models.CharField(max_length=50 ,null=True,blank=True)
 
     groups = models.ManyToManyField(
@@ -67,26 +67,26 @@ class CustomUser(AbstractUser):
     
 class Person(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
-    MedicalShopName = models.CharField(max_length=100, blank=False, null=False,)
-    ProprietaryName = models.CharField(max_length=100, blank=False, null=False,)
-    ProprietaryNumber = models.CharField(max_length=100, blank=False, null=False,)
-    ProprietaryContact = models.CharField(max_length=100, blank=False, null=False)
-    DrugLiceneseNumber2 = models.CharField(max_length=100, blank=False, null=False,)
-    DrugLiceneseNumber1 = models.CharField(max_length=100, blank=False, null=False,)
+    MedicalShopName = models.CharField(max_length=100, blank=True, null=True,)
+    ProprietaryName = models.CharField(max_length=100, blank=True, null=True,)
+    ProprietaryNumber = models.CharField(max_length=100, blank=True, null=True,)
+    ProprietaryContact = models.CharField(max_length=100, blank=True, null=True)
+    DrugLiceneseNumber2 = models.CharField(max_length=100, blank=True, null=True,)
+    DrugLiceneseNumber1 = models.CharField(max_length=100, blank=True, null=True,)
 
     # Registered Address
     state = models.ForeignKey(StateModel, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(DistrictModel, on_delete=models.SET_NULL, null=True, blank=True)
-    City = models.CharField(max_length=100, blank=False, null=False)
-    Pincode = models.CharField(max_length=100, blank=False, null=False)
+    City = models.CharField(max_length=100, blank=True, null=True)
+    Pincode = models.CharField(max_length=100, blank=True, null=True)
     StreetNumber = models.CharField(max_length=100, blank=True, null=True)
     DoorNumber = models.CharField(max_length=100, blank=True, null=True)
 
-    PharmacistName = models.CharField(max_length=100, blank=False, null=False)
-    RegisteredNumber = models.CharField(max_length=100, blank=False, null=False,)
-    ContactNumber = models.CharField(max_length=15, blank=False, null=False)
+    PharmacistName = models.CharField(max_length=100, blank=True, null=True)
+    RegisteredNumber = models.CharField(max_length=100, blank=True, null=True,)
+    ContactNumber = models.CharField(max_length=15, blank=True, null=True)
 
-    UniqueId = models.CharField(max_length=100, blank=True, null=False,)
+    UniqueId = models.CharField(max_length=100, blank=True, null=True,)
 
     def __str__(self):
         return self.MedicalShopName
@@ -128,7 +128,7 @@ class Notification(models.Model):
     receiver = models.ForeignKey(CustomUser, related_name='received_notifications', on_delete=models.CASCADE)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=False)
+    is_read = models.BooleanField(default=True)
     request_status = models.BooleanField(default = True)
     class Meta:
         unique_together = ('sender', 'receiver')

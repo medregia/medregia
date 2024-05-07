@@ -301,11 +301,21 @@ def change_pin(request):
     return render(request, 'authentication/change_pin.html')
 
 
-def get_districts(request):
-    state_id = request.GET.get('state')
-    districts = DistrictModel.objects.filter(state_id=state_id)
-    district_list = [{'id': d.id, 'name': d.districtname} for d in districts]
-    return JsonResponse(district_list, safe=False)
+def get_districts(request, state_id=None):
+    if state_id is None:
+        state_id = request.GET.get('state')
+
+    if state_id is not None:
+        districts = DistrictModel.objects.filter(state_id=state_id)
+        district_list = [{'Pid': district.Pid, 'districtname': district.districtname} for district in districts]
+        return JsonResponse(district_list, safe=False)
+    else:
+        return JsonResponse({'error': 'State ID is required'}, status=400)
+
+def get_states(request):
+    states = StateModel.objects.all()
+    state_list = [{'Pid': state.Pid, 'Pname': state.Pname} for state in states]
+    return JsonResponse(state_list, safe=False)
 
 @login_required(login_url='/')
 def confirm_admin(request):
