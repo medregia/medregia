@@ -299,6 +299,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // Function to update table with JSON data
+function formatDate(dateString) {
+    // Parse the date string into a Date object
+    var date = new Date(dateString);
+
+    // Extract day, month, and year components
+    var day = date.getDate();
+    var month = date.getMonth() + 1; // Months are zero-based
+    var year = date.getFullYear();
+
+    // Ensure day and month are two digits
+    if (day < 10) {
+        day = '0' + day;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+
+    // Return the formatted date string
+    return day + '/' + month + '/' + year;
+}
+
 function updateTableWithData(data) {
     var tableBody = document.querySelector('#export-data tbody');
     var tableHeader = document.querySelector('#export-data thead tr');
@@ -352,7 +373,12 @@ function updateTableWithData(data) {
                 // Create table cells based on keys
                 keys.forEach(function(key) {
                     var cell = document.createElement('td');
-                    cell.textContent = item[key];
+                    // Check if the key is 'invoice_date' and format the date
+                    if (key === 'today_date') {
+                        cell.textContent = formatDate(item[key]);
+                    } else {
+                        cell.textContent = item[key];
+                    }
                     row.appendChild(cell);
                 });
 
