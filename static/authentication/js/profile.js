@@ -8,6 +8,67 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     unique_id_span.style.backgroundColor = "green";
   }
+
+  document.getElementById("admin-input").addEventListener("keypress", function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent default form submission
+        // Call the function to send the request here
+        sendRequest();
+    }
+});
+
+document.getElementById("admin-input").addEventListener("input", function() {
+  document.getElementById("send-request-button").addEventListener("input", function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent default form submission
+      // Call the function to send the request here
+      sendRequest();
+  }
+  })
+});
+
+document.getElementById("send-request-button").addEventListener("click", function() {
+  sendRequest();
+});
+
+function sendRequest() {
+  var adminName = document.getElementById("admin-input").value;
+
+  // Get the CSRF token from the form
+  var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+  fetch("/profile/", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken  // Include the CSRF token in the headers
+      },
+      body: JSON.stringify({ adminName: adminName })
+  })
+  .then(response => response.json())
+  .then(data => {
+      // Update the response container with the received data
+      let displayMessage = document.getElementById("response-container");
+      console.log(data);
+      if (data.error){
+          console.log("Error Message : ", data.error.message, data.error.adminName);
+          displayMessage.textContent = data.error.message + ' ' +`"${data.error.adminName}"`;
+          displayMessage.style.color = "red";
+      }
+      if (data.message){
+          console.log("Message : ", data.message);
+          displayMessage.textContent = data.message + ' ' + `"${data.adminName}"`;
+          displayMessage.style.color = "green";
+      }
+
+      setTimeout(function(){
+        displayMessage.style.display = "None"
+      },3000)
+  })
+  .catch(error => console.error("Error:", error));
+}
+
+
 });
 
 // for submit button

@@ -339,9 +339,10 @@
                                         {% csrf_token %}
                                         <label for="Username">Collaborate:</label>
                                         <div class="makeus-admin-container">
-                                            <input type="text" placeholder="Enter User Name Want to Admin " name="admin">
-                                            <button class="button-paper" role="submit">Send Request</button></a>   
+                                            <input type="text" placeholder="Enter User Name Want to Admin" id="admin-input" name = "adminName">
+                                            <button class="button-paper" type="button" id="send-request-button">Send Request</button>
                                         </div>
+                                        <div id="response-container"></div>
                                     </form>
                                 {% endif %}
                             </div>

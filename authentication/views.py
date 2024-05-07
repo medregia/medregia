@@ -181,35 +181,44 @@ def profile_view(request):
     
     form = ProfileForm(instance=profile)
     if request.method == "POST":
-        form = ProfileForm(request.POST, instance=profile)
-        receiver_name = request.POST.get('admin', None)
+        form = ProfileForm(request.POST, instance=profile)  
+        data = json.loads(request.body)
+        receiver_name = data.get('adminName',None)
         try:
             receiver = CustomUser.objects.get(username=receiver_name)
             if receiver and receiver_name is not None:
                 if receiver == request.user:
-                    messages.error(request, f"Cannot Send Request to Yourself ({receiver_name})")
-                    return redirect("profile")
+                    response_data = {'message': 'Cannot Send Request to Yourself', 'adminName': receiver_name}
+                    # return redirect("profile")
+                    return JsonResponse({'error': response_data}, status=500)
                 
                 # Check if the sender has already sent a request to the receiver
                 existing_request = Notification.objects.filter(sender=request.user, receiver=receiver).exists()
                 if existing_request:
-                    messages.error(request, f'You have already sent a request to this receiver {receiver_name}.')
-                    return redirect("profile") 
+                    response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
+                    # messages.error(request, f'You have already sent a request to this receiver {receiver_name}.')
+                    # return redirect("profile")
+                    return JsonResponse({'error': response_data}, status=500)
 
                 admin = Notification(sender=request.user, receiver=receiver, message="User Request")
                 admin.save()
-                messages.success(request, f"Collaborate Request Sent to User'{receiver}'")
-                return redirect("index")
+                response_data = {'message': 'Request successfully received', 'adminName': receiver_name}
+                return JsonResponse(response_data)
 
-            else: 
-                messages.error(request, "Admin Request Not Sent")
-                return redirect("profile")
+            else:   
+                response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
+                # messages.error(request, "Admin Request Not Sent")
+                # return redirect("profile")
                 
         except CustomUser.DoesNotExist:
-            messages.error(request, f"No User Found with the username '{receiver_name}'")
+            response_data = {'message': 'No User Found with the username', 'adminName': receiver_name}
+            return JsonResponse({'error': response_data}, status=500)
+            # messages.error(request, f"No User Found with the username '{receiver_name}'")
         except IntegrityError as e:
-            messages.error(request, "Error: Duplicate entry for Drug License Number")
-            return redirect("profile") 
+            response_data = {'message': 'Request Already Sended', 'adminName': receiver_name}
+            return JsonResponse({'error': response_data}, status=405)
+            # messages.error(request, "Error: Duplicate entry for Drug License Number")
+            # return redirect("profile") 
                         
         if form.is_valid():
             form.save()
