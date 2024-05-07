@@ -679,18 +679,14 @@ span.header-error{
     margin-top: -41px;
   }
 } */
-@media(max-width:1441px){
+/* @media(max-width:1441px){
   .header-bottom form {
     height: 15vh;
 }
 .main-body .panel-content .tab {
   height: 4vh;
 }
-.tabcontent {
-  margin-top: -28px;
-}
-}
-
+} */
 @media(max-width:1025px){
   .header-bottom form {
     height: 12vh;
@@ -704,11 +700,6 @@ span.header-error{
   }
 }
 
-@media (max-width:1000px){
-  .header-bottom form{
-    width:100%;
-  }
-}
 
 @media (min-width: 425px) and (max-width: 999px){
   .header-bottom form table th,

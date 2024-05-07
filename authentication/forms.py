@@ -17,7 +17,6 @@ class SignUpForm(UserCreationForm):
         ('manufacturer', 'Manufacturer'),
         ('pharmacy', 'Pharmacy'),
         ('medical', 'Medical'),
-        ('user','User'),
         ('others', 'Others'),
     ]
     store_type = forms.ChoiceField(choices=STORE_TYPES)
