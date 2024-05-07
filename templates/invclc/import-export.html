@@ -187,13 +187,13 @@
                             <!-- <span class="sidePanelErrors"></span> -->
                             <h3>Payment Based</h3>
                             <div class="check-list">
-                                <input type="checkbox" name="completed">
-                                <label>completed</label>
+                                <input type="checkbox" name="completed" id="id_completed">
+                                <label for="id_completed">Completed (Full Paid)</label>
                             </div>
 
                             <div class="check-list">
-                                <input type="checkbox" name="all">
-                                <label>All (Not paid/Not Completed)</label>
+                                <input type="checkbox" name="all" id="id_notpaid">
+                                <label for="id_notpaid">All (Not paid/Not Completed)</label>
                             </div>
 
                             <button type="button" class="export-reset">Reset</button>
@@ -204,24 +204,24 @@
                             <h3>Category Based :</h3>
                             <div class="export2-box2-content">
                                 <div class="export-boxes">
-                                    <input type="checkbox" name="pharmacy">
-                                    <label>Pharmacy</label>
+                                    <input type="checkbox" name="pharmacy" id="id_pharmacy">
+                                    <label for="id_pharmacy">Pharmacy</label>
                                 </div>
 
                                 <div class="export-boxes">
-                                    <input type="checkbox" name="medical">
-                                    <label>Medical</label>
+                                    <input type="checkbox" name="medical" id="id_medical">
+                                    <label for="id_medical">Medical</label>
                                 </div>
 
                                 <div class="export-boxes">
-                                    <input type="checkbox" name="retailer">
-                                    <label>Retailer</label>
+                                    <input type="checkbox" name="retailer" id="id_retailer">
+                                    <label for="id_retailer">Retailer</label>
                                 </div>
                             </div>
                             <div class="other">
                                 <!-- <input type="checkbox" name="others"> -->
-                                <label>Others :</label>
-                                <input type="text" placeholder="eg : User" name="others">
+                                <label for="id_others">Others :</label>
+                                <input type="text" placeholder="eg : User" name="others" id="id_others">
                             </div>
                         </div>
 

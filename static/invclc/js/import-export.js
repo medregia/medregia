@@ -310,6 +310,19 @@ function updateTableWithData(data) {
             // Clear existing header
             tableHeader.innerHTML = '';
 
+            // Add a checkbox field to the header
+            var checkboxTh = document.createElement('th');
+            var headerCheckbox = document.createElement('input');
+            headerCheckbox.type = 'checkbox';
+            headerCheckbox.addEventListener('click', function() {
+                var checkboxes = document.querySelectorAll('#export-data tbody input[type="checkbox"]');
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = headerCheckbox.checked;
+                });
+            });
+            checkboxTh.appendChild(headerCheckbox);
+            tableHeader.appendChild(checkboxTh);
+
             // Get keys from the first item in the data
             var keys = Object.keys(data[0]);
 
@@ -320,9 +333,21 @@ function updateTableWithData(data) {
                 tableHeader.appendChild(th);
             });
 
+            // Add "Remark" column to the header
+            var remarkTh = document.createElement('th');
+            remarkTh.textContent = 'Remark';
+            tableHeader.appendChild(remarkTh);
+
             // Populate table rows
             data.forEach(function(item) {
                 var row = document.createElement('tr');
+
+                // Add a checkbox to each row
+                var checkboxCell = document.createElement('td');
+                var checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkboxCell.appendChild(checkbox);
+                row.appendChild(checkboxCell);
 
                 // Create table cells based on keys
                 keys.forEach(function(key) {
@@ -330,6 +355,11 @@ function updateTableWithData(data) {
                     cell.textContent = item[key];
                     row.appendChild(cell);
                 });
+
+                // Add empty "Remark" cell
+                var remarkCell = document.createElement('td');
+                remarkCell.textContent = ''; // or any default value for remark
+                row.appendChild(remarkCell);
 
                 tableBody.appendChild(row);
             });
@@ -340,6 +370,7 @@ function updateTableWithData(data) {
         console.error('#export-data tbody or thead tr not found');
     }
 }
+
 
 
 function updateTableWithCategoryData(data) {
