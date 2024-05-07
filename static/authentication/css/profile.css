@@ -336,6 +336,11 @@ body{
   border-bottom: 1px solid black;
   background-color: transparent;
 }
+.respone-container{
+  height: 20px;
+  width: 100%;
+  /* background-color:red; */
+}
 .profile_btn {
   animation: 1.5s ease infinite alternate running shimmer;
   background: linear-gradient(90deg, #FFE27D 0%, #64E3FF 30%, #9192FF 85%);
