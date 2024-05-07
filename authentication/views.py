@@ -182,8 +182,7 @@ def profile_view(request):
     if request.method == "POST": 
         data = json.loads(request.body)
         receiver_name = data.get('adminName',None)
-        print("Data : ",data)
-        print("Reciever : ",receiver_name)
+        # print(data)
         try:
             if receiver_name is not None:
                 receiver = CustomUser.objects.get(username=receiver_name)
@@ -221,14 +220,16 @@ def profile_view(request):
                 profile.DrugLiceneseNumber2 = data.get('DrugLiceneseNumber2', '')  # Ensure single value, with default as empty string
                 profile.DrugLiceneseNumber1 = data.get('DrugLiceneseNumber1', '')  # Ensure single value, with default as empty string
 
-                # Assigning the actual StateModel instance
                 state_id = data.get('state')
                 if state_id:
                     state_instance = StateModel.objects.get(Pid=state_id)
                     profile.state = state_instance
 
-                # Similarly for the district field if needed
-
+                district_id = data.get('district')
+                if district_id:
+                    district_instance = StateModel.objects.get(Pid=district_id)
+                    profile.state = district_instance
+                    
                 profile.City = data.get('City', '')  # Ensure single value, with default as empty string
                 profile.Pincode = data.get('Pincode', '')  # Ensure single value, with default as empty string
                 profile.StreetNumber = data.get('StreetNumber', '')  # Ensure single value, with default as empty string

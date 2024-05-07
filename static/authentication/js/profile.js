@@ -91,11 +91,10 @@ fetch('/get-states/') // Endpoint to retrieve states data
     // Add an event listener to the button
   document.getElementById('submit_button').addEventListener('click', function(event) {
       event.preventDefault(); // Prevent default form submission behavior
-    console.log("clicked")
+      console.log("clicked")
+      console.log(document.getElementById('id_MedicalShopName'));
       // Get form data
      const formData = {
-        MedicalShopName: document.getElementById('id_MedicalShopName').value,
-        ProprietaryName: document.getElementById('id_ProprietaryName').value,
         ProprietaryNumber: document.getElementById('id_ProprietaryNumber').value,
         ProprietaryContact: document.getElementById('id_ProprietaryContact').value,
         DrugLiceneseNumber2: document.getElementById('id_DrugLiceneseNumber2').value,
@@ -111,6 +110,14 @@ fetch('/get-states/') // Endpoint to retrieve states data
         ContactNumber: document.getElementById('id_ContactNumber').value
       };
 
+      const medicalShopNameElement = document.getElementById('id_MedicalShopName');
+      const ProprietaryNameElement = document.getElementById('id_ProprietaryName');
+      if (medicalShopNameElement) {
+          formData.MedicalShopName = medicalShopNameElement.value;
+      }
+      if (ProprietaryNameElement) {
+          formData.ProprietaryName = ProprietaryNameElement.value;
+      }
 
       // Get CSRF token from the page
       const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;

@@ -140,35 +140,23 @@
                             <div class="profile-left-bottom-main">
                                 <div class="left-bottom-state left-bottom-containers">
                                     <label for="Medicalshop Name">State :</label>
-                                    {% if data.state and data.state != "" %}
-                                        <div class="profile-data">
-                                            {{data.state }}
-                                        </div>
-                                    {% else %}
-                                        <div class="state_dropdown">
-                                            <select id="state-dropdown">
-                                                <option value="">Select State</option>
-                                                <!-- Add options dynamically using JavaScript -->
-                                            </select>
-                                        </div>
-                                    {% endif %}
+                                    <div class="state_dropdown">
+                                        <select id="state-dropdown">
+                                            <option value="">Select State</option>
+                                            <!-- Add options dynamically using JavaScript -->
+                                        </select>
+                                    </div>
                                     
                                 </div>
 
                                 <div class="left-bottom-district left-bottom-containers">
                                     <label for="Medicalshop Name">District :</label>
-                                    {% if data.district and data.district != "" %}
-                                        <div class="profile-data">
-                                            {{data.district }}
-                                        </div>
-                                    {% else %}
-                                        <div class="district_dropdown">
-                                            <select id="district-dropdown">
-                                                <option value="">Select District</option>
-                                                <!-- Add options dynamically using JavaScript -->
-                                            </select>
-                                        </div>
-                                    {% endif %}
+                                    <div class="district_dropdown">
+                                        <select id="district-dropdown">
+                                            <option value="">Select District</option>
+                                            <!-- Add options dynamically using JavaScript -->
+                                        </select>
+                                    </div>
                                     
                                 </div>
 
