@@ -100,20 +100,34 @@ def signup_view(request):
             return redirect("/")
     return render(request, 'authentication/signup.html', {'form': form})
 
+from django import forms
+
+class InsensitiveAuthentication(AuthenticationForm):
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if username:
+            try:
+                user = CustomUser.objects.get(username__iexact=username)
+                if user.username == username:
+                    return username
+            except CustomUser.DoesNotExist:
+                pass
+        raise forms.ValidationError("Invalid username or password")
 
 def login_view(request):
     if request.method == "POST":
-        login_form = AuthenticationForm(request, data=request.POST)
+        login_form = InsensitiveAuthentication(request, data=request.POST)
         if login_form.is_valid():
             user = login_form.get_user()
             login(request, user)
             return redirect('index/')
     else:
-        login_form = AuthenticationForm(request)
+        login_form = InsensitiveAuthentication(request)
         login_form.fields['username'].widget.attrs.update({'placeholder': 'Username'})
         login_form.fields['password'].widget.attrs.update({'placeholder': 'Password'})
         
     return render(request, 'authentication/login.html', {'form': login_form})
+
 
 def phone_login_view(request):
     if request.user.is_authenticated:
