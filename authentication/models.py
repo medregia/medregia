@@ -17,6 +17,7 @@ class StateModel(models.Model):
         return self.Pname
    
 class DistrictModel(models.Model):
+    id = models.IntegerField(primary_key=True)
     state = models.ForeignKey(StateModel, on_delete=models.CASCADE,null=True)
     Pid = models.IntegerField()
     LocationType = models.CharField(max_length=100)
@@ -24,7 +25,6 @@ class DistrictModel(models.Model):
     
     def __str__(self):
         return self.districtname
-
         
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=150, unique=True)

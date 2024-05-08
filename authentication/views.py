@@ -169,9 +169,9 @@ def profile_view(request):
         for items in district_data:
             if items['LocationType'] == 'District':
                 state_instance = StateModel.objects.get(Pid=items['Pid'])
-                district_instance = DistrictModel.objects.filter(Pid=items['Pid'], LocationType=items['LocationType'], districtname=items['districtname']).first()
+                district_instance = DistrictModel.objects.filter(id=items['ID'],Pid=items['Pid'], LocationType=items['LocationType'], districtname=items['districtname']).first()
                 if not district_instance:
-                    district_instance = DistrictModel.objects.create(Pid=items['Pid'], LocationType=items['LocationType'], districtname=items['districtname'], state=state_instance)  # set the state field to the state instance
+                    district_instance = DistrictModel.objects.create(id=items['ID'],Pid=items['Pid'], LocationType=items['LocationType'], districtname=items['districtname'], state=state_instance)  # set the state field to the state instance
 
     except Exception as e:
         return messages.error(request,"Error State and District upload to Database",e)
@@ -225,6 +225,8 @@ def profile_view(request):
                     # return redirect("profile")
             else:
                 response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
+                            
+            
             if profile:
                 profile.MedicalShopName = data.get('MedicalShopName', '')  
                 profile.ProprietaryName = data.get('ProprietaryName', '')  
@@ -235,24 +237,25 @@ def profile_view(request):
 
                 state_id = data.get('state')
                 district_id = data.get('district')
+                districtKey = data.get('districtkey')
+                # print("districtKey : ",districtKey)
+                # print(data)
+                # print("State : ",state_id)
+                # print("District : ",district_id)
 
-                print(data)
-                print("State : ",state_id)
-                print("District : ",district_id)
+                state_id = data.get('state')
+                if state_id:
+                    state_instance = StateModel.objects.get(Pid=state_id)
+                    print("state_instance: ", state_instance)
+                    profile.state = state_instance
 
-                state_instance = StateModel.objects.get(Pid=state_id)
-
-                try:
-                    district_instance = DistrictModel.objects.get(state=state_instance, Pid=district_id)
-                except DistrictModel.DoesNotExist:
-                    return JsonResponse({'success': False, 'message': 'District Does not Exist'})
-                except DistrictModel.MultipleObjectsReturned:   
-                    print("Multiple DistrictModel objects returned for state_id: ", state_id, " and district_id: ", district_id)
-                    # Here, we are assuming you want to take the first district returned
-                    district_instance = DistrictModel.objects.filter(state=state_instance, Pid=district_id).first()
-
-                # Now, we need to assign the state_instance, not the district_instance, to profile.state
-                profile.state = state_instance
+                if district_id and districtKey:  # Check if both district_id and districtKey are present
+                    try:
+                        district_instance = DistrictModel.objects.get(Pid=district_id, id=districtKey)
+                        print("district_instance: ", district_instance)
+                        profile.district = district_instance
+                    except DistrictModel.DoesNotExist:
+                        print("DistrictModel with the provided districtKey does not exist.")
 
                 profile.City = data.get('City', '')  
                 profile.Pincode = data.get('Pincode', '')  
@@ -262,8 +265,7 @@ def profile_view(request):
                 profile.RegisteredNumber = data.get('RegisteredNumber', '')  
                 profile.ContactNumber = data.get('ContactNumber', '')  
 
-                # Assign the district_instance to a different field, assuming profile.district is the appropriate field
-                profile.district = district_instance
+                # Assign the district_instance to a different field, assuming profile.district is the appropriate fiel
 
                 profile.save()
                 return JsonResponse({'success': True})
@@ -354,13 +356,17 @@ def change_pin(request):
     return render(request, 'authentication/change_pin.html')
 
 
-def get_districts(request, state_id=None):
+def get_districts(request, state_id=None,district_id = None):
     if state_id is None:
         state_id = request.GET.get('state')
+    if district_id is None:
+        district_id = request.GET.get('district_id')
+        print(district_id)
+    
 
     if state_id is not None:
         districts = DistrictModel.objects.filter(state_id=state_id)
-        district_list = [{'Pid': district.Pid, 'districtname': district.districtname} for district in districts]
+        district_list = [{'Pid': district.Pid, 'districtname': district.districtname,'id':district.id} for district in districts]
         return JsonResponse(district_list, safe=False)
     else:
         return JsonResponse({'error': 'State ID is required'}, status=400)

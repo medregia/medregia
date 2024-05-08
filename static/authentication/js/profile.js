@@ -70,116 +70,139 @@ fetch('/get-states/') // Endpoint to retrieve states data
         });
     });
 
-    // Event listener for state selection
-    document.getElementById('state-dropdown').addEventListener('change', function() {
-        const stateId = this.value;
-        fetch(`/get-districts/?state=${stateId}`)// Endpoint to retrieve districts based on state
+// Event listener for state selection
+document.getElementById('state-dropdown').addEventListener('change', function() {
+    const stateId = this.value;
+    fetch(`/get-districts/?state=${stateId}`) // Endpoint to retrieve districts based on state
+    .then(response => response.json())
+    .then(districts => {
+        const districtDropdown = document.getElementById('district-dropdown');
+        districtDropdown.innerHTML = '<option value="">Select District</option>'; // Clear previous options
+        districts.forEach(district => {
+            const option = document.createElement('option');
+            option.value = district.Pid; // Assuming Pid is the ID field
+            option.text = district.districtname;
+            option.id = district.id; // Set the ID for each option
+            districtDropdown.appendChild(option);
+        });
+    }); 
+});
+
+
+let districtId = ''
+
+document.getElementById('district-dropdown').addEventListener('change', function() {
+    const selectedIndex = this.selectedIndex; // Get the index of the selected option
+    const selectedOption = this.options[selectedIndex]; // Get the selected option
+    districtId = selectedOption.id; // Retrieve the ID attribute of the selected option
+    // Now you can use districtId in your logic, such as passing it to another endpoint or performing any other action you need
+    // For example, you can fetch data based on the selected district ID
+});
+
+// Add an event listener to the button
+document.getElementById('submit_button').addEventListener('click', function(event) {
+    event.preventDefault(); // Prevent default form submission behavior
+    // Get form data
+    const formData = {};
+
+    const medicalShopNameElement = document.getElementById('id_MedicalShopName');
+    const ProprietaryNameElement = document.getElementById('id_ProprietaryName');
+    const ProprietaryNumberElement = document.getElementById('id_ProprietaryNumber');
+    const ProprietaryContactElement = document.getElementById('id_ProprietaryContact');
+    const DrugLiceneseNumber2Element = document.getElementById('id_DrugLiceneseNumber2');
+    const DrugLiceneseNumber1Element = document.getElementById('id_DrugLiceneseNumber1');
+    const stateElement = document.getElementById('state-dropdown');
+    const districtElement = document.getElementById('district-dropdown');
+    const CityElement = document.getElementById('id_City');
+    const PincodeElement = document.getElementById('id_Pincode');
+    const StreetNumberElement = document.getElementById('id_StreetNumber');
+    const DoorNumberElement = document.getElementById('id_DoorNumber');
+    const PharmacistNameElement = document.getElementById('id_PharmacistName');
+    const RegisteredNumberElement = document.getElementById('id_RegisteredNumber');
+    const ContactNumberElement = document.getElementById('id_ContactNumber');
+
+    if (medicalShopNameElement) {
+        formData.MedicalShopName = medicalShopNameElement.value;
+    }
+    if (ProprietaryNameElement) {
+        formData.ProprietaryName = ProprietaryNameElement.value;
+    }
+    if (ProprietaryNumberElement) {
+        formData.ProprietaryNumber = ProprietaryNumberElement.value;
+    }
+    if (ProprietaryContactElement) {
+        formData.ProprietaryContact = ProprietaryContactElement.value;
+    }
+    if (DrugLiceneseNumber2Element) {
+        formData.DrugLiceneseNumber2 = DrugLiceneseNumber2Element.value;
+    }
+    if (DrugLiceneseNumber1Element) {
+        formData.DrugLiceneseNumber1 = DrugLiceneseNumber1Element.value;
+    }
+    if (stateElement) {
+        formData.state = stateElement.value;
+    }
+    if (districtElement) {
+        formData.district = districtElement.value;
+    }
+    if (CityElement) {
+        formData.City = CityElement.value;
+    }
+    if (PincodeElement) {
+        formData.Pincode = PincodeElement.value;
+    }
+    if (StreetNumberElement) {
+        formData.StreetNumber = StreetNumberElement.value;
+    }
+    if (DoorNumberElement) {
+        formData.DoorNumber = DoorNumberElement.value;
+    }
+    if (PharmacistNameElement) {
+        formData.PharmacistName = PharmacistNameElement.value;
+    }
+    if (RegisteredNumberElement) {
+        formData.RegisteredNumber = RegisteredNumberElement.value;
+    }
+    if (ContactNumberElement) {
+        formData.ContactNumber = ContactNumberElement.value;
+    }
+
+    // Get CSRF token from the page
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    if (!districtId) {
+        // Set default districtId here
+        // For example, you can set it to the first option's id
+        districtId = ''
+    }
+    // Send data to Django backend
+    sendingData(formData, csrfToken, districtId);
+    
+});
+
+
+function sendingData(formData, csrf, districtId) {
+        formData.districtkey = districtId
+        fetch('/profile/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrf
+            },
+            body: JSON.stringify(formData)
+        })
         .then(response => response.json())
-        .then(districts => {
-            const districtDropdown = document.getElementById('district-dropdown');
-            districtDropdown.innerHTML = '<option value="">Select District</option>'; // Clear previous options
-            districts.forEach(district => {
-                const option = document.createElement('option');
-                option.value = district.Pid; // Assuming Pid is the ID field
-                option.text = district.districtname;
-                districtDropdown.appendChild(option);
-            });
-        }); 
-    });
-
-
-    // Add an event listener to the button
-  document.getElementById('submit_button').addEventListener('click', function(event) {
-      event.preventDefault(); // Prevent default form submission behavior
-      console.log("clicked")
-      console.log(document.getElementById('id_MedicalShopName'));
-      // Get form data
-     const formData = {};
-
-      const medicalShopNameElement = document.getElementById('id_MedicalShopName');
-      const ProprietaryNameElement = document.getElementById('id_ProprietaryName');
-      const ProprietaryNumberElement = document.getElementById('id_ProprietaryNumber');
-      const ProprietaryContactElement = document.getElementById('id_ProprietaryContact');
-      const DrugLiceneseNumber2Element = document.getElementById('id_DrugLiceneseNumber2');
-      const DrugLiceneseNumber1Element = document.getElementById('id_DrugLiceneseNumber1');
-      const stateElement = document.getElementById('state-dropdown');
-      const districtElement = document.getElementById('district-dropdown');
-      const CityElement = document.getElementById('id_City');
-      const PincodeElement = document.getElementById('id_Pincode');
-      const StreetNumberElement = document.getElementById('id_StreetNumber');
-      const DoorNumberElement = document.getElementById('id_DoorNumber');
-      const PharmacistNameElement = document.getElementById('id_PharmacistName');
-      const RegisteredNumberElement = document.getElementById('id_RegisteredNumber');
-      const ContactNumberElement = document.getElementById('id_ContactNumber');
-
-      if (medicalShopNameElement) {
-          formData.MedicalShopName = medicalShopNameElement.value;
-      }
-      if (ProprietaryNameElement) {
-          formData.ProprietaryName = ProprietaryNameElement.value;
-      }
-      if (ProprietaryNumberElement) {
-          formData.ProprietaryNumber = ProprietaryNumberElement.value;
-      }
-      if (ProprietaryContactElement) {
-          formData.ProprietaryContact = ProprietaryContactElement.value;
-      }
-      if (DrugLiceneseNumber2Element) {
-          formData.DrugLiceneseNumber2 = DrugLiceneseNumber2Element.value;
-      }
-      if (DrugLiceneseNumber1Element) {
-          formData.DrugLiceneseNumber1 = DrugLiceneseNumber1Element.value;
-      }
-      if (stateElement) {
-          formData.state = stateElement.value;
-      }
-      if (districtElement) {
-          formData.district = districtElement.value;
-      }
-      if (CityElement) {
-          formData.City = CityElement.value;
-      }
-      if (PincodeElement) {
-          formData.Pincode = PincodeElement.value;
-      }
-      if (StreetNumberElement) {
-          formData.StreetNumber = StreetNumberElement.value;
-      }
-      if (DoorNumberElement) {
-          formData.DoorNumber = DoorNumberElement.value;
-      }
-      if (PharmacistNameElement) {
-          formData.PharmacistName = PharmacistNameElement.value;
-      }
-      if (RegisteredNumberElement) {
-          formData.RegisteredNumber = RegisteredNumberElement.value;
-      }
-      if (ContactNumberElement) {
-          formData.ContactNumber = ContactNumberElement.value;
-      }
-
-      // Get CSRF token from the page
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-      // Send data to Django backend
-      fetch('/profile/', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': csrfToken  // Include CSRF token in the header
-          },
-          body: JSON.stringify(formData)
-      })
-      .then(response => response.json())
-      .then(data => {
-          // Handle response from backend if needed
-          console.log(data);
-      })
-      .catch(error => {
-          // Handle errors
-          console.error('Error:', error);
-      });
-  });
+        .then(data => {
+            // Handle response from backend if needed
+            console.log(data);
+            alert(" Profile Saved Successfully ... ")
+            window.location.reload()
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error:', error);
+        });
+    }
 
 });
 
