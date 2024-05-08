@@ -648,6 +648,16 @@ span.importent{
   color: red;
 }
 
+.state_dropdown,.district_dropdown{
+  height: 40px;
+  width: 100%;
+}
+
+.state_dropdown select,.district_dropdown select{
+  height: 30px;
+  width:90%;
+}
+
   @media (min-width: 820px) and (max-width: 997px){
     .select2-container--default .select2-selection--single{
       width:80%;

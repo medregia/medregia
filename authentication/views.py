@@ -211,38 +211,50 @@ def profile_view(request):
                     # return redirect("profile")
             else:
                 response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
-
             if profile:
-                profile.MedicalShopName = data.get('MedicalShopName', '')  # Ensure single value, with default as empty string
-                profile.ProprietaryName = data.get('ProprietaryName', '')  # Ensure single value, with default as empty string
-                profile.ProprietaryNumber = data.get('ProprietaryNumber', '')  # Ensure single value, with default as empty string
-                profile.ProprietaryContact = data.get('ProprietaryContact', '')  # Ensure single value, with default as empty string
-                profile.DrugLiceneseNumber2 = data.get('DrugLiceneseNumber2', '')  # Ensure single value, with default as empty string
-                profile.DrugLiceneseNumber1 = data.get('DrugLiceneseNumber1', '')  # Ensure single value, with default as empty string
+                profile.MedicalShopName = data.get('MedicalShopName', '')  
+                profile.ProprietaryName = data.get('ProprietaryName', '')  
+                profile.ProprietaryNumber = data.get('ProprietaryNumber', '')  
+                profile.ProprietaryContact = data.get('ProprietaryContact', '')  
+                profile.DrugLiceneseNumber2 = data.get('DrugLiceneseNumber2', '')  
+                profile.DrugLiceneseNumber1 = data.get('DrugLiceneseNumber1', '')  
 
                 state_id = data.get('state')
-                if state_id:
-                    state_instance = StateModel.objects.get(Pid=state_id)
-                    profile.state = state_instance
-
                 district_id = data.get('district')
-                if district_id:
-                    district_instance = StateModel.objects.get(Pid=district_id)
-                    profile.state = district_instance
-                    
-                profile.City = data.get('City', '')  # Ensure single value, with default as empty string
-                profile.Pincode = data.get('Pincode', '')  # Ensure single value, with default as empty string
-                profile.StreetNumber = data.get('StreetNumber', '')  # Ensure single value, with default as empty string
-                profile.DoorNumber = data.get('DoorNumber', '')  # Ensure single value, with default as empty string
-                profile.PharmacistName = data.get('PharmacistName', '')  # Ensure single value, with default as empty string
-                profile.RegisteredNumber = data.get('RegisteredNumber', '')  # Ensure single value, with default as empty string
-                profile.ContactNumber = data.get('ContactNumber', '')  # Ensure single value, with default as empty string
+
+                print(data)
+                print("State : ",state_id)
+                print("District : ",district_id)
+
+                state_instance = StateModel.objects.get(Pid=state_id)
+
+                try:
+                    district_instance = DistrictModel.objects.get(state=state_instance, Pid=district_id)
+                except DistrictModel.DoesNotExist:
+                    return JsonResponse({'success': False, 'message': 'District Does not Exist'})
+                except DistrictModel.MultipleObjectsReturned:   
+                    print("Multiple DistrictModel objects returned for state_id: ", state_id, " and district_id: ", district_id)
+                    # Here, we are assuming you want to take the first district returned
+                    district_instance = DistrictModel.objects.filter(state=state_instance, Pid=district_id).first()
+
+                # Now, we need to assign the state_instance, not the district_instance, to profile.state
+                profile.state = state_instance
+
+                profile.City = data.get('City', '')  
+                profile.Pincode = data.get('Pincode', '')  
+                profile.StreetNumber = data.get('StreetNumber', '')  
+                profile.DoorNumber = data.get('DoorNumber', '')  
+                profile.PharmacistName = data.get('PharmacistName', '')  
+                profile.RegisteredNumber = data.get('RegisteredNumber', '')  
+                profile.ContactNumber = data.get('ContactNumber', '')  
+
+                # Assign the district_instance to a different field, assuming profile.district is the appropriate field
+                profile.district = district_instance
 
                 profile.save()
                 return JsonResponse({'success': True})
             else:
                 return JsonResponse({'success': False})
-
         except CustomUser.DoesNotExist:
             response_data = {'message': 'No User Found with the username', 'adminName': receiver_name}
             return JsonResponse({'error': response_data}, status=500)

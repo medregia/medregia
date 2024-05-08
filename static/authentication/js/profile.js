@@ -84,7 +84,7 @@ fetch('/get-states/') // Endpoint to retrieve states data
                 option.text = district.districtname;
                 districtDropdown.appendChild(option);
             });
-        });
+        }); 
     });
 
 
@@ -94,29 +94,68 @@ fetch('/get-states/') // Endpoint to retrieve states data
       console.log("clicked")
       console.log(document.getElementById('id_MedicalShopName'));
       // Get form data
-     const formData = {
-        ProprietaryNumber: document.getElementById('id_ProprietaryNumber').value,
-        ProprietaryContact: document.getElementById('id_ProprietaryContact').value,
-        DrugLiceneseNumber2: document.getElementById('id_DrugLiceneseNumber2').value,
-        DrugLiceneseNumber1: document.getElementById('id_DrugLiceneseNumber1').value,
-        state: document.getElementById('state-dropdown').value,
-        district: document.getElementById('district-dropdown').value,
-        City: document.getElementById('id_City').value,
-        Pincode: document.getElementById('id_Pincode').value,
-        StreetNumber: document.getElementById('id_StreetNumber').value,
-        DoorNumber: document.getElementById('id_DoorNumber').value,
-        PharmacistName: document.getElementById('id_PharmacistName').value,
-        RegisteredNumber: document.getElementById('id_RegisteredNumber').value,
-        ContactNumber: document.getElementById('id_ContactNumber').value
-      };
+     const formData = {};
 
       const medicalShopNameElement = document.getElementById('id_MedicalShopName');
       const ProprietaryNameElement = document.getElementById('id_ProprietaryName');
+      const ProprietaryNumberElement = document.getElementById('id_ProprietaryNumber');
+      const ProprietaryContactElement = document.getElementById('id_ProprietaryContact');
+      const DrugLiceneseNumber2Element = document.getElementById('id_DrugLiceneseNumber2');
+      const DrugLiceneseNumber1Element = document.getElementById('id_DrugLiceneseNumber1');
+      const stateElement = document.getElementById('state-dropdown');
+      const districtElement = document.getElementById('district-dropdown');
+      const CityElement = document.getElementById('id_City');
+      const PincodeElement = document.getElementById('id_Pincode');
+      const StreetNumberElement = document.getElementById('id_StreetNumber');
+      const DoorNumberElement = document.getElementById('id_DoorNumber');
+      const PharmacistNameElement = document.getElementById('id_PharmacistName');
+      const RegisteredNumberElement = document.getElementById('id_RegisteredNumber');
+      const ContactNumberElement = document.getElementById('id_ContactNumber');
+
       if (medicalShopNameElement) {
           formData.MedicalShopName = medicalShopNameElement.value;
       }
       if (ProprietaryNameElement) {
           formData.ProprietaryName = ProprietaryNameElement.value;
+      }
+      if (ProprietaryNumberElement) {
+          formData.ProprietaryNumber = ProprietaryNumberElement.value;
+      }
+      if (ProprietaryContactElement) {
+          formData.ProprietaryContact = ProprietaryContactElement.value;
+      }
+      if (DrugLiceneseNumber2Element) {
+          formData.DrugLiceneseNumber2 = DrugLiceneseNumber2Element.value;
+      }
+      if (DrugLiceneseNumber1Element) {
+          formData.DrugLiceneseNumber1 = DrugLiceneseNumber1Element.value;
+      }
+      if (stateElement) {
+          formData.state = stateElement.value;
+      }
+      if (districtElement) {
+          formData.district = districtElement.value;
+      }
+      if (CityElement) {
+          formData.City = CityElement.value;
+      }
+      if (PincodeElement) {
+          formData.Pincode = PincodeElement.value;
+      }
+      if (StreetNumberElement) {
+          formData.StreetNumber = StreetNumberElement.value;
+      }
+      if (DoorNumberElement) {
+          formData.DoorNumber = DoorNumberElement.value;
+      }
+      if (PharmacistNameElement) {
+          formData.PharmacistName = PharmacistNameElement.value;
+      }
+      if (RegisteredNumberElement) {
+          formData.RegisteredNumber = RegisteredNumberElement.value;
+      }
+      if (ContactNumberElement) {
+          formData.ContactNumber = ContactNumberElement.value;
       }
 
       // Get CSRF token from the page

@@ -779,7 +779,7 @@ class User_code:
         # print(self.storename)
 
     def display(self):
-        return f"IA-{self.convert_state()}-{self.district_name()}-00{self.pincode}-{self.convert_store()}-{self.convert_user_id_to_code()}-{self.format_user_id()}"
+        return f"IA-{self.convert_state()}-{self.district_name()}-00{self.User_pincode()}-{self.convert_store()}-{self.convert_user_id_to_code()}-{self.format_user_id()}"
     
     def convert_state(self):
         if self.state is not None and self.state.Pname is not None:
@@ -788,7 +788,11 @@ class User_code:
         else:
             return "####"
 
-
+    def User_pincode(self):
+        if self.pincode:
+            return self.pincode
+        else:
+            return "####"
 
     def convert_store(self):
         if self.storename:

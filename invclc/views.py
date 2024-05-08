@@ -355,10 +355,13 @@ def index_view(request):
             Storename = Person.objects.get(user=collaborator_admin)
         else:
             Storename = Person.objects.get(user=request.user)
-
-        modifiedStore = convert_Medical(Storename.MedicalShopName)
+        if Storename and Storename.MedicalShopName:
+            modifiedStore = convert_Medical(Storename.MedicalShopName)
+        else:
+            modifiedStore = "Not Found"
     except Person.DoesNotExist:
         modifiedStore = "Not Found"
+
 
 
     try:
