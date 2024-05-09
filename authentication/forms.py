@@ -33,9 +33,16 @@ class SignUpForm(UserCreationForm):
         )
         
 
-class LoginAuthenticationForm(AuthenticationForm):
+class InsensitiveAuthentication(AuthenticationForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        if not username:
-            raise forms.ValidationError("Please enter a valid username.")
-        return username
+        if username:
+            try:
+                user = CustomUser.objects.get(username__iexact=username)
+                if user.username == username:
+                    return username
+            except CustomUser.DoesNotExist:
+                pass
+        raise forms.ValidationError("Invalid username is not Valid")
+
+        

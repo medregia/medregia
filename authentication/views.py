@@ -17,13 +17,14 @@ import json
 from .models import StateModel, DistrictModel
 from django.http import HttpResponse,JsonResponse
 from .UniqueCode import User_code
-from .forms import LoginAuthenticationForm
+from authentication.forms import InsensitiveAuthentication
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 from .context_processors import nav_message
 from django.template.loader import render_to_string
 from django.db.utils import IntegrityError
+from django import forms
 
 def signup_view(request):
     form = SignUpForm()
@@ -100,19 +101,6 @@ def signup_view(request):
             return redirect("/")
     return render(request, 'authentication/signup.html', {'form': form})
 
-from django import forms
-
-class InsensitiveAuthentication(AuthenticationForm):
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
-        if username:
-            try:
-                user = CustomUser.objects.get(username__iexact=username)
-                if user.username == username:
-                    return username
-            except CustomUser.DoesNotExist:
-                pass
-        raise forms.ValidationError("Invalid username or password")
 
 def login_view(request):
     if request.method == "POST":
@@ -121,6 +109,7 @@ def login_view(request):
             user = login_form.get_user()
             login(request, user)
             return redirect('index/')
+
     else:
         login_form = InsensitiveAuthentication(request)
         login_form.fields['username'].widget.attrs.update({'placeholder': 'Username'})
