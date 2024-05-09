@@ -191,7 +191,12 @@ function sendingData(formData, csrf, districtId) {
             },
             body: JSON.stringify(formData)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Profile not Saved with Error');
+            }
+            return response.json();
+        })
         .then(data => {
             // Handle response from backend if needed
             console.log(data);
@@ -201,6 +206,8 @@ function sendingData(formData, csrf, districtId) {
         .catch(error => {
             // Handle errors
             console.error('Error:', error);
+            alert(error)
+            window.location.reload()
         });
     }
 
