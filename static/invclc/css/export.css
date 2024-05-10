@@ -96,6 +96,7 @@ body {
 .export-content table td {
   border: 1px solid #ddd;
   text-align: left;
+  font-size:14px;
   /* background-color: #007bff; */
 }
 
@@ -371,4 +372,8 @@ button.export-reset{
   nav.invclc-nav{
     display:none;
   }
+.export-content table th,
+.export-content table td{
+  font-size:12px;
+}
 }

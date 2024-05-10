@@ -141,7 +141,7 @@ def phone_login_view(request):
         return render(request, 'authentication/phonelogin.html')
     
 
-@login_required(login_url='/login/')
+@login_required(login_url='/')
 def profile_view(request):
     BASE_DIR = settings.BASE_DIR
     try:

@@ -210,7 +210,7 @@ tableSelector.addEventListener("change", function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Function to fetch filtered data
-    function fetchData(completed, category, others,all) {
+    function fetchData(completed, category, others,all,pharmacy_name) {
         var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
         const spanErrors = document.querySelector('span.sidePanelErrors')
         fetch('/import-export/', {
@@ -219,15 +219,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrfToken
             },
-            body: 'completed=' + completed + '&category=' + category + '&others=' + others + '&csrfmiddlewaretoken=' + csrfToken + '&all=' + all
+            body: 'completed=' + completed + '&category=' + category + '&others=' + others + '&csrfmiddlewaretoken=' + csrfToken + '&all=' + all + '&pharmacyName=' + pharmacy_name
         })
         .then(response => response.json()) // Parse response as JSON
         .then(data => {
+            console.log(data)
             if (data.completed_data){
                 updateTableWithData(data.completed_data); // Call updateTableWithData with JSON data
                 // console.log(data.completed_data)
             }
-            else if (data.not_paid_data){
+            else if (data.not_paid_data){   
                 updateTableWithData(data.not_paid_data)
             }
             else if (data.category_list){
@@ -240,7 +241,9 @@ document.addEventListener('DOMContentLoaded', function() {
             else if (data.otherStores){
                 updateTableWithOthersData(data.otherStores);
             }
-
+            else if (data.invoices){
+                updateTableWithData(data.invoices)
+            }
             else{
                 updateTableWithData(data.previous_data);
                 // console.log(data.previous_data)
@@ -256,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Listen for changes in checkboxes
-    document.querySelectorAll('.export2 input[type="checkbox"]').forEach(function(checkbox) {
+    document.querySelectorAll('.export2 input[type="checkbox"]:not(#checkboxTable .checkbox)').forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
             var completed = document.querySelector('.export2-box1 input[name="completed"]').checked;
             var all = document.querySelector('.export2-box1 input[name="all"]').checked;
@@ -277,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var categoryString = category.join(',');
 
             // Fetch filtered data
-            fetchData(completed, categoryString,'',all);
+            fetchData(completed, categoryString,'',all,'');
         });
     });
 
@@ -286,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
         otherDetails.addEventListener("input", function() {
             var otherDetail = otherDetails.value.trim();
             if (otherDetail !== '') {
-                fetchData(false, '', otherDetail, false); // Assuming "completed", "category", and "all" should not be sent when changing the "others" input
+                fetchData(false, '', otherDetail, false,''); // Assuming "completed", "category", and "all" should not be sent when changing the "others" input
             }
         });
     }
@@ -295,7 +298,18 @@ document.addEventListener('DOMContentLoaded', function() {
     resetExport.addEventListener("click",()=>{
         location.reload()
     })
+
+    document.querySelectorAll('#checkboxTable .checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                const pharmacyName = this.dataset.pharmacy;
+                fetchData(false, '', '', false, pharmacyName);
+            }
+        });
+    });
 });
+
+
 
 
 // Function to update table with JSON data
@@ -390,6 +404,7 @@ function updateTableWithData(data) {
                 tableBody.appendChild(row);
             });
         } else {
+            spanErrors.innerHTML = "No Such Data Found ..";
             console.error('Data is not an array or is null/undefined, or the array is empty.');
         }
     } else {
@@ -664,3 +679,4 @@ otherCheckboxes.forEach(otherCheckbox => {
         }
     });
 });
+

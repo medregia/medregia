@@ -759,7 +759,8 @@ def import_view(request):
         category = request.POST.get('category', '')
         others = request.POST.get('others', False)
         not_paid = request.POST.get('all',False)
-
+        pharmacy_name = request.POST.get('pharmacyName',False) # Corrected variable name
+        
         if str(request.user) == check_user:
             try:
                 if completed == 'true':
@@ -779,6 +780,18 @@ def import_view(request):
                             storeTypeList = list(CustomUser.objects.filter(other_value__icontains=others).values('username', 'phone_num', 'email', 'other_value'))
                             return JsonResponse({"storeTypeList": storeTypeList})
                     return JsonResponse({"otherStores": otherStores}) 
+                
+                elif pharmacy_name:
+                    try:
+                        particular_user_invoices = Invoice.objects.filter(user=check_user, pharmacy_name=pharmacy_name).values()
+                        modified_invoices = []
+                        for invoice in particular_user_invoices:
+                            modified_invoice = {key: value for key, value in invoice.items() if key not in ['id', 'user_id', 'current_time']}
+                            modified_invoices.append(modified_invoice)
+                        return JsonResponse({'invoices': modified_invoices})
+                    except Invoice.DoesNotExist:
+                        return JsonResponse({'error': 'No invoices found for the given pharmacy name'}, status=404)
+                
                 else:
                     previous_data = list(Invoice.objects.filter(user=collaborator_admin).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                     return JsonResponse({"previous_data": previous_data})
@@ -804,6 +817,17 @@ def import_view(request):
                             storeTypeList = list(CustomUser.objects.filter(other_value__icontains=others).values('username', 'phone_num', 'email', 'other_value'))
                             return JsonResponse({"storeTypeList": storeTypeList})
                     return JsonResponse({"otherStores": otherStores}) 
+                
+                elif pharmacy_name and pharmacy_name != '':
+                    try:
+                        particular_user_invoices = Invoice.objects.filter(user=request.user, pharmacy_name=pharmacy_name).values()
+                        modified_invoices = []
+                        for invoice in particular_user_invoices:
+                            modified_invoice = {key.replace('_', ' ').capitalize(): value for key, value in invoice.items() if key not in ['id', 'user_id', 'current_time']}
+                            modified_invoices.append(modified_invoice)
+                        return JsonResponse({'invoices': modified_invoices})
+                    except Invoice.DoesNotExist:
+                        return JsonResponse({'error': 'No invoices found for the given pharmacy name'}, status=404)
                 else:
                     previous_data = list(Invoice.objects.filter(user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                     return JsonResponse({"previous_data": previous_data})

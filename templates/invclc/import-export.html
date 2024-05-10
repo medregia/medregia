@@ -122,7 +122,7 @@
                             <thead>
                                 <tr>
                                     <th><input type="checkbox"></th>
-                                    <th>INVOICE No.</th>
+                                    <th>Invoice No.</th>
                                     <th>Invoice Amount</th>
                                     <th>Upload by</th>
                                     <th>Upload on</th>
@@ -226,24 +226,23 @@
                         </div>
 
 
-                        <div class="export2-box3">
-                            <div class="export2-box3_table">
-                                <table id="checkboxTable">
-                                    <thead>
-                                        <th>Select</th>
-                                        <th>Medical List</th>
-                                    </thead>
-                                    <tbody>
-                                        {% for overall_datas in overall_data %}
-                                        <tr>
-                                            <td><input type="checkbox" class="checkbox"></td>
-                                            <td>{{ overall_datas.pharmacy_name }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="export2-box3_table">
+                            <table id="checkboxTable">
+                                <thead>
+                                    <th>Select</th>
+                                    <th>Medical List</th>
+                                </thead>
+                                <tbody>
+                                    {% for overall_datas in overall_data %}
+                                    <tr>
+                                        <td><input type="checkbox" class="checkbox" data-pharmacy="{{ overall_datas.pharmacy_name }}"></td>
+                                        <td>{{ overall_datas.pharmacy_name }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>    
                         </div>
+                        
                     </form>
                 </div>
             </div>
@@ -362,10 +361,10 @@
                 <a href="{% url 'empty_csv' %}"><button type="submit">Sample CSV</button></a>
             </div>
 
-            <div class="download-empty-xlsx">
+            {% comment %} <div class="download-empty-xlsx">
                 <h5>Here You Download a Sample XLSX File </h5>
                 <a href="{% url 'empty_xlsx' %}"><button type="submit"> Sample XLSX </button></a>
-            </div>
+            </div> {% endcomment %}
         </div>
     </div>
 </div>
