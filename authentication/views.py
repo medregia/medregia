@@ -274,21 +274,21 @@ def profile_view(request):
                 state_id = data.get('state')
                 if check_person.state != '' and state_id:
                     state_instance = StateModel.objects.get(Pid=state_id)
-                    print("state_instance: ", state_instance)
+                    # print("state_instance: ", state_instance)
                     profile.state = state_instance
 
                 if district_id and districtKey:  # Check if both district_id and districtKey are present
                     try:
                         district_instance = DistrictModel.objects.get(Pid=district_id, id=districtKey)
-                        print("district_instance: ", district_instance)
+                        # print("district_instance: ", district_instance)
                         profile.district = district_instance
                     except DistrictModel.DoesNotExist:
-                        print("DistrictModel with the provided districtKey does not exist.")
+                        messages.error(request,"DistrictModel with the provided districtKey does not exist.")
                         
                 if check_person.City != '' and data.get('City') :
                     profile.City = data.get('City')  
                 
-                if check_person.Pincode != '' and data.get('Pincode') :
+                if check_person.Pincode != '' and data.get('Pincode') : 
                     profile.Pincode = data.get('Pincode')  
                     
                 if check_person.StreetNumber != '' and data.get('StreetNumber') :
@@ -316,7 +316,7 @@ def profile_view(request):
                     profile.save()
                     return JsonResponse({'success': True})
                 else:
-                    print(errors)
+                    # print(errors)
                     return JsonResponse({'errors': errors}, status=400)
                     
             else:
@@ -411,7 +411,7 @@ def get_districts(request, state_id=None,district_id = None):
         state_id = request.GET.get('state')
     if district_id is None:
         district_id = request.GET.get('district_id')
-        print(district_id)
+        # print(district_id)
     
 
     if state_id is not None:
