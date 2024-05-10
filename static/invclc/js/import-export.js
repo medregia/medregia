@@ -223,7 +223,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json()) // Parse response as JSON
         .then(data => {
-            console.log(data)
             if (data.completed_data){
                 updateTableWithData(data.completed_data); // Call updateTableWithData with JSON data
                 // console.log(data.completed_data)
@@ -391,9 +390,16 @@ function updateTableWithData(data) {
                 keys.forEach(function(key) {
                     var cell = document.createElement('td');
                     // Check if the key is 'invoice_date' and format the date
-                    if (key === 'today_date') {
+                    if (key === 'today_date'){
                         cell.textContent = formatDate(item[key]);
-                    } else {
+                    } 
+                    else if (key === 'Invoice date'){
+                        cell.textContent = formatDate(item[key]);
+                    }
+                    else if (key === 'Today date'){
+                        cell.textContent = formatDate(item[key]);
+                    }
+                    else {
                         cell.textContent = item[key];
                     }
                     row.appendChild(cell);
