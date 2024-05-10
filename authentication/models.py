@@ -96,7 +96,7 @@ class Notification(models.Model):
     receiver = models.ForeignKey(CustomUser, related_name='received_notifications', on_delete=models.CASCADE)
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=True)
+    is_read = models.BooleanField(default=False)
     request_status = models.BooleanField(default = True)
     class Meta:
         unique_together = ('sender', 'receiver')

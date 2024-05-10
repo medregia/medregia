@@ -781,12 +781,12 @@ def import_view(request):
                             return JsonResponse({"storeTypeList": storeTypeList})
                     return JsonResponse({"otherStores": otherStores}) 
                 
-                elif pharmacy_name:
+                elif pharmacy_name and pharmacy_name != '':
                     try:
-                        particular_user_invoices = Invoice.objects.filter(user=check_user, pharmacy_name=pharmacy_name).values()
+                        particular_user_invoices = Invoice.objects.filter(user=collaborator_admin, pharmacy_name=pharmacy_name).values()
                         modified_invoices = []
                         for invoice in particular_user_invoices:
-                            modified_invoice = {key: value for key, value in invoice.items() if key not in ['id', 'user_id', 'current_time']}
+                            modified_invoice = {key.replace('_', ' ').capitalize(): value for key, value in invoice.items() if key not in ['id', 'user_id', 'current_time']}
                             modified_invoices.append(modified_invoice)
                         return JsonResponse({'invoices': modified_invoices})
                     except Invoice.DoesNotExist:

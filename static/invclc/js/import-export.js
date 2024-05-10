@@ -305,6 +305,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const pharmacyName = this.dataset.pharmacy;
                 fetchData(false, '', '', false, pharmacyName);
             }
+            else{
+                fetchData(false, '', '', false, '');
+            }
         });
     });
 });
