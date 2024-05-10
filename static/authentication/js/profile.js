@@ -180,6 +180,40 @@ document.getElementById('submit_button').addEventListener('click', function(even
     
 });
 
+function togglePopup() {
+    const closebtn = document.getElementById("popup-btn");
+    const popupMsg = document.getElementById("popup-1");
+    const popupMessages = document.querySelector(".overlay-content h2");
+    const popupBody = document.querySelector(".overlay-content p");
+
+    popupMessages.textContent = "Profile Updated Successfully";
+
+    popupBody.innerHTML = "<span>Note:</span> You are unable to modify your data. Should you wish to update your user profile, please contact the administrator.";
+    popupMsg.classList.add("active");
+    closebtn.addEventListener("click", () => {
+        popupMsg.classList.remove("active");
+        window.location.reload();
+    });
+}
+
+function closePopup(error) {
+    const closebtn = document.getElementById("popup-btn");
+    const popupMsg = document.getElementById("popup-1");
+    const popupMessages = document.querySelector(".overlay-content h2");
+    const popupBody = document.querySelector(".overlay-content p");
+
+    popupMessages.textContent = "Profile not Saved Some Data Already Exist";
+    popupMessages.style.color = "red";
+
+    popupBody.innerHTML = `<span>Note:</span> ${error}`;
+    popupMsg.classList.add("active");
+    closebtn.addEventListener("click", () => {
+        popupMsg.classList.remove("active");
+        window.location.reload();
+    });
+}
+
+
 
 function sendingData(formData, csrf, districtId) {
         formData.districtkey = districtId
@@ -200,14 +234,13 @@ function sendingData(formData, csrf, districtId) {
         .then(data => {
             // Handle response from backend if needed
             console.log(data);
-            alert(" Profile Saved Successfully ... ")
-            window.location.reload()
+            togglePopup()
+            // alert(" Profile Saved Successfully ... ")
         })
         .catch(error => {
             // Handle errors
             console.error('Error:', error);
-            alert(error)
-            window.location.reload()
+            closePopup(error)
         });
     }
 

@@ -24,6 +24,19 @@
 
 
 {% if request.user.is_superuser or request.user.is_staff %}
+<div class="popup" id="popup-1">
+    <div class="overlay"></div>
+    <div class="overlay-content">
+        <h2> </h2>
+        <p>
+           <span>Note : </span>
+        </p>
+        <div class="content-btn">
+            <button typr="button" id="popup-btn">OK</button>
+        </div>
+        
+    </div>
+</div>
 <form action="#" method="post">
     {% csrf_token %}
     <div class="profile-container">
@@ -152,10 +165,17 @@
                                 <div class="left-bottom-district left-bottom-containers">
                                     <label for="Medicalshop Name">District :</label>
                                     <div class="district_dropdown">
-                                        <select id="district-dropdown">
-                                            <option value="">Select District</option>
-                                            <!-- Add options dynamically using JavaScript -->
-                                        </select>
+                                        {% if data.district and data.district != "" %}
+                                            <select id="district-dropdown">
+                                                <option value="" readonly>Select District</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
+                                        {% else %}
+                                            <select id="district-dropdown">
+                                                <option value="">Select District</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
+                                        {% endif %}
                                     </div>
                                     
                                 </div>
