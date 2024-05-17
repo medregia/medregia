@@ -440,6 +440,7 @@ def index_view(request):
             tracking_payment = TrackingPayment(
                 user=invoice.user,
                 Medical_name=invoice.pharmacy_name,
+                Bill_no = invoice.invoice_number,
                 Medical_payments=invoice.invoice_amount,
                 payment_date=invoice.today_date,
                 paying_amount=invoice.payment_amount
@@ -1265,6 +1266,7 @@ def pay_invoice(request, invoice_id):
         tracking_payment = TrackingPayment(
             user=invoice.user,
             Medical_name = invoice.pharmacy_name,
+            Bill_no = invoice.invoice_number,
             Medical_payments = invoice.payment_amount,
             payment_date = invoice.today_date,
             paying_amount = updated_payment_amount
@@ -1318,6 +1320,7 @@ def payment_invoice(request,payment_id):
         tracking_payment = TrackingPayment(
             user=invoice.user,
             Medical_name = invoice.pharmacy_name,
+            Bill_no = invoice.invoice_number,
             Medical_payments = invoice.payment_amount,
             payment_date = invoice.today_date,
             paying_amount = pay_amount

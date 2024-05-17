@@ -79,8 +79,17 @@ body {
 
 .address-details {
   /* background-color: bisque; */
-  max-height: 100vh;
+  max-height: 40vh;
   max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  row-gap: 10px;
+  justify-content: space-evenly;
+}
+
+.address-details p{
+  margin: 0;
 }
 
 .export-content {

@@ -62,7 +62,7 @@
         </thead>
         <tbody>
           {% for tracking_invoice in tracking_invoices %}
-          {% if tracking_invoice.Medical_name == invoice.pharmacy_name %}
+          {% if tracking_invoice.Bill_no == invoice.invoice_number %}
           <tr>
             <td>{{ tracking_invoice.payment_date }}</td>
             <td>{{ tracking_invoice.paying_amount }}</td>
