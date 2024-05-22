@@ -362,7 +362,21 @@ def index_view(request):
     except Person.DoesNotExist:
         modifiedStore = "Not Found"
 
+    #TODO: Entry Data Input 
 
+    # entryDisable = None
+    # try:
+    #     userProfile = Person.objects.get(user=request.user)
+    #     if userProfile.MedicalShopName is not None and userProfile.DrugLiceneseNumber1 is not None and userProfile.DrugLiceneseNumber2 is not None:
+    #         entryDisable = False
+    #     else:
+    #         entryDisable = True
+    #     return JsonResponse({"Entry": entryDisable})
+    # except Person.DoesNotExist:
+    #     entryDisable = True
+    #     messages.error(request, "Profile not Accessible")
+
+    #-----------------
 
     try:
         if check_user == str(request.user): 
@@ -492,6 +506,21 @@ def index_view(request):
                }
     return render(request,'invclc/index.html',context)
 
+
+def entrydata(request):
+    entryDisable = None
+    try:
+        userProfile = Person.objects.get(user=request.user)
+        if userProfile.MedicalShopName is not None and userProfile.DrugLiceneseNumber1 is not None and userProfile.DrugLiceneseNumber2 is not None:
+            entryDisable = False
+        else:
+            entryDisable = True
+        return JsonResponse({"Entry": entryDisable})
+    except Person.DoesNotExist:
+        entryDisable = True
+        messages.error(request, "Profile not Accessible")
+        return JsonResponse({"error": "This User Profile Not Found"}, status=400)
+    
 def convert_Medical(shopname):
      words = shopname.split()
      if len(words) == 2:
