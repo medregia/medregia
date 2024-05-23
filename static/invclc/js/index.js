@@ -258,6 +258,8 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
   });
+
+
 });
 
 // TODO:  Partially Paid Pannel
@@ -498,55 +500,103 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+document.getElementById('saveButton').addEventListener('click', async function() {
+    const form = document.getElementById('invoiceForm');
+    const formData = new FormData(form);
+    const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
 
-function entryData() {
-  fetch('/entry/')
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok ' + response.statusText);
-          }
-          return response.json();
-      })
-      .then(data => {
-          const pharmacy_name = document.querySelector(".pharmacy_name");
-          const invoice_number = document.querySelector(".invoice_number");
-          const id_invoice_date = document.querySelector("#id_invoice_date");
-          const invoice_amount = document.querySelector(".invoice_amount");
-          const payment_amount = document.querySelector(".payment_amount");
-          const balance_amount = document.querySelector(".balance_amount");
-          // Disable or enable fields based on data.Entry value
-          const isEntryDisabled = data.Entry;
-          pharmacy_name.disabled = isEntryDisabled;
-          invoice_number.disabled = isEntryDisabled;
-          id_invoice_date.disabled = isEntryDisabled;
-          invoice_amount.disabled = isEntryDisabled;
-          payment_amount.disabled = isEntryDisabled;
-          balance_amount.disabled = isEntryDisabled;
-          // Add or remove .not-allowed class based on the disabled state
-          if (isEntryDisabled) {
-              pharmacy_name.classList.add('not-allowed');
-              invoice_number.classList.add('not-allowed');
-              id_invoice_date.classList.add('not-allowed');
-              invoice_amount.classList.add('not-allowed');
-              payment_amount.classList.add('not-allowed');
-              balance_amount.classList.add('not-allowed');
-              console.log("Entry is disabled.");
-          } else {
-              pharmacy_name.classList.remove('not-allowed');
-              invoice_number.classList.remove('not-allowed');
-              id_invoice_date.classList.remove('not-allowed');
-              invoice_amount.classList.remove('not-allowed');
-              payment_amount.classList.remove('not-allowed');
-              balance_amount.classList.remove('not-allowed');
+    const data = {
+        pharmacy_name: formData.get('pharmacy_name'),
+        invoice_number: formData.get('invoice_number'),
+        invoice_date: formData.get('invoice_date'),
+        invoice_amount: formData.get('invoice_amount'),
+        payment_amount: formData.get('payment_amount'),
+    };
+
+    // Check if any field is empty
+    for (const [key, value] of Object.entries(data)) {
+        if (!value) { // Check for null, undefined, or empty string
+            alert(`${key.replace('_', ' ')} cannot be empty.`);
+            return; // Stop the function if any field is empty
+        }
+    }
+
+    try {
+        const response = await fetch('/index/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert('Invoice saved successfully!');
+            // Optionally, you can refresh the page or update the table
+        } else {
+            console.error('Error:', result);
+            alert('Failed to save invoice. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+    }
+});
+
+
+
+
+
+// function entryData() {
+//   fetch('/entry/')
+//       .then(response => {
+//           if (!response.ok) {
+//               throw new Error('Network response was not ok ' + response.statusText);
+//           }
+//           return response.json();
+//       })
+//       .then(data => {
+//           const pharmacy_name = document.querySelector(".pharmacy_name");
+//           const invoice_number = document.querySelector(".invoice_number");
+//           const id_invoice_date = document.querySelector("#id_invoice_date");
+//           const invoice_amount = document.querySelector(".invoice_amount");
+//           const payment_amount = document.querySelector(".payment_amount");
+//           const balance_amount = document.querySelector(".balance_amount");
+//           // Disable or enable fields based on data.Entry value
+//           const isEntryDisabled = data.Entry;
+//           pharmacy_name.disabled = isEntryDisabled;
+//           invoice_number.disabled = isEntryDisabled;
+//           id_invoice_date.disabled = isEntryDisabled;
+//           invoice_amount.disabled = isEntryDisabled;
+//           payment_amount.disabled = isEntryDisabled;
+//           balance_amount.disabled = isEntryDisabled;
+//           // Add or remove .not-allowed class based on the disabled state
+//           if (isEntryDisabled) {
+//               pharmacy_name.classList.add('not-allowed');
+//               invoice_number.classList.add('not-allowed');
+//               id_invoice_date.classList.add('not-allowed');
+//               invoice_amount.classList.add('not-allowed');
+//               payment_amount.classList.add('not-allowed');
+//               balance_amount.classList.add('not-allowed');
+//               console.log("Entry is disabled.");
+//           } else {
+//               pharmacy_name.classList.remove('not-allowed');
+//               invoice_number.classList.remove('not-allowed');
+//               id_invoice_date.classList.remove('not-allowed');
+//               invoice_amount.classList.remove('not-allowed');
+//               payment_amount.classList.remove('not-allowed');
+//               balance_amount.classList.remove('not-allowed');
               
-              console.log("Entry is enabled.");
-          }
-          console.log(data);
-      })
-      .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-      });
-}
+//               console.log("Entry is enabled.");
+//           }
+//           console.log(data);
+//       })
+//       .catch(error => {
+//           console.error('There was a problem with the fetch operation:', error);
+//       });
+// }
 
 // Add event listeners to input fields
 // const pharmacy_name = document.querySelector(".pharmacy_name");
@@ -561,4 +611,4 @@ function entryData() {
 // id_invoice_date.addEventListener('click', entryData);
 // invoice_amount.addEventListener('click', entryData);
 // payment_amount.addEventListener('click', entryData);
-// balance_amount.addEventListener('click', entryData);
+// balance_amount.addEventListener('click', entryData

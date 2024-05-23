@@ -1,3 +1,10 @@
 backupTexts/
 **/__pycache__/
-__pycache__
+__pycache__ /
+__pycache__ /
+__pycache__ /
+!backup_index.txt
+!index_backup_code.txt
+/authentication/__pycache__ /
+/invclc/__pycache__ /
+/invclc/templatetags/__pycache__ /

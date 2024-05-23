@@ -374,8 +374,8 @@ def profile_view(request):
     except CustomUser.DoesNotExist:
         userShopName = None
         sendShopName = None
-
-
+    
+        
     # Define the context dictionary
     context = {
         'hide_colaborator': hide_colaborator,
