@@ -160,7 +160,6 @@ body {
   padding-left: 20px;
 } */
 .header-bottom form table button {
-  cursor: pointer;
   height: 40px;
   width: 60px;
   background-color: blue;
@@ -475,6 +474,10 @@ button.editBtn,button.deleteBtn,button.saveBtn{
   background-color: #d3d3d3;
 }
 
+.not-allowed{
+  cursor: not-allowed;
+  background-color: #d3d3d3;
+}
 .table-content-left a .more-details,.table-content-right a .more-details{
   height:40px;
   width:100px;

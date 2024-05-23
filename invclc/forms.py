@@ -50,7 +50,7 @@ class InvoiceForm(forms.ModelForm):
             'invoice_number': forms.TextInput(attrs={'placeholder': 'Invoice Number','class':'invoice_number'}),
             'invoice_amount': forms.NumberInput(attrs={'placeholder': 'Invoice Amount','class':'invoice_amount'}),
             'balance_amount': forms.TextInput(attrs={'placeholder': 'Balance Amount', 'disabled': True,'class':'balance_amount'}),
-            'payment_amount': forms.NumberInput(attrs={'placeholder': '0','title':'Default 0 ','class':'payment_amount'}),
+            'payment_amount': forms.NumberInput(attrs={'placeholder': '0','title':'Default 0 ','class':'payment_amount','default':'0'}),
             'today_date':forms.DateInput(attrs={'type':'hidden'}),
             'current_time':forms.TimeInput(attrs={'type':'hidden'}),
             'updated_by':forms.TextInput(attrs={'type':'hidden',}),

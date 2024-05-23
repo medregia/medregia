@@ -13,7 +13,7 @@ class Invoice(models.Model):
     invoice_date = models.DateField(default=timezone.now)
     invoice_amount = models.DecimalField(max_digits=10, decimal_places=2)
     balance_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2 ,null=True)
     today_date = models.DateField(default=timezone.now)
     # current_time = models.TimeField(default=(timezone.now() + timedelta(hours=5, minutes=30)).time())
     current_time = models.TimeField(null=True,blank=True)

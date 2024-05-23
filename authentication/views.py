@@ -354,16 +354,41 @@ def profile_view(request):
     except Notification.DoesNotExist:
         hide_colaborator = None
 
+    get_shop_name = None
+    sendShopName = None
+
+    try:
+        # Fetch the CustomUser instance for the current user
+        userShopName = CustomUser.objects.get(username=request.user)
         
+        # Extract values from the user instance
+        get_shop_name = userShopName.store_type
+        get_other_value = userShopName.other_value
+
+        if get_shop_name and get_shop_name != "others":
+            sendShopName = get_shop_name.capitalize()
+            
+        elif get_other_value and get_other_value != "store_type":
+            sendShopName = get_other_value.capitalize()
+
+    except CustomUser.DoesNotExist:
+        userShopName = None
+        sendShopName = None
+
+
+    # Define the context dictionary
     context = {
-        'hide_colaborator':hide_colaborator,
+        'hide_colaborator': hide_colaborator,
         'user_profile_data': profile_data,
         'district_data': district_data,
-        'unique_code':profile.UniqueId, 
-        'data':profile,
-        'admin_name':admin_name,
-        'admin_ph':admin_ph
+        'unique_code': profile.UniqueId, 
+        'data': profile,
+        'admin_name': admin_name,
+        'admin_ph': admin_ph,
+        'sendShopName': sendShopName,
     }
+
+
     
     return render(request, 'authentication/profile.html', context)
 
