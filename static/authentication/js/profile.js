@@ -9,17 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
     unique_id_span.style.backgroundColor = "green";
   }
 
-  document.getElementById("admin-input").addEventListener("keypress", function(event) {
-    if (event.key === 'Enter') {
-        event.preventDefault(); // Prevent default form submission
-        // Call the function to send the request here
-        sendRequest();
-    }
-});
 
-document.getElementById("send-request-button").addEventListener("click", function() {
+const requestButton = document.getElementById("send-request-button")
+if (requestButton){
+    requestButton.addEventListener("click", function() {
     sendRequest();
-});
+    });
+}
 
 function sendRequest() {
     var adminName = document.getElementById("admin-input").value;
@@ -120,6 +116,7 @@ document.getElementById('submit_button').addEventListener('click', function(even
     const PharmacistNameElement = document.getElementById('id_PharmacistName');
     const RegisteredNumberElement = document.getElementById('id_RegisteredNumber');
     const ContactNumberElement = document.getElementById('id_ContactNumber');
+    const PharmacistEmailElement = document.getElementById('id_PharmacistEmail');
 
     if (medicalShopNameElement) {
         formData.MedicalShopName = medicalShopNameElement.value;
@@ -165,6 +162,9 @@ document.getElementById('submit_button').addEventListener('click', function(even
     }
     if (ContactNumberElement) {
         formData.ContactNumber = ContactNumberElement.value;
+    }
+    if (PharmacistEmailElement) {
+        formData.PharmacistEmail = PharmacistEmailElement.value;
     }
 
     // Get CSRF token from the page

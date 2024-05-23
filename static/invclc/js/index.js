@@ -466,7 +466,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 document.addEventListener('DOMContentLoaded', function() {
   var invoiceDateInput = document.getElementById('id_invoice_date');
-  invoiceDateInput.addEventListener('input', function() {
+
+  if (invoiceDateInput){
+    invoiceDateInput.addEventListener('input', function() {
       var formattedValue = this.value.replace(/[^\d\/]/g, ''); // Remove all characters except digits and slashes
       if (formattedValue.length > 10) {
           formattedValue = formattedValue.substr(0, 10); // Limit to 10 characters
@@ -479,9 +481,11 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       this.value = formattedValue;
   });
-
+  }
+  
   // Handle backspace and delete key events
-  invoiceDateInput.addEventListener('keydown', function(event) {
+  if (invoiceDateInput){
+    invoiceDateInput.addEventListener('keydown', function(event) {
       if (event.key === 'Backspace' || event.key === 'Delete') {
           var caretStart = this.selectionStart;
           var caretEnd = this.selectionEnd;
@@ -497,6 +501,8 @@ document.addEventListener('DOMContentLoaded', function() {
           }
       }
     });
+  }
+  
 });
 
 
