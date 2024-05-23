@@ -11,51 +11,6 @@ body{
 
 }
 
-.panel-container{
-  min-height:20vh;
-  width:100%;
-  font-family: 'Times New Roman';
-  /* background-color:red; */
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
- 
-.panel-container .box2{
-  height:18vh;
-  width:50%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background-color:rgba(223, 223, 223, 0.3);
-  column-gap:10px;
-  border-radius:3px;
-}
-
-.panel-container .box2 .btn{
-  height:65px;
-  width:31%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  /* background-color:#FFFF; */
-}
-
-.panel-container .box2 .btn button{
-  height:60px;
-  width:200px;
-  border:none;
-  box-shadow:0px 0px 10px 0px black;
-  cursor:pointer;
-  border-radius:3px;  
-  font-size:18px;
-  /* background-color:pink; */
-}
-
-.panel-container .box2 .btn button:active{
-  box-shadow:0px 0px 20px 0px black;
-}
-
 .lastbox .lastbox-content{
   /* height:20vh; */
   width:100%;
@@ -64,12 +19,7 @@ body{
   align-items:center;
   /* background-color:blue; */
 }
-/* table#table1{
-  width:100%;
-  justify-content:center;
-  align-items:center;
-  margin-left: 35%;
-} */
+
 .lastbox .lastbox-content .lastbox-center{
   height:18vh;
   width:50%;
@@ -142,13 +92,150 @@ body{
   margin-top: 8px;
   
 }
-#Upload button{
-  height: 35px;
-  width: 80px;
-  background-color: blue;
-  color: white;
-  border: none;
-  border-radius: 5px;
+
+.panel-container {
+  height: 15vh;
+  width: 100%;
+  /* background-color:blue; */
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.panel-container form {
+  height: 10vh;
+  background-color: #fff;
+  width: 20%;
+  margin-top:0px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+
+input.csv-field {
+  font-size: 18px;
+}
+
+.file-input {
+  min-height: 35px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  border: 1px solid #ccc;
+  padding: 8px 14px;
   cursor: pointer;
+  border-radius: 4px;
+  justify-content: center;
+  align-items: center;
   font-weight: bold;
+  background-color: #ccc;
+}
+
+.file-input input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.tabcontent.import{
+  height:100vh;
+  width:100%;
+  padding:0;
+  border:0;
+  /* background-color:orange; */
+  display:flex;
+}
+
+.content1{
+  min-height:100vh;
+  width:80%;
+  /* background-color:red; */
+}
+
+.content2{
+  min-height:100vh;
+  width: 20%;
+  /* border-left:1px solid black; */
+  box-shadow:0px 10px 10px 0px black;
+  background-color:rgb(226, 226, 226);
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:center;
+  padding:10px;
+}
+.content2 h4.warning{
+  color:red;
+}
+.content2 h4 span{
+  color:orange;
+}
+  
+.content2 p.resolve{
+  color:orangered;
+}
+
+.content2 button{
+ height:40px;
+ width:100%;
+ background-color:blue;
+ color:#FFF;
+ border:none;
+ cursor:pointer;
+}
+
+.content2 p span{
+  color:green
+}
+
+#csvTable {
+  width: 80%;
+  border-collapse: collapse;
+}
+
+#csvTable td, #csvTable th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#csvTable th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+#csvTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#csvTable tr:hover {
+  background-color: #ddd;
+}
+
+.vanish{
+  display:none
+}
+
+.upload-btn{
+  height:40px;
+  width:20%;
+  background-color:blue;
+  color:#FFFF;
+  cursor:pointer;
+  border-radius:2px;
+  /* font-size:1.2rem; */
+}
+
+.upload-msg{
+  height:10vh;
+  width:30%;
+  text-align:center;
+  /* background-color:red; */
 }

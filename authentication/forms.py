@@ -2,18 +2,21 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from .models import CustomUser
+from django.core.validators import MaxValueValidator
 
 class SignUpForm(UserCreationForm):
     username = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'placeholder':'Enter Your Username'}))
     phone_num = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'Enter your phone number'}))
-    pin = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'Enter your pin'}))
+    pin = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'placeholder': 'Enter your pin'}),
+        validators=[MaxValueValidator(9999)]
+    )
     STORE_TYPES = [
         ('', 'Select'),
         ('retailer', 'Retailer'),
         ('manufacturer', 'Manufacturer'),
         ('pharmacy', 'Pharmacy'),
         ('medical', 'Medical'),
-        ('user','User'),
         ('others', 'Others'),
     ]
     store_type = forms.ChoiceField(choices=STORE_TYPES)
@@ -30,9 +33,16 @@ class SignUpForm(UserCreationForm):
         )
         
 
-class LoginAuthenticationForm(AuthenticationForm):
+class InsensitiveAuthentication(AuthenticationForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        if not username:
-            raise forms.ValidationError("Please enter a valid username.")
-        return username
+        if username:
+            try:
+                user = CustomUser.objects.get(username__iexact=username)
+                if user.username == username:
+                    return username
+            except CustomUser.DoesNotExist:
+                pass
+        raise forms.ValidationError("Invalid username is not Valid")
+
+        

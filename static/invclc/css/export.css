@@ -1,7 +1,13 @@
-body{
+body {
   margin: 0%;
   padding: 0%;
   box-sizing: border-box;
+}
+
+.imp_exp_container {
+  height: 100vh;
+  width: 96%;
+  margin-left: 50px;
 }
 
 .tab {
@@ -39,102 +45,127 @@ body{
 
 /* Style the tab content */
 .tabcontent {
-  height: 100vh;
-  width: 100%;
+  min-height: 100vh;
+  width: 98%;
   display: block;
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
 }
-.box-container{
-  height: 100vh;
+
+.box-container {
+  min-height: 100vh;
   width: 100%;
   display: flex;
   gap: 5px;
 }
-.export1{
-  height: 100vh;
+
+.export1 {
+  min-height: 100vh;
   width: 75%;
   /* background-color: #ddd; */
 }
 
-.address-container{
-  height: 200px;
+.address-container {
+  height: 250px;
   width: 100%;
   /* background-color: beige; */
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 
 }
 
-.address-details{
+.address-details {
   /* background-color: bisque; */
-  max-height: 100vh;
-  max-width:100%;
+  max-height: 40vh;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  row-gap: 10px;
+  justify-content: space-evenly;
 }
-.export-content{
+
+.address-details p{
+  margin: 0;
+}
+
+.export-content {
   width: 100%;
   /* background-color: #007bff; */
 }
-.export-content table{
+
+.export-content table {
   width: 100%;
 }
-  
-.export-content table th, .export-content table td {
+
+.export-content table th,
+.export-content table td {
   border: 1px solid #ddd;
   text-align: left;
+  font-size:14px;
   /* background-color: #007bff; */
 }
+
 .export-content table th {
-  background-color: #c7c7c7;;
+  background-color: #c7c7c7;
+  ;
   top: 48px;
   position: sticky;
 }
-.export-content table th:hover{
+
+.export-content table th:hover {
   background-color: #a8a3a3;
 }
-  
+
 .export-content table tr:nth-child(even) {
   background-color: #f2f2f2;
 }
-  
+
 .export-content table tr:hover {
-  background-color:#ddd;
+  background-color: #ddd;
 }
-form{
+
+form {
   /* background-color: aqua; */
   height: 60px;
-  width:99% ;
+  width: 99%;
   display: flex;
   align-items: center;
-  margin-top: 40px;
-  background-color: #ccc;
+  background-color: #EEF3F5;
+  padding:2px;
 }
-  
-  
+
+
 .box-print1 {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly; /* Set the flex direction to column */
+  justify-content: space-evenly;
+  /* Set the flex direction to column */
 }
-  
+
 .check {
-  display: flex; /* Align items vertically */
-  margin-top: 25px; /* Add some space between each checkbox */
+  display: flex;
+  /* Align items vertically */
+  margin-top: 25px;
+  /* Add some space between each checkbox */
 }
-  
+
 .box-print1 label {
   margin-right: -70px;
-  margin-top: 3px; /* Add space between label and input */
+  margin-top: 3px;
+  /* Add space between label and input */
 }
-.box-print1 input{
+
+.box-print1 input {
   height: 20px;
 }
-.box-print1  button{
+
+.box-print1 button {
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -144,69 +175,214 @@ form{
   transition: background-color 0.3s ease;
   margin-top: 15px;
 }
+
 .box-print1 button:hover {
-  background-color:#0056b3;
+  background-color: #0056b3;
 }
+
 /* export2 */
-.export2{
-  height: 100vh;
-  width: 25%;
-  background-color: #ccc;
-  display:flex;
-  flex-direction: column;
-  align-items: center;
-}
-.export2-box1{
-  height: 10vh;
-  width: 100%;
-  background-color: #c7c7c7;
+
+.export2 {
+  height: 90vh;
+  width: 27%;
+  /* box-shadow:0px 0px 10px 0px black; */
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  border-radius: 10px;
 }
-.export2-box2{
-  height: 20vh;
+.export2 .export-overall{
+  height:90vh;
+  width:100%;
+  /* background-color: red; */
+  display:flex;
+  flex-direction:column;
+}
+
+.export-overall form {
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  /* background-color: rgb(4, 2, 24); */
+  /* background-color:rgb(14, 6, 46); */
+}
+
+.check-list {
+  height: 4vh;
+  width: 70%;
+
+}
+
+.export2-box1 {
+  height: 26vh;
+  width:100%;
+  /* background-color: rgb(173, 235, 228); */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  text-align:left;
+  /* border-bottom:1px solid black; */
+  /* box-shadow:0px 2px 2px 0px black; */
+}
+
+.export2-box1 h3{
+  height:5vh;
+  width:100%;
+  display:flex;
+  align-items:center;
+  /* background-color:green; */
+}
+
+.export2-box2 {
+  height: 26vh;
   width: 100%;
   /* background-color: #007bff; */
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-}
-.export2-box2-content{
-  height: 50px;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
+  justify-content: space-between;
+  /* align-items: center; */
+  text-align: left;
 }
 
-.export2-box3{
-  height: 50vh;
+.export2-box2 h3{
+  height:4vh;
+  width:100%;
+  /* background-color:violet; */
+}
+.export2-box2-content {
+  height: 10vh;
+  width: 100%;
+  /* background-color: red; */
+  display: flex;
+  flex-direction: column;
+  align-items:center;
+  justify-content: space-evenly;
+}
+
+.export-boxes{
+  height:4vh;
+  width:70%;
+  /* background-color:pink; */
+}
+
+.export2-box2-content input[type="checkbox"] {
+  margin-right: 10px;
+  /* Adjust margin as needed */
+}
+
+.other {
+  height:10vh;
+  width: 100%;
+  display: flex;
+  /* background-color: pink; */
+  justify-content: center;
+  align-items: center;
+}
+.other input{
+  height:25px;
+  width:60%;
+
+}
+
+.export2-box3 {
+  min-height: 26vh;
   width: 100%;
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
-  /* background-color: #0056b3;*/
-}
-#checkboxTable{
-  border-collapse: collapse;
-  width:200px;
 }
 
-#checkboxTable th, #checkboxTable td {
-  border: 1px solid #ddd;
-  padding: 8px;
+.export2-box3_table {
+  max-height: 25vh;
+  width: 90%;
+  overflow-y: auto; /* Change to 'auto' to only show scrollbar when needed */
+}
+
+.export2-box3_table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.export2-box3_table th,
+.export2-box3_table td {
+  border: 1px solid #d3d1d1;
+  height: 30px;
   text-align: center;
 }
 
-#checkboxTable th {
-  background-color: #f2f2f2;
+.export2-box3_table th {
+  background-color: #ffffff;
+  position: sticky;
+  top: 0;
+}
+.selected {
+  background-color: #ffffff;
 }
 
+.export-error{
+  height:8vh;
+  width:100%;
+  /* background-color:orange; */
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background-color: #EEF3F5;
+  border-bottom:1px solid black;
 
-.selected {
-  background-color:#ccc;
+}
+
+span.sidePanelErrors {
+  /* background-color:red; */
+  text-align:center;
+  color: red;
+  font-size: 14px;
+}
+
+button.export-reset{
+  height:25px;
+  width:20%;
+  border:none;
+  border-radius:3px;
+  background-color:blue;
+  color:#FFF;
+  cursor:pointer;
+}
+
+@media print {
+  body {
+    width:100%;
+    height: 100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    border: 1px solid black;
+  }
+
+  .navbar,
+  .tab,
+  .export2,
+  .box-print1 {
+    display: none;
+  }
+
+  .export1 {
+    width: 96%;
+  }
+  .tab,
+  .tabcontent{
+    border:none;
+  }
+  nav.invclc-nav{
+    display:none;
+  }
+.export-content table th,
+.export-content table td{
+  font-size:12px;
+}
 }

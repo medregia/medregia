@@ -8,9 +8,16 @@
 
 {% block link %}{% static 'invclc/css/checkmore.css' %} {%endblock link %}
 
+{% block side %}{% static 'invclc/css/static_sidebar.css' %}{% endblock side %}
+
+
 {% block navbar %} 
     {% include 'nav.html' %} 
 {% endblock navbar%} 
+
+{% block sidebar %}
+{% include 'sidebar.html' %}
+{% endblock sidebar %}
 
 {% block content %}
     <div class="checkmore-container">
@@ -44,7 +51,7 @@
                             <td>
                                 <div class="scrollable-cell">
                                     {% for tracking_invoice in tracking_invoices %}
-                                        {% if tracking_invoice.Medical_name == data.pharmacy_name %}
+                                        {% if tracking_invoice.Bill_no == data.invoice_number %}
                                             {{ tracking_invoice.paying_amount }}
                                         {% endif %}
                                     {% endfor %}
@@ -53,7 +60,7 @@
                             <td>
                                 <div class="scrollable-cell expand">
                                     {% for tracking_invoice in tracking_invoices %}
-                                        {% if tracking_invoice.Medical_name == data.pharmacy_name %}
+                                        {% if tracking_invoice.Bill_no == data.invoice_number %}
                                             {{ tracking_invoice.payment_date }}
                                         {% endif %}
                                     {% endfor %}

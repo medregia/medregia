@@ -38,9 +38,9 @@
       </div>
 
       <div class="container-body-login">
-        {% if form.non_field_errors %}
+        {% if form.errors %}
         <div class="alert alert-danger">
-            {{ form.non_field_errors }}
+            {{ form.errors }}
             <i class="fas fa-times disable"></i>
         </div>
         {% endif %}
@@ -68,7 +68,7 @@
 
               <div class="login-buttons">
                 <div class="login-btn">
-                  <button type="submit" class="loginbtn">Login</button>
+                  <a href="#"><button type="submit" class="loginbtn">Login</button></a>
                 </div>
   
                 <div class="signup-btn">
@@ -79,7 +79,7 @@
           </div>
 
           <div class="bottom-field">
-            <a href="{% url 'reset_password' %}">Forget Password ?</a>
+            <!-- <a href="{% url 'reset_password' %}">Forget Password ?</a> -->
             <a href="#">Terms & Conditions</a>
           </div>
 

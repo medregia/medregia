@@ -8,38 +8,46 @@
 {% block link_footer %}{% static 'footer.css' %} {% endblock link_footer %}
 
 {% block navbar %}
-  {% include 'nav.html' %}
+{% include 'nav.html' %}
 {% endblock navbar %}
 
- 
+
 {% block sidebar %}
-  {% include 'sidebar.html' %}
+{% include 'sidebar.html' %}
 {% endblock sidebar %}
 
 {% block message %}
-    {% include 'invoice_message.html' %}
+{% include 'invoice_message.html' %}
 {% endblock message %}
 
 {% block content %}
 
-    <div class="main-container" id="mainContent">
- 
-      <div class="main-header">
-        <div class="header-top">
-          <div class="header-top-btn">
-            <a href="{% url 'create' %}"><h3>{{request.user}}</h3></a>
-            {% comment %} <a href="{% url 'create' %}"><button type="button">Overall</button></a> {% endcomment %}
-            <div class="header-messages">
+<div class="main-container" id="mainContent">
 
-            </div>
-          </div>
-          <div class="heading">
-            {% if not medicalname.MedicalShopName or medicalname.MedicalShopName == '' %}
-              <h2><h2>
+  <div class="main-header">
+    <div class="header-top">
+      <div class="header-top-btn">
+        <h3>{{request.user}}</h3>
+        {% comment %} <a href="{% url 'create' %}"><button type="button">Overall</button></a> {% endcomment %}
+        <div class="header-messages">
+          {% if form.errors.invoice_number%}
+          <span class="header-error"> {{form.errors.invoice_number}}</span>
+          {% elif form.errors.payment_amount%}
+          <span class="header-error">{{form.errors.payment_amount }}</span>
+          {% elif form.errors.invoice_date%}
+          <span class="header-error">{{form.errors.invoice_date }}</span>
+          {% endif %}
+
+        </div>
+      </div>
+      <div class="heading">
+        {% if not medicalname.MedicalShopName or medicalname.MedicalShopName == '' %}
+        <h2>
+          <h2>
             {% else %}
-              <h2>{{ medicalname.MedicalShopName }}</h2>
+            <h2>{{ medicalname.MedicalShopName }}</h2>
             {% endif %}
-          </div>
+      </div>
 
           <div class="unique-code">
             {% if check_user == current_user %}
@@ -106,11 +114,11 @@
             <div class="table-panel">
               <h2 class="panel-heading">Paid Records</h2>
   
-              <form action="" method="post">
+              <!-- <form action="" method="post">
                   {% csrf_token %}
                   <input type="text" name="payed" id="payment_list" placeholder="Search" title= "Search 'all' to get Full Data">
                   <button type="submit">Search</button>
-              </form>
+              </form> -->
             </div>
             <div class="table-cover-left">
               <table>
@@ -146,7 +154,7 @@
                                     <span class="loginstatus"></span>
                                 {% else %}
                                     <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                    <span class="statusfailed"></span>
+                                    <span class="statusfailed">{{ data.pharmacy_name|medical_signup}}</span>
                                 {% endif %}
                             {% else %}
                                 <input type="text" value="Not Found" disabled>
@@ -168,10 +176,10 @@
                             {% if data.pharmacy_name %}
                                 {% if request.user.is_authenticated %}
                                     <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                    <span class="loginstatus"></span>
+                                    <span class="loginstatus" style="background-color:{{data.pharmacy_name|medical_signup}};"></span>
                                 {% else %}
                                     <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                    <span class="statusfailed"></span>
+                                    <span style="background-color:{{data.pharmacy_name|medical_signup}};"></span>
                                 {% endif %}
                             {% else %}
                                 <input type="text" value="Not Found" disabled>
@@ -188,21 +196,23 @@
             </div>  
             <a href="{% url 'checkmore' %}"><button type="button">more details</button></a>
           </div>
+          
 
           <div class="table-content-right">
             <div class="table-panel">
               <h2 class="panel-heading">Update</h2>
   
-              <form action="" method="post">
+              <!-- <form action="" method="post">
                   {% csrf_token %}
                   <input type="text" name="payment_list" id="payment_list" placeholder="Search" title= "Search 'all' to get Full Data">
                   <button type="submit">Search</button>
-              </form>
+              </form> -->
             </div>
             <div class="table-cover-right">
               <table>
                 <thead>
                   <th>Pharmacy Name</th>
+                  <th>Invoice Number</th>
                   <th>Invoice Amount</th>
                   <th>Paid Date</th>
                   <th>Balance Amount</th>
@@ -215,6 +225,7 @@
                       {% for data in edit_paid %}
                       <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
                           <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
+                          <td><input type="text" value="{{data.invoice_number}}" disabled name="invoice_number"></td>
                           <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
                           <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
                           <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
@@ -234,6 +245,7 @@
                       {% for data in payment %}
                       <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
                           <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
+                          <td><input type="text" value="{{data.invoice_number}}" disabled name="invoice_number"></td>
                           <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
                           <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
                           <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" readonly disabled></td>
@@ -260,21 +272,21 @@
             <div class="table-panel">
               <h2 class="panel-heading">Partially Paid</h2>
   
-              <form action="" method="post">
+              <!-- <form action="" method="post">
                   {% csrf_token %}
                   <input type="text" name="q" id="search" placeholder="Search" title= "Search 'all' to get Full Data">
                   <button type="submit">Search</button>
-              </form>
+              </form> -->
             </div>
             <div class="table-cover-left">
               <table>
                 <thead>
                   <th>Name</th>
-                  <th>IV / No.</th>
+                  <th>Invoice No.</th>
                   <th>Total</th>
                   <th>Status</th>
                   <th>Pending</th>
-                  <th>Payment</tha>
+                  <th>Payment</th>
                   <th>Action</th>
                 </thead>
                 <tbody id="paymentTableBody">
@@ -331,11 +343,11 @@
             <div class="table-panel">
               <h2 class="panel-heading">Payment List</h2>
   
-              <form action="" method="post">
+              <!-- <form action="" method="post">
                   {% csrf_token %}
                   <input type="text" name="search" id="search" placeholder="Search" title= "Search 'all' to get Full Data">
                   <button type="submit">Search</button>
-              </form>
+              </form> -->
             </div>
             <div class="table-cover-right">
               <table>
@@ -382,98 +394,102 @@
           </div>
         </div>
 
-        <div id="DeleteHistory" class="tabcontent deleted-history">
-          <div class="delete-heading">
-            <h3>Delete History</h3>
-          </div>
-
-          <div class="delete-table">
-            <table>
-              <thead>
-                <th>Delete Date</th>
-                <th>Name</th>
-                <th>Invoice Number</th>
-                <th>Invoice Date</th>
-                <th>Total Amount</th>
-                <th>Payment Amount</th>
-              </thead>
-            
-              <tbody>
-                  {% if DeleteHistory == "No Deletion Found" %}
-                    <tr>
-                      <td colspan="6"><h2>No Deleted Details Found ...</h2></td>
-                    </tr>
-                  {% else %}
-                    {% for history in DeleteHistory%}
-                    <tr>
-                      <td>{{history.today_date}}</td>
-                      <td>{{history.pharmacy}}</td>
-                      <td>{{history.number}}</td>
-                      <td>{{history.date}}</td>
-                      <td>{{history.amount}}</td>
-                      <td>{{history.payment}}</td>
-                    </tr>
-                    {% endfor %}
-                  {% endif %}
-              </tbody>
-            </table>
-  
-          </div>
-          
-        </div>
-
-        <div id="UpdateHistory" class="tabcontent updated-history">
-          <div class="update-heading">
-            <h3>Modified History</h3>
-          </div>
-
-          <div class="update-table">
-            <table>
-              <thead>
-                <th>Updated Date</th>
-                <th>Updated Name</th>
-                <th>Updated Invoice Number</th>
-                <th>Updated Invoice Date</th>
-                <th>Updated Total Amount</th>
-                <th>Updated Payment Amount</th>
-              </thead>
-            
-              <tbody>
-                  {% if ModifiedHistory == "No Updatation Found" %}
-                    <tr>
-                      <td colspan="6"><h2>No Modified Details Here ...</h2></td>
-                    </tr>
-                  {% else %}
-                    {% for Modified in ModifiedHistory %}
-                      <tr>
-                        <td>{{ Modified.modified_today_date }}</td>
-                        <td>{{ Modified.modified_pharmacy }}</td>
-                        <td>{{ Modified.modified_Invoice_number }}</td>
-                        <td>{{ Modified.modified_Invoice_date }}</td>
-                        <td>{{ Modified.modified_Total_amount }}</td>
-                        <td>{{ Modified.modified_payment }}</td>
-                      </tr>
-                    {% endfor %}
-                  {% endif %}
-              </tbody>
-            </table>
-  
-          </div>
-          
-        </div>
-  
+    <div id="DeleteHistory" class="tabcontent deleted-history">
+      <div class="delete-heading">
+        <h3>Delete History</h3>
       </div>
+
+      <div class="delete-table">
+        <table>
+          <thead>
+            <th>Delete Date</th>
+            <th>Name</th>
+            <th>Invoice Number</th>
+            <th>Invoice Date</th>
+            <th>Total Amount</th>
+            <th>Payment Amount</th>
+          </thead>
+
+          <tbody>
+            {% if DeleteHistory == "No Deletion Found" %}
+            <tr>
+              <td colspan="6">
+                <h2>No Deleted Details Found ...</h2>
+              </td>
+            </tr>
+            {% else %}
+            {% for history in DeleteHistory%}
+            <tr>
+              <td>{{history.today_date}}</td>
+              <td>{{history.pharmacy}}</td>
+              <td>{{history.number}}</td>
+              <td>{{history.date}}</td>
+              <td>{{history.amount}}</td>
+              <td>{{history.payment}}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+          </tbody>
+        </table>
+
+      </div>
+
     </div>
-  
-    <script src="{% static 'invclc/js/index.js' %}"></script> 
-    <script src="{% static 'authentication/js/sidebar.js' %}"></script>  
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    
+
+    <div id="UpdateHistory" class="tabcontent updated-history">
+      <div class="update-heading">
+        <h3>Modified History</h3>
+      </div>
+
+      <div class="update-table">
+        <table>
+          <thead>
+            <th>Updated Date</th>
+            <th>Updated Name</th>
+            <th>Updated Invoice Number</th>
+            <th>Updated Invoice Date</th>
+            <th>Updated Total Amount</th>
+            <th>Updated Payment Amount</th>
+          </thead>
+
+          <tbody>
+            {% if ModifiedHistory == "No Updatation Found" %}
+            <tr>
+              <td colspan="6">
+                <h2>No Modified Details Here ...</h2>
+              </td>
+            </tr>
+            {% else %}
+            {% for Modified in ModifiedHistory %}
+            <tr>
+              <td>{{ Modified.modified_today_date }}</td>
+              <td>{{ Modified.modified_pharmacy }}</td>
+              <td>{{ Modified.modified_Invoice_number }}</td>
+              <td>{{ Modified.modified_Invoice_date }}</td>
+              <td>{{ Modified.modified_Total_amount }}</td>
+              <td>{{ Modified.modified_payment }}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+
   </div>
- 
+</div>
+
+<script src="{% static 'invclc/js/index.js' %}"></script>
+<script src="{% static 'authentication/js/sidebar.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</div>
+
 {% endblock content %}
 
 
 {% block footer %}
-  {% include 'footer.html' %}
+{% include 'footer.html' %}
 {% endblock footer %}

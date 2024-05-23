@@ -82,7 +82,7 @@ function openpanel(evt, panels) {
   tabcontent = document.getElementsByClassName("tabcontent");
   for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
-    tabcontent[i].style.backgroundColor="rgb(83 78 78 / 60%)";
+    tabcontent[i].style.backgroundColor="#EEF3F5";
   }
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {
@@ -95,7 +95,7 @@ function openpanel(evt, panels) {
   }
   if (evt.currentTarget.className.indexOf("active") === -1) {
     evt.currentTarget.className += " active";
-    evt.currentTarget.style.backgroundColor = "rgb(83 78 78 / 60%)";
+    evt.currentTarget.style.backgroundColor = "#EEF3F5";
   }
   else {
     evt.currentTarget.style.backgroundColor = "#fff"; 
@@ -274,10 +274,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputFields = row.querySelectorAll('input');
 
     payBtn.addEventListener('click', function () {
-      console.log('Pay button clicked');
 
       if (payBtn.textContent === 'Save') {
-        console.log('Save operation initiated');
         const invoiceId = row.dataset.invoiceId;
         const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
 
@@ -299,14 +297,10 @@ document.addEventListener('DOMContentLoaded', function () {
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
-          console.log(`first Responce :  ${response}`)
-          console.log(`first Responce Json :  ${response.json}`)
           return response.json();
         })
         .then(data => {
-          console.log('Row updated successfully:', data);
           headerMessages.textContent = "Payment Processed Successfully .."
-          console.log(headerMessages)
 
           // Update the payment field with the returned data
           paymentField.value = data.payment_amount;
@@ -314,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
           payBtn.textContent = 'Pay';
           cancelBtn.style.display = 'none'; // Hide cancel button after saving
           inputFields.forEach(input => {
-            input.setAttribute('disabled', 'true');
+            input.setAttribute('disabled', 'true'); 
             input.classList.remove('border-active');
           });
 
@@ -327,9 +321,9 @@ document.addEventListener('DOMContentLoaded', function () {
           headerMessages.textContent = "Payment Failed .."
           headerMessages.style.color = "red"
           payBtn.textContent = 'Save'; // Handle error scenario, if needed
+          location.reload();
         });
       } else {
-        console.log('Edit operation initiated');
         cancelBtn.style.display = 'inline-block';
 
         // Enable only the payment field for editing
@@ -355,7 +349,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   cancelButtons.forEach(cancelBtn => {
     cancelBtn.addEventListener('click', function () {
-      console.log('Cancel button clicked');
       this.style.display = 'none';
 
       const row = this.closest('tr');
@@ -461,10 +454,111 @@ document.addEventListener('DOMContentLoaded', function () {
           .catch(error => {
             console.error('Error updating payment:', error);
             headerMessages.style.color = "red"
-            headerMessages.textContent = `Paied Failed `
+            headerMessages.textContent = `Paied Failed : Check Your Payment Amount `
+            location.reload();
           });
         }
       });
     }
   });
 });
+document.addEventListener('DOMContentLoaded', function() {
+  var invoiceDateInput = document.getElementById('id_invoice_date');
+  invoiceDateInput.addEventListener('input', function() {
+      var formattedValue = this.value.replace(/[^\d\/]/g, ''); // Remove all characters except digits and slashes
+      if (formattedValue.length > 10) {
+          formattedValue = formattedValue.substr(0, 10); // Limit to 10 characters
+      }
+      if (formattedValue.length >= 2 && formattedValue.indexOf('/') === -1) {
+          formattedValue = formattedValue.substr(0, 2) + '/' + formattedValue.substr(2);
+      }
+      if (formattedValue.length >= 5 && formattedValue.indexOf('/', 3) === -1) {
+          formattedValue = formattedValue.substr(0, 5) + '/' + formattedValue.substr(5);
+      }
+      this.value = formattedValue;
+  });
+
+  // Handle backspace and delete key events
+  invoiceDateInput.addEventListener('keydown', function(event) {
+      if (event.key === 'Backspace' || event.key === 'Delete') {
+          var caretStart = this.selectionStart;
+          var caretEnd = this.selectionEnd;
+          var value = this.value;
+          if (caretStart === caretEnd) {
+              if (event.key === 'Backspace' && value.charAt(caretStart - 1) === '/') {
+                  this.value = value.slice(0, caretStart - 1) + value.slice(caretStart);
+                  event.preventDefault();
+              } else if (event.key === 'Delete' && value.charAt(caretStart) === '/') {
+                  this.value = value.slice(0, caretStart) + value.slice(caretStart + 1);
+                  event.preventDefault();
+              }
+          }
+      }
+    });
+});
+
+
+
+function entryData() {
+  fetch('/entry/')
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+      })
+      .then(data => {
+          const pharmacy_name = document.querySelector(".pharmacy_name");
+          const invoice_number = document.querySelector(".invoice_number");
+          const id_invoice_date = document.querySelector("#id_invoice_date");
+          const invoice_amount = document.querySelector(".invoice_amount");
+          const payment_amount = document.querySelector(".payment_amount");
+          const balance_amount = document.querySelector(".balance_amount");
+          // Disable or enable fields based on data.Entry value
+          const isEntryDisabled = data.Entry;
+          pharmacy_name.disabled = isEntryDisabled;
+          invoice_number.disabled = isEntryDisabled;
+          id_invoice_date.disabled = isEntryDisabled;
+          invoice_amount.disabled = isEntryDisabled;
+          payment_amount.disabled = isEntryDisabled;
+          balance_amount.disabled = isEntryDisabled;
+          // Add or remove .not-allowed class based on the disabled state
+          if (isEntryDisabled) {
+              pharmacy_name.classList.add('not-allowed');
+              invoice_number.classList.add('not-allowed');
+              id_invoice_date.classList.add('not-allowed');
+              invoice_amount.classList.add('not-allowed');
+              payment_amount.classList.add('not-allowed');
+              balance_amount.classList.add('not-allowed');
+              console.log("Entry is disabled.");
+          } else {
+              pharmacy_name.classList.remove('not-allowed');
+              invoice_number.classList.remove('not-allowed');
+              id_invoice_date.classList.remove('not-allowed');
+              invoice_amount.classList.remove('not-allowed');
+              payment_amount.classList.remove('not-allowed');
+              balance_amount.classList.remove('not-allowed');
+              
+              console.log("Entry is enabled.");
+          }
+          console.log(data);
+      })
+      .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+      });
+}
+
+// Add event listeners to input fields
+// const pharmacy_name = document.querySelector(".pharmacy_name");
+// const invoice_number = document.querySelector(".invoice_number");
+// const id_invoice_date = document.querySelector("#id_invoice_date");
+// const invoice_amount = document.querySelector(".invoice_amount");
+// const payment_amount = document.querySelector(".payment_amount");
+// const balance_amount = document.querySelector(".balance_amount");
+
+// pharmacy_name.addEventListener('click', entryData);
+// invoice_number.addEventListener('click', entryData);
+// id_invoice_date.addEventListener('click', entryData);
+// invoice_amount.addEventListener('click', entryData);
+// payment_amount.addEventListener('click', entryData);
+// balance_amount.addEventListener('click', entryData);

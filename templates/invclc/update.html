@@ -8,9 +8,15 @@
 
 {% block link %}{% static 'invclc/css/update.css' %} {%endblock link %}
 
+{% block side %}{% static 'invclc/css/static_sidebar.css' %}{% endblock side %}
+
 {% block navbar %} 
     {% include 'nav.html' %} 
 {% endblock navbar%} 
+
+{% block sidebar %}
+{% include 'sidebar.html' %}
+{% endblock sidebar %}
 
 {% block content %}
     <div class=" updateTable-container">

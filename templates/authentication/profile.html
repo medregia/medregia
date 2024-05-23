@@ -16,7 +16,7 @@
  
 {% block content%} 
 
-{% include 'message.html' %}
+{% include 'profile_message.html' %}
 
 <!-- Include the Select2 CSS and JS files -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
@@ -24,6 +24,19 @@
 
 
 {% if request.user.is_superuser or request.user.is_staff %}
+<div class="popup" id="popup-1">
+    <div class="overlay"></div>
+    <div class="overlay-content">
+        <h2> </h2>
+        <p>
+           <span>Note : </span>
+        </p>
+        <div class="content-btn">
+            <button typr="button" id="popup-btn">OK</button>
+        </div>
+        
+    </div>
+</div>
 <form action="#" method="post">
     {% csrf_token %}
     <div class="profile-container">
@@ -36,69 +49,99 @@
                     <div class="profile-main-left">
                         <div class="profile-main-left-top">
                             <div class="left-medical-name left-top-containers">
-                                <label for="Medicalshop Name">Medicalshop Name :</label>
+                                <label for="Medicalshop Name">{{sendShopName}} Name:</label>
                                 {% if data.MedicalShopName and data.MedicalShopName != "" %}
                                     <div class="profile-data">
                                         {{data.MedicalShopName}}
                                     </div>
                                 {% else %}
-                                    {{profile.MedicalShopName}}
+                                    <input type="text" name="MedicalShopName" placeholder="Medical Shop Name" id="id_MedicalShopName">
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.MedicalShopName %}
+                                        {{profile.errors.MedicalShopName}}
+                                    {% endif %}
+                                </span>
                             </div>                            
 
                             <div class="left-pharmacy-name left-top-containers">
-                                <label for="Medicalshop Name">Proprietary Name :</label>
+                                <label for="Medicalshop Name">Proprietary Name <span class="importent">*</span>:</label>
                                 {% if data.ProprietaryName and data.ProprietaryName != "" %}
                                     <div class="profile-data">
                                         {{data.ProprietaryName }}
                                     </div>
                                 {% else %}
-                                    {{profile.ProprietaryName }}
+                                    <input type="text" name="ProprietaryName" placeholder="ProprietaryName" id="id_ProprietaryName">
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.ProprietaryName %}
+                                        {{profile.errors.ProprietaryName}}
+                                    {% endif %}
+                                </span>
                             </div>
 
                             <div class="left-drug-1 left-top-containers">
-                                <label for="Medicalshop Name">Drug Licenese Number1 :</label>
+                                <label for="Medicalshop Name">Drug Licenese Number1 <span class="importent">*</span>:</label>
                                 {% if data.DrugLiceneseNumber1 and data.DrugLiceneseNumber1 != "" %}
                                     <div class="profile-data">
                                         {{data.DrugLiceneseNumber1 }}
                                     </div>
                                 {% else %}
-                                    {{profile.DrugLiceneseNumber1}}
+                                    <input type="text" name="DrugLiceneseNumber1" placeholder="Drug License Number 1" id="id_DrugLiceneseNumber1">
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.DrugLiceneseNumber1 %}
+                                        {{profile.errors.DrugLiceneseNumber1}}
+                                    {% endif %}
+                                </span>
                             </div>
 
                             <div class="left-proprietary-number left-top-containers">
-                                <label for="Medicalshop Name">Proprietary Number :</label>
+                                <label for="Medicalshop Name">Proprietary Number <span class="importent">*</span>:</label>
                                 {% if data.ProprietaryNumber and data.ProprietaryNumber != "" %}
                                     <div class="profile-data">
                                         {{data.ProprietaryNumber }}
                                     </div>
                                 {% else %}
-                                    {{profile.ProprietaryNumber}}
+                                    <input type="text" name="ProprietaryNumber" placeholder="Proprietary Number" id="id_ProprietaryNumber">
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.ProprietaryNumber %}
+                                        {{profile.errors.ProprietaryNumber}}
+                                    {% endif %}
+                                </span>
                             </div>
 
                             <div class="left-drug-2 left-top-containers">
-                                <label for="Medicalshop Name">Drug Licenese Number2 :</label>
+                                <label for="Medicalshop Name">Drug Licenese Number2 <span class="importent">*</span>:</label>
                                 {% if data.DrugLiceneseNumber2 and data.DrugLiceneseNumber2 != "" %}
                                     <div class="profile-data">
                                         {{data.DrugLiceneseNumber2 }}
                                     </div>
                                 {% else %}
-                                    {{profile.DrugLiceneseNumber2}}
+                                    <input type="text" name="DrugLiceneseNumber2" placeholder="Drug License Number 2" id="id_DrugLiceneseNumber2">
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.DrugLiceneseNumber2 %}
+                                        {{profile.errors.DrugLiceneseNumber2}}
+                                    {% endif %}
+                                </span>
                             </div>
 
                             <div class="left-proprietary-contact left-top-containers">
-                                <label for="Medicalshop Name">Proprietary Contact Number :</label>
+                                <label for="Medicalshop Name">Proprietary Contact Number <span class="importent">*</span>:</label>
                                 {% if data.ProprietaryContact and data.ProprietaryContact != "" %}
                                     <div class="profile-data">
                                         {{data.ProprietaryContact }}
                                     </div>
                                 {% else %}
-                                    {{profile.ProprietaryContact}}
+                                    <input type="text" name="ProprietaryContact" placeholder="Proprietary Contact" id="id_ProprietaryContact">
                                 {% endif %}
+                                <span>
+                                    {% if profile.errors.ProprietaryContact %}
+                                        {{profile.errors.ProprietaryContact}}
+                                    {% endif %}
+                                </span>
                             </div>
 
                         </div>
@@ -110,29 +153,37 @@
                             <div class="profile-left-bottom-main">
                                 <div class="left-bottom-state left-bottom-containers">
                                     <label for="Medicalshop Name">State :</label>
-                                    {% if data.state and data.state != "" %}
-                                        <div class="profile-data">
-                                            {{data.state }}
-                                        </div>
-                                    {% else %}
-                                        <div class="state_dropdown">
-                                            {{profile.state}}
-                                        </div>
-                                    {% endif %}
+                                    <div class="state_dropdown">
+                                        {% if data.state and data.state != "" %}
+                                            <select id="state-dropdown" disabled>
+                                                <option value="">{{data.state}}</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
+                                        {% else %}
+                                            <select id="state-dropdown">
+                                                <option value="">Select State</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
+                                        {% endif %}
+                                    </div>
                                     
                                 </div>
 
                                 <div class="left-bottom-district left-bottom-containers">
                                     <label for="Medicalshop Name">District :</label>
-                                    {% if data.district and data.district != "" %}
-                                        <div class="profile-data">
-                                            {{data.district }}
-                                        </div>
-                                    {% else %}
-                                        <div class="district_dropdown">
-                                            {{ profile.district }}
-                                        </div>
-                                    {% endif %}
+                                    <div class="district_dropdown">
+                                        {% if data.district and data.district != "" %}
+                                            <select id="district-dropdown" disabled>
+                                                <option value="">{{data.district}}</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
+                                        {% else %}
+                                            <select id="district-dropdown">
+                                                <option value="">Select District</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
+                                        {% endif %}
+                                    </div>
                                     
                                 </div>
 
@@ -143,7 +194,7 @@
                                             {{data.City }}
                                         </div>
                                     {% else %}
-                                        {{profile.City}}
+                                        <input type="text" name="City" placeholder="City" id="id_City">
                                     {% endif %}
                                 </div>
 
@@ -154,7 +205,7 @@
                                             {{data.Pincode }}
                                         </div>
                                     {% else %}
-                                        {{profile.Pincode}}
+                                        <input type="text" name="Pincode" placeholder="Pincode" id="id_Pincode">
                                     {% endif %}
                                 </div>
 
@@ -165,7 +216,7 @@
                                             {{data.StreetNumber }}
                                         </div>
                                     {% else %}
-                                        {{profile.StreetNumber}}
+                                        <input type="text" name="StreetNumber" placeholder="Street Name" id="id_StreetNumber">
                                     {% endif %}
                                 </div>
 
@@ -176,7 +227,7 @@
                                             {{data.DoorNumber }}
                                         </div>
                                     {% else %}
-                                        {{profile.DoorNumber}}
+                                        <input type="text" name="DoorNumber" placeholder="Door Number" id="id_DoorNumber">
                                     {% endif %}
                                 </div>
 
@@ -185,6 +236,7 @@
                                     <input type="text" value="{{unique_code}}" id="unique_id" readonly>
                                     <span></span>
                                 </div>
+                                <span><span class="importent">*</span> Must be Unique</span>
                             </div>
                         </div>
 
@@ -200,19 +252,29 @@
                                     {{data.PharmacistName }}
                                 </div>
                             {% else %}
-                                {{profile.PharmacistName}}
+                                <input type="text" name="PharmacistName" placeholder="Pharmacist Name" id="id_PharmacistName">
                             {% endif %}
+                            <span>
+                                {% if profile.errors.PharmacistyName %}
+                                    {{profile.errors.PharmacistName}}
+                                {% endif %}
+                            </span>
                         </div>
 
                         <div class="profile-right-register right-top-containers">
-                            <label for="Medicalshop Name">Registered Number :</label>
+                            <label for="Medicalshop Name">Registered Number <span class="importent">*</span>:</label>
                             {% if data.RegisteredNumber and data.RegisteredNumber != "" %}
                                 <div class="profile-data">
                                     {{data.RegisteredNumber }}
                                 </div>
                             {% else %}
-                                {{profile.RegisteredNumber}}
+                                <input type="text" name="RegisteredNumber" placeholder="Registered Number" id="id_RegisteredNumber">
                             {% endif %}
+                            <span>
+                                {% if profile.errors.RegisteredNumber %}
+                                    {{profile.errors.RegisteredNumber}}
+                                {% endif %}
+                            </span>
                         </div>
 
                         <div class="profile-right-contactnumber right-top-containers">
@@ -222,8 +284,13 @@
                                     {{data.ContactNumber }}
                                 </div>
                             {% else %}
-                                {{profile.ContactNumber}}
+                                <input type="number" name="ContactNumber" placeholder="Contact Number" id="id_ContactNumber">
                             {% endif %}
+                            <span>
+                                {% if profile.errors.ContactNumber %}
+                                    {{profile.errors.ContactNumber}}
+                                {% endif %}
+                            </span>
                         </div>
                     </div>
                     </form>     
@@ -236,17 +303,13 @@
                         
                             <div class="profile-admin-main">
                                 <div class="profile-admin-name containers">
-                                    {% for admin in admins %}
-                                        <label for="name">Name</label>
-                                        <input type="text" value="{{ admin_name }}" id="user_name" disabled>
-                                    {% endfor %}
+                                    <label for="name">Name</label>
+                                    <input type="text" value="{{ admin_name }}" id="user_name" disabled>
                                 </div>
                             
                                 <div class="profile-admin-contact containers">
-                                    {% for admin in admins %}
-                                        <label for="name">Contact</label>
-                                        <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
-                                    {% endfor %}
+                                    <label for="name">Contact</label>
+                                    <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
                                 </div>
                             </div>
                         </div>
@@ -279,31 +342,41 @@
                             </div>
                         </div>
                     
-
-                        <div class="makeus-admin">
-                            {% if request.user.is_superuser or request.user.is_staff %}
+                        {% if hide_colaborator and hide_colaborator is not None %}
+                            <div class="makeus-admin">
+                                <h4 class="unable-to-request">"You are unable to send a collaboration request to another user as you are already an administrator for a different user." </h4>
                                 <div class="collobarate-message">
-                                    <h4>* Please note that if the request receiver rejects the request, you should not send another request to the same receiver *</h4>
                                     <a href="{% url 'colaborator' %}"><button type="button">List</button></a>
                                 </div>
-                                <form action="#" method="post">
-                                    {% csrf_token %}
-                                    <label for="Username">Collaborate:</label>
-                                    <div class="makeus-admin-container">
-                                        <input type="text" placeholder="Enter User Name Want to Admin " name="admin">
-                                        <button class="button-paper" role="submit">Send Request</button></a>   
+                            </div> 
+                        {% else %}
+                            <div class="makeus-admin">
+                                {% if request.user.is_superuser or request.user.is_staff %}
+                                    <div class="collobarate-message">
+                                        <h4>* Please note that if the request receiver rejects the request, you should not send another request to the same receiver *</h4>
+                                        <a href="{% url 'colaborator' %}"><button type="button">List</button></a>
                                     </div>
-                                </form>
-                            {% endif %}
-                        </div>
+                                    <form action="#" method="post">
+                                        {% csrf_token %}
+                                        <label for="Username">Collaborate:</label>
+                                        <div class="makeus-admin-container">
+                                            <input type="text" placeholder="Enter User Name Want to Admin" id="admin-input" name = "adminName">
+                                            <button class="button-paper" type="button" id="send-request-button">Send Request</button>
+                                        </div>
+                                        <div id="response-container" class="respone-container"></div>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        {% endif %}
 
                     </div>
                 </div>
                 
         </div>
-        <div class="btn_container">
-            <button id="button" class="submit_btn" type="submit"></button>
-        </div>
+
+            <div class="btn_container">
+                <button id="submit_button" class="submit_btn" type="button"></button>
+            </div>
     </div>
 
 {% endif %}
@@ -317,17 +390,13 @@
         
             <div class="profile-admin-main">
                 <div class="profile-admin-name containers">
-                    {% for admin in admins %}
-                        <label for="name">Name</label>
-                        <input type="text" value="{{ admin_name }}" id="user_name" disabled>
-                    {% endfor %}
+                    <label for="name">Name</label>
+                    <input type="text" value="{{ admin_name }}" id="user_name" disabled>
                 </div>
             
                 <div class="profile-admin-contact containers">
-                    {% for admin in admins %}
                         <label for="name">Contact</label>
                         <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
-                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -342,10 +411,10 @@
                     <i class="fa-solid fa-user"></i>
                     <input type="text"id="currentusername" value="{{request.user}}" name="currentusername" placeholder="Name" readonly>
                 </div>
-            
+             
                 <div class="current-user-phone bottom-containers">
-                    <input type="text"id="Currentphone" value="{{user_profile_data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
                     <i class="fa-solid fa-phone"></i>
+                    <input type="text"id="Currentphone" value="{{user_profile_data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
                 </div>
             
                 <div class="current-user-passwor">
