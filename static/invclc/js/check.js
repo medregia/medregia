@@ -70,3 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return parseFloat(value.replace(regex, '').trim());
     }
 });
+
+
+
