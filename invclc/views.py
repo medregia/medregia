@@ -287,6 +287,7 @@ def exports_to_json(request):
         response['Content-Disposition'] = f'attachment; filename="invoices_{current_user.username}.json"'
         
         return response
+
 @login_required(login_url='/')
 def index_view(request):
     current_user = request.user
@@ -354,10 +355,13 @@ def index_view(request):
             Storename = Person.objects.get(user=collaborator_admin)
         else:
             Storename = Person.objects.get(user=request.user)
-
-        modifiedStore = convert_Medical(Storename.MedicalShopName)
+        if Storename and Storename.MedicalShopName:
+            modifiedStore = convert_Medical(Storename.MedicalShopName)
+        else:
+            modifiedStore = "Not Found"
     except Person.DoesNotExist:
         modifiedStore = "Not Found"
+
 
 
     try:
@@ -377,7 +381,7 @@ def index_view(request):
     if check_user == str(request.user):
         admin_invoices = Invoice.objects.filter(user=collaborator_admin)
         full_paid = admin_invoices.filter(balance_amount=0.00).order_by('-id')
-        edit_paid = invoices.filter(~Q(balance_amount=F('invoice_number'))).order_by('-id')
+        edit_paid = admin_invoices.filter().order_by('-id')
         partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
         debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
         
@@ -436,6 +440,7 @@ def index_view(request):
             tracking_payment = TrackingPayment(
                 user=invoice.user,
                 Medical_name=invoice.pharmacy_name,
+                Bill_no = invoice.invoice_number,
                 Medical_payments=invoice.invoice_amount,
                 payment_date=invoice.today_date,
                 paying_amount=invoice.payment_amount
@@ -463,7 +468,6 @@ def index_view(request):
 
     context = {'form':invoice_form,
                'payment':payment_details,
-               'edit_paid': edit_paid, 
                'payed_details':payed_details,
                'q':q_details,
                'search':search_details,
@@ -487,7 +491,6 @@ def index_view(request):
                #    'convert_Medical': convert_Medical,
                }
     return render(request,'invclc/index.html',context)
-
 
 def convert_Medical(shopname):
      words = shopname.split()
@@ -757,7 +760,8 @@ def import_view(request):
         category = request.POST.get('category', '')
         others = request.POST.get('others', False)
         not_paid = request.POST.get('all',False)
-
+        pharmacy_name = request.POST.get('pharmacyName',False) # Corrected variable name
+        
         if str(request.user) == check_user:
             try:
                 if completed == 'true':
@@ -777,6 +781,18 @@ def import_view(request):
                             storeTypeList = list(CustomUser.objects.filter(other_value__icontains=others).values('username', 'phone_num', 'email', 'other_value'))
                             return JsonResponse({"storeTypeList": storeTypeList})
                     return JsonResponse({"otherStores": otherStores}) 
+                
+                elif pharmacy_name and pharmacy_name != '':
+                    try:
+                        particular_user_invoices = Invoice.objects.filter(user=collaborator_admin, pharmacy_name=pharmacy_name).values()
+                        modified_invoices = []
+                        for invoice in particular_user_invoices:
+                            modified_invoice = {key.replace('_', ' ').capitalize(): value for key, value in invoice.items() if key not in ['id', 'user_id', 'current_time']}
+                            modified_invoices.append(modified_invoice)
+                        return JsonResponse({'invoices': modified_invoices})
+                    except Invoice.DoesNotExist:
+                        return JsonResponse({'error': 'No invoices found for the given pharmacy name'}, status=404)
+                
                 else:
                     previous_data = list(Invoice.objects.filter(user=collaborator_admin).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                     return JsonResponse({"previous_data": previous_data})
@@ -802,6 +818,17 @@ def import_view(request):
                             storeTypeList = list(CustomUser.objects.filter(other_value__icontains=others).values('username', 'phone_num', 'email', 'other_value'))
                             return JsonResponse({"storeTypeList": storeTypeList})
                     return JsonResponse({"otherStores": otherStores}) 
+                
+                elif pharmacy_name and pharmacy_name != '':
+                    try:
+                        particular_user_invoices = Invoice.objects.filter(user=request.user, pharmacy_name=pharmacy_name).values()
+                        modified_invoices = []
+                        for invoice in particular_user_invoices:
+                            modified_invoice = {key.replace('_', ' ').capitalize(): value for key, value in invoice.items() if key not in ['id', 'user_id', 'current_time']}
+                            modified_invoices.append(modified_invoice)
+                        return JsonResponse({'invoices': modified_invoices})
+                    except Invoice.DoesNotExist:
+                        return JsonResponse({'error': 'No invoices found for the given pharmacy name'}, status=404)
                 else:
                     previous_data = list(Invoice.objects.filter(user=request.user).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                     return JsonResponse({"previous_data": previous_data})
@@ -1239,6 +1266,7 @@ def pay_invoice(request, invoice_id):
         tracking_payment = TrackingPayment(
             user=invoice.user,
             Medical_name = invoice.pharmacy_name,
+            Bill_no = invoice.invoice_number,
             Medical_payments = invoice.payment_amount,
             payment_date = invoice.today_date,
             paying_amount = updated_payment_amount
@@ -1292,6 +1320,7 @@ def payment_invoice(request,payment_id):
         tracking_payment = TrackingPayment(
             user=invoice.user,
             Medical_name = invoice.pharmacy_name,
+            Bill_no = invoice.invoice_number,
             Medical_payments = invoice.payment_amount,
             payment_date = invoice.today_date,
             paying_amount = pay_amount
@@ -1346,3 +1375,7 @@ def empty_xlsx(request):
     workbook.save(response)
 
     return response
+
+
+def admin_access(request):
+    return render(request,'invclc/admin_acess.html')

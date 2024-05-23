@@ -24,6 +24,19 @@
 
 
 {% if request.user.is_superuser or request.user.is_staff %}
+<div class="popup" id="popup-1">
+    <div class="overlay"></div>
+    <div class="overlay-content">
+        <h2> </h2>
+        <p>
+           <span>Note : </span>
+        </p>
+        <div class="content-btn">
+            <button typr="button" id="popup-btn">OK</button>
+        </div>
+        
+    </div>
+</div>
 <form action="#" method="post">
     {% csrf_token %}
     <div class="profile-container">
@@ -42,7 +55,7 @@
                                         {{data.MedicalShopName}}
                                     </div>
                                 {% else %}
-                                    {{profile.MedicalShopName}}
+                                    <input type="text" name="MedicalShopName" placeholder="Medical Shop Name" id="id_MedicalShopName">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.MedicalShopName %}
@@ -58,7 +71,7 @@
                                         {{data.ProprietaryName }}
                                     </div>
                                 {% else %}
-                                    {{profile.ProprietaryName }}
+                                    <input type="text" name="ProprietaryName" placeholder="ProprietaryName" id="id_ProprietaryName">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.ProprietaryName %}
@@ -74,7 +87,7 @@
                                         {{data.DrugLiceneseNumber1 }}
                                     </div>
                                 {% else %}
-                                    {{profile.DrugLiceneseNumber1}}
+                                    <input type="text" name="DrugLiceneseNumber1" placeholder="Drug License Number 1" id="id_DrugLiceneseNumber1">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.DrugLiceneseNumber1 %}
@@ -90,7 +103,7 @@
                                         {{data.ProprietaryNumber }}
                                     </div>
                                 {% else %}
-                                    {{profile.ProprietaryNumber}}
+                                    <input type="text" name="ProprietaryNumber" placeholder="Proprietary Number" id="id_ProprietaryNumber">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.ProprietaryNumber %}
@@ -106,7 +119,7 @@
                                         {{data.DrugLiceneseNumber2 }}
                                     </div>
                                 {% else %}
-                                    {{profile.DrugLiceneseNumber2}}
+                                    <input type="text" name="DrugLiceneseNumber2" placeholder="Drug License Number 2" id="id_DrugLiceneseNumber2">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.DrugLiceneseNumber2 %}
@@ -122,7 +135,7 @@
                                         {{data.ProprietaryContact }}
                                     </div>
                                 {% else %}
-                                    {{profile.ProprietaryContact}}
+                                    <input type="text" name="ProprietaryContact" placeholder="Proprietary Contact" id="id_ProprietaryContact">
                                 {% endif %}
                                 <span>
                                     {% if profile.errors.ProprietaryContact %}
@@ -140,29 +153,37 @@
                             <div class="profile-left-bottom-main">
                                 <div class="left-bottom-state left-bottom-containers">
                                     <label for="Medicalshop Name">State :</label>
-                                    {% if data.state and data.state != "" %}
-                                        <div class="profile-data">
-                                            {{data.state }}
-                                        </div>
-                                    {% else %}
-                                        <div class="state_dropdown">
-                                            {{profile.state}}
-                                        </div>
-                                    {% endif %}
+                                    <div class="state_dropdown">
+                                        {% if data.state and data.state != "" %}
+                                            <select id="state-dropdown" disabled>
+                                                <option value="">{{data.state}}</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
+                                        {% else %}
+                                            <select id="state-dropdown">
+                                                <option value="">Select State</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
+                                        {% endif %}
+                                    </div>
                                     
                                 </div>
 
                                 <div class="left-bottom-district left-bottom-containers">
                                     <label for="Medicalshop Name">District :</label>
-                                    {% if data.district and data.district != "" %}
-                                        <div class="profile-data">
-                                            {{data.district }}
-                                        </div>
-                                    {% else %}
-                                        <div class="district_dropdown">
-                                            {{ profile.district }}
-                                        </div>
-                                    {% endif %}
+                                    <div class="district_dropdown">
+                                        {% if data.district and data.district != "" %}
+                                            <select id="district-dropdown" disabled>
+                                                <option value="">{{data.district}}</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
+                                        {% else %}
+                                            <select id="district-dropdown">
+                                                <option value="">Select District</option>
+                                                <!-- Add options dynamically using JavaScript -->
+                                            </select>
+                                        {% endif %}
+                                    </div>
                                     
                                 </div>
 
@@ -173,7 +194,7 @@
                                             {{data.City }}
                                         </div>
                                     {% else %}
-                                        {{profile.City}}
+                                        <input type="text" name="City" placeholder="City" id="id_City">
                                     {% endif %}
                                 </div>
 
@@ -184,7 +205,7 @@
                                             {{data.Pincode }}
                                         </div>
                                     {% else %}
-                                        {{profile.Pincode}}
+                                        <input type="text" name="Pincode" placeholder="Pincode" id="id_Pincode">
                                     {% endif %}
                                 </div>
 
@@ -195,7 +216,7 @@
                                             {{data.StreetNumber }}
                                         </div>
                                     {% else %}
-                                        {{profile.StreetNumber}}
+                                        <input type="text" name="StreetNumber" placeholder="Street Name" id="id_StreetNumber">
                                     {% endif %}
                                 </div>
 
@@ -206,7 +227,7 @@
                                             {{data.DoorNumber }}
                                         </div>
                                     {% else %}
-                                        {{profile.DoorNumber}}
+                                        <input type="text" name="DoorNumber" placeholder="Door Number" id="id_DoorNumber">
                                     {% endif %}
                                 </div>
 
@@ -231,7 +252,7 @@
                                     {{data.PharmacistName }}
                                 </div>
                             {% else %}
-                                {{profile.PharmacistName}}
+                                <input type="text" name="PharmacistName" placeholder="Pharmacist Name" id="id_PharmacistName">
                             {% endif %}
                             <span>
                                 {% if profile.errors.PharmacistyName %}
@@ -247,7 +268,7 @@
                                     {{data.RegisteredNumber }}
                                 </div>
                             {% else %}
-                                {{profile.RegisteredNumber}}
+                                <input type="text" name="RegisteredNumber" placeholder="Registered Number" id="id_RegisteredNumber">
                             {% endif %}
                             <span>
                                 {% if profile.errors.RegisteredNumber %}
@@ -263,7 +284,7 @@
                                     {{data.ContactNumber }}
                                 </div>
                             {% else %}
-                                {{profile.ContactNumber}}
+                                <input type="number" name="ContactNumber" placeholder="Contact Number" id="id_ContactNumber">
                             {% endif %}
                             <span>
                                 {% if profile.errors.ContactNumber %}
@@ -339,9 +360,10 @@
                                         {% csrf_token %}
                                         <label for="Username">Collaborate:</label>
                                         <div class="makeus-admin-container">
-                                            <input type="text" placeholder="Enter User Name Want to Admin " name="admin">
-                                            <button class="button-paper" role="submit">Send Request</button></a>   
+                                            <input type="text" placeholder="Enter User Name Want to Admin" id="admin-input" name = "adminName">
+                                            <button class="button-paper" type="button" id="send-request-button">Send Request</button>
                                         </div>
+                                        <div id="response-container" class="respone-container"></div>
                                     </form>
                                 {% endif %}
                             </div>
@@ -351,13 +373,10 @@
                 </div>
                 
         </div>
-        {% if data.RegisteredNumber and data.RegisteredNumber != "" %}
 
-        {% else %}
             <div class="btn_container">
-                <button id="button" class="submit_btn" type="submit"></button>
+                <button id="submit_button" class="submit_btn" type="button"></button>
             </div>
-        {% endif %}
     </div>
 
 {% endif %}

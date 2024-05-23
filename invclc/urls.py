@@ -29,5 +29,6 @@ urlpatterns = [
 
     path('upload_csv/', views.upload_csv, name='upload_csv'),
     path('empty_csv/',views.empty_csv,name='empty_csv'),
-    path('empty_xlsx/',views.empty_xlsx,name='empty_xlsx')
+    path('empty_xlsx/',views.empty_xlsx,name='empty_xlsx'),
+    path('adminacess/',views.admin_access,name='adminacess')
 ]

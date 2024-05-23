@@ -210,7 +210,7 @@ tableSelector.addEventListener("change", function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Function to fetch filtered data
-    function fetchData(completed, category, others,all) {
+    function fetchData(completed, category, others,all,pharmacy_name) {
         var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
         const spanErrors = document.querySelector('span.sidePanelErrors')
         fetch('/import-export/', {
@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrfToken
             },
-            body: 'completed=' + completed + '&category=' + category + '&others=' + others + '&csrfmiddlewaretoken=' + csrfToken + '&all=' + all
+            body: 'completed=' + completed + '&category=' + category + '&others=' + others + '&csrfmiddlewaretoken=' + csrfToken + '&all=' + all + '&pharmacyName=' + pharmacy_name
         })
         .then(response => response.json()) // Parse response as JSON
         .then(data => {
@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateTableWithData(data.completed_data); // Call updateTableWithData with JSON data
                 // console.log(data.completed_data)
             }
-            else if (data.not_paid_data){
+            else if (data.not_paid_data){   
                 updateTableWithData(data.not_paid_data)
             }
             else if (data.category_list){
@@ -240,7 +240,9 @@ document.addEventListener('DOMContentLoaded', function() {
             else if (data.otherStores){
                 updateTableWithOthersData(data.otherStores);
             }
-
+            else if (data.invoices){
+                updateTableWithData(data.invoices)
+            }
             else{
                 updateTableWithData(data.previous_data);
                 // console.log(data.previous_data)
@@ -256,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Listen for changes in checkboxes
-    document.querySelectorAll('.export2 input[type="checkbox"]').forEach(function(checkbox) {
+    document.querySelectorAll('.export2 input[type="checkbox"]:not(#checkboxTable .checkbox)').forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
             var completed = document.querySelector('.export2-box1 input[name="completed"]').checked;
             var all = document.querySelector('.export2-box1 input[name="all"]').checked;
@@ -277,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var categoryString = category.join(',');
 
             // Fetch filtered data
-            fetchData(completed, categoryString,'',all);
+            fetchData(completed, categoryString,'',all,'');
         });
     });
 
@@ -286,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
         otherDetails.addEventListener("input", function() {
             var otherDetail = otherDetails.value.trim();
             if (otherDetail !== '') {
-                fetchData(false, '', otherDetail, false); // Assuming "completed", "category", and "all" should not be sent when changing the "others" input
+                fetchData(false, '', otherDetail, false,''); // Assuming "completed", "category", and "all" should not be sent when changing the "others" input
             }
         });
     }
@@ -295,10 +297,45 @@ document.addEventListener('DOMContentLoaded', function() {
     resetExport.addEventListener("click",()=>{
         location.reload()
     })
+
+    document.querySelectorAll('#checkboxTable .checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                const pharmacyName = this.dataset.pharmacy;
+                fetchData(false, '', '', false, pharmacyName);
+            }
+            else{
+                fetchData(false, '', '', false, '');
+            }
+        });
+    });
 });
 
 
+
+
 // Function to update table with JSON data
+function formatDate(dateString) {
+    // Parse the date string into a Date object
+    var date = new Date(dateString);
+
+    // Extract day, month, and year components
+    var day = date.getDate();
+    var month = date.getMonth() + 1; // Months are zero-based
+    var year = date.getFullYear();
+
+    // Ensure day and month are two digits
+    if (day < 10) {
+        day = '0' + day;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+
+    // Return the formatted date string
+    return day + '/' + month + '/' + year;
+}
+
 function updateTableWithData(data) {
     var tableBody = document.querySelector('#export-data tbody');
     var tableHeader = document.querySelector('#export-data thead tr');
@@ -310,6 +347,19 @@ function updateTableWithData(data) {
             // Clear existing header
             tableHeader.innerHTML = '';
 
+            // Add a checkbox field to the header
+            var checkboxTh = document.createElement('th');
+            var headerCheckbox = document.createElement('input');
+            headerCheckbox.type = 'checkbox';
+            headerCheckbox.addEventListener('click', function() {
+                var checkboxes = document.querySelectorAll('#export-data tbody input[type="checkbox"]');
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = headerCheckbox.checked;
+                });
+            });
+            checkboxTh.appendChild(headerCheckbox);
+            tableHeader.appendChild(checkboxTh);
+
             // Get keys from the first item in the data
             var keys = Object.keys(data[0]);
 
@@ -320,26 +370,57 @@ function updateTableWithData(data) {
                 tableHeader.appendChild(th);
             });
 
+            // Add "Remark" column to the header
+            var remarkTh = document.createElement('th');
+            remarkTh.textContent = 'Remark';
+            tableHeader.appendChild(remarkTh);
+
             // Populate table rows
             data.forEach(function(item) {
                 var row = document.createElement('tr');
 
+                // Add a checkbox to each row
+                var checkboxCell = document.createElement('td');
+                var checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkboxCell.appendChild(checkbox);
+                row.appendChild(checkboxCell);
+
                 // Create table cells based on keys
                 keys.forEach(function(key) {
                     var cell = document.createElement('td');
-                    cell.textContent = item[key];
+                    // Check if the key is 'invoice_date' and format the date
+                    if (key === 'today_date'){
+                        cell.textContent = formatDate(item[key]);
+                    } 
+                    else if (key === 'Invoice date'){
+                        cell.textContent = formatDate(item[key]);
+                    }
+                    else if (key === 'Today date'){
+                        cell.textContent = formatDate(item[key]);
+                    }
+                    else {
+                        cell.textContent = item[key];
+                    }
                     row.appendChild(cell);
                 });
+
+                // Add empty "Remark" cell
+                var remarkCell = document.createElement('td');
+                remarkCell.textContent = ''; // or any default value for remark
+                row.appendChild(remarkCell);
 
                 tableBody.appendChild(row);
             });
         } else {
+            spanErrors.innerHTML = "No Such Data Found ..";
             console.error('Data is not an array or is null/undefined, or the array is empty.');
         }
     } else {
         console.error('#export-data tbody or thead tr not found');
     }
 }
+
 
 
 function updateTableWithCategoryData(data) {
@@ -607,3 +688,4 @@ otherCheckboxes.forEach(otherCheckbox => {
         }
     });
 });
+

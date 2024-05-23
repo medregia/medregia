@@ -57,6 +57,7 @@ class ModifiedInvoice(models.Model):
 class TrackingPayment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True)
     Medical_name = models.CharField(max_length = 100)
+    Bill_no = models.CharField(max_length = 100,null=True)
     Medical_payments = models.DecimalField(max_digits=20, decimal_places=2)
     payment_date = models.DateField(default=timezone.now)
     paying_amount = models.DecimalField(max_digits = 20 ,decimal_places=2, null=True)

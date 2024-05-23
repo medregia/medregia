@@ -12,6 +12,66 @@ body{
     overflow: hidden;
 }
 
+/* Popup Section  */
+
+.popup .overlay{
+  position: fixed;
+  top:0px;
+  left: 0px;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0,0.7);
+  z-index: 1;
+  display: none;
+}
+
+.popup .overlay-content{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%) scale(0);
+  background-color: #fff;
+  width: 450px;
+  height: 220px;
+  z-index: 2;
+  text-align: center;
+  padding: 20px;
+
+}
+.popup .overlay-content p{
+  height: 100px;
+  width:100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: orangered;
+  /* background-color: red; */
+}
+
+
+.popup .overlay-content p span{
+  color:green
+}
+
+.popup .overlay-content .content-btn button{
+  height: 30px;
+  width: 70px;;
+  background-color: blue;
+  color: #fff;
+  border: none; 
+  cursor: pointer;
+  border-radius: 3px;
+} 
+
+.popup.active .overlay{
+  display: block;
+}
+
+.popup.active .overlay-content{
+  transition: all 300ms ease-in-out;
+  transform: translate(-50%,-50%) scale(1);
+}
+
 .profile-container{
     min-height: 100vh;
     width: 100%;
@@ -336,6 +396,11 @@ body{
   border-bottom: 1px solid black;
   background-color: transparent;
 }
+.respone-container{
+  height: 20px;
+  width: 100%;
+  /* background-color:red; */
+}
 .profile_btn {
   animation: 1.5s ease infinite alternate running shimmer;
   background: linear-gradient(90deg, #FFE27D 0%, #64E3FF 30%, #9192FF 85%);
@@ -641,6 +706,16 @@ span ul.errorlist li{
 
 span.importent{
   color: red;
+}
+
+.state_dropdown,.district_dropdown{
+  height: 40px;
+  width: 100%;
+}
+
+.state_dropdown select,.district_dropdown select{
+  height: 30px;
+  width:90%;
 }
 
   @media (min-width: 820px) and (max-width: 997px){

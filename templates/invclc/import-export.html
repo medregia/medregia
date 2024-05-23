@@ -122,7 +122,7 @@
                             <thead>
                                 <tr>
                                     <th><input type="checkbox"></th>
-                                    <th>INVOICE No.</th>
+                                    <th>Invoice No.</th>
                                     <th>Invoice Amount</th>
                                     <th>Upload by</th>
                                     <th>Upload on</th>
@@ -187,13 +187,13 @@
                             <!-- <span class="sidePanelErrors"></span> -->
                             <h3>Payment Based</h3>
                             <div class="check-list">
-                                <input type="checkbox" name="completed">
-                                <label>completed</label>
+                                <input type="checkbox" name="completed" id="id_completed">
+                                <label for="id_completed">Completed (Full Paid)</label>
                             </div>
 
                             <div class="check-list">
-                                <input type="checkbox" name="all">
-                                <label>All (Not paid/Not Completed)</label>
+                                <input type="checkbox" name="all" id="id_notpaid">
+                                <label for="id_notpaid">All (Not paid/Not Completed)</label>
                             </div>
 
                             <button type="button" class="export-reset">Reset</button>
@@ -204,46 +204,45 @@
                             <h3>Category Based :</h3>
                             <div class="export2-box2-content">
                                 <div class="export-boxes">
-                                    <input type="checkbox" name="pharmacy">
-                                    <label>Pharmacy</label>
+                                    <input type="checkbox" name="pharmacy" id="id_pharmacy">
+                                    <label for="id_pharmacy">Pharmacy</label>
                                 </div>
 
                                 <div class="export-boxes">
-                                    <input type="checkbox" name="medical">
-                                    <label>Medical</label>
+                                    <input type="checkbox" name="medical" id="id_medical">
+                                    <label for="id_medical">Medical</label>
                                 </div>
 
                                 <div class="export-boxes">
-                                    <input type="checkbox" name="retailer">
-                                    <label>Retailer</label>
+                                    <input type="checkbox" name="retailer" id="id_retailer">
+                                    <label for="id_retailer">Retailer</label>
                                 </div>
                             </div>
                             <div class="other">
                                 <!-- <input type="checkbox" name="others"> -->
-                                <label>Others :</label>
-                                <input type="text" placeholder="eg : User" name="others">
+                                <label for="id_others">Others :</label>
+                                <input type="text" placeholder="eg : User" name="others" id="id_others">
                             </div>
                         </div>
 
 
-                        <div class="export2-box3">
-                            <div class="export2-box3_table">
-                                <table id="checkboxTable">
-                                    <thead>
-                                        <th>Select</th>
-                                        <th>Medical List</th>
-                                    </thead>
-                                    <tbody>
-                                        {% for overall_datas in overall_data %}
-                                        <tr>
-                                            <td><input type="checkbox" class="checkbox"></td>
-                                            <td>{{ overall_datas.pharmacy_name }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="export2-box3_table">
+                            <table id="checkboxTable">
+                                <thead>
+                                    <th>Select</th>
+                                    <th>Medical List</th>
+                                </thead>
+                                <tbody>
+                                    {% for overall_datas in overall_data %}
+                                    <tr>
+                                        <td><input type="checkbox" class="checkbox" data-pharmacy="{{ overall_datas.pharmacy_name }}"></td>
+                                        <td>{{ overall_datas.pharmacy_name }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>    
                         </div>
+                        
                     </form>
                 </div>
             </div>
@@ -362,10 +361,10 @@
                 <a href="{% url 'empty_csv' %}"><button type="submit">Sample CSV</button></a>
             </div>
 
-            <div class="download-empty-xlsx">
+            {% comment %} <div class="download-empty-xlsx">
                 <h5>Here You Download a Sample XLSX File </h5>
                 <a href="{% url 'empty_xlsx' %}"><button type="submit"> Sample XLSX </button></a>
-            </div>
+            </div> {% endcomment %}
         </div>
     </div>
 </div>

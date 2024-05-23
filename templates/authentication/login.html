@@ -38,9 +38,9 @@
       </div>
 
       <div class="container-body-login">
-        {% if form.non_field_errors %}
+        {% if form.errors %}
         <div class="alert alert-danger">
-            {{ form.non_field_errors }}
+            {{ form.errors }}
             <i class="fas fa-times disable"></i>
         </div>
         {% endif %}

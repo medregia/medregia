@@ -17,6 +17,7 @@ class StateModel(models.Model):
         return self.Pname
    
 class DistrictModel(models.Model):
+    id = models.IntegerField(primary_key=True)
     state = models.ForeignKey(StateModel, on_delete=models.CASCADE,null=True)
     Pid = models.IntegerField()
     LocationType = models.CharField(max_length=100)
@@ -24,13 +25,12 @@ class DistrictModel(models.Model):
     
     def __str__(self):
         return self.districtname
-
         
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=150, unique=True)
-    phone_num = models.CharField(max_length=15, blank=False)
+    phone_num = models.CharField(max_length=15, blank=True)
     email = models.EmailField(unique=True)
-    pin = models.IntegerField(blank=False ,null=True)
+    pin = models.IntegerField(blank=True ,null=True)
     
     STORE_TYPES = [
         ('retailer', 'Retailer'),
@@ -39,7 +39,7 @@ class CustomUser(AbstractUser):
         ('medical', 'Medical'),
         ('others', 'Others'),
     ]
-    store_type = models.CharField(max_length=50, choices=STORE_TYPES,null=False,blank=False)
+    store_type = models.CharField(max_length=50, choices=STORE_TYPES,null=True,blank=True)
     other_value = models.CharField(max_length=50 ,null=True,blank=True)
 
     groups = models.ManyToManyField(
@@ -67,61 +67,29 @@ class CustomUser(AbstractUser):
     
 class Person(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
-    MedicalShopName = models.CharField(max_length=100, blank=False, null=False,)
-    ProprietaryName = models.CharField(max_length=100, blank=False, null=False,)
-    ProprietaryNumber = models.CharField(max_length=100, blank=False, null=False,)
-    ProprietaryContact = models.CharField(max_length=100, blank=False, null=False)
-    DrugLiceneseNumber2 = models.CharField(max_length=100, blank=False, null=False,)
-    DrugLiceneseNumber1 = models.CharField(max_length=100, blank=False, null=False,)
+    MedicalShopName = models.CharField(max_length=100, blank=True, null=True,)
+    ProprietaryName = models.CharField(max_length=100, blank=True, null=True,)
+    ProprietaryNumber = models.CharField(max_length=100, blank=True, null=True,)
+    ProprietaryContact = models.CharField(max_length=100, blank=True, null=True)
+    DrugLiceneseNumber2 = models.CharField(max_length=100, blank=True, null=True,)
+    DrugLiceneseNumber1 = models.CharField(max_length=100, blank=True, null=True,)
 
     # Registered Address
     state = models.ForeignKey(StateModel, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(DistrictModel, on_delete=models.SET_NULL, null=True, blank=True)
-    City = models.CharField(max_length=100, blank=False, null=False)
-    Pincode = models.CharField(max_length=100, blank=False, null=False)
+    City = models.CharField(max_length=100, blank=True, null=True)
+    Pincode = models.CharField(max_length=100, blank=True, null=True)
     StreetNumber = models.CharField(max_length=100, blank=True, null=True)
     DoorNumber = models.CharField(max_length=100, blank=True, null=True)
 
-    PharmacistName = models.CharField(max_length=100, blank=False, null=False)
-    RegisteredNumber = models.CharField(max_length=100, blank=False, null=False,)
-    ContactNumber = models.CharField(max_length=15, blank=False, null=False)
+    PharmacistName = models.CharField(max_length=100, blank=True, null=True)
+    RegisteredNumber = models.CharField(max_length=100, blank=True, null=True,)
+    ContactNumber = models.CharField(max_length=15, blank=True, null=True)
 
-    UniqueId = models.CharField(max_length=100, blank=True, null=False,)
+    UniqueId = models.CharField(max_length=100, blank=True, null=True,)
 
     def __str__(self):
         return self.MedicalShopName
-    
-    def clean(self):
-        # Check if DrugLiceneseNumber1 is not empty or None
-        if self.DrugLiceneseNumber1:
-            # Check if there is any other Person object with the same DrugLiceneseNumber1
-            if Person.objects.exclude(pk=self.pk).filter(DrugLiceneseNumber1=self.DrugLiceneseNumber1).exists():
-                raise ValidationError({'DrugLiceneseNumber1': 'DrugLiceneseNumber1 has already recorded'})
-
-        if self.ProprietaryName:
-            # Check if there is any other Person object with the same ProprietaryName
-            if Person.objects.exclude(pk=self.pk).filter(ProprietaryName=self.ProprietaryName).exists():
-                raise ValidationError({'ProprietaryName': 'ProprietaryName has already recorded'})
-            
-        if self.ProprietaryNumber:
-            # Check if there is any other Person object with the same ProprietaryName
-            if Person.objects.exclude(pk=self.pk).filter(ProprietaryNumber=self.ProprietaryNumber).exists():
-                raise ValidationError({'ProprietaryNumber': 'ProprietaryNumber has already recorded'})
-            
-        if self.ProprietaryContact:
-            # Check if there is any other Person object with the same ProprietaryName
-            if Person.objects.exclude(pk=self.pk).filter(ProprietaryContact=self.ProprietaryContact).exists():
-                raise ValidationError({'ProprietaryContact': 'ProprietaryContact has already recorded'})
-            
-        if self.DrugLiceneseNumber2:
-            # Check if there is any other Person object with the same ProprietaryName
-            if Person.objects.exclude(pk=self.pk).filter(DrugLiceneseNumber2=self.DrugLiceneseNumber2).exists():
-                raise ValidationError({'DrugLiceneseNumber2': 'DrugLiceneseNumber2 has already recorded'})
-            
-        if self.RegisteredNumber:
-            # Check if there is any other Person object with the same ProprietaryName
-            if Person.objects.exclude(pk=self.pk).filter(RegisteredNumber=self.RegisteredNumber).exists():
-                raise ValidationError({'RegisteredNumber': 'RegisteredNumber has already recorded'})
     
 class Notification(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_notifications', on_delete=models.CASCADE)
