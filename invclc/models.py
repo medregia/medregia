@@ -8,12 +8,12 @@ from django.dispatch import receiver
 
 class Invoice(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
-    pharmacy_name     = models.CharField(max_length=100)
+    pharmacy_name = models.CharField(max_length=100)
     invoice_number = models.CharField(max_length=50, unique=True)
     invoice_date = models.DateField(default=timezone.now)
     invoice_amount = models.DecimalField(max_digits=10, decimal_places=2)
     balance_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2 ,null=True)
     today_date = models.DateField(default=timezone.now)
     # current_time = models.TimeField(default=(timezone.now() + timedelta(hours=5, minutes=30)).time())
     current_time = models.TimeField(null=True,blank=True)
@@ -57,6 +57,7 @@ class ModifiedInvoice(models.Model):
 class TrackingPayment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True)
     Medical_name = models.CharField(max_length = 100)
+    Bill_no = models.CharField(max_length = 100,null=True)
     Medical_payments = models.DecimalField(max_digits=20, decimal_places=2)
     payment_date = models.DateField(default=timezone.now)
     paying_amount = models.DecimalField(max_digits = 20 ,decimal_places=2, null=True)

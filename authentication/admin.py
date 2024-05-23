@@ -38,6 +38,7 @@ class StateModelAdmin(admin.ModelAdmin):
 class DistrictModelAdmin(admin.ModelAdmin):
     model = DistrictModel
     list_display = [
+        'id',
         'Pid',
         'districtname',
     ]

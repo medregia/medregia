@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} MedregiA || Static {% endblock title %}
+
+{% block nav_footer %}{% static 'invclc/css/nav.css' %} {% endblock nav_footer %}
+{% block link2 %}{% static 'invclc/css/admin_acess.css' %} {% endblock link2 %}
+{% block side %}{% static 'invclc/css/static_sidebar.css' %}{% endblock side %}
+
+{% block navbar %}
+{% include 'nav.html' %}
+{% endblock navbar %}
+
+{% block sidebar %}
+{% include 'sidebar.html' %}
+{% endblock sidebar %}
+
+{% block content %}
+
+
+
+<body>
+    <div class="Admin-container">
+        <div class="Admin-container-left">
+            <div class="row  head">
+                <div class="cell">S No.</div>
+                <div class="cell">Name</div>
+                <div class="cell colspan-container">DL Number
+                    <div class="inner-row">
+                        <div class="inner-cell">DL Number 1</div>
+                        <div class="inner-cell">DL Number 2</div>
+                    </div>
+                </div>
+                <div class="cell">Admin Name</div>
+                <div class="cell">Temp Number</div>
+                <div class="cell">Unique Number</div>
+                <div class="cell">Generate line</div>
+                <div class="cell">status</div>
+            </div>
+            <div class="row">
+                <div class="cell">Data 1</div>
+                <div class="cell">Data 2</div>
+                <div class="cell colspan-container">
+                    <div class="inner-row">
+                        <div class="inner-cell">Data 3.1</div>
+                        <div class="inner-cell">Data 3.2</div>
+                    </div>
+                </div>
+                <div class="cell">Data 4</div>
+                <div class="cell">Data 5</div>
+                <div class="cell">Data 6</div>
+                <div class="cell">Data 7</div>
+                <div class="cell">Data 8</div>
+            </div>
+            <div class="row">
+                <div class="cell">Data 1</div>
+                <div class="cell">Data 2</div>
+                <div class="cell colspan-container">
+                    <div class="inner-row">
+                        <div class="inner-cell">Data 3.1</div>
+                        <div class="inner-cell">Data 3.2</div>
+                    </div>
+                </div>
+                <div class="cell">Data 4</div>
+                <div class="cell">Data 5</div>
+                <div class="cell">Data 6</div>
+                <div class="cell">Data 7</div>
+                <div class="cell">Data 8</div>
+            </div>
+        </div>
+        <div class="Admin-container-right">
+            <h2>Admin Access</h2>
+            <div class="Admin-container-right-details">
+                <div class="right-child">
+                    <h4>Admin User</h4>
+                    <p>Phone Number</p>
+                    <p>Password</p>
+                    <p>Pin</p>
+                </div>
+                <div class="Add-user">
+                    <label for="">Add user :</label>
+                    <input type="text">
+                </div>
+                <div class="Details">
+                    <div class="Details-data">
+                        <label for="">Name:</label>
+                        <input type="text">
+                    </div>
+                    <div class="Details-data">
+                        <label for="">Email:</label>
+                        <input type="text">
+                    </div>
+                    <div class="Details-data">
+                        <label for="">Phone:</label>
+                        <input type="text">
+                    </div>
+                    <div class="Details-data">
+                        <label for="">Password:</label>
+                        <input type="text">
+                    </div>
+                    <div class="Details-data">
+                        <label for="">Pin:</label>
+                        <input type="text">
+                    </div>
+                    <div class="Details-data">
+                        <label for="">Position:</label>
+                        <select name="" id="">Others</select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+
+
+</body>
+
+</html>
+{% endblock %}

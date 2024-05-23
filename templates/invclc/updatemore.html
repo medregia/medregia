@@ -8,20 +8,25 @@
 
 {% block link %}{% static 'invclc/css/updatemore.css' %} {%endblock link %}
 
+{% block side %}{% static 'invclc/css/static_sidebar.css' %}{% endblock side %}
+
 {% block navbar %} 
     {% include 'nav.html' %} 
 {% endblock navbar%} 
 
+{% block sidebar %}
+{% include 'sidebar.html' %}
+{% endblock sidebar %}
+
 {% block content %}
     <div class=" checkmore-container">
-        <h3>Update details</h3> 
+        <h3>Update More details</h3> 
         <div class="checkmore-container-update">
           <div class="checkmore-container-btn"><button type="button" class="csvBtn">Print CSV</button></div>
           <table class="checkmoreTable">
             <thead>
               <th><input type="checkbox"></th>
               <th>Name</th>
-              <th>Invoice Number</th>
               <th>Invoice Date</th>
               <th>Updated on</th>
               <th>Updated by</th>
@@ -38,12 +43,7 @@
                 <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
                     <td><input type="checkbox" id="check"></td>
                     <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
-<<<<<<< HEAD
-                    <td><span id="invoice_number">{{data.invoice_number}}</span></td>
-                    <td><input type="text" value="{{ data.invoice_date }}" disabled name="invoice_date"></td>
-=======
                     <td><input type="text" value="{{ data.invoice_date}}" disabled name="invoice_date"></td>
->>>>>>> e4384a5737a9dbf2fb54fadac8b345526e4ff813
                     <td><span id="paymentCurrentTime">{{data.current_time}}</span></td>
                     <td><span id="paymentCurrentUser">{{data.updated_by}}</span></td>
                     <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>

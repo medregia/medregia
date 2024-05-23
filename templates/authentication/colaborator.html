@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+  {% extends 'base.html' %}
 {% load static %}
 {% block title %} MedRegiA || Coloborator Lists {% endblock title %}
 {% block nav_footer %}{% static 'nav_footer.css' %} {% endblock nav_footer %}
@@ -13,12 +13,22 @@
 {% endblock message %}
 
 {% block content %}
-    Coloborator list with Other User
-    <ul>
-        {% for coloborators in colaborator %}
-            <li>{{coloborators.sender}}</li>
-        {% endfor %}
-    </ul>
+    <h2 class="head">Coloborator list with Other User</h2>
+    <div class="coloborate">
+      {% if colaborator%}
+        <div class="listbox">
+            <h2>Collaborate list</h2>
+            {% for coloborators in colaborator %}
+              <ul>
+                  <li><span>{{coloborators.id}}</span>{{coloborators.sender}}</li>
+              </ul>
+            {% endfor %}
+        </div>
+      {% else %}
+        <div class="listbox">
+           <p>No Coloborator Found</p>
+        </div>
+      {% endif %}
+    </div>
  
 {% endblock content %}
-

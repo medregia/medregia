@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
           })
           .catch(error => {
             console.error('Error updating payment:', error);
+            location.reload();
           });
         }
       });

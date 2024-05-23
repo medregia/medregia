@@ -7,6 +7,7 @@ urlpatterns = [
     path('delete_invoice/<int:invoice_id>/', views.delete_invoice, name='delete_invoice'),
     path('pay_invoice/<int:invoice_id>/', views.pay_invoice, name='pay_invoice'),
     path('payment_invoice/<int:payment_id>/', views.payment_invoice, name='payment_invoice'),
+    path('entry/',views.entrydata, name="entry"),
     path('update/', views.update_view, name='update'),
     path('delete/', views.delete_page, name='delete'),
     path('check/<int:id>', views.check_view, name='check'),
@@ -27,5 +28,8 @@ urlpatterns = [
     path('updatemore/', views.updatemore_view, name='updatemore'),
     path('unpaid_debt/', views.unpaid_debt, name='unpaid_debt'),
 
-    path('upload-csv/', views.upload_csv, name='upload_csv'),
+    path('upload_csv/', views.upload_csv, name='upload_csv'),
+    path('empty_csv/',views.empty_csv,name='empty_csv'),
+    path('empty_xlsx/',views.empty_xlsx,name='empty_xlsx'),
+    path('adminacess/',views.admin_access,name='adminacess')
 ]

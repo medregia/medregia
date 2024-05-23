@@ -1,23 +1,21 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'invclc/css/index.css' %}"> 
-
+<link rel="stylesheet" href="{% static 'authentication/css/profile.css' %}"> 
 {% for msg in messages %}
-<div class="overall-message">
-  <div class="invoice_message">
-    {{ msg }}
-  </div>
+<div class="profile-message">
+  {{msg}}
 </div>
-{% endfor %}
 
 <script>
   // Function to hide the message box after 3 seconds
   document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
-      var messageDivs = document.querySelectorAll('.overall-message');
+      var messageDivs = document.querySelectorAll('.profile-message');
       messageDivs.forEach(function(div) {
         div.style.display = 'none';
       });
-    }, 3000); // 3000 milliseconds = 3 seconds
+    }, 4000); // 3000 milliseconds = 3 seconds
   });
 </script>
+
+{% endfor %}

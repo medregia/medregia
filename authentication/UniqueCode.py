@@ -779,26 +779,34 @@ class User_code:
         # print(self.storename)
 
     def display(self):
-        return f"IA-{self.convert_state()}-{self.district_name()}-00{self.pincode}-{self.convert_store()}-{self.convert_user_id_to_code()}-{self.format_user_id()}"
+        return f"IA-{self.convert_state()}-{self.district_name()}-00{self.User_pincode()}-{self.convert_store()}-{self.convert_user_id_to_code()}-{self.format_user_id()}"
     
     def convert_state(self):
-        if self.state is not None:
+        if self.state is not None and self.state.Pname is not None:
             short_form = STATE_CODES.get(self.state.Pname)
-            return '0' + str(short_form)
+            return '0' + str(short_form) if short_form is not None else "####"
         else:
             return "####"
 
+    def User_pincode(self):
+        if self.pincode:
+            return self.pincode
+        else:
+            return "####"
 
     def convert_store(self):
-        words = self.storename.split()
-        if len(words) == 2:
-            return '0' + ''.join(word[0] for word in words).upper()
-        elif len(words) == 3:
-            return ''.join(word[0] for word in words).upper()
-        elif len(words) > 3:
-            return ''.join(word[0] for word in words[:3]).upper()
-        elif len(words) == 1:
-            return '00' + words[0][0].upper()  # prepend '00' for single-word store names
+        if self.storename:
+            words = self.storename.split()
+            if len(words) == 2:
+                return '0' + ''.join(word[0] for word in words).upper()
+            elif len(words) == 3:
+                return ''.join(word[0] for word in words).upper()
+            elif len(words) > 3:
+                return ''.join(word[0] for word in words[:3]).upper()
+            elif len(words) == 1:
+                return '00' + words[0][0].upper()  # prepend '00' for single-word store names
+            else:
+                return "####"
         else:
             return "####"
 

@@ -4,11 +4,17 @@
 {% for msg in messages %}
 <div class="login_message">
   {{msg}}
-  <button
-    class="close-button"
-    onclick="this.parentElement.style.display='none';"
-  >
-    x
   </button>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      var messageDivs = document.querySelectorAll('.login_message');
+      messageDivs.forEach(function(div) {
+        div.style.display = 'none';
+      });
+    }, 3000); // 3000 milliseconds = 3 seconds
+  });
+</script>
 {% endfor %}

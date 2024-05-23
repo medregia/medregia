@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
       // Enable the payment field for editing
       paymentField.removeAttribute('disabled');
       paymentField.classList.add('border-active');
+      paymentField.value = "";
 
       // Show the cancel button
       cancelBtn.style.display = 'inline-block';
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Change the text content of the pay button back to 'Pay'
         target.textContent = 'Pay';
+        location.reload();
       });
 
       // Add an event listener to the save/pay button
@@ -41,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
           payment_amount: paymentField.value,
         };
 
-        fetch(`/payment_invoice/${invoiceId}/`, {
+        fetch(`/pay_invoice/${invoiceId}/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -51,8 +53,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Payment updated successfully:', data);
-
           // Update the payment field with the returned data
           paymentField.value = data.payment_amount;
 
