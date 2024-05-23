@@ -1395,3 +1395,7 @@ def empty_xlsx(request):
     workbook.save(response)
 
     return response
+
+
+def admin_access(request):
+    return render(request,'invclc/admin_acess.html')

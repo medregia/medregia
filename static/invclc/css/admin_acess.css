@@ -1,0 +1,146 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    width: 100%;
+}
+.Admin-container{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    margin-left: 25px;
+}
+/* Admin-container-left */
+.Admin-container-left {
+    height: 100vh;
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+}
+
+.row {
+    display: flex;
+    width: 100%;
+}
+.head .cell{
+    background-color: #ccc;
+    border: 1px solid white;
+    font-weight: bold;
+    font-style:14px;
+}
+
+.cell {
+    flex: 1;
+    padding: 2px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+ 
+
+.colspan-container {
+    flex: 2; 
+    padding: 0; 
+}
+
+.inner-row {
+    display: flex;
+}
+
+.inner-cell {
+    flex: 1;
+    padding:0;
+    border-left: 1px solid black; 
+    border-top: 0;
+    border-bottom: 0;
+    border-right: 0;
+    text-align: center;
+    margin-top: 3px;
+}
+.inner-cell:first-child {
+    border-left: 0; 
+}
+
+/* Admin-container-right */
+.Admin-container-right{
+    height: 100vh;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 0;
+}
+.Admin-container-right h2{
+    text-align: center;
+   
+}
+.Admin-container-right-details{
+    height: 80vh;
+    /* background-color: darkolivegreen; */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.right-child{
+    height: 25vh;
+    /* background-color: red; */
+}
+.right-child h4{
+    margin-left: 10px;
+}
+.right-child p{
+    margin-left: 20px;
+}
+.Add-user{
+    height: 10vh;
+    display: flex;
+    background-color: #f0f0f0;
+    align-items: center;
+    justify-content: space-evenly;
+    font-weight: bold;
+
+}
+.Add-user input{
+    border-radius: 5px;
+    border: 1px solid black;
+    width: 5cm;
+    height: 35px;
+    background-color: #f0f0f0;
+}
+.Details{
+    height: 40vh;
+    /* background-color: green; */
+    display: flex;
+    flex-direction: column;
+    justify-content:space-evenly ;
+    margin-top: 10px;
+    
+}
+.Details-data{
+    margin: 8px 18px;
+    display: flex;
+    justify-content: space-between;
+}
+.Details-data label{
+    display: inline-block;
+    font-weight: bold;
+}
+.Details-data input{
+    border-radius: 5px;
+    border: 1px solid black;
+    width: 5cm;
+    height: 23px;
+    background-color: #f0f0f0;
+}
+.Details-data select{
+    border-radius: 5px;
+    border: 1px solid black;
+    width: 5cm;
+    height: 25px;
+    background-color: #f0f0f0;
+}

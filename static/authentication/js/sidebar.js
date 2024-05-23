@@ -2,6 +2,7 @@ function toggleSidebar() {
     var sidebar = document.getElementById('sidebar');
     // var medregiaHeader = document.getElementById('medregiaHeader');
     var mainContent = document.getElementById('mainContent');
+    var maincontainer = document.getElementById('main-Container');
     
     if (sidebar.classList.contains('sidebar-closed')) {
         sidebar.classList.remove('sidebar-closed');
@@ -11,8 +12,10 @@ function toggleSidebar() {
         // medregiaHeader.style.transition = 'opacity 1s';
         mainContent.style.marginLeft = '170px'; // Adjust this value according to your sidebar width
         mainContent.style.width = '85%';
-        // mainContent.style.transition = '0.3s';
+         // mainContent.style.transition = '0.3s';
         
+       
+       
     } else {
         sidebar.classList.remove('sidebar-open');
         sidebar.classList.add('sidebar-closed');
@@ -21,5 +24,6 @@ function toggleSidebar() {
         // medregiaHeader.style.transition = 'opacity 1s';
         mainContent.style.marginLeft = '70px';
         mainContent.style.width = '94%';
+
     }
 }

@@ -8,6 +8,9 @@
 
 {% block link %}{% static 'invclc/css/unpaid_debt.css' %} {%endblock link %}
 
+{% block side %}{% static 'invclc/css/static_sidebar.css' %}{% endblock side %}
+
+
 {% block navbar %} 
     {% include 'nav.html' %} 
 {% endblock navbar%} 
@@ -15,6 +18,10 @@
 {% block message %}
     {% include 'invoice_message.html' %}
 {% endblock message %}
+
+{% block sidebar %}
+{% include 'sidebar.html' %}
+{% endblock sidebar %}
 
 {% block content %}
     <div class="unpaid-container">
