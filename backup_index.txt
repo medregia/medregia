@@ -1,0 +1,217 @@
+@login_required(login_url='/')
+def index_view(request):
+    current_user = request.user
+    invoices = Invoice.objects.filter(user=current_user)
+    payment_details = invoices.filter().order_by('-id')
+    q_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+    search_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
+    payed_details = invoices.filter(balance_amount=0.00).order_by('-id')
+    check_user = None
+    check_admin= None
+    unique_code_id = None
+    try:
+        unique_code = Person.objects.get(user = request.user)
+        unique_id = unique_code.UniqueId
+    except Person.DoesNotExist:
+        unique_code =f"'{request.user}' Please Update Your Profile"
+        unique_id = f"'{request.user}' Please Update Your Profile"
+
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                        # Use filter instead of get
+                        check_admin = Invoice.objects.filter(user=collaborator_admin).first()
+                        unique_code_id = Person.objects.get(user=collaborator_admin)
+                except Exception as a:
+                   return messages.error(request,"Somthing Wrong",a)
+
+    except Exception as e:
+        return messages.error(request,"Error Accure in Collabarating to User ",e)
+
+
+    if str(request.user) == check_user:
+        DeleteHistory = DeletedInvoice.objects.filter(user=collaborator_admin).order_by('-id')
+    else:
+        DeleteHistory = DeletedInvoice.objects.filter(user=request.user).order_by('-id')
+        
+    if not DeleteHistory.exists():
+        DeleteHistory = "No Deletion Found"
+        
+    if str(request.user) == check_user:
+        ModifiedHistory = ModifiedInvoice.objects.filter(user = collaborator_admin).order_by('-id')
+    else:
+        ModifiedHistory = ModifiedInvoice.objects.filter(user = request.user).order_by('-id')
+        
+    if not ModifiedHistory.exists():
+        ModifiedHistory = "No Updatation Found"
+        
+    Storename = None
+    admin_invoices = None
+    try:
+        if check_user == str(request.user): 
+            Storename = Person.objects.get(user=collaborator_admin)
+        else:
+            Storename = Person.objects.get(user=request.user)
+        if Storename and Storename.MedicalShopName:
+            modifiedStore = convert_Medical(Storename.MedicalShopName)
+        else:
+            modifiedStore = "Not Found"
+    except Person.DoesNotExist:
+        modifiedStore = "Not Found"
+
+    #TODO: Entry Data Input 
+
+    # entryDisable = None
+    # try:
+    #     userProfile = Person.objects.get(user=request.user)
+    #     if userProfile.MedicalShopName is not None and userProfile.DrugLiceneseNumber1 is not None and userProfile.DrugLiceneseNumber2 is not None:
+    #         entryDisable = False
+    #     else:
+    #         entryDisable = True
+    #     return JsonResponse({"Entry": entryDisable})
+    # except Person.DoesNotExist:
+    #     entryDisable = True
+    #     messages.error(request, "Profile not Accessible")
+
+    #-----------------
+
+    try:
+        if check_user == str(request.user): 
+            Medicalname = Person.objects.get(user=collaborator_admin)
+        else:
+            Medicalname = Person.objects.get(user=current_user)
+    except Person.DoesNotExist:
+        Medicalname = ''
+        
+    full_paid =None
+    edit_paid = None
+    partially_paid = None
+    debt_paid = None
+    delete_history = None
+    modified_history = None
+    if check_user == str(request.user):
+        admin_invoices = Invoice.objects.filter(user=collaborator_admin)
+        full_paid = admin_invoices.filter(balance_amount=0.00).order_by('-id')
+        edit_paid = admin_invoices.filter().order_by('-id')
+        partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+        debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
+        
+    else:
+        admin_invoices = Invoice.objects.filter(user=request.user)
+        full_paid = admin_invoices.filter(balance_amount=0.00).order_by('-id')
+        edit_paid = admin_invoices.filter().order_by('-id')
+        partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+        debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
+        
+    if request.method == 'POST':
+        query = request.POST.get('payment_list')
+        if query is not None:
+            lookups = Q(pharmacy_name__icontains=query)
+            payment_details = payment_details.filter(lookups)
+        if query == 'all':
+            payment_details = invoices.order_by('-id')
+
+        paied = request.POST.get('payed')
+        if paied is not None:
+            search_payed = Q(pharmacy_name__icontains=paied)
+            payed_details = payed_details.filter(search_payed)
+        if paied == 'all':
+            payed_details = invoices.filter(balance_amount=0.00).order_by('-id')
+
+        q = request.POST.get('q')
+        if q is not None:
+            q_payed = Q(pharmacy_name__icontains=q)
+            q_details = q_details.filter(q_payed)
+        if q == 'all':
+            q_details = invoices.order_by('-id')
+
+        search = request.POST.get('search')
+        if search is not None:
+            search_data = Q(pharmacy_name__icontains=search)
+            search_details = search_details.filter(search_data)
+        if search == 'all':
+            search_details = invoices.order_by('-id')
+
+        invoice_form = InvoiceForm(request.POST)
+        if invoice_form.is_valid():
+            if check_user == str(request.user):
+                invoice = invoice_form.save(commit=False)
+                invoice.user = collaborator_admin
+            else:
+                invoice = invoice_form.save(commit=False)
+                invoice.user = request.user
+            invoice.updated_by = request.user
+
+            # Save the Invoice object
+            invoice.save()
+
+            # Calculate the updated payment amount
+
+            # Create and save TrackingPayment instance
+            tracking_payment = TrackingPayment(
+                user=invoice.user,
+                Medical_name=invoice.pharmacy_name,
+                Bill_no = invoice.invoice_number,
+                Medical_payments=invoice.invoice_amount,
+                payment_date=invoice.today_date,
+                paying_amount=invoice.payment_amount
+            )
+            tracking_payment.save()
+
+            messages.success(request, " Payment Success")
+            try:
+                check_data = Person.objects.get(user=request.user)
+            except Person.DoesNotExist:
+                messages.error(request, "Please Update Your Profile")
+            return redirect("index")
+        else:
+            if 'payment_amount' in invoice_form.errors:
+                messages.error(request, "Payment Not Valid ... ")
+            if 'invoice_number' in invoice_form.errors:
+                messages.error(request, "Failed to save. Invoice number must be unique.")
+            if 'invoice_date' in invoice_form.errors:
+                messages.error(request, "Date formate DD/MM/YYYY or DD-MM-YYYY")
+
+    else:
+        invoice_form = InvoiceForm()
+    
+
+
+    context = {'form':invoice_form,
+               'payment':payment_details,
+               'payed_details':payed_details,
+               'q':q_details,
+               'search':search_details,
+               'uniqueid':unique_id,
+               'DeleteHistory':DeleteHistory,
+               'ModifiedHistory':ModifiedHistory,
+               'medicalname':Medicalname,
+               'MedicalStatus':modifiedStore,
+               'check_user':check_user,
+               'check_admin':check_admin,
+               'unique':unique_code_id,
+               'current_user':str(request.user),
+            #    'admin_storename':Storename.MedicalShopName,
+               'admin_invoice':admin_invoices,
+               'full_paid':full_paid,
+               'edit_paid':edit_paid,
+               'partially_paid':partially_paid,
+               'debt_paid':debt_paid,
+               'coloborate_delete':delete_history,
+               'colloborate_modified':modified_history,
+               #    'convert_Medical': convert_Medical,
+               }
+    return render(request,'invclc/index.html',context)

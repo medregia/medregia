@@ -6,12 +6,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const bodyCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
 
     // Add an event listener to the header checkbox
-    headerCheckbox.addEventListener("change", function () {
+    if (headerCheckbox){
+        headerCheckbox.addEventListener("change", function () {
         // Loop through each body checkbox and set its checked property
         bodyCheckboxes.forEach(function (checkbox) {
             checkbox.checked = headerCheckbox.checked;
         });
     });
+    }
 
     const csvBtn = document.querySelector('.csvBtn');
     csvBtn.addEventListener('click', function () {

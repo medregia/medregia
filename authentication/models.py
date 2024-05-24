@@ -67,12 +67,12 @@ class CustomUser(AbstractUser):
     
 class Person(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
-    MedicalShopName = models.CharField(max_length=100, blank=True, null=True,)
-    ProprietaryName = models.CharField(max_length=100, blank=True, null=True,)
-    ProprietaryNumber = models.CharField(max_length=100, blank=True, null=True,)
+    MedicalShopName = models.CharField(max_length=100, blank=True, null=True)
+    ProprietaryName = models.CharField(max_length=100, blank=True, null=True)
+    ProprietaryNumber = models.CharField(max_length=100, blank=True, null=True)
     ProprietaryContact = models.CharField(max_length=100, blank=True, null=True)
-    DrugLiceneseNumber2 = models.CharField(max_length=100, blank=True, null=True,)
-    DrugLiceneseNumber1 = models.CharField(max_length=100, blank=True, null=True,)
+    DrugLiceneseNumber2 = models.CharField(max_length=100, blank=True, null=True)
+    DrugLiceneseNumber1 = models.CharField(max_length=100, blank=True, null=True)
 
     # Registered Address
     state = models.ForeignKey(StateModel, on_delete=models.SET_NULL, null=True, blank=True)
@@ -83,10 +83,11 @@ class Person(models.Model):
     DoorNumber = models.CharField(max_length=100, blank=True, null=True)
 
     PharmacistName = models.CharField(max_length=100, blank=True, null=True)
-    RegisteredNumber = models.CharField(max_length=100, blank=True, null=True,)
+    RegisteredNumber = models.CharField(max_length=100, blank=True, null=True)
     ContactNumber = models.CharField(max_length=15, blank=True, null=True)
+    PharmacistEmail = models.EmailField(blank = True,null=True)
 
-    UniqueId = models.CharField(max_length=100, blank=True, null=True,)
+    UniqueId = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.MedicalShopName

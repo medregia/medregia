@@ -58,9 +58,7 @@
                                     <input type="text" name="MedicalShopName" placeholder="Medical Shop Name" id="id_MedicalShopName">
                                 {% endif %}
                                 <span>
-                                    {% if profile.errors.MedicalShopName %}
-                                        {{profile.errors.MedicalShopName}}
-                                    {% endif %}
+                                   
                                 </span>
                             </div>                            
 
@@ -74,9 +72,7 @@
                                     <input type="text" name="ProprietaryName" placeholder="ProprietaryName" id="id_ProprietaryName">
                                 {% endif %}
                                 <span>
-                                    {% if profile.errors.ProprietaryName %}
-                                        {{profile.errors.ProprietaryName}}
-                                    {% endif %}
+                                   
                                 </span>
                             </div>
 
@@ -90,9 +86,7 @@
                                     <input type="text" name="DrugLiceneseNumber1" placeholder="Drug License Number 1" id="id_DrugLiceneseNumber1">
                                 {% endif %}
                                 <span>
-                                    {% if profile.errors.DrugLiceneseNumber1 %}
-                                        {{profile.errors.DrugLiceneseNumber1}}
-                                    {% endif %}
+                                
                                 </span>
                             </div>
 
@@ -106,9 +100,7 @@
                                     <input type="text" name="ProprietaryNumber" placeholder="Proprietary Number" id="id_ProprietaryNumber">
                                 {% endif %}
                                 <span>
-                                    {% if profile.errors.ProprietaryNumber %}
-                                        {{profile.errors.ProprietaryNumber}}
-                                    {% endif %}
+                                  
                                 </span>
                             </div>
 
@@ -122,14 +114,12 @@
                                     <input type="text" name="DrugLiceneseNumber2" placeholder="Drug License Number 2" id="id_DrugLiceneseNumber2">
                                 {% endif %}
                                 <span>
-                                    {% if profile.errors.DrugLiceneseNumber2 %}
-                                        {{profile.errors.DrugLiceneseNumber2}}
-                                    {% endif %}
+
                                 </span>
                             </div>
 
                             <div class="left-proprietary-contact left-top-containers">
-                                <label for="Medicalshop Name">Proprietary Contact Number <span class="importent">*</span>:</label>
+                                <label for="id_ProprietaryContact">Proprietary Contact Number <span class="importent">*</span>:</label>
                                 {% if data.ProprietaryContact and data.ProprietaryContact != "" %}
                                     <div class="profile-data">
                                         {{data.ProprietaryContact }}
@@ -138,9 +128,7 @@
                                     <input type="text" name="ProprietaryContact" placeholder="Proprietary Contact" id="id_ProprietaryContact">
                                 {% endif %}
                                 <span>
-                                    {% if profile.errors.ProprietaryContact %}
-                                        {{profile.errors.ProprietaryContact}}
-                                    {% endif %}
+
                                 </span>
                             </div>
 
@@ -255,9 +243,7 @@
                                 <input type="text" name="PharmacistName" placeholder="Pharmacist Name" id="id_PharmacistName">
                             {% endif %}
                             <span>
-                                {% if profile.errors.PharmacistyName %}
-                                    {{profile.errors.PharmacistName}}
-                                {% endif %}
+            
                             </span>
                         </div>
 
@@ -271,9 +257,7 @@
                                 <input type="text" name="RegisteredNumber" placeholder="Registered Number" id="id_RegisteredNumber">
                             {% endif %}
                             <span>
-                                {% if profile.errors.RegisteredNumber %}
-                                    {{profile.errors.RegisteredNumber}}
-                                {% endif %}
+                                
                             </span>
                         </div>
 
@@ -287,11 +271,25 @@
                                 <input type="number" name="ContactNumber" placeholder="Contact Number" id="id_ContactNumber">
                             {% endif %}
                             <span>
-                                {% if profile.errors.ContactNumber %}
-                                    {{profile.errors.ContactNumber}}
-                                {% endif %}
+                                
                             </span>
                         </div>
+
+                        <div class="profile-right-contactnumber right-top-containers">
+                            <label for="id_PharmacistEmail">Pharmacist Email :</label>
+                            {% if data.PharmacistEmail and data.PharmacistEmail != "" %}
+                                <div class="profile-data">
+                                    {{data.PharmacistEmail }}
+                                </div>
+                            {% else %}
+                                <input type="email" name="PharmacistEmail" placeholder="Pharmacist Email" id="id_PharmacistEmail">
+                            {% endif %}
+                            <span>
+                                
+                            </span>
+                        </div>
+
+                        
                     </div>
                     </form>     
             

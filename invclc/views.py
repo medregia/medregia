@@ -292,23 +292,23 @@ def exports_to_json(request):
 def index_view(request):
     current_user = request.user
     invoices = Invoice.objects.filter(user=current_user)
-    payment_details = invoices.filter().order_by('-id')
+    payment_details = invoices.order_by('-id')
     q_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
     search_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
     payed_details = invoices.filter(balance_amount=0.00).order_by('-id')
+
     check_user = None
-    check_admin= None
+    check_admin = None
     unique_code_id = None
+
     try:
-        unique_code = Person.objects.get(user = request.user)
+        unique_code = Person.objects.get(user=request.user)
         unique_id = unique_code.UniqueId
     except Person.DoesNotExist:
-        unique_code =f"'{request.user}' Please Update Your Profile"
         unique_id = f"'{request.user}' Please Update Your Profile"
 
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
@@ -322,76 +322,70 @@ def index_view(request):
                     current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
                     if current_user and collaborator_admin:
                         check_user = current_user.username
-                        # Use filter instead of get
                         check_admin = Invoice.objects.filter(user=collaborator_admin).first()
                         unique_code_id = Person.objects.get(user=collaborator_admin)
-                except Exception as a:
-                   return messages.error(request,"Somthing Wrong",a)
-
-    except Exception as e:
-        return messages.error(request,"Error Accure in Collabarating to User ",e)
-
+                except CustomUser.DoesNotExist:
+                    messages.error(request, "Something went wrong")
+    except Notification.DoesNotExist:
+        messages.error(request, "Error occurred in collaborating to User")
+        
 
     if str(request.user) == check_user:
         DeleteHistory = DeletedInvoice.objects.filter(user=collaborator_admin).order_by('-id')
     else:
         DeleteHistory = DeletedInvoice.objects.filter(user=request.user).order_by('-id')
-        
+
     if not DeleteHistory.exists():
         DeleteHistory = "No Deletion Found"
-        
+
     if str(request.user) == check_user:
-        ModifiedHistory = ModifiedInvoice.objects.filter(user = collaborator_admin).order_by('-id')
+        ModifiedHistory = ModifiedInvoice.objects.filter(user=collaborator_admin).order_by('-id')
     else:
-        ModifiedHistory = ModifiedInvoice.objects.filter(user = request.user).order_by('-id')
-        
+        ModifiedHistory = ModifiedInvoice.objects.filter(user=request.user).order_by('-id')
+
     if not ModifiedHistory.exists():
         ModifiedHistory = "No Updatation Found"
-        
+
     Storename = None
-    admin_invoices = None
     try:
-        if check_user == str(request.user): 
+        if check_user == str(request.user):
             Storename = Person.objects.get(user=collaborator_admin)
         else:
             Storename = Person.objects.get(user=request.user)
-        if Storename and Storename.MedicalShopName:
-            modifiedStore = convert_Medical(Storename.MedicalShopName)
-        else:
-            modifiedStore = "Not Found"
+        modifiedStore = Storename.MedicalShopName if Storename and Storename.MedicalShopName else ""
     except Person.DoesNotExist:
-        modifiedStore = "Not Found"
-
-    #TODO: Entry Data Input 
-
-    # entryDisable = None
-    # try:
-    #     userProfile = Person.objects.get(user=request.user)
-    #     if userProfile.MedicalShopName is not None and userProfile.DrugLiceneseNumber1 is not None and userProfile.DrugLiceneseNumber2 is not None:
-    #         entryDisable = False
-    #     else:
-    #         entryDisable = True
-    #     return JsonResponse({"Entry": entryDisable})
-    # except Person.DoesNotExist:
-    #     entryDisable = True
-    #     messages.error(request, "Profile not Accessible")
-
-    #-----------------
+        modifiedStore = ""
+        
+    
+    entryDisable = None
+    userProfile = None
 
     try:
-        if check_user == str(request.user): 
-            Medicalname = Person.objects.get(user=collaborator_admin)
+        if check_user == str(request.user):
+            user_to_check = collaborator_admin
         else:
-            Medicalname = Person.objects.get(user=current_user)
+            user_to_check = request.user
+
+        userProfile = Person.objects.get(user=user_to_check)
+
+        if (userProfile.MedicalShopName and
+            userProfile.DrugLiceneseNumber1 and
+            userProfile.DrugLiceneseNumber2):
+            entryDisable = False
+        else:
+            entryDisable = True
     except Person.DoesNotExist:
-        Medicalname = ''
-        
+        entryDisable = True
+        messages.error(request, "Please complete your profile details to access the fields.")
+
+    
     full_paid =None
     edit_paid = None
     partially_paid = None
     debt_paid = None
     delete_history = None
     modified_history = None
+    
     if check_user == str(request.user):
         admin_invoices = Invoice.objects.filter(user=collaborator_admin)
         full_paid = admin_invoices.filter(balance_amount=0.00).order_by('-id')
@@ -407,133 +401,130 @@ def index_view(request):
         debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
         
     if request.method == 'POST':
-        query = request.POST.get('payment_list')
-        if query is not None:
-            lookups = Q(pharmacy_name__icontains=query)
-            payment_details = payment_details.filter(lookups)
-        if query == 'all':
-            payment_details = invoices.order_by('-id')
+        try:
+            data = json.loads(request.body)
+            required_fields = [
+                'pharmacy_name', 'invoice_number', 'invoice_date',
+                'invoice_amount', 'payment_amount'
+            ]
+            
+            missing_fields = [field for field in required_fields if not data.get(field)]
+            if missing_fields:
+                return JsonResponse({
+                    'success': False,
+                    'message': f'Missing fields: {", ".join(missing_fields)}'
+                }, status=400)
 
-        paied = request.POST.get('payed')
-        if paied is not None:
-            search_payed = Q(pharmacy_name__icontains=paied)
-            payed_details = payed_details.filter(search_payed)
-        if paied == 'all':
-            payed_details = invoices.filter(balance_amount=0.00).order_by('-id')
+            # Convert numeric fields from strings to integers or floats
+            try:
+                invoice_amount = float(data['invoice_amount'])
+                payment_amount = float(data['payment_amount'])
+                
+                if payment_amount > invoice_amount:
+                    return JsonResponse({
+                        'success':False,
+                        'message':'Payment Not Valid '
+                        },status=400)
+                    
+            except ValueError:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invoice amount and payment amount must be numeric'
+                }, status=400)
 
-        q = request.POST.get('q')
-        if q is not None:
-            q_payed = Q(pharmacy_name__icontains=q)
-            q_details = q_details.filter(q_payed)
-        if q == 'all':
-            q_details = invoices.order_by('-id')
+            # Convert invoice_date to YYYY-MM-DD format
+            try:
+                invoice_date = datetime.strptime(data['invoice_date'], '%d/%m/%Y').date()
+            except ValueError:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invoice date must be in DD/MM/YYYY format'
+                }, status=400)
 
-        search = request.POST.get('search')
-        if search is not None:
-            search_data = Q(pharmacy_name__icontains=search)
-            search_details = search_details.filter(search_data)
-        if search == 'all':
-            search_details = invoices.order_by('-id')
+            user_to_save = collaborator_admin if check_user == str(request.user) else request.user
 
-        invoice_form = InvoiceForm(request.POST)
-        if invoice_form.is_valid():
-            if check_user == str(request.user):
-                invoice = invoice_form.save(commit=False)
-                invoice.user = collaborator_admin
-            else:
-                invoice = invoice_form.save(commit=False)
-                invoice.user = request.user
-            invoice.updated_by = request.user
-
-            # Save the Invoice object
-            invoice.save()
-
-            # Calculate the updated payment amount
-
-            # Create and save TrackingPayment instance
+            
+            invoice_data = Invoice(
+                user=user_to_save,
+                pharmacy_name=data['pharmacy_name'],  # Keep as string
+                invoice_number=data['invoice_number'],
+                invoice_date=invoice_date,  # Use converted date
+                invoice_amount=invoice_amount,  # Convert to float or int
+                payment_amount=payment_amount,  # Convert to float or int
+                today_date=datetime.now().date(),  # Set to current date
+                current_time=datetime.now().time(),  # Set to current time
+            )
+            invoice_data.updated_by=request.user
+            invoice_data.save()
+            
             tracking_payment = TrackingPayment(
-                user=invoice.user,
-                Medical_name=invoice.pharmacy_name,
-                Bill_no = invoice.invoice_number,
-                Medical_payments=invoice.invoice_amount,
-                payment_date=invoice.today_date,
-                paying_amount=invoice.payment_amount
+                user=user_to_save,
+                Medical_name = data['pharmacy_name'],
+                Bill_no = data['invoice_number'],
+                Medical_payments = invoice_amount,
+                payment_date = datetime.now().date(),
+                paying_amount = payment_amount
             )
             tracking_payment.save()
 
-            messages.success(request, " Payment Success")
-            try:
-                check_data = Person.objects.get(user=request.user)
-            except Person.DoesNotExist:
-                messages.error(request, "Please Update Your Profile")
-            return redirect("index")
-        else:
-            if 'payment_amount' in invoice_form.errors:
-                messages.error(request, "Payment Not Valid ... ")
-            if 'invoice_number' in invoice_form.errors:
-                messages.error(request, "Failed to save. Invoice number must be unique.")
-            if 'invoice_date' in invoice_form.errors:
-                messages.error(request, "Date formate DD/MM/YYYY or DD-MM-YYYY")
+            return JsonResponse({'success': True, 'message': 'Invoice saved successfully!'})
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
-    else:
-        invoice_form = InvoiceForm()
-    
-
-
-    context = {'form':invoice_form,
-               'payment':payment_details,
-               'payed_details':payed_details,
-               'q':q_details,
-               'search':search_details,
-               'uniqueid':unique_id,
-               'DeleteHistory':DeleteHistory,
-               'ModifiedHistory':ModifiedHistory,
-               'medicalname':Medicalname,
-               'MedicalStatus':modifiedStore,
-               'check_user':check_user,
-               'check_admin':check_admin,
-               'unique':unique_code_id,
-               'current_user':str(request.user),
-            #    'admin_storename':Storename.MedicalShopName,
-               'admin_invoice':admin_invoices,
-               'full_paid':full_paid,
-               'edit_paid':edit_paid,
-               'partially_paid':partially_paid,
-               'debt_paid':debt_paid,
-               'coloborate_delete':delete_history,
-               'colloborate_modified':modified_history,
-               #    'convert_Medical': convert_Medical,
-               }
-    return render(request,'invclc/index.html',context)
+    context = {
+        'payment': payment_details,
+        'payed_details': payed_details,
+        'q': q_details,
+        'entryDisable':entryDisable,
+        'search': search_details,
+        'uniqueid': unique_id,
+        'DeleteHistory': DeleteHistory,
+        'ModifiedHistory': ModifiedHistory,
+        'medicalname': None,
+        'MedicalStatus': modifiedStore,
+        'check_user': check_user,
+        'check_admin': check_admin,
+        'unique': unique_code_id,
+        'current_user': str(request.user),
+        'admin_invoice': invoices,
+        'full_paid': full_paid,
+        'edit_paid': edit_paid,
+        'partially_paid': partially_paid,
+        'debt_paid': debt_paid
+    }
+    return render(request, 'invclc/index.html', context)
 
 
-def entrydata(request):
-    entryDisable = None
-    try:
-        userProfile = Person.objects.get(user=request.user)
-        if userProfile.MedicalShopName is not None and userProfile.DrugLiceneseNumber1 is not None and userProfile.DrugLiceneseNumber2 is not None:
-            entryDisable = False
-        else:
-            entryDisable = True
-        return JsonResponse({"Entry": entryDisable})
-    except Person.DoesNotExist:
-        entryDisable = True
-        messages.error(request, "Profile not Accessible")
-        return JsonResponse({"error": "This User Profile Not Found"}, status=400)
+# def entrydata(request):
+#     entryDisable = None
+#     try:
+#         userProfile = Person.objects.get(user=request.user)
+#         if userProfile.MedicalShopName is not None and userProfile.DrugLiceneseNumber1 is not None and userProfile.DrugLiceneseNumber2 is not None:
+#             entryDisable = False
+#         else:
+#             entryDisable = True
+#         return JsonResponse({"Entry": entryDisable})
+#     except Person.DoesNotExist:
+#         entryDisable = True
+#         messages.error(request, "Profile not Accessible")
+#         return JsonResponse({"error": "This User Profile Not Found"}, status=400)
     
 def convert_Medical(shopname):
-     words = shopname.split()
-     if len(words) == 2:
-         return ''.join(word[0] for word in words).upper()
-     elif len(words) == 3:
-         return ''.join(word[0] for word in words).upper()
-     elif len(words) > 3:
-         return ''.join(word[0] for word in words[:3]).upper()
-     elif len(words) == 1:
-         return words[0][0].upper()
-     else:
-         return "####"
-
+    
+    if shopname and shopname is not None:
+        words = shopname.split()
+        if len(words) == 2:
+            return ''.join(word[0] for word in words).upper()
+        elif len(words) == 3:
+            return ''.join(word[0] for word in words).upper()
+        elif len(words) > 3:
+            return ''.join(word[0] for word in words[:3]).upper()
+        elif len(words) == 1:
+            return words[0][0].upper()
+        else:
+            return "####"  
 
 @login_required(login_url='/')
 def update_view(request):

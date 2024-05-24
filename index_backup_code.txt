@@ -1,0 +1,162 @@
+index_backup_code
+-----------------
+
+
+@login_required(login_url='/')
+def index_view(request):
+    current_user = request.user
+
+    invoices = Invoice.objects.filter(user=current_user)
+    payment_details = invoices.order_by('-id')
+    q_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+    search_details = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
+    payed_details = invoices.filter(balance_amount=0.00).order_by('-id')
+
+    check_user = None
+    check_admin = None
+    unique_code_id = None
+
+    try:
+        unique_code = Person.objects.get(user=request.user)
+        unique_id = unique_code.UniqueId
+    except Person.DoesNotExist:
+        unique_id = f"'{request.user}' Please Update Your Profile"
+
+    try:
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                        check_admin = Invoice.objects.filter(user=collaborator_admin).first()
+                        unique_code_id = Person.objects.get(user=collaborator_admin)
+                except CustomUser.DoesNotExist:
+                    messages.error(request, "Something went wrong")
+    except Notification.DoesNotExist:
+        messages.error(request, "Error occurred in collaborating to User")
+
+    if str(request.user) == check_user:
+        DeleteHistory = DeletedInvoice.objects.filter(user=collaborator_admin).order_by('-id')
+    else:
+        DeleteHistory = DeletedInvoice.objects.filter(user=request.user).order_by('-id')
+
+    if not DeleteHistory.exists():
+        DeleteHistory = "No Deletion Found"
+
+    if str(request.user) == check_user:
+        ModifiedHistory = ModifiedInvoice.objects.filter(user=collaborator_admin).order_by('-id')
+    else:
+        ModifiedHistory = ModifiedInvoice.objects.filter(user=request.user).order_by('-id')
+
+    if not ModifiedHistory.exists():
+        ModifiedHistory = "No Updatation Found"
+
+    Storename = None
+    try:
+        if check_user == str(request.user):
+            Storename = Person.objects.get(user=collaborator_admin)
+        else:
+            Storename = Person.objects.get(user=request.user)
+        modifiedStore = Storename.MedicalShopName if Storename and Storename.MedicalShopName else "Not Found"
+    except Person.DoesNotExist:
+        modifiedStore = "Not Found"
+        
+    
+    entryDisable = None
+    try:
+        userProfile = Person.objects.get(user=request.user)
+        if userProfile.MedicalShopName is not None and userProfile.DrugLiceneseNumber1 is not None and userProfile.DrugLiceneseNumber2 is not None:
+            entryDisable = False
+        else:
+            entryDisable = True
+        return JsonResponse({"Entry": entryDisable})
+    except Person.DoesNotExist:
+        entryDisable = True
+        messages.error(request, "Profile not Accessible")
+        return JsonResponse({"error": "This User Profile Not Found"}, status=400)
+    
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            required_fields = [
+                'pharmacy_name', 'invoice_number', 'invoice_date',
+                'invoice_amount', 'payment_amount'
+            ]
+            
+            missing_fields = [field for field in required_fields if not data.get(field)]
+            if missing_fields:
+                return JsonResponse({
+                    'success': False,
+                    'message': f'Missing fields: {", ".join(missing_fields)}'
+                }, status=400)
+
+            # Convert numeric fields from strings to integers or floats
+            try:
+                invoice_amount = float(data['invoice_amount'])
+                payment_amount = float(data['payment_amount'])
+            except ValueError:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invoice amount and payment amount must be numeric'
+                }, status=400)
+
+            # Convert invoice_date to YYYY-MM-DD format
+            try:
+                invoice_date = datetime.strptime(data['invoice_date'], '%d/%m/%Y').date()
+            except ValueError:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invoice date must be in DD/MM/YYYY format'
+                }, status=400)
+
+            user_to_save = collaborator_admin if check_user == str(request.user) else request.user
+
+            Invoice.objects.create(
+                user=user_to_save,
+                pharmacy_name=data['pharmacy_name'],  # Keep as string
+                invoice_number=data['invoice_number'],
+                invoice_date=invoice_date,  # Use converted date
+                invoice_amount=invoice_amount,  # Convert to float or int
+                payment_amount=payment_amount,  # Convert to float or int
+                today_date=datetime.now().date(),  # Set to current date
+                current_time=datetime.now().time(),  # Set to current time
+                updated_by=request.user
+            )
+
+            return JsonResponse({'success': True, 'message': 'Invoice saved successfully!'})
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+    context = {
+        'payment': payment_details,
+        'payed_details': payed_details,
+        'q': q_details,
+        'search': search_details,
+        'uniqueid': unique_id,
+        'DeleteHistory': DeleteHistory,
+        'ModifiedHistory': ModifiedHistory,
+        'medicalname': None,
+        'MedicalStatus': modifiedStore,
+        'check_user': check_user,
+        'check_admin': check_admin,
+        'unique': unique_code_id,
+        'current_user': str(request.user),
+        'admin_invoice': invoices,
+        'full_paid': invoices.filter(balance_amount=0.00).order_by('-id'),
+        'edit_paid': invoices.order_by('-id'),
+        'partially_paid': invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id'),
+        'debt_paid': invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
+    }
+    return render(request, 'invclc/index.html', context)

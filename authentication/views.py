@@ -309,7 +309,10 @@ def profile_view(request):
                         profile.RegisteredNumber = data.get('RegisteredNumber')
                   
                 if check_person.ContactNumber != '' and data.get('ContactNumber') :     
-                    profile.ContactNumber = data.get('ContactNumber')  
+                    profile.ContactNumber = data.get('ContactNumber') 
+                     
+                if check_person.PharmacistEmail != '' and data.get('PharmacistEmail') :     
+                    profile.PharmacistEmail = data.get('PharmacistEmail')  
 
                 # Assign the district_instance to a different field, assuming profile.district is the appropriate fiel
                 if not errors:
@@ -374,8 +377,8 @@ def profile_view(request):
     except CustomUser.DoesNotExist:
         userShopName = None
         sendShopName = None
-
-
+    
+        
     # Define the context dictionary
     context = {
         'hide_colaborator': hide_colaborator,
