@@ -42,9 +42,10 @@ h3{
 }
 .unpaid-container table{
     /* height: 100vh; */
-    width: 100%;
+    width: 97%;
     position: absolute;
     border-collapse: collapse;
+    margin-left: 40px;
 }
 
 .unpaid-container table tr{

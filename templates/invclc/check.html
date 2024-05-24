@@ -15,7 +15,11 @@
     {% include 'nav.html' %} 
 {% endblock navbar%} 
 
-<div class="check-container-btn"><button type="button" class="csvBtn">Print CSV</button></div>
+{% block sidebar %}
+{% include 'sidebar.html' %}
+{% endblock sidebar %}
+
+
 
 {% comment %} 
 <td class="pharmacystatus">
@@ -29,7 +33,9 @@
 {% for invoice in invoices %}
   <div class="main-container">
     <div class="main-header">
+      <div class="check-container-btn"></div>
       <h2 class="heading">{{invoice.pharmacy_name}}</h2>
+      <div class="check-container-btn"><button type="button" class="csvBtn">Print CSV</button></div>
     </div>
     <div class="main-body">
       <div class="main-body-left">
@@ -83,6 +89,8 @@
 </div>
 {% endfor %}
 <script src="{% static 'invclc/js/check.js' %}"></script>
+<script src="{% static 'invclc/js/check_sidebar.js' %}"></script>
+
 
 {% endblock content %}
 

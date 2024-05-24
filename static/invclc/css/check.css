@@ -17,6 +17,7 @@ body{
   row-gap:5px;
   flex-direction:column;
   /* background-color:red; */
+  margin-left: 30px;
 }
 
 .main-container .main-header{
@@ -149,21 +150,21 @@ td a button{
   width: 50px;
 }
 .check-container-btn{
-    height: 50px;
-    width: 100%;
-    /* background-color: red; */
-    display: flex;
-    justify-content: flex-end;
+  height: 50px;
+  width: 100%;
+  /* background-color: red; */
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
 }
 .csvBtn{
-    color: white;
-    background-color: blue;
-    cursor: pointer;
-    height: 40px;
-    width: 100px;
-    margin-right: 20px;
-  }
-
+  color: white;
+  background-color: blue;
+  cursor: pointer;
+  height: 40px;
+  width: 100px;
+  margin-right: 20px;
+}
   @media print{
     nav, .btn, .tablinks {
       display: none; 
