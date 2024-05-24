@@ -41,19 +41,11 @@
         </div>
       </div>
       <div class="heading">
-<<<<<<< HEAD
-        {% if not medicalname.MedicalShopName or medicalname.MedicalShopName == '' %}
-        <h2>
-          <h2>
-            {% else %}
-            <h2>{{ medicalname.MedicalShopName }}</h2>
-=======
         {% if not MedicalStatus or MedicalStatus == '' %}
         <h2>
           <h2>
             {% else %}
             <h2><a href="{% url 'adminacess' %}" style="color:black;font-size:1.4rem">{{ MedicalStatus }}</a></h2>
->>>>>>> a451de97e5ecd88f4b7203208946afea9b6753dd
             {% endif %}
       </div>
 
