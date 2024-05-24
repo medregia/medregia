@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{% static 'invclc/css/index.css' %}"> 
 
 {% for msg in messages %}
-<div class="overall-message">
+<div class="overall-message {{ msg.tags }}">
   <div class="invoice_message">
     {{ msg }}
   </div>

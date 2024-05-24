@@ -661,6 +661,27 @@ span.header-error{
   font-size:16px;
 }
 
+
+.error-message{
+  color: red;
+}
+
+.overall-message.success {
+  background-color: green;
+}
+
+.overall-message.error {
+  background-color: red;
+}
+
+.overall-message.info {
+  background-color: blue;
+}
+
+.overall-message.warning {
+  background-color: orange;
+}
+
 /* mediaquery */
 /* @media (min-width:1300px) and (max-width:1351px){
   .tabcontent {

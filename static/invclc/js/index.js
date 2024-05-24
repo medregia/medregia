@@ -507,51 +507,64 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 document.getElementById('saveButton').addEventListener('click', async function() {
-    const form = document.getElementById('invoiceForm');
-    const formData = new FormData(form);
-    const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+  const form = document.getElementById('invoiceForm');
+  const formData = new FormData(form);
+  const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+  const messages = document.querySelector('#header-message');
 
-    const data = {
-        pharmacy_name: formData.get('pharmacy_name'),
-        invoice_number: formData.get('invoice_number'),
-        invoice_date: formData.get('invoice_date'),
-        invoice_amount: formData.get('invoice_amount'),
-        payment_amount: formData.get('payment_amount'),
-    };
+  if (messages.classList.contains('error-message')) {
+      messages.classList.remove('error-message');
+  }
 
-    // Check if any field is empty
-    for (const [key, value] of Object.entries(data)) {
-        if (!value) { // Check for null, undefined, or empty string
-            alert(`${key.replace('_', ' ')} cannot be empty.`);
-            return; // Stop the function if any field is empty
-        }
-    }
+  if (messages.classList.contains('header-message')) {
+      messages.classList.remove('header-message');
+  }
 
-    try {
-        const response = await fetch('/index/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify(data)
-        });
+  const data = {
+      pharmacy_name: formData.get('pharmacy_name'),
+      invoice_number: formData.get('invoice_number'),
+      invoice_date: formData.get('invoice_date'),
+      invoice_amount: formData.get('invoice_amount'),
+      payment_amount: formData.get('payment_amount'),
+  };
 
-        const result = await response.json();
-        if (response.ok) {
-            alert('Invoice saved successfully!');
-            // Optionally, you can refresh the page or update the table
-        } else {
-            console.error('Error:', result);
-            alert('Failed to save invoice. Please try again.');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-    }
+  // Check if any field is empty
+  for (const [key, value] of Object.entries(data)) {
+      if (!value) { // Check for null, undefined, or empty string
+          alert(`${key.replace('_', ' ')} cannot be empty.`);
+          return; // Stop the function if any field is empty
+      }
+  }
+
+  try {
+      const response = await fetch('/index/', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken
+          },
+          body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+          console.log(result);
+          messages.textContent = result.message;
+          messages.classList.add('header-message');
+          location.reload();
+      } else {
+          console.error('Error:', result);
+          messages.textContent = result.message;
+          messages.classList.add('error-message');
+          location.reload();
+      }
+  } catch (error) {
+      console.error('Error:', error);
+      messages.textContent =' An error occurred. Please try again';
+      messages.classList.add('error-message');
+      location.reload();
+  }
 });
-
-
 
 
 
