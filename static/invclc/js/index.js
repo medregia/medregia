@@ -466,13 +466,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 document.addEventListener('DOMContentLoaded', function() {
   var invoiceDateInput = document.getElementById('id_invoice_date');
-<<<<<<< HEAD
-  invoiceDateInput.addEventListener('input', function() {
-=======
 
   if (invoiceDateInput){
     invoiceDateInput.addEventListener('input', function() {
->>>>>>> a451de97e5ecd88f4b7203208946afea9b6753dd
       var formattedValue = this.value.replace(/[^\d\/]/g, ''); // Remove all characters except digits and slashes
       if (formattedValue.length > 10) {
           formattedValue = formattedValue.substr(0, 10); // Limit to 10 characters
@@ -485,17 +481,11 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       this.value = formattedValue;
   });
-<<<<<<< HEAD
-
-  // Handle backspace and delete key events
-  invoiceDateInput.addEventListener('keydown', function(event) {
-=======
   }
   
   // Handle backspace and delete key events
   if (invoiceDateInput){
     invoiceDateInput.addEventListener('keydown', function(event) {
->>>>>>> a451de97e5ecd88f4b7203208946afea9b6753dd
       if (event.key === 'Backspace' || event.key === 'Delete') {
           var caretStart = this.selectionStart;
           var caretEnd = this.selectionEnd;
@@ -511,8 +501,6 @@ document.addEventListener('DOMContentLoaded', function() {
           }
       }
     });
-<<<<<<< HEAD
-=======
   }
   
 });
@@ -561,61 +549,10 @@ document.getElementById('saveButton').addEventListener('click', async function()
         console.error('Error:', error);
         alert('An error occurred. Please try again.');
     }
->>>>>>> a451de97e5ecd88f4b7203208946afea9b6753dd
 });
 
 
 
-<<<<<<< HEAD
-function entryData() {
-  fetch('/entry/')
-      .then(response => {
-          if (!response.ok) {
-              throw new Error('Network response was not ok ' + response.statusText);
-          }
-          return response.json();
-      })
-      .then(data => {
-          const pharmacy_name = document.querySelector(".pharmacy_name");
-          const invoice_number = document.querySelector(".invoice_number");
-          const id_invoice_date = document.querySelector("#id_invoice_date");
-          const invoice_amount = document.querySelector(".invoice_amount");
-          const payment_amount = document.querySelector(".payment_amount");
-          const balance_amount = document.querySelector(".balance_amount");
-          // Disable or enable fields based on data.Entry value
-          const isEntryDisabled = data.Entry;
-          pharmacy_name.disabled = isEntryDisabled;
-          invoice_number.disabled = isEntryDisabled;
-          id_invoice_date.disabled = isEntryDisabled;
-          invoice_amount.disabled = isEntryDisabled;
-          payment_amount.disabled = isEntryDisabled;
-          balance_amount.disabled = isEntryDisabled;
-          // Add or remove .not-allowed class based on the disabled state
-          if (isEntryDisabled) {
-              pharmacy_name.classList.add('not-allowed');
-              invoice_number.classList.add('not-allowed');
-              id_invoice_date.classList.add('not-allowed');
-              invoice_amount.classList.add('not-allowed');
-              payment_amount.classList.add('not-allowed');
-              balance_amount.classList.add('not-allowed');
-              console.log("Entry is disabled.");
-          } else {
-              pharmacy_name.classList.remove('not-allowed');
-              invoice_number.classList.remove('not-allowed');
-              id_invoice_date.classList.remove('not-allowed');
-              invoice_amount.classList.remove('not-allowed');
-              payment_amount.classList.remove('not-allowed');
-              balance_amount.classList.remove('not-allowed');
-              
-              console.log("Entry is enabled.");
-          }
-          console.log(data);
-      })
-      .catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
-      });
-}
-=======
 
 
 // function entryData() {
@@ -666,7 +603,6 @@ function entryData() {
 //           console.error('There was a problem with the fetch operation:', error);
 //       });
 // }
->>>>>>> a451de97e5ecd88f4b7203208946afea9b6753dd
 
 // Add event listeners to input fields
 // const pharmacy_name = document.querySelector(".pharmacy_name");
@@ -681,8 +617,4 @@ function entryData() {
 // id_invoice_date.addEventListener('click', entryData);
 // invoice_amount.addEventListener('click', entryData);
 // payment_amount.addEventListener('click', entryData);
-<<<<<<< HEAD
-// balance_amount.addEventListener('click', entryData);
-=======
 // balance_amount.addEventListener('click', entryData
->>>>>>> a451de97e5ecd88f4b7203208946afea9b6753dd
