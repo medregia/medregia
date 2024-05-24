@@ -33,8 +33,11 @@
                     <tr>
                         <th><input type="checkbox"></th>
                         <th>Name</th>
-                        <th>IV / No.</th>
+                        <th>Invoice No.</th>
+                        <th>Updated By</th>
                         <th>Total</th>
+                        <th>Paid Details</th>
+                        <th>Paid Date</th>
                         <th>Status</th>
                         <th>Pending</th>
                         <th>Payment</th>
@@ -50,7 +53,26 @@
                         <td><input type="checkbox" id="check"></td>
                         <td><input type="text" name="pharmacy_name" value="{{ data.pharmacy_name }}" disabled></td>
                         <td><input type="text" name="invoice_number" value="{{ data.invoice_number }}" disabled></td>
+                        <td><input type="text" name="updated_by" value="{{ data.updated_by }}" disabled></td>
                         <td><input type="text" name="invoice_amount" value="{{ data.invoice_amount }}" disabled></td>
+                        <td>
+                            <div class="scrollable-cell">
+                                {% for tracking_invoice in tracking_invoices %}
+                                    {% if tracking_invoice.Bill_no == data.invoice_number %}
+                                        {{ tracking_invoice.paying_amount }}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="scrollable-cell expand">
+                                {% for tracking_invoice in tracking_invoices %}
+                                    {% if tracking_invoice.Bill_no == data.invoice_number %}
+                                        {{ tracking_invoice.payment_date }}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </td>
                         {% if data.balance_amount == 0 %}
                         <td>Paid</td>
                         {% else %}

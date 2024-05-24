@@ -410,6 +410,7 @@ def index_view(request):
             
             missing_fields = [field for field in required_fields if not data.get(field)]
             if missing_fields:
+                messages.error(request,f'Missing fields: {", ".join(missing_fields)}')
                 return JsonResponse({
                     'success': False,
                     'message': f'Missing fields: {", ".join(missing_fields)}'
@@ -421,12 +422,14 @@ def index_view(request):
                 payment_amount = float(data['payment_amount'])
                 
                 if payment_amount > invoice_amount:
+                    messages.error(request,'Payment Not Valid')
                     return JsonResponse({
                         'success':False,
                         'message':'Payment Not Valid '
                         },status=400)
                     
             except ValueError:
+                messages.error(request,'Invoice amount and payment amount must be numeric')
                 return JsonResponse({
                     'success': False,
                     'message': 'Invoice amount and payment amount must be numeric'
@@ -436,6 +439,7 @@ def index_view(request):
             try:
                 invoice_date = datetime.strptime(data['invoice_date'], '%d/%m/%Y').date()
             except ValueError:
+                messages.error(request,'Invoice date must be in DD/MM/YYYY format')
                 return JsonResponse({
                     'success': False,
                     'message': 'Invoice date must be in DD/MM/YYYY format'
@@ -466,11 +470,14 @@ def index_view(request):
                 paying_amount = payment_amount
             )
             tracking_payment.save()
-
+            
+            messages.success(request,'Invoice saved successfully!')
             return JsonResponse({'success': True, 'message': 'Invoice saved successfully!'})
         except json.JSONDecodeError:
+            messages.error(request,'Invalid JSON data')
             return JsonResponse({'success': False, 'message': 'Invalid JSON data'}, status=400)
         except Exception as e:
+            messages.error(request,str(e))
             return JsonResponse({'success': False, 'message': str(e)}, status=500)
 
     context = {
@@ -1007,14 +1014,17 @@ def paymore_view(request):
                         check_user = current_user.username
                 except Exception as a:
                     return messages.error(request,"Something Wrong Please Check",a)
-            
+                       
     except Exception as e:
         return messages.error(request,"Something Wrong",e)
+    
     if collaborator_admin and collaborator_admin is not None:
+        trackingPayment = TrackingPayment.objects.filter(user=collaborator_admin).order_by('-id')
         invoices = Invoice.objects.filter(Q(user=collaborator_admin ), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
     else:
+        trackingPayment = TrackingPayment.objects.filter(user=request.user).order_by('-id')
         invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
-    return render(request, 'invclc/paymore.html',{'invoices': invoices})
+    return render(request, 'invclc/paymore.html',{'invoices': invoices,'trackingPayment':trackingPayment})
 
 @login_required(login_url='/')
 def updatemore_view(request):
@@ -1045,6 +1055,7 @@ def updatemore_view(request):
     if collaborator_admin and collaborator_admin is not None:
         invoices = Invoice.objects.filter(user = collaborator_admin).order_by('-id')
     else:
+        
         invoices = Invoice.objects.filter(user = current_user).order_by('-id')
     return render(request, 'invclc/updatemore.html',{'invoices': invoices})
 
@@ -1087,6 +1098,7 @@ def update_invoice(request, invoice_id):
         
         # Update the fields that don't require special handling
         invoice.pharmacy_name = data.get('pharmacy_name', invoice.pharmacy_name)
+        invoice.invoice_number = data.get('invoice_number',invoice.invoice_number)
         invoice.invoice_amount = Decimal(data.get('invoice_amount', invoice.invoice_amount))
         invoice.invoice_date = data.get('invoice_date', invoice.invoice_date)
         invoice.balance_amount = Decimal(data.get('balance_amount', invoice.balance_amount))
