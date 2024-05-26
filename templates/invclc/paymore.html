@@ -59,7 +59,7 @@
                             <div class="scrollable-cell">
                                 {% for tracking_invoice in tracking_invoices %}
                                     {% if tracking_invoice.Bill_no == data.invoice_number %}
-                                        {{ tracking_invoice.paying_amount }}
+                                        <input type="text" value="{{ tracking_invoice.paying_amount }}">
                                     {% endif %}
                                 {% endfor %}
                             </div>
@@ -68,15 +68,15 @@
                             <div class="scrollable-cell expand">
                                 {% for tracking_invoice in tracking_invoices %}
                                     {% if tracking_invoice.Bill_no == data.invoice_number %}
-                                        {{ tracking_invoice.payment_date }}
+                                        <input type="text" value="{{ tracking_invoice.payment_date }}">
                                     {% endif %}
                                 {% endfor %}
                             </div>
                         </td>
                         {% if data.balance_amount == 0 %}
-                        <td>Paid</td>
+                        <td><input type="text" value="Paid"></td>
                         {% else %}
-                        <td>Pending</td>
+                        <td><input type="text" value="Pending"></td>
                         {% endif %}
                         <td><input type="text" name="balance_amount" value="{{ data.balance_amount }}" disabled></td>
                         <td><input type="text" name="payment_amount" value="{{ data.payment_amount }}" disabled></td>

@@ -464,6 +464,7 @@ def confirm_admin(request):
             sender = collaborator.sender
             
             grand_accesses = Invoice.objects.filter(user__username=sender.username)
+            tracking_access = TrackingPayment.objects.filter(user__username = sender.username)
             
             if request.user.username == receiver.username:
                 admin_group = Group.objects.get(name='Admin Group')
@@ -473,6 +474,10 @@ def confirm_admin(request):
                 for grand_access in grand_accesses:
                     grand_access.user = receiver
                     grand_access.save()
+                    
+                for tracking in tracking_access:
+                    tracking.user = receiver
+                    tracking.save()
                 sender.save()
                 collaborator.save()                
                 messages.success(request, f"You have become a collaborator with {sender}.")

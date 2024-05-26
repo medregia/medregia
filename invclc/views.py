@@ -994,7 +994,6 @@ def checkmore_view(request):
 def paymore_view(request):
     current_user = request.user
     check_user = None 
-    collaborator_admin = None
     
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
@@ -1018,13 +1017,13 @@ def paymore_view(request):
     except Exception as e:
         return messages.error(request,"Something Wrong",e)
     
-    if collaborator_admin and collaborator_admin is not None:
-        trackingPayment = TrackingPayment.objects.filter(user=collaborator_admin).order_by('-id')
+    if check_user == str(request.user):
         invoices = Invoice.objects.filter(Q(user=collaborator_admin ), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+        trackingPayment = TrackingPayment.objects.filter(user=collaborator_admin).order_by('-id')
     else:
         trackingPayment = TrackingPayment.objects.filter(user=request.user).order_by('-id')
         invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
-    return render(request, 'invclc/paymore.html',{'invoices': invoices,'trackingPayment':trackingPayment})
+    return render(request, 'invclc/paymore.html',{'invoices': invoices,'tracking_invoices':trackingPayment})
 
 @login_required(login_url='/')
 def updatemore_view(request):
