@@ -5,7 +5,7 @@
 {% block title %} MedregiA || General Access {% endblock title %}
 
 {% block nav_footer %}{% static 'invclc/css/nav.css' %} {% endblock nav_footer %}
-{% comment %} {% block link2 %}{% static 'invclc/css/admin_acess.css' %} {% endblock link2 %} {% endcomment %}
+{% block link2 %}{% static 'invclc/css/admin_acess.css' %} {% endblock link2 %}
 {% block side %}{% static 'invclc/css/static_sidebar.css' %}{% endblock side %}
 
 {% block navbar %}
@@ -20,245 +20,111 @@
 
 
 
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f6f9;
-        margin: 0;
-        padding: 0;
-    }
-    
-    .Admin-container {
-        display: flex;
-        padding: 20px;
-    }
-    
-    .Admin-container-left {
-        flex-grow: 1;
-        margin-right: 20px;
-    }
-    
-    .row {
-        display: flex;
-        border-bottom: 1px solid #ddd;
-    }
-    
-    .row.head {
-        background-color: #003366;
-        color: white;
-        font-weight: bold;
-    }
-    
-    .cell {
-        flex: 1;
-        padding: 10px;
-        border-right: 1px solid #ddd;
-    }
-    
-    .cell:last-child {
-        border-right: none;
-    }
-    
-    .colspan-container {
-        flex: 2;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .inner-row {
-        display: flex;
-    }
-    
-    .inner-cell {
-        flex: 1;
-        padding: 5px;
-        border-top: 1px solid #ddd;
-        border-left: 1px solid #ddd;
-    }
-    
-    .inner-cell:first-child {
-        border-left: none;
-    }
-    
-    .Admin-container-right {
-        width: 300px;
-        background-color: white;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    .Admin-container-right h2 {
-        margin-top: 0;
-        margin-bottom: 20px;
-        font-size: 24px;
-        color: #003366;
-    }
-    
-    .Admin-container-right-details {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .right-child {
-        margin-bottom: 20px;
-    }
-    
-    .right-child h4 {
-        margin-bottom: 10px;
-        font-size: 18px;
-        color: #003366;
-    }
-    
-    .right-child p {
-        margin: 5px 0;
-    }
-    
-    .Add-user {
-        margin-bottom: 20px;
-    }
-    
-    .Add-user label {
-        font-size: 16px;
-        color: #003366;
-    }
-    
-    .Add-user input {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-    
-    .Details {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .Details-data {
-        margin-bottom: 15px;
-    }
-    
-    .Details-data label {
-        display: block;
-        font-size: 14px;
-        color: #003366;
-    }
-    
-    .Details-data input,
-    .Details-data select {
-        width: 100%;
-        padding: 8px;
-        margin-top: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
+<body>
+    <main>
 
-    .admin-access {
-        flex: 1;
-        background-color: #ecf0f1;
-        padding: 20px;
-        border-radius: 5px;
-    }
-    
-    .admin-access h2 {
-        margin-top: 0;
-    }
-    
-    .admin-access form {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .admin-access label {
-        margin-bottom: 5px;
-        margin-top: 10px;
-    }
-    
-    .admin-access input {
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #bdc3c7;
-        border-radius: 5px;
-    }
-    
-    .admin-access button {
-        padding: 10px;
-        background-color: #3498db;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    
-    .admin-access button:hover {
-        background-color: #2980b9;
-    }
-    
-</style>
-    <div class="Admin-container">
-        <div class="Admin-container-left">
-            <div class="row  head">
-                <div class="cell">S No.</div>
-                <div class="cell">Name</div>
-                <div class="cell colspan-container">DL Number
-                    <div class="inner-row">
-                        <div class="inner-cell">DL Number 1</div>
-                        <div class="inner-cell">DL Number 2</div>
-                    </div>
-                </div>
-                <div class="cell">Admin Name</div>
-                <div class="cell">Temp Number</div>
-                <div class="cell">Unique Number</div>
-                <div class="cell">Generate link</div>
-                <div class="cell">status</div>
-            </div>
-            <div class="row">
-                <div class="cell">Data 1</div>
-                <div class="cell">Data 2</div>
-                <div class="cell colspan-container">
-                    <div class="inner-row">
-                        <div class="inner-cell">Data 3.1</div>
-                        <div class="inner-cell">Data 3.2</div>
-                    </div>
-                </div>
-                <div class="cell">Data 4</div>
-                <div class="cell">Data 5</div>
-                <div class="cell">Data 6</div>
-                <div class="cell">Data 7</div>
-                <div class="cell">Data 8</div>
-            </div>
-            <div class="row">
-                <div class="cell">Data 1</div>
-                <div class="cell">Data 2</div>
-                <div class="cell colspan-container">
-                    <div class="inner-row">
-                        <div class="inner-cell">Data 3.1</div>
-                        <div class="inner-cell">Data 3.2</div>
-                    </div>
-                </div>
-                <div class="cell">Data 4</div>
-                <div class="cell">Data 5</div>
-                <div class="cell">Data 6</div>
-                <div class="cell">Data 7</div>
-                <div class="cell">Data 8</div>
-            </div>
+        <div class="admin-container">
+            <table class="table-content">
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>DL Number 1</th>
+                    <th>DL Number 2</th>
+                    <th>Admin Name</th>
+                    <th>Temp Number</th>
+                    <th>Unique Number</th>
+                    <th>Generate Line</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td>ABC12345</td>
+                    <td>DEF67890</td>
+                    <td>Admin 1</td>
+                    <td>Temp123</td>
+                    <td>UN123456</td>
+                    <td>Line1</td>
+                    <td>Active</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Jane Smith</td>
+                    <td>GHI54321</td>
+                    <td>JKL09876</td>
+                    <td>Admin 2</td>
+                    <td>Temp456</td>
+                    <td>UN654321</td>
+                    <td>Line2</td>
+                    <td>Inactive</td>
+                </tr>
+            </table>
         </div>
+            
+
+        
         <aside class="admin-access">
             <h2>Admin Access</h2>
-            <form>
+            <div class="form-group">
                 <label for="adminUser">Admin User</label>
                 <input type="text" id="adminUser" name="adminUser">
+            </div>
+            <div class="form-group">
                 <label for="phoneNumber">Phone Number</label>
                 <input type="text" id="phoneNumber" name="phoneNumber">
+            </div>
+            <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password">
+            </div>
+            <div class="form-group">
                 <label for="pin">Pin</label>
                 <input type="text" id="pin" name="pin">
-                <button type="submit">Add User</button>
+            </div>
+
+            <form>
+                <h2> Add User </h2>
+
+                <div class="form-group addUser">
+                    <input type="text" id="adduser" name="addUser">
+                    <button type="submit">Add User</button>
+                </div>   
             </form>
+
+            <form>
+                <div class="Details">
+                    <div class="Details-data">
+                        <label for="">Name:</label>
+                        <input type="text">
+                    </div>
+                    <div class="Details-data">
+                        <label for="">Email:</label>
+                        <input type="text">
+                    </div>
+                    <div class="Details-data">
+                        <label for="">Phone:</label>
+                        <input type="text">
+                    </div>
+                    <div class="Details-data">
+                        <label for="">Password:</label>
+                        <input type="text">
+                    </div>
+                    <div class="Details-data">
+                        <label for="">Pin:</label>
+                        <input type="text">
+                    </div>
+                    <div class="Details-data">
+                        <label for="">Position:</label>
+                        <select name="" id="">Others</select>
+                    </div>
+                    <button type="submit">Send</button>
+                </div>
+            </form>
+            
+                
         </aside>
-    </div>    
+        
+    </main>    
 
     <script src="{% static 'invclc/js/admin_access_sidbar.js' %}"></script>
 

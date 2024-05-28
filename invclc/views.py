@@ -307,64 +307,53 @@ def index_view(request):
     except Person.DoesNotExist:
         unique_id = f"'{request.user}' Please Update Your Profile"
 
-    try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        for notification in collaborator_requests:
-            collaborator_request_username = notification.sender.username
-            get_admin_name = notification.receiver.username
+    # try:
+    #     collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+    #     for notification in collaborator_requests:
+    #         collaborator_request_username = notification.sender.username
+    #         get_admin_name = notification.receiver.username
             
-            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+    #         collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+    #         collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
             
-            for user in collaborator_request_sender:
-                collaborator_sender_username = user.username
-                try:
-                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                    if current_user and collaborator_admin:
-                        check_user = current_user.username
-                        check_admin = Invoice.objects.filter(user=collaborator_admin).first()
-                        unique_code_id = Person.objects.get(user=collaborator_admin)
-                except CustomUser.DoesNotExist:
-                    messages.error(request, "Something went wrong")
-    except Notification.DoesNotExist:
-        messages.error(request, "Error occurred in collaborating to User")
+    #         for user in collaborator_request_sender:
+    #             collaborator_sender_username = user.username
+    #             try:
+    #                 current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+    #                 if current_user and collaborator_admin:
+    #                     check_user = current_user.username
+    #                     check_admin = Invoice.objects.filter(user=collaborator_admin).first()
+    #                     unique_code_id = Person.objects.get(user=collaborator_admin)
+    #             except CustomUser.DoesNotExist:
+    #                 messages.error(request, "Something went wrong")
+    # except Notification.DoesNotExist:
+    #     messages.error(request, "Error occurred in collaborating to User")
         
 
-    if str(request.user) == check_user:
-        DeleteHistory = DeletedInvoice.objects.filter(user=collaborator_admin).order_by('-id')
-    else:
-        DeleteHistory = DeletedInvoice.objects.filter(user=request.user).order_by('-id')
+
+    DeleteHistory = DeletedInvoice.objects.filter(user=request.user).order_by('-id')
 
     if not DeleteHistory.exists():
         DeleteHistory = "No Deletion Found"
 
-    if str(request.user) == check_user:
-        ModifiedHistory = ModifiedInvoice.objects.filter(user=collaborator_admin).order_by('-id')
-    else:
-        ModifiedHistory = ModifiedInvoice.objects.filter(user=request.user).order_by('-id')
+    ModifiedHistory = ModifiedInvoice.objects.filter(user=request.user).order_by('-id')
 
     if not ModifiedHistory.exists():
         ModifiedHistory = "No Updatation Found"
 
     Storename = None
+
     try:
-        if check_user == str(request.user):
-            Storename = Person.objects.get(user=collaborator_admin)
-        else:
-            Storename = Person.objects.get(user=request.user)
+        Storename = Person.objects.get(user=request.user)
         modifiedStore = Storename.MedicalShopName if Storename and Storename.MedicalShopName else ""
     except Person.DoesNotExist:
         modifiedStore = ""
-        
     
     entryDisable = None
     userProfile = None
 
     try:
-        if check_user == str(request.user):
-            user_to_check = collaborator_admin
-        else:
-            user_to_check = request.user
+        user_to_check = request.user
 
         userProfile = Person.objects.get(user=user_to_check)
 
@@ -386,19 +375,11 @@ def index_view(request):
     delete_history = None
     modified_history = None
     
-    if check_user == str(request.user):
-        admin_invoices = Invoice.objects.filter(user=collaborator_admin)
-        full_paid = admin_invoices.filter(balance_amount=0.00).order_by('-id')
-        edit_paid = admin_invoices.filter().order_by('-id')
-        partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
-        debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
-        
-    else:
-        admin_invoices = Invoice.objects.filter(user=request.user)
-        full_paid = admin_invoices.filter(balance_amount=0.00).order_by('-id')
-        edit_paid = admin_invoices.filter().order_by('-id')
-        partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
-        debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
+    admin_invoices = Invoice.objects.filter(user=request.user)
+    full_paid = admin_invoices.filter(balance_amount=0.00).order_by('-id')
+    edit_paid = admin_invoices.filter().order_by('-id')
+    partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+    debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
         
     if request.method == 'POST':
         try:
@@ -407,6 +388,7 @@ def index_view(request):
                 'pharmacy_name', 'invoice_number', 'invoice_date',
                 'invoice_amount', 'payment_amount'
             ]
+            print("Data",data)
             
             missing_fields = [field for field in required_fields if not data.get(field)]
             if missing_fields:
@@ -445,7 +427,7 @@ def index_view(request):
                     'message': 'Invoice date must be in DD/MM/YYYY format'
                 }, status=400)
 
-            user_to_save = collaborator_admin if check_user == str(request.user) else request.user
+            user_to_save =request.user
 
             
             invoice_data = Invoice(

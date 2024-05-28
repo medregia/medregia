@@ -1,6 +1,6 @@
 function toggleSidebar() {
     var sidebar = document.getElementById('sidebar');
-    var adminaccess = document.querySelector('.Admin-container');
+    var adminaccess = document.querySelector('.admin-container');
     
     if (sidebar.classList.contains('sidebar-closed')) {
         sidebar.classList.remove('sidebar-closed');
