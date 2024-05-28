@@ -388,7 +388,6 @@ def index_view(request):
                 'pharmacy_name', 'invoice_number', 'invoice_date',
                 'invoice_amount', 'payment_amount'
             ]
-            print("Data",data)
             
             missing_fields = [field for field in required_fields if not data.get(field)]
             if missing_fields:
@@ -441,7 +440,15 @@ def index_view(request):
                 current_time=datetime.now().time(),  # Set to current time
             )
             invoice_data.updated_by=request.user
-            invoice_data.save()
+
+            if entryDisable:
+                messages.error(request,'Please Fill Up the data in Profile Page')
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Please Fill Up the data in Profile Page'
+                }, status=400)
+            else:
+                invoice_data.save()
             
             tracking_payment = TrackingPayment(
                 user=user_to_save,

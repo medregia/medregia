@@ -183,7 +183,7 @@ def profile_view(request):
     profile = Person.objects.get(user=current_user)
     
     if request.method == "POST": 
-        # data = json.loads(request.body)
+        data = json.loads(request.body)
         # receiver_name = data.get('adminName',None)
         # # print(data)
         # try:

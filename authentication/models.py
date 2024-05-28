@@ -90,7 +90,8 @@ class Person(models.Model):
     UniqueId = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
-        return self.MedicalShopName
+        MedicalShopName = self.MedicalShopName or ''
+        return MedicalShopName
     
 class Notification(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_notifications', on_delete=models.CASCADE)

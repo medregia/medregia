@@ -512,14 +512,10 @@ document.getElementById('saveButton').addEventListener('click', async function()
   const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
   const messages = document.querySelector('#header-message');
 
-  if (messages.classList.contains('error-message')) {
-      messages.classList.remove('error-message');
-  }
+  // Remove error and header messages
+  messages.classList.remove('error-message', 'header-message');
 
-  if (messages.classList.contains('header-message')) {
-      messages.classList.remove('header-message');
-  }
-
+  // Gather form data
   const data = {
       pharmacy_name: formData.get('pharmacy_name'),
       invoice_number: formData.get('invoice_number'),
@@ -530,7 +526,7 @@ document.getElementById('saveButton').addEventListener('click', async function()
 
   // Check if any field is empty
   for (const [key, value] of Object.entries(data)) {
-      if (!value) { // Check for null, undefined, or empty string
+      if (!value) {
           alert(`${key.replace('_', ' ')} cannot be empty.`);
           return; // Stop the function if any field is empty
       }
@@ -554,80 +550,36 @@ document.getElementById('saveButton').addEventListener('click', async function()
           location.reload();
       } else {
           console.error('Error:', result);
+          togglePopup();
           messages.textContent = result.message;
+          messages.style.color = "red"
           messages.classList.add('error-message');
-          location.reload();
       }
   } catch (error) {
       console.error('Error:', error);
-      messages.textContent =' An error occurred. Please try again';
+      togglePopup();
+      messages.textContent = 'An error occurred. Please try again';
       messages.classList.add('error-message');
-      location.reload();
   }
 });
 
+// Define the togglePopup function
+function togglePopup() {
+  const entryButton = document.getElementById('not_accessable_profile');
+  const closeBtn = document.getElementById("popup-btn");
+  const popupMsg = document.getElementById("popup-1");
+  const popupMessages = document.querySelector(".overlay-content h2");
+  const popupBody = document.querySelector(".overlay-content p");
 
+  if (entryButton) {
+    popupMessages.textContent = "Invoice Update Failed ";
+    popupMessages.style.color = "red";
+    popupBody.innerHTML = `<span>Note:</span> Please Update Your Profile <br> Pharmacy Name <br> Drug Licenese Number1 <br> Drug Licenese Number2`;
+    popupMsg.classList.add("active");
 
-// function entryData() {
-//   fetch('/entry/')
-//       .then(response => {
-//           if (!response.ok) {
-//               throw new Error('Network response was not ok ' + response.statusText);
-//           }
-//           return response.json();
-//       })
-//       .then(data => {
-//           const pharmacy_name = document.querySelector(".pharmacy_name");
-//           const invoice_number = document.querySelector(".invoice_number");
-//           const id_invoice_date = document.querySelector("#id_invoice_date");
-//           const invoice_amount = document.querySelector(".invoice_amount");
-//           const payment_amount = document.querySelector(".payment_amount");
-//           const balance_amount = document.querySelector(".balance_amount");
-//           // Disable or enable fields based on data.Entry value
-//           const isEntryDisabled = data.Entry;
-//           pharmacy_name.disabled = isEntryDisabled;
-//           invoice_number.disabled = isEntryDisabled;
-//           id_invoice_date.disabled = isEntryDisabled;
-//           invoice_amount.disabled = isEntryDisabled;
-//           payment_amount.disabled = isEntryDisabled;
-//           balance_amount.disabled = isEntryDisabled;
-//           // Add or remove .not-allowed class based on the disabled state
-//           if (isEntryDisabled) {
-//               pharmacy_name.classList.add('not-allowed');
-//               invoice_number.classList.add('not-allowed');
-//               id_invoice_date.classList.add('not-allowed');
-//               invoice_amount.classList.add('not-allowed');
-//               payment_amount.classList.add('not-allowed');
-//               balance_amount.classList.add('not-allowed');
-//               console.log("Entry is disabled.");
-//           } else {
-//               pharmacy_name.classList.remove('not-allowed');
-//               invoice_number.classList.remove('not-allowed');
-//               id_invoice_date.classList.remove('not-allowed');
-//               invoice_amount.classList.remove('not-allowed');
-//               payment_amount.classList.remove('not-allowed');
-//               balance_amount.classList.remove('not-allowed');
-              
-//               console.log("Entry is enabled.");
-//           }
-//           console.log(data);
-//       })
-//       .catch(error => {
-//           console.error('There was a problem with the fetch operation:', error);
-//       });
-// }
-
-// Add event listeners to input fields
-// const pharmacy_name = document.querySelector(".pharmacy_name");
-// const invoice_number = document.querySelector(".invoice_number");
-// const id_invoice_date = document.querySelector("#id_invoice_date");
-// const invoice_amount = document.querySelector(".invoice_amount");
-// const payment_amount = document.querySelector(".payment_amount");
-// const balance_amount = document.querySelector(".balance_amount");
-
-// pharmacy_name.addEventListener('click', entryData);
-// invoice_number.addEventListener('click', entryData);
-// id_invoice_date.addEventListener('click', entryData);
-// invoice_amount.addEventListener('click', entryData);
-// payment_amount.addEventListener('click', entryData);
-// balance_amount.addEventListener('click', entryData
+    closeBtn.addEventListener("click", () => {
+      popupMsg.classList.remove("active");
+      // window.location.reload();
+    });
+  }
+}
