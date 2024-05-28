@@ -275,7 +275,7 @@
                             </span>
                         </div>
 
-                        <div class="profile-right-contactnumber right-top-containers">
+                        <div class="profile-right-email right-top-containers">
                             <label for="id_PharmacistEmail">Pharmacist Email :</label>
                             {% if data.PharmacistEmail and data.PharmacistEmail != "" %}
                                 <div class="profile-data">
@@ -340,7 +340,7 @@
                             </div>
                         </div>
                     
-                        {% if hide_colaborator and hide_colaborator is not None %}
+                        {% comment %} {% if hide_colaborator and hide_colaborator is not None %}
                             <div class="makeus-admin">
                                 <h4 class="unable-to-request">"You are unable to send a collaboration request to another user as you are already an administrator for a different user." </h4>
                                 <div class="collobarate-message">
@@ -365,7 +365,7 @@
                                     </form>
                                 {% endif %}
                             </div>
-                        {% endif %}
+                        {% endif %} {% endcomment %}
 
                     </div>
                 </div>
