@@ -9,110 +9,110 @@ body {
     height: 100vh;
     width: 100%;
 }
-.Admin-container{
-    height: 100vh;
+main {
+    flex: 1;
+    display: flex;
+    padding: 20px;
+}
+
+.table-content{
+    width: 95%;
+    margin-left: 40px;
+}
+
+table {
     width: 100%;
-    display: flex;
-    margin-left: 25px;
+    border-collapse: collapse;
 }
-/* Admin-container-left */
-.Admin-container-left {
-    height: 100vh;
-    width: 75%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #ccc;
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
 }
-
-.row {
-    display: flex;
-    width: 97%;
-    margin-left: 25px;
-}
-.head .cell{
-    background-color: #ccc;
-    border: 1px solid white;
-    font-weight: bold;
-    font-style:14px;
+th {
+    background-color: #f2f2f2;
 }
 
-.cell {
+.admin-access {
     flex: 1;
-    padding: 2px;
-    border: 1px solid #ccc;
-    text-align: center;
-}
-
- 
-
-.colspan-container {
-    flex: 2; 
-    padding: 0; 
-}
-
-.inner-row {
-    display: flex;
-}
-
-.inner-cell {
-    flex: 1;
-    padding:0;
-    border-left: 1px solid black; 
-    border-top: 0;
-    border-bottom: 0;
-    border-right: 0;
-    text-align: center;
-    margin-top: 3px;
-}
-.inner-cell:first-child {
-    border-left: 0; 
-}
-
-/* Admin-container-right */
-.Admin-container-right{
-    height: 100vh;
-    width: 25%;
-    display: flex;
-    flex-direction: column;
-    padding: 30px 0;
-}
-.Admin-container-right h2{
-    text-align: center;
-   
-}
-.Admin-container-right-details{
-    height: 80vh;
-    /* background-color: darkolivegreen; */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-}
-.right-child{
-    height: 25vh;
-    /* background-color: red; */
-}
-.right-child h4{
-    margin-left: 10px;
-}
-.right-child p{
-    margin-left: 20px;
-}
-.Add-user{
-    height: 10vh;
-    display: flex;
-    background-color: #f0f0f0;
-    align-items: center;
-    justify-content: space-evenly;
-    font-weight: bold;
-
-}
-.Add-user input{
+    width: 20%;
+    background-color: #ecf0f1;
+    padding: 20px;
     border-radius: 5px;
-    border: 1px solid black;
-    width: 5cm;
-    height: 35px;
-    background-color: #f0f0f0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+.admin-access h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.admin-access form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    flex: 1;
+    width: 350px;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    flex: 2;
+    width: 50px;
+    padding: 5px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+}
+
+.admin-access button {
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: center;
+}
+
+
+.form-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.addUser input[type="text"] {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.addUser button[type="submit"] {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2980b9;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.addUser button[type="submit"]:hover {
+    background-color:#2980b9;
+}
+
 .Details{
     height: 40vh;
     /* background-color: green; */
@@ -128,20 +128,32 @@ body {
     justify-content: space-between;
 }
 .Details-data label{
-    display: inline-block;
+    flex: 1;
+    width: 350px;
+    margin-right: 10px;
     font-weight: bold;
 }
 .Details-data input{
+    flex: 2;
+    width: 50px;
+    padding: 5px;
+    border: 1px solid #bdc3c7;
     border-radius: 5px;
-    border: 1px solid black;
-    width: 5cm;
-    height: 23px;
-    background-color: #f0f0f0;
 }
 .Details-data select{
+    flex: 2;
+    width: 50px;
+    padding: 5px;
+    border: 1px solid #bdc3c7;
     border-radius: 5px;
-    border: 1px solid black;
-    width: 5cm;
-    height: 25px;
-    background-color: #f0f0f0;
+}
+
+.Details button[type="submit"] {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2980b9;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
 }

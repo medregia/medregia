@@ -21,67 +21,77 @@
 
 
 <body>
-    <div class="Admin-container">
-        <div class="Admin-container-left">
-            <div class="row  head">
-                <div class="cell">S No.</div>
-                <div class="cell">Name</div>
-                <div class="cell colspan-container">DL Number
-                    <div class="inner-row">
-                        <div class="inner-cell">DL Number 1</div>
-                        <div class="inner-cell">DL Number 2</div>
-                    </div>
-                </div>
-                <div class="cell">Admin Name</div>
-                <div class="cell">Temp Number</div>
-                <div class="cell">Unique Number</div>
-                <div class="cell">Generate line</div>
-                <div class="cell">status</div>
-            </div>
-            <div class="row">
-                <div class="cell">Data 1</div>
-                <div class="cell">Data 2</div>
-                <div class="cell colspan-container">
-                    <div class="inner-row">
-                        <div class="inner-cell">Data 3.1</div>
-                        <div class="inner-cell">Data 3.2</div>
-                    </div>
-                </div>
-                <div class="cell">Data 4</div>
-                <div class="cell">Data 5</div>
-                <div class="cell">Data 6</div>
-                <div class="cell">Data 7</div>
-                <div class="cell">Data 8</div>
-            </div>
-            <div class="row">
-                <div class="cell">Data 1</div>
-                <div class="cell">Data 2</div>
-                <div class="cell colspan-container">
-                    <div class="inner-row">
-                        <div class="inner-cell">Data 3.1</div>
-                        <div class="inner-cell">Data 3.2</div>
-                    </div>
-                </div>
-                <div class="cell">Data 4</div>
-                <div class="cell">Data 5</div>
-                <div class="cell">Data 6</div>
-                <div class="cell">Data 7</div>
-                <div class="cell">Data 8</div>
-            </div>
+    <main>
+
+        <div class="admin-container">
+            <table class="table-content">
+                <tr>
+                    <th>No.</th>
+                    <th>Name</th>
+                    <th>DL Number 1</th>
+                    <th>DL Number 2</th>
+                    <th>Admin Name</th>
+                    <th>Temp Number</th>
+                    <th>Unique Number</th>
+                    <th>Generate Line</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td>ABC12345</td>
+                    <td>DEF67890</td>
+                    <td>Admin 1</td>
+                    <td>Temp123</td>
+                    <td>UN123456</td>
+                    <td>Line1</td>
+                    <td>Active</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Jane Smith</td>
+                    <td>GHI54321</td>
+                    <td>JKL09876</td>
+                    <td>Admin 2</td>
+                    <td>Temp456</td>
+                    <td>UN654321</td>
+                    <td>Line2</td>
+                    <td>Inactive</td>
+                </tr>
+            </table>
         </div>
-        <div class="Admin-container-right">
+            
+
+        
+        <aside class="admin-access">
             <h2>Admin Access</h2>
-            <div class="Admin-container-right-details">
-                <div class="right-child">
-                    <h4>Admin User</h4>
-                    <p>Phone Number</p>
-                    <p>Password</p>
-                    <p>Pin</p>
-                </div>
-                <div class="Add-user">
-                    <label for="">Add user :</label>
-                    <input type="text">
-                </div>
+            <div class="form-group">
+                <label for="adminUser">Admin User</label>
+                <input type="text" id="adminUser" name="adminUser">
+            </div>
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="text" id="phoneNumber" name="phoneNumber">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div class="form-group">
+                <label for="pin">Pin</label>
+                <input type="text" id="pin" name="pin">
+            </div>
+
+            <form>
+                <h2> Add User </h2>
+
+                <div class="form-group addUser">
+                    <input type="text" id="adduser" name="addUser">
+                    <button type="submit">Add User</button>
+                </div>   
+            </form>
+
+            <form>
                 <div class="Details">
                     <div class="Details-data">
                         <label for="">Name:</label>
@@ -107,10 +117,14 @@
                         <label for="">Position:</label>
                         <select name="" id="">Others</select>
                     </div>
+                    <button type="submit">Send</button>
                 </div>
-            </div>
-        </div>
-    </div>    
+            </form>
+            
+                
+        </aside>
+        
+    </main>    
 
     <script src="{% static 'invclc/js/admin_access_sidbar.js' %}"></script>
 
