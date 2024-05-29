@@ -574,7 +574,6 @@ function togglePopup() {
   if (entryButton) {
     popupMessages.textContent = "Invoice Update Failed ";
     popupMessages.style.color = "red";
-    popupBody.innerHTML = `<span>Note:</span> Please Update Your Profile <br> Pharmacy Name <br> Drug Licenese Number1 <br> Drug Licenese Number2`;
     popupMsg.classList.add("active");
 
     closeBtn.addEventListener("click", () => {

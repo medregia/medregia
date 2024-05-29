@@ -45,12 +45,17 @@ body{
   justify-content: center;
   align-items: center;
   color: orangered;
+  max-height: 220px;
+  overflow-y: hidden;
   /* background-color: red; */
 }
 
 
-.popup .overlay-content p span{
-  color:green
+/* .popup .overlay-content p ul li{
+  color: orangered;
+} */
+.popup .overlay-content p ul li{
+  color:green;
 }
 
 .popup .overlay-content .content-btn button{

@@ -170,14 +170,11 @@ document.getElementById('submit_button').addEventListener('click', function(even
     // Get CSRF token from the page
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    if (!districtId) {
-        // Set default districtId here
-        // For example, you can set it to the first option's id
-        districtId = ''
-    }
+    // Set default districtId if not provided
+    const districtId = districtElement ? districtElement.value : '';
+
     // Send data to Django backend
     sendingData(formData, csrfToken, districtId);
-    
 });
 
 function togglePopup() {
@@ -196,16 +193,17 @@ function togglePopup() {
     });
 }
 
-function closePopup(error) {
+function closePopup(errors) {
     const closebtn = document.getElementById("popup-btn");
     const popupMsg = document.getElementById("popup-1");
     const popupMessages = document.querySelector(".overlay-content h2");
     const popupBody = document.querySelector(".overlay-content p");
 
-    popupMessages.textContent = "Profile not Saved Some Data Already Exist";
+    popupMessages.textContent = "Invoice Update Failed";
     popupMessages.style.color = "red";
 
-    popupBody.innerHTML = `<span>Note:</span> ${error}`;
+    const errorList = errors.map(error => `<li>${error}</li>`).join('');
+    popupBody.innerHTML = `<ul>${errorList}</ul>`;
     popupMsg.classList.add("active");
     closebtn.addEventListener("click", () => {
         popupMsg.classList.remove("active");
@@ -213,36 +211,36 @@ function closePopup(error) {
     });
 }
 
-
-
 function sendingData(formData, csrf, districtId) {
-        formData.districtkey = districtId
-        fetch('/profile/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrf
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Profile not Saved with Error');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Handle response from backend if needed
-            console.log(data);
-            togglePopup()
-            // alert(" Profile Saved Successfully ... ")
-        })
-        .catch(error => {
-            // Handle errors
-            console.error('Error:', error);
-            closePopup(error)
-        });
-    }
+    formData.districtkey = districtId;
+    fetch('/profile/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrf
+        },
+        body: JSON.stringify(formData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(JSON.stringify(data.errors));
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Handle response from backend if needed
+        console.log(data);
+        togglePopup();
+    })
+    .catch(error => {
+        // Handle errors
+        console.error('Error:', error);
+        const errors = JSON.parse(error.message);
+        closePopup(errors);
+    });
+}
 
 });
 
