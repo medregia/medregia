@@ -40,6 +40,11 @@ th {
     background-color: #f2f2f2;
 }
 
+.mail-status{
+    height:50px;
+    width:100%;
+}
+
 .admin-access {
     width: 30%;
     background-color:white;

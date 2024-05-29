@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Invoice,DeletedInvoice,ModifiedInvoice,TrackingPayment
+from .models import Invoice,DeletedInvoice,ModifiedInvoice,TrackingPayment,Invitation
 from .forms import InvoiceForm
 from django.http import JsonResponse,HttpResponseServerError,HttpResponse,HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
@@ -24,6 +24,9 @@ from import_export.formats.base_formats import DEFAULT_FORMATS,XLSX
 from import_export import resources
 from .forms import UploadFileForm
 from django.core.serializers import serialize
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.conf import settings
 import openpyxl
 import logging
 
@@ -1396,11 +1399,50 @@ def empty_xlsx(request):
 
     return response
 
-
+@login_required(login_url='/')
 def admin_access(request):
     if request.method == "POST":
-        print("Data : ",request.POST)
+        data = json.loads(request.body)
+        print("Import Data: ", data)
 
-        data =json.loads(request.body)
-        print("import Data : ",data)
-    return render(request,'invclc/admin_acess.html')
+        username = data.get('username','')
+        useremail = data.get('useremail','')
+        userposition = data.get('userposition','')
+        userphonenumber = data.get('userphone','')  # Assuming phone number is part of the data
+
+        # Create and save the invitation instance
+        invitation = Invitation(
+            user=request.user,
+            mail_sendername=request.user.username,
+            mail_receiver_name=username,
+            mail_receiver_email=useremail,
+            mail_receiver_phonenumber=userphonenumber,
+            mail_receiver_position=userposition
+        )
+        invitation.save()
+        
+        subject = "Invitation to Join Our Platform"
+        text_message = f"Dear {username},\n\nYou have been invited to join our platform as a {userposition}. Please use the following details to access your account.\n\nBest regards,\nThe Team"
+
+        # Render the HTML message from a template
+        html_message = render_to_string('invitation_email.html', {
+            'user_name': username,
+            'user_position': userposition,
+            'sender_mail': settings.DEFAULT_FROM_EMAIL,
+            'sender_name': request.user.username,
+        })
+
+        try:
+            send_mail(
+                subject,
+                text_message,
+                settings.DEFAULT_FROM_EMAIL,  # Using the email address from settings
+                [useremail],
+                fail_silently=False,  # Do not fail silently, raise exceptions on errors
+                html_message=html_message  # The HTML content
+            )
+            return JsonResponse({'status': 'success', 'message': 'Email sent successfully'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+    return render(request, 'invclc/admin_acess.html')

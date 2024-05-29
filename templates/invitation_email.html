@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            height:100px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #dddddd;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333333;
+        }
+        .redirect-button {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .redirect-button a {
+            text-decoration: none;
+        }
+        .redirect-button button {
+            padding: 15px 30px;
+            background-color: #007BFF;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .redirect-button button:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            padding: 20px;
+            background-color: #f1f1f1;
+            text-align: center;
+            font-size: 14px;
+            color: #555555;
+            border-top: 1px solid #dddddd;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Welcome to MedregiA</h1>
+        </div>
+        <div class="content">
+            <p>Dear {{ user_name }},</p>
+            <p>You have been invited by <strong style="color:orange;">{{ sender_name }} </strong>to join our platform as a <strong style="color:orange;">{{ user_position }}</strong>. Please use the following details to access your account.</p>
+
+            <p>Best regards,</p>
+            <p>The MedregiA Team</p>
+            <div class="redirect-button">
+                <a href="https://medregia.com/signup/"><button type="button">Connect to MedregiA</button></a>
+            </div>
+        </div>
+        <div class="footer">
+            <p>If you have any questions, please contact us at <a href="mailto:{{ sender_mail }}">{{ sender_mail }}</a>.</p>
+        </div>
+    </div>
+</body>
+</html>

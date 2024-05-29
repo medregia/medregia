@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Invoice, DeletedInvoice, ModifiedInvoice,TrackingPayment
+from .models import Invoice, DeletedInvoice, ModifiedInvoice,TrackingPayment,Invitation
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
@@ -39,7 +39,13 @@ class InvoiceAdmin(admin.ModelAdmin):
             # Superuser or staff user can see all invoices
             return queryset.filter(user=request.user)
         
+class InvitationAdmin(admin.ModelAdmin):
+    list_display = [
+        'mail_sendername','mail_receiver_name','mail_receiver_email','mail_receiver_phonenumber','mail_receiver_position'
+    ]
+        
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(DeletedInvoice, AdminDeletedInvoice)
 admin.site.register(ModifiedInvoice, AdminModifiedInvoice)
 admin.site.register(TrackingPayment, AdminTrackingPayments)
+admin.site.register(Invitation, InvitationAdmin)
