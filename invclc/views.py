@@ -1398,4 +1398,9 @@ def empty_xlsx(request):
 
 
 def admin_access(request):
+    if request.method == "POST":
+        print("Data : ",request.POST)
+
+        data =json.loads(request.body)
+        print("import Data : ",data)
     return render(request,'invclc/admin_acess.html')
