@@ -1399,6 +1399,9 @@ def empty_xlsx(request):
 
     return response
 
+from django.urls import reverse
+from django.utils.http import urlencode
+
 @login_required(login_url='/')
 def admin_access(request):
     if request.method == "POST":
@@ -1424,12 +1427,19 @@ def admin_access(request):
         subject = "Invitation to Join Our Platform"
         text_message = f"Dear {username},\n\nYou have been invited to join our platform as a {userposition}. Please use the following details to access your account.\n\nBest regards,\nThe Team"
 
+        # Generate the signup URL with query parameters
+        base_signup_url = "http://127.0.0.1:8000/invite/"  # Use the name of your URL pattern for the signup page
+        query_params = urlencode({'user_position': userposition, 'sender_name': request.user.username})
+        invite_url = f"{base_signup_url}?{query_params}"
+
+        print(f"Generated signup URL: {invite_url}")
         # Render the HTML message from a template
         html_message = render_to_string('invitation_email.html', {
             'user_name': username,
             'user_position': userposition,
             'sender_mail': settings.DEFAULT_FROM_EMAIL,
             'sender_name': request.user.username,
+            'signup_url': invite_url  # Pass the URL with query parameters to the template context
         })
 
         try:
@@ -1446,3 +1456,17 @@ def admin_access(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return render(request, 'invclc/admin_acess.html')
+
+
+
+def inviteUser(request):
+    user_position = request.GET.get('user_position')
+    sender_name = request.GET.get('sender_name')
+    
+    context = {
+        'user_position': user_position,
+        'sender_name': sender_name
+    }
+    
+    return render(request, 'invite_user.html', context)
+
