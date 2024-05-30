@@ -82,22 +82,23 @@
                 <label for="pin">PIN:</label>
                 <input type="password" id="pin" name="pin" required>
             </div>
-            <div class="form-group">
-                  </div>
-                        <label for="id_storetype">Storetype:</label>
-                        <select id="id_storetype" name="storetype">
-                            <option value="retailer">retailer</option>
-                            <option value="manufacturer">manufacturer</option>
-                            <option value="pharmacy">pharmacy</option>
-                            <option value="medical">medical</option>
-                            <option value="others">others</option>
-                        </select>
-                </div>
 
-                <div class="form-group others">
-                    <label for="id_other_type" class="label-other">Others</label>
-                    <input type="text" id="id_other_type" name="others" >
-                </div>
+            <div class="form-group">
+                <label for="id_storetype">Categories:</label>
+                <select id="id_storetype" name="storetype" required>
+                    <option value="">-- Select --</option>
+                    <option value="retailer">Retailer</option>
+                    <option value="manufacturer">Manufacturer</option>
+                    <option value="pharmacy">Pharmacy</option>
+                    <option value="medical">Medical</option>
+                    <option value="others">Others</option>
+                </select>
+            </div>
+
+            <div class="form-group others">
+                <label for="id_other_value" class="label-other">Others</label>
+                <input type="text" id="id_other_value" name="others" >
+            </div>
                 
             <button type="submit" class="btn">Register</button>
         </form>

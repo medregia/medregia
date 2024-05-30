@@ -1429,7 +1429,7 @@ def admin_access(request):
 
         # Generate the signup URL with query parameters
         base_signup_url = "http://127.0.0.1:8000/invite/"  # Use the name of your URL pattern for the signup page
-        query_params = urlencode({'user_position': userposition, 'sender_name': request.user.username})
+        query_params = urlencode({'userposition': userposition, 'sendername': request.user.username,'username':username,'useremail':useremail,'userphonenumber':userphonenumber})
         invite_url = f"{base_signup_url}?{query_params}"
 
         print(f"Generated signup URL: {invite_url}")
