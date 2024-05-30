@@ -1422,7 +1422,6 @@ from django.utils.http import urlencode
 def admin_access(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        print("Import Data: ", data)
 
         username = data.get('username','')
         useremail = data.get('useremail','')
@@ -1448,7 +1447,7 @@ def admin_access(request):
         query_params = urlencode({'userposition': userposition, 'sendername': request.user.username,'username':username,'useremail':useremail,'userphonenumber':userphonenumber})
         invite_url = f"{base_signup_url}?{query_params}"
 
-        print(f"Generated signup URL: {invite_url}")
+        # print(f"Generated signup URL: {invite_url}")
         # Render the HTML message from a template
         html_message = render_to_string('invitation_email.html', {
             'user_name': username,
@@ -1476,9 +1475,9 @@ def admin_access(request):
 
 
 def inviteUser(request):
-    user_position = request.GET.get('user_position')
-    sender_name = request.GET.get('sender_name')
-    username = request.GET.get('useremail')
+    user_position = request.GET.get('userposition')
+    sender_name = request.GET.get('sendername')
+    username = request.GET.get('username')
     useremail = request.GET.get('useremail')
     userphonenumber = request.GET.get('userphonenumber')
     
