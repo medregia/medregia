@@ -1462,10 +1462,16 @@ def admin_access(request):
 def inviteUser(request):
     user_position = request.GET.get('user_position')
     sender_name = request.GET.get('sender_name')
+    username = request.GET.get('useremail')
+    useremail = request.GET.get('useremail')
+    userphonenumber = request.GET.get('userphonenumber')
     
     context = {
-        'user_position': user_position,
-        'sender_name': sender_name
+        'userposition': user_position,
+        'sendername': sender_name,
+        'username':username,
+        'useremail':useremail,
+        'userphonenumber':userphonenumber,
     }
     
     return render(request, 'invite_user.html', context)
