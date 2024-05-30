@@ -17,7 +17,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .header {
-            height:100px;
+            height: 100px;
             background-color: #4CAF50;
             color: white;
             padding: 20px;
@@ -75,12 +75,12 @@
         </div>
         <div class="content">
             <p>Dear {{ user_name }},</p>
-            <p>You have been invited by <strong style="color:orange;">{{ sender_name }} </strong>to join our platform as a <strong style="color:orange;">{{ user_position }}</strong>. Please use the following details to access your account.</p>
+            <p>You have been invited by <strong style="color:orange;">{{ sender_name }}</strong> to join our platform as a <strong style="color:orange;">{{ user_position }}</strong>. Please use the following details to access your account.</p>
 
             <p>Best regards,</p>
             <p>The MedregiA Team</p>
             <div class="redirect-button">
-                <a href="https://medregia.com/signup/"><button type="button">Connect to MedregiA</button></a>
+                <a href="{{ signup_url }}"><button type="button">Connect to MedregiA</button></a>
             </div>
         </div>
         <div class="footer">
