@@ -1481,6 +1481,7 @@ def inviteUser(request):
     useremail = request.GET.get('useremail')
     userphonenumber = request.GET.get('userphonenumber')
     
+    
     context = {
         'userposition': user_position,
         'sendername': sender_name,

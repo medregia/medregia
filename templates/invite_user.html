@@ -11,50 +11,51 @@
 <div class="container">
     <h1>Welcome to Medregia</h1>
     <p class="greeting-message">You have been invited to join Medregia by <span id="inviter-name">Sender Name</span>. Please review and complete your details below to get started.</p>
-    <form id="user-details-form">
+    <form id="user-details-form" method="post">
+        {% csrf_token %}
       <div class="form-group">
         <label for="userposition">User Position</label>
         <div class="input-container">
-          <input type="text" id="userposition" value="{{userposition}}" disabled>
+          <input type="text" id="userposition" value="{{userposition}}" disabled name="new_userposition">
           {% comment %} <span class="edit-icon" onclick="toggleEdit('userposition')">&#9998;</span> {% endcomment %}
         </div>
       </div>
       <div class="form-group">
         <label for="username">Username</label>
         <div class="input-container">
-          <input type="text" id="username" value="{{username}}" disabled>
+          <input type="text" id="username" value="{{username}}" name="new_username" disabled>
           <span class="edit-icon" onclick="toggleEdit('username')">&#9998;</span>
         </div>
       </div>
       <div class="form-group">
         <label for="useremail">User Email</label>
         <div class="input-container">
-          <input type="email" id="useremail" value="{{useremail}}" disabled>
+          <input type="email" id="useremail" value="{{useremail}}" name="new_useremail" disabled>
           <span class="edit-icon" onclick="toggleEdit('useremail')">&#9998;</span>
         </div>
       </div>
       <div class="form-group">
         <label for="userphonenumber">User Phone Number</label>
         <div class="input-container">
-          <input type="text" id="userphonenumber" value="{{userphonenumber}}" disabled>
+          <input type="text" id="userphonenumber" value="{{userphonenumber}}" name="new_userphonenumber" disabled>
           <span class="edit-icon" onclick="toggleEdit('userphonenumber')">&#9998;</span>
         </div>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" required>
+        <input type="password" id="password" required name="new_userpassword">
       </div>
       <div class="form-group">
         <label for="confirmpassword">Confirm Password</label>
-        <input type="password" id="confirmpassword" required>
+        <input type="password" id="confirmpassword" required name="new_userconfirmpassword">
       </div>
       <div class="form-group">
         <label for="pin">PIN</label>
-        <input type="text" id="pin" required>
+        <input type="text" id="pin" required name="new_userpin">
       </div>
       <div class="form-group">
         <label for="usertype">Categories</label>
-        <select id="usertype" required onchange="toggleOtherTypeField()">
+        <select id="usertype" required onchange="toggleOtherTypeField()" name="new_usertype">
           <option value="">-- Select Categories --</option>
           <option value="retailer">Retailer</option>
           <option value="manufacturer">Manufacturer</option>
@@ -65,7 +66,7 @@
       </div>
       <div class="form-group" id="other-type-group" style="display: none;">
         <label for="othertype">Other Type</label>
-        <input type="text" id="othertype">
+        <input type="text" id="othertype" name="new_userothertype">
       </div>
       <button type="submit">Submit</button>
     </form>

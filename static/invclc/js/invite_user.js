@@ -29,12 +29,12 @@ function toggleOtherTypeField() {
 // Populate the inviter's name dynamically
 document.getElementById('inviter-name').textContent = new URLSearchParams(window.location.search).get('sendername') || 'Sender Name';
 
-function preventBack() {
-  history.pushState(null, null, location.href);
-  window.addEventListener('popstate', function () {
-    history.pushState(null, null, location.href);
-  });
-}
+// function preventBack() {
+//   history.pushState(null, null, location.href);
+//   window.addEventListener('popstate', function () {
+//     history.pushState(null, null, location.href);
+//   });
+// }
 
 // function preventBack() {
 //   // Push the current URL to the history stack
@@ -53,4 +53,4 @@ function preventBack() {
 // state: An object associated with the new history entry (in this case, null).
 // title: A string representing the title of the new history entry (not used here, so it's null).
 // url: The new URL for the history entry (here, location.href, which is the current URL).
-window.onload = preventBack;
+// window.onload = preventBack;
