@@ -496,19 +496,34 @@ def index_view(request):
     return render(request, 'invclc/index.html', context)
 
 
-# def entrydata(request):
-#     entryDisable = None
-#     try:
-#         userProfile = Person.objects.get(user=request.user)
-#         if userProfile.MedicalShopName is not None and userProfile.DrugLiceneseNumber1 is not None and userProfile.DrugLiceneseNumber2 is not None:
-#             entryDisable = False
-#         else:
-#             entryDisable = True
-#         return JsonResponse({"Entry": entryDisable})
-#     except Person.DoesNotExist:
-#         entryDisable = True
-#         messages.error(request, "Profile not Accessible")
-#         return JsonResponse({"error": "This User Profile Not Found"}, status=400)
+def update_profile(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            required_fields = ['pharmacy_name', 'dl1', 'dl2']
+            
+            missing_fields = [field for field in required_fields if not data.get(field)]
+            if missing_fields:
+                return JsonResponse({
+                    'success': False,
+                    'message': f'Missing fields: {", ".join(missing_fields)}'
+                }, status=400)
+
+            user_to_save = request.user
+
+            # Here you would update the user's profile data in the database
+            # Assuming you have a Profile model linked to the User model
+            profile = get_object_or_404(Person,user=user_to_save)
+            profile.MedicalShopName = data['pharmacy_name']
+            profile.DrugLiceneseNumber1 = data['dl1']
+            profile.DrugLiceneseNumber2 = data['dl2']
+            profile.save()
+            
+            return JsonResponse({'success': True, 'message': 'Profile updated successfully!'})
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON data'}, status=400)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)}, status=500)
     
 def convert_Medical(shopname):
     

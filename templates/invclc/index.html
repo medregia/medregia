@@ -33,10 +33,14 @@
           <li>Drug License Number 1</li>
           <li>Drug License Number 2</li>
       </ul>
-        <div class="content-btn">
-            <a href="{% url 'profile' %}"><button type="button" id="popup-btn">OK</button></a> 
-        </div>
-        
+        <form action="#" method="post">
+          <input type="text" name="pharmacy_name" id="pharmacy_name">
+          <input type="text" name="dl1" id="dl1">
+          <input type="text" name="dl2" id="dl2">
+          <div class="content-btn">
+            <button type="button" id="popup-btn">Save</button>
+          </div>  
+        </form>
     </div>
   </div>
   <div class="main-header">

@@ -552,7 +552,7 @@ document.getElementById('saveButton').addEventListener('click', async function()
           console.error('Error:', result);
           togglePopup();
           messages.textContent = result.message;
-          messages.style.color = "red"
+          messages.style.color = "red";
           messages.classList.add('error-message');
       }
   } catch (error) {
@@ -576,9 +576,41 @@ function togglePopup() {
     popupMessages.style.color = "red";
     popupMsg.classList.add("active");
 
-    closeBtn.addEventListener("click", () => {
-      popupMsg.classList.remove("active");
-      // window.location.reload();
+    closeBtn.addEventListener("click", async () => {
+      const pharmacyName = document.getElementById('pharmacy_name').value;
+      const dl1 = document.getElementById('dl1').value;
+      const dl2 = document.getElementById('dl2').value;
+
+      // Prepare data for the Django view
+      const profileData = {
+        pharmacy_name: pharmacyName,
+        dl1: dl1,
+        dl2: dl2,
+      };
+
+      try {
+        const profileResponse = await fetch('/update_profile/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+          },
+          body: JSON.stringify(profileData)
+        });
+
+        const profileResult = await profileResponse.json();
+        if (profileResponse.ok) {
+          console.log(profileResult);
+          popupMsg.classList.remove("active");
+          location.reload();
+        } else {
+          console.error('Profile Update Error:', profileResult);
+          alert('Profile update failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('Profile Update Error:', error);
+        alert('An error occurred. Please try again.');
+      }
     });
   }
 }
