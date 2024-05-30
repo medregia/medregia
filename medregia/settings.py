@@ -57,7 +57,6 @@ MIDDLEWARE = [
     'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
-SESSION_COOKIE_AGE = 1800
 
 ROOT_URLCONF = 'medregia.urls'
 

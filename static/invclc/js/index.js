@@ -580,6 +580,8 @@ function togglePopup() {
       const pharmacyName = document.getElementById('pharmacy_name').value;
       const dl1 = document.getElementById('dl1').value;
       const dl2 = document.getElementById('dl2').value;
+      const message = document.querySelector('.overlay-content') 
+      const csrf_token = document.querySelector("input[name='csrfmiddlewaretoken']").value;
 
       // Prepare data for the Django view
       const profileData = {
@@ -593,7 +595,7 @@ function togglePopup() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
+            'X-CSRFToken': csrf_token
           },
           body: JSON.stringify(profileData)
         });
@@ -605,11 +607,15 @@ function togglePopup() {
           location.reload();
         } else {
           console.error('Profile Update Error:', profileResult);
-          alert('Profile update failed. Please try again.');
+          popupMessages.textContent = "Profile Update Failed";
+          popupBody.classList.add('error-message');
+          popupBody.textContent = profileResult.message || "An error occurred while updating the profile.";
         }
       } catch (error) {
         console.error('Profile Update Error:', error);
-        alert('An error occurred. Please try again.');
+        popupMessages.textContent = "Profile Update Failed";
+        popupBody.classList.add('error-message');
+        popupBody.textContent = "An error occurred while updating the profile.";
       }
     });
   }

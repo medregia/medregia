@@ -518,11 +518,12 @@ def update_profile(request):
             profile.DrugLiceneseNumber1 = data['dl1']
             profile.DrugLiceneseNumber2 = data['dl2']
             profile.save()
-            
+            messages.success(request,"Data Added Successfully ...")
             return JsonResponse({'success': True, 'message': 'Profile updated successfully!'})
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'message': 'Invalid JSON data'}, status=400)
         except Exception as e:
+            messages.success(request,"Data Added Successfully ...")
             return JsonResponse({'success': False, 'message': str(e)}, status=500)
     
 def convert_Medical(shopname):

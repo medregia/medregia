@@ -33,14 +33,18 @@
           <li>Drug License Number 1</li>
           <li>Drug License Number 2</li>
       </ul>
-        <form action="#" method="post">
-          <input type="text" name="pharmacy_name" id="pharmacy_name">
-          <input type="text" name="dl1" id="dl1">
-          <input type="text" name="dl2" id="dl2">
+      <form action="#" method="post">
+          {% csrf_token %}
+          <label for="pharmacy_name">Pharmacy Name</label>
+          <input type="text" name="pharmacy_name" id="pharmacy_name" required placeholder="Enter Your Pharmacy Name">
+          <label for="dl1">Drug License Number 1</label>
+          <input type="text" name="dl1" id="dl1" required placeholder="Enter Your Drug License Number 1">
+          <label for="dl2">Drug License Number 2</label>
+          <input type="text" name="dl2" id="dl2" required placeholder="Enter Your Drug License Number 2">
           <div class="content-btn">
-            <button type="button" id="popup-btn">Save</button>
+              <button type="button" id="popup-btn">Save</button>
           </div>  
-        </form>
+      </form>
     </div>
   </div>
   <div class="main-header">
