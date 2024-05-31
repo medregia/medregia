@@ -1438,17 +1438,23 @@ def admin_access(request):
         if not get_all_invoice.exists():
             context['error'] = "No invoices found for the user."
             return render(request, 'your_template.html', context)
+        
+        try:
+            get_currentUser = get_object_or_404(CustomUser,username=request.user)
+            user_phone_number = get_currentUser.phone_num
+            context['user_phone'] = user_phone_number
+        except Exception as e:
+            user_phone_number = None
+            context['user_phone'] = user_phone_number
+            
 
         for idx, get_invoices in enumerate(get_all_invoice, start=1):
             try:
-                # Try to get the corresponding Person profile
                 profile_data = Person.objects.get(MedicalShopName=get_invoices.pharmacy_name)
                 unique_code = profile_data.UniqueId
-                           
-                if not unique_code:
-                    print("Inside the block")
-                    # Generate and save a temporary number if UniqueId is missing
-                    temp_no = generate_tempno(get_invoices,get_invoices.id)
+                
+                if "#" in unique_code:
+                    unique_code = profile_data.temporaryNo
                 
                 table_data.append({
                     's_no': idx,
@@ -1456,11 +1462,12 @@ def admin_access(request):
                     'dl_number1': profile_data.DrugLiceneseNumber1,
                     'dl_number2': profile_data.DrugLiceneseNumber2,
                     'admin_name': request.user.username,
-                    'temp_no': None,  # Temp no becomes unique code if unique_id was missing
+                    'temp_no': None,  
                     'unique_no': unique_code,
-                    'generate_link': 'Line1',  # Adjust this value as necessary
-                    'status': 'Active'  # Adjust this value as necessary
+                    'generate_link': 'Line1',
+                    'status': 'Active'
                 })
+
 
             except Person.DoesNotExist:
                 userMedicals = get_invoices.pharmacy_name
