@@ -1542,9 +1542,8 @@ def invite_user(request):
                 user_group.permissions.add(permission)
 
         # Assign the user to the group
-        if user_position == "Admin":
-            newUser.groups.add(user_group)
-
+        
+        newUser.groups.add(user_group)
         newUser.save()
 
         # Send a welcome email to the user
