@@ -97,6 +97,7 @@ class Person(models.Model):
     PharmacistEmail = models.EmailField(blank = True,null=True)
 
     UniqueId = models.CharField(max_length=100, blank=True, null=True)
+    temporaryNo = models.CharField(max_length=50,blank=True,null=True)
 
     def __str__(self):
         MedicalShopName = self.MedicalShopName or ''

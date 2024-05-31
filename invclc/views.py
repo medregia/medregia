@@ -34,7 +34,7 @@ import logging
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
-
+from .utils import generate_tempno,RegisterUserTempNo
 
 logger = logging.getLogger(__name__)
 def upload_csv(request):
@@ -309,7 +309,12 @@ def index_view(request):
     check_user = None
     check_admin = None
     unique_code_id = None
-
+    
+    
+    profile , created =  Person.objects.get_or_create(user=current_user)
+    profile.temporaryNo = RegisterUserTempNo(current_user)
+    profile.save()
+    
     try:
         unique_code = Person.objects.get(user=request.user)
         unique_id = unique_code.UniqueId
@@ -1424,6 +1429,62 @@ def empty_xlsx(request):
 
 @login_required(login_url='/')
 def admin_access(request):
+    context = {}
+    table_data = []
+    
+    try:
+        # Get all invoices for the logged-in user
+        get_all_invoice = Invoice.objects.filter(user=request.user)
+        if not get_all_invoice.exists():
+            context['error'] = "No invoices found for the user."
+            return render(request, 'your_template.html', context)
+
+        for idx, get_invoices in enumerate(get_all_invoice, start=1):
+            try:
+                # Try to get the corresponding Person profile
+                profile_data = Person.objects.get(MedicalShopName=get_invoices.pharmacy_name)
+                unique_code = profile_data.UniqueId
+                           
+                if not unique_code:
+                    print("Inside the block")
+                    # Generate and save a temporary number if UniqueId is missing
+                    temp_no = generate_tempno(get_invoices,get_invoices.id)
+                
+                table_data.append({
+                    's_no': idx,
+                    'name': profile_data.MedicalShopName,
+                    'dl_number1': profile_data.DrugLiceneseNumber1,
+                    'dl_number2': profile_data.DrugLiceneseNumber2,
+                    'admin_name': request.user.username,
+                    'temp_no': None,  # Temp no becomes unique code if unique_id was missing
+                    'unique_no': unique_code,
+                    'generate_link': 'Line1',  # Adjust this value as necessary
+                    'status': 'Active'  # Adjust this value as necessary
+                })
+
+            except Person.DoesNotExist:
+                userMedicals = get_invoices.pharmacy_name
+                userId = get_invoices.id
+                
+                temp_no = generate_tempno(userMedicals,userId)
+
+                table_data.append({
+                    's_no': idx,
+                    'name': get_invoices.pharmacy_name,
+                    'dl_number1': None,
+                    'dl_number2': None,
+                    'admin_name': request.user.username,
+                    'temp_no': temp_no,
+                    'unique_no': None,
+                    'generate_link': 'Line2',  # Adjust this value as necessary
+                    'status': 'Inactive'  # Adjust this value as necessary
+                })
+
+    except Exception as e:
+        context['error'] = f"Error: {e}"
+
+    context['table_data'] = table_data
+        
     if request.method == "POST":
         data = json.loads(request.body)
 
@@ -1474,7 +1535,8 @@ def admin_access(request):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
-    return render(request, 'invclc/admin_acess.html')
+    return render(request, 'invclc/admin_acess.html',context)
+
 
 
 def invite_user(request):
@@ -1519,7 +1581,8 @@ def invite_user(request):
             pin=new_userpin,
             store_type=new_usertype,
             other_value=new_userothertype,
-            position=new_userposition
+            position=new_userposition,
+            is_staff = True,
         )
 
         newUser.save()

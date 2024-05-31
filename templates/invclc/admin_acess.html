@@ -25,14 +25,14 @@
             <table class="table-content">
                 <thead>
                     <tr>
-                        <th rowspan="2"> S No.</th>
+                        <th rowspan="2">S No.</th>
                         <th rowspan="2">Name</th>
                         <th colspan="2">DL Number</th>
                         <th rowspan="2">Admin Name</th>
                         <th rowspan="2">Temp Number</th>
                         <th rowspan="2">Unique Number</th>
                         <th rowspan="2">Generate Link</th>
-                        <th rowspan="2">Status</th>  
+                        <th rowspan="2">Status</th>
                     </tr>
                     <tr>
                         <th>DL Number1</th>
@@ -40,30 +40,22 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for row in table_data %}
                     <tr>
-                        <td>1</td>
-                        <td>John Doe</td>
-                        <td>ABC12345</td>
-                        <td>DEF67890</td>
-                        <td>Admin 1</td>
-                        <td>Temp123</td>
-                        <td>UN123456</td>
-                        <td>Line1</td>
-                        <td>Active</td>
+                        <td>{{ row.s_no }}</td>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.dl_number1 }}</td>
+                        <td>{{ row.dl_number2 }}</td>
+                        <td>{{ row.admin_name }}</td>
+                        <td>{{ row.temp_no }}</td>
+                        <td>{{ row.unique_no }}</td>
+                        <td>{{ row.generate_link }}</td>
+                        <td>{{ row.status }}</td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jane Smith</td>
-                        <td>GHI54321</td>
-                        <td>JKL09876</td>
-                        <td>Admin 2</td>
-                        <td>Temp456</td>
-                        <td>UN654321</td>
-                        <td>Line2</td>
-                        <td>Inactive</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
+            
         </div>
             
 

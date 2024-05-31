@@ -50,6 +50,7 @@ class PersonAdmin(admin.ModelAdmin):
         'MedicalShopName',
         'ProprietaryName',
         'UniqueId',
+        'temporaryNo',
     ]
     
 class NotificationAdmin(admin.ModelAdmin):
