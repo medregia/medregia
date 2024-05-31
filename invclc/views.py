@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Invoice,DeletedInvoice,ModifiedInvoice,TrackingPayment,Invitation
 from .forms import InvoiceForm
-from django.http import JsonResponse,HttpResponseServerError,HttpResponse,HttpResponseBadRequest
+from django.http import JsonResponse,HttpResponseServerError,HttpResponse,HttpResponseBadRequest,HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -29,6 +29,10 @@ from django.template.loader import render_to_string
 from django.conf import settings
 import openpyxl
 import logging
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+
 
 logger = logging.getLogger(__name__)
 def upload_csv(request):
@@ -1493,22 +1497,63 @@ def invite_user(request):
         new_usertype = data.get('new_usertype')
         new_userothertype = data.get('new_userothertype')
 
-        # Do something with the data, e.g., save to the database, etc.
+        if new_userpassword != new_userconfirmpassword:
+            return JsonResponse({'status': 'error', 'message': 'Passwords do not match'})
+
+        # Check if the username or email already exists
+        if CustomUser.objects.filter(username=new_username).exists():
+            return JsonResponse({'status': 'error', 'message': 'Username already exists'})
+        
+        if CustomUser.objects.filter(email=new_useremail).exists():
+            return JsonResponse({'status': 'error', 'message': 'Email already exists'})
+
+        # Hash the password
+        hashed_password = make_password(new_userconfirmpassword)
+
+        # Save the new user with the hashed password
         newUser = CustomUser(
-            username = new_username,
-            password = new_userconfirmpassword,
-            email = new_useremail,
-            phone_num = new_userphonenumber,
-            pin = new_userpin,
-            store_type = new_usertype,
-            other_value = new_userothertype,
-            position = user_position
+            username=new_username,
+            password=hashed_password,
+            email=new_useremail,
+            phone_num=new_userphonenumber,
+            pin=new_userpin,
+            store_type=new_usertype,
+            other_value=new_userothertype,
+            position=user_position
         )
 
         newUser.save()
-        messages.success(request,"New User Created with ",new_username)
-        # Return a JSON response
-        return JsonResponse({'status': 'success', 'message': 'User data processed successfully'})
+
+        # Add user to the group and assign permissions
+        user_group, created = Group.objects.get_or_create(name="Admin Group")
+
+        # Define permissions for different models
+        models_and_permissions = [
+            (DeletedInvoice, ['view_deletedinvoice', 'delete_deletedinvoice']),
+            (Invoice, ['add_invoice', 'view_invoice', 'change_invoice', 'delete_invoice']),
+            (ModifiedInvoice, ['view_modifiedinvoice', 'delete_modifiedinvoice']),
+            (TrackingPayment, ['view_trackingpayment', 'delete_trackingpayment']),
+        ]
+
+        for model, perms in models_and_permissions:
+            content_type = ContentType.objects.get_for_model(model)
+            for perm in perms:
+                permission = Permission.objects.get(codename=perm)
+                user_group.permissions.add(permission)
+
+        # Assign the user to the group
+        newUser.groups.add(user_group)
+        newUser.save()
+
+        # Send a welcome email to the user
+        subject = 'Welcome to MedRegia!'
+        message = render_to_string('authentication/welcome_email.html', {'user': newUser})
+        email_from = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [newUser.email]
+        send_mail(subject, message, email_from, recipient_list)
+
+        messages.success(request, f"New User Created with {new_username}")
+        return HttpResponseRedirect(reverse('login'))
 
     context = {
         'userposition': user_position,
