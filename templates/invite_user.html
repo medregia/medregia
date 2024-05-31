@@ -17,9 +17,8 @@
         <label for="userposition">User Position</label>
         <div class="input-container">
           <input type="text" id="userposition" value="{{userposition}}" disabled name="new_userposition">
-          {% comment %} <span class="edit-icon" onclick="toggleEdit('userposition')">&#9998;</span> {% endcomment %}
         </div>
-        <span class="error-message" id="userposition-error"></span>
+        <span class="error-message" id="new_userposition-error"></span>
       </div>
       <div class="form-group">
         <label for="username">Username</label>
@@ -27,7 +26,7 @@
           <input type="text" id="username" value="{{username}}" name="new_username" disabled>
           <span class="edit-icon" onclick="toggleEdit('username')">&#9998;</span>
         </div>
-        <span class="error-message" id="username-error"></span>
+        <span class="error-message" id="new_username-error"></span>
       </div>
       <div class="form-group">
         <label for="useremail">User Email</label>
@@ -35,7 +34,7 @@
           <input type="email" id="useremail" value="{{useremail}}" name="new_useremail" disabled>
           <span class="edit-icon" onclick="toggleEdit('useremail')">&#9998;</span>
         </div>
-        <span class="error-message" id="useremail-error"></span>
+        <span class="error-message" id="new_useremail-error"></span>
       </div>
       <div class="form-group">
         <label for="userphonenumber">User Phone Number</label>
@@ -43,22 +42,22 @@
           <input type="text" id="userphonenumber" value="{{userphonenumber}}" name="new_userphonenumber" disabled>
           <span class="edit-icon" onclick="toggleEdit('userphonenumber')">&#9998;</span>
         </div>
-        <span class="error-message" id="userphonenumber-error"></span>
+        <span class="error-message" id="new_userphonenumber-error"></span>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" required name="new_userpassword">
-        <span class="error-message" id="password-error"></span>
+        <span class="error-message" id="new_userpassword-error"></span>
       </div>
       <div class="form-group">
         <label for="confirmpassword">Confirm Password</label>
         <input type="password" id="confirmpassword" required name="new_userconfirmpassword">
-        <span class="error-message" id="confirmpassword-error"></span>
+        <span class="error-message" id="new_userconfirmpassword-error"></span>
       </div>
       <div class="form-group">
         <label for="pin">PIN</label>
         <input type="text" id="pin" required name="new_userpin">
-        <span class="error-message" id="pin-error"></span>
+        <span class="error-message" id="new_userpin-error"></span>
       </div>
       <div class="form-group">
         <label for="usertype">Categories</label>
@@ -70,12 +69,12 @@
           <option value="medical">Medical</option>
           <option value="others">Others</option>
         </select>
-        <span class="error-message" id="usertype-error"></span>
+        <span class="error-message" id="new_usertype-error"></span>
       </div>
       <div class="form-group" id="other-type-group" style="display: none;">
         <label for="othertype">Other Type</label>
         <input type="text" id="othertype" name="new_userothertype">
-        <span class="error-message" id="othertype-error"></span>
+        <span class="error-message" id="new_userothertype-error"></span>
       </div>
       <button type="submit">Submit</button>
     </form>

@@ -1477,7 +1477,6 @@ def admin_access(request):
     return render(request, 'invclc/admin_acess.html')
 
 
-
 def invite_user(request):
     user_position = request.GET.get('userposition')
     sender_name = request.GET.get('sendername')
@@ -1487,7 +1486,7 @@ def invite_user(request):
     
     if request.method == "POST":
         data = json.loads(request.body)
-        
+
         new_username = data.get('new_username')
         new_useremail = data.get('new_useremail')
         new_userphonenumber = data.get('new_userphonenumber')
@@ -1496,16 +1495,17 @@ def invite_user(request):
         new_userpin = data.get('new_userpin')
         new_usertype = data.get('new_usertype')
         new_userothertype = data.get('new_userothertype')
+        new_userposition = data.get('new_userposition')
 
         if new_userpassword != new_userconfirmpassword:
-            return JsonResponse({'status': 'error', 'message': 'Passwords do not match'})
+            return JsonResponse({'status': 'error', 'field': 'new_userconfirmpassword', 'message': 'Passwords do not match'})
 
         # Check if the username or email already exists
         if CustomUser.objects.filter(username=new_username).exists():
-            return JsonResponse({'status': 'error', 'message': 'Username already exists'})
+            return JsonResponse({'status': 'error', 'field': 'new_username', 'message': 'Username already exists'})
         
         if CustomUser.objects.filter(email=new_useremail).exists():
-            return JsonResponse({'status': 'error', 'message': 'Email already exists'})
+            return JsonResponse({'status': 'error', 'field': 'new_useremail', 'message': 'Email already exists'})
 
         # Hash the password
         hashed_password = make_password(new_userconfirmpassword)
@@ -1519,7 +1519,7 @@ def invite_user(request):
             pin=new_userpin,
             store_type=new_usertype,
             other_value=new_userothertype,
-            position=user_position
+            position=new_userposition
         )
 
         newUser.save()
@@ -1542,7 +1542,9 @@ def invite_user(request):
                 user_group.permissions.add(permission)
 
         # Assign the user to the group
-        newUser.groups.add(user_group)
+        if user_position == "Admin":
+            newUser.groups.add(user_group)
+
         newUser.save()
 
         # Send a welcome email to the user
@@ -1553,7 +1555,7 @@ def invite_user(request):
         send_mail(subject, message, email_from, recipient_list)
 
         messages.success(request, f"New User Created with {new_username}")
-        return HttpResponseRedirect(reverse('login'))
+        return JsonResponse({'status': 'success', 'redirect_url': reverse('login')})
 
     context = {
         'userposition': user_position,
@@ -1564,4 +1566,3 @@ def invite_user(request):
     }
     
     return render(request, 'invite_user.html', context)
-
