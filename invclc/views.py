@@ -1474,20 +1474,48 @@ def admin_access(request):
 
 
 
-def inviteUser(request):
+def invite_user(request):
     user_position = request.GET.get('userposition')
     sender_name = request.GET.get('sendername')
     username = request.GET.get('username')
     useremail = request.GET.get('useremail')
     userphonenumber = request.GET.get('userphonenumber')
     
-    
+    if request.method == "POST":
+        data = json.loads(request.body)
+        
+        new_username = data.get('new_username')
+        new_useremail = data.get('new_useremail')
+        new_userphonenumber = data.get('new_userphonenumber')
+        new_userpassword = data.get('new_userpassword')
+        new_userconfirmpassword = data.get('new_userconfirmpassword')
+        new_userpin = data.get('new_userpin')
+        new_usertype = data.get('new_usertype')
+        new_userothertype = data.get('new_userothertype')
+
+        # Do something with the data, e.g., save to the database, etc.
+        newUser = CustomUser(
+            username = new_username,
+            password = new_userconfirmpassword,
+            email = new_useremail,
+            phone_num = new_userphonenumber,
+            pin = new_userpin,
+            store_type = new_usertype,
+            other_value = new_userothertype,
+            position = user_position
+        )
+
+        newUser.save()
+        messages.success(request,"New User Created with ",new_username)
+        # Return a JSON response
+        return JsonResponse({'status': 'success', 'message': 'User data processed successfully'})
+
     context = {
         'userposition': user_position,
         'sendername': sender_name,
-        'username':username,
-        'useremail':useremail,
-        'userphonenumber':userphonenumber,
+        'username': username,
+        'useremail': useremail,
+        'userphonenumber': userphonenumber,
     }
     
     return render(request, 'invite_user.html', context)

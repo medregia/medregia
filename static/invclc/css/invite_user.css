@@ -97,3 +97,21 @@ body {
     margin-top: 10px;
   }
   
+
+  .error-message {
+    color: #FF0000; /* Red color for error messages */
+    font-size: 12px; /* Adjust font size as needed */
+    margin-top: 5px; /* Add some space between input and error message */
+    display: block; /* Ensure error messages are displayed as block elements */
+    animation: shake 0.3s ease-in-out; /* Apply shake animation */
+    animation-iteration-count: 1; /* Run the animation once */
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}

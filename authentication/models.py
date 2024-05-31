@@ -27,11 +27,6 @@ class DistrictModel(models.Model):
         return self.districtname
         
 class CustomUser(AbstractUser):
-    username = models.CharField(max_length=150, unique=True)
-    phone_num = models.CharField(max_length=15, blank=True)
-    email = models.EmailField(unique=True)
-    pin = models.IntegerField(blank=True ,null=True)
-    
     STORE_TYPES = [
         ('retailer', 'Retailer'),
         ('manufacturer', 'Manufacturer'),
@@ -39,21 +34,35 @@ class CustomUser(AbstractUser):
         ('medical', 'Medical'),
         ('others', 'Others'),
     ]
-    store_type = models.CharField(max_length=50, choices=STORE_TYPES,null=True,blank=True)
-    other_value = models.CharField(max_length=50 ,null=True,blank=True)
+
+    POSITION_CHOICES = [
+        ('Admin', 'Admin'),
+        ('Senior', 'Senior'),
+        ('Member', 'Member'),
+        ('NewUser', 'NewUser')
+    ]
+
+    username = models.CharField(max_length=150, unique=True, verbose_name='Username')
+    phone_num = models.CharField(max_length=15, blank=True, verbose_name='Phone Number')
+    email = models.EmailField(unique=True, verbose_name='Email')
+    pin = models.PositiveIntegerField(blank=True, null=True, verbose_name='PIN')
+    
+    store_type = models.CharField(max_length=50, choices=STORE_TYPES, null=True, blank=True, verbose_name='Store Type')
+    other_value = models.CharField(max_length=50, null=True, blank=True, verbose_name='Other Value')
+    position = models.CharField(max_length=20, choices=POSITION_CHOICES, null=True, blank=True, default="Admin", verbose_name='Position')
 
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='customuser_set',
         blank=True,
-        verbose_name='groups',
+        verbose_name='Groups',
         help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
     )
     user_permissions = models.ManyToManyField(
         'auth.Permission',
         related_name='customuser_set',
         blank=True,
-        verbose_name='user permissions',
+        verbose_name='User Permissions',
         help_text='Specific permissions for this user.',
     )
     
@@ -62,7 +71,7 @@ class CustomUser(AbstractUser):
     #         ("view_own_details", "Can view own details"),
     #     ]
     
-    def _str_(self):
+    def __str__(self):
         return self.username
     
 class Person(models.Model):

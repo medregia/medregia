@@ -12,15 +12,15 @@ class CustomUserAdmin(UserAdmin):
         return super().get_queryset(request)
     
     model = CustomUser
-    list_display = ('username', 'email', 'phone_num', 'store_type', 'other_value', 'is_staff', 'groups_display')
-    search_fields = ('username', 'phone_num', 'email', 'pin', 'store_type', 'other_value')
+    list_display = ('username', 'email', 'phone_num', 'store_type', 'other_value', 'is_staff', 'groups_display','position')
+    search_fields = ('username', 'phone_num', 'email', 'pin', 'store_type', 'other_value','position')
 
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),  # Include custom fields
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
-        ('Custom Fields', {'fields': ('phone_num', 'pin', 'store_type', 'other_value')}),
+        ('Custom Fields', {'fields': ('phone_num', 'pin', 'store_type', 'other_value','position')}),
     )
 
     def groups_display(self, obj):
