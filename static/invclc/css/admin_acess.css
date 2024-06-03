@@ -21,9 +21,10 @@ main {
     text-align: center;
 }
 .table-content {
-    width: 100%;
+    width: 95%;
     border-collapse: collapse;
     margin: 20px 0;
+    margin-left: 35px;
     font-family: Arial, sans-serif;
     color: #333;
 }
@@ -172,6 +173,13 @@ tr:nth-child(even) {
     background-color:#2980b9;
 }
 
+.mail-status{
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .Details{
     height: 40vh;
     /* background-color: green; */
@@ -185,6 +193,8 @@ tr:nth-child(even) {
     margin: 8px 18px;
     display: flex;
     justify-content: space-between;
+    position: relative;
+    align-items: center;
 }
 .Details-data label{
     flex: 1;
@@ -215,4 +225,17 @@ tr:nth-child(even) {
     color: white;
     font-size: 16px;
     cursor: pointer;
+}
+
+#id_Whatsapp_link {
+    padding-right: 30px; /* Adjust this value if needed */
+}
+
+#copy_button {
+    position: absolute;
+    right: 1px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 20px;
 }

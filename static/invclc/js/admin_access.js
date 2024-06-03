@@ -57,3 +57,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+document.getElementById('copy_button').addEventListener('click', function() {
+    const input = document.getElementById('id_Whatsapp_link');
+    const whatsappStatus = document.querySelector(".mail-status");
+    input.select();
+    input.setSelectionRange(0, 99999); // For mobile devices
+
+    // Check if the navigator clipboard API is supported
+    whatsappStatus.textContent="";
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(input.value).then(() => {
+
+            whatsappStatus.textContent=`Link Copied`
+            whatsappStatus.style.color="green";
+        }).catch(err => {
+            alert('Failed to copy: ', err);
+            whatsappStatus.textContent=`Link Not Copied`
+            whatsappStatus.style.color="red";
+        });
+    } 
+    // else {
+    //     document.execCommand('copy');
+    //     alert('Link copied: ' + input.value);
+    // }
+});
