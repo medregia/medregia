@@ -1,22 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const openPopupButtons = document.querySelectorAll('.openPopup');
+    const closePopup = document.getElementById('closePopup');
+    const popup = document.getElementById('popup');
     const sendBtn = document.getElementById('submit_button');
-    
+    const mailStatus = document.querySelector(".mail-status");
+    const whatsappLink = document.getElementById('id_Whatsapp_link');
+
+    openPopupButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            popup.style.display = 'block';
+        });
+    });
+
+    closePopup.addEventListener('click', () => {
+        popup.style.display = 'none';
+        whatsappLink.value = ""
+        location.reload()
+    });
+
     sendBtn.addEventListener('click', async function(event) {
         event.preventDefault(); // Prevent the default form submission
         
         const sendForm = document.getElementById('add_user');
         const sendFormData = new FormData(sendForm);
         const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
-        const mailStatus = document.querySelector(".mail-status");
 
-        mailStatus.textContent = "Mail Sending Be Patient ...";
+        mailStatus.textContent = "Generating Link ...";
         mailStatus.style.color = "green";
 
         const data = {
             username: sendFormData.get('user_name'),
             useremail: sendFormData.get('user_email'),
             userphone: sendFormData.get('phone_number'),
-            userposition: sendFormData.get('position'),
         };
 
         for (const [key, value] of Object.entries(data)) {
@@ -41,8 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
             mailStatus.style.color = ""; // Reset the color
             
             if (response.ok) {
+                const responseData = await response.json();
+                whatsappLink.value = responseData.invite_link;
                 console.log("Success");
-                location.reload();
+                console.log("Response: ", responseData);
             } else {
                 console.log("Failed");
                 const errorData = await response.json();
@@ -57,6 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
 
 document.getElementById('copy_button').addEventListener('click', function() {
     const input = document.getElementById('id_Whatsapp_link');
@@ -81,4 +100,29 @@ document.getElementById('copy_button').addEventListener('click', function() {
     //     document.execCommand('copy');
     //     alert('Link copied: ' + input.value);
     // }
+});
+
+
+const addUserButton = document.getElementById('add_btn');
+const addUserForm = document.getElementById('add_userForm');
+
+addUserButton.addEventListener('click', () => {
+    let addFormData = new FormData(addUserForm);
+    let addData = Object.fromEntries(addFormData.entries());
+
+    fetch('/adduser/', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFTOKEN": addData.csrfmiddlewaretoken
+        },
+        body: JSON.stringify(addData) // Convert addData to JSON string
+    })
+    .then(response => response.json()) // Assuming response is in JSON format
+    .then(data => {
+        console.log(data);
+    })
+    .catch(err => {
+        console.error("Error:", err);
+    });
 });

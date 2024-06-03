@@ -13,13 +13,7 @@
     <p class="greeting-message">You have been invited to join Medregia by <span id="inviter-name">Sender Name</span>. Please review and complete your details below to get started.</p>
     <form id="user-details-form" method="post">
         {% csrf_token %}
-      <div class="form-group">
-        <label for="userposition">User Position</label>
-        <div class="input-container">
-          <input type="text" id="userposition" value="{{userposition}}" disabled name="new_userposition">
-        </div>
-        <span class="error-message" id="new_userposition-error"></span>
-      </div>
+        
       <div class="form-group">
         <label for="username">Username</label>
         <div class="input-container">
@@ -62,7 +56,7 @@
       <div class="form-group">
         <label for="usertype">Categories</label>
         <select id="usertype" required onchange="toggleOtherTypeField()" name="new_usertype">
-          <option value="">-- Select Categories --</option>
+          <option value=""> Select Categories </option>
           <option value="retailer">Retailer</option>
           <option value="manufacturer">Manufacturer</option>
           <option value="pharmacy">Pharmacy</option>
@@ -71,11 +65,27 @@
         </select>
         <span class="error-message" id="new_usertype-error"></span>
       </div>
+
       <div class="form-group" id="other-type-group" style="display: none;">
         <label for="othertype">Other Type</label>
         <input type="text" id="othertype" name="new_userothertype">
         <span class="error-message" id="new_userothertype-error"></span>
       </div>
+
+
+      <div class="form-group">
+        <label for="userposition">User Position</label>
+        <div class="input-container">
+          <select id="user-position" required name="new_userposition">
+            <option value=""> Select </option>
+            <option value="Admin">Admin</option>
+            <option value="Senior">Senior</option>
+            <option value="Member">Member</option>
+          </select>
+        </div>
+        <span class="error-message" id="new_userposition-error"></span>
+      </div>
+
       <button type="submit">Submit</button>
     </form>
   </div>

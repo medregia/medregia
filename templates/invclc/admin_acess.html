@@ -18,6 +18,46 @@
 
 {% block content %}
 
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" id="closePopup">&times;</span>
+            <div class="mail-status"></div>
+
+            <form method="post" action="#" id="add_user">
+                {% csrf_token %}
+                <h2>Invite Users</h2>
+                <div class="Details">
+                    <div class="Details-data">
+                        <label for="id_name">Name:</label>
+                        <input type="text" id="id_name" name="user_name" class="input-field">
+                    </div>
+                    <div class="Details-data">
+                        <label for="id_email">Email:</label>
+                        <input type="email" id="id_email" name="user_email" class="input-field">
+                    </div>
+                    <div class="Details-data">
+                        <label for="id_phone">Phone:</label>
+                        <input type="tel" id="id_phone" name="phone_number" class="input-field">
+                    </div>
+                    {% comment %} <div class="Details-data">
+                        <label for="id_position">Position:</label>
+                        <select id="id_position" name="position" class="input-field">
+                            <option value="Admin">Admin</option>
+                            <option value="Senior">Senior</option>
+                            <option value="Member">Member</option>
+                        </select>
+                    </div> {% endcomment %}
+                    <div class="Details-data">
+                        <label for="id_Whatsapp_link">Whatsapp link</label>
+                        <input type="text" id="id_Whatsapp_link"  placeholder="Whatsapp link" class="input-field" disabled>
+                        <button type="button" id="copy_button" class="button">&#x1F4CB</button>
+                    </div>
+                    <button type="button" id="submit_button" class="button">Generate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <main class="admin-main-container"> 
         
         <div class="admin-container">
@@ -49,13 +89,18 @@
                         <td><div class="input-container"><input type="text" value="{{ row.admin_name }}" disabled></div></td>
                         <td><div class="input-container"><input type="text" value="{{ row.temp_no }}" disabled></div></td>
                         <td><div class="input-container"><input type="text" value="{{ row.unique_no }}" disabled></div></td>
-                        <td><div class="input-container"><input type="text" value="{{ row.generate_link }}" disabled></div></td>
+                        {% if row.generate_link %}
+                            <td><button type="button" class="openPopup link-btn">Invite</button></td>
+                        {% else %}
+                            <td style="color:green;font-size:24px;">&#10003;</td>
+                        {% endif %}
                         <td><div class="input-container"><input type="text" value="{{ row.status }}" disabled></div></td>
                     </tr>
                     {% endfor %}
                 </tbody>
+                
             </table>
-             
+                
         </div>
             
         <aside class="admin-access">
@@ -83,54 +128,35 @@
                 <a href="{% url 'change_pin' %}"><button type="button">Change Pin</button></a>
             </div>
 
-            <form>
-                <h2> Add User </h2>
-
-                <div class="form-group addUser">
-                    <input type="text" id="adduser" name="addUser">
-                    <button type="submit">Add User</button>
-                </div>   
-            </form>
-
-            <div class="mail-status"></div>
-
-            <form method="post" action="#" id="add_user">
-                {% csrf_token %}
-
-                <h2> Invite Users </h2>
-                <div class="Details">
-                    <div class="Details-data">
-                        <label for="id_name">Name:</label>
-                        <input type="text" id="id_name" name="user_name">
+            <div class="add-user">
+                <form method="post" action="#" id="add_userForm">
+                    {% csrf_token %}
+                    <h2> Add User </h2>
+                    <div class="Details">
+                        <div class="Details-data">
+                            <label for="id_name">Name:</label>
+                            <input type="text" id="id_addname" name="add_name" class="input-field">
+                        </div>
+                        <div class="Details-data">
+                            <label for="id_email">Email:</label>
+                            <input type="email" id="id_addemail" name="add_email" class="input-field">
+                        </div>
+                        <div class="Details-data">
+                            <label for="id_phone">Phone:</label>
+                            <input type="tel" id="id_addphone" name="add_number" class="input-field">
+                        </div>
+                        <div class="Details-data">
+                            <label for="id_position">Position:</label>
+                            <select id="id_addposition" name="add_position" class="input-field">
+                                <option value="Admin">Admin</option>
+                                <option value="Senior">Senior</option>
+                                <option value="Member">Member</option>
+                            </select>
+                        </div>
+                        <button type="button" id="add_btn" class="button">Add</button>
                     </div>
-                    <div class="Details-data">
-                        <label for="id_email">Email:</label>
-                        <input type="email" id="id_email" name="user_email">
-                    </div>
-                    <div class="Details-data">
-                        <label for="id_phone">Phone:</label>
-                        <input type="tel" id="id_phone" name="phone_number">
-                    </div>
-
-                    <div class="Details-data">
-                        <label for="id_position">Position:</label>
-                        <select id="id_position" name="position">
-                            <option value="Admin">Admin</option>
-                            <option value="Senior">Senior</option>
-                            <option value="Member">Member</option>
-                        </select>
-                    </div>
-                    <div class="Details-data">
-                        <label for="id_Whatsapp_link">Whatsapp link</label>
-                        <input type="text" id="id_Whatsapp_link" name="Whatsapp_link" placeholder="Whatsapp link" >
-                        <button type="button" id="copy_button">&#x1F4CB</button>
-                    </div>
-                    <button type="button" id="submit_button">Send</button>
-                </div>
-            </form>
-            
-            
-                
+                </form>
+            </div>    
         </aside>
         
     </main>    

@@ -134,7 +134,7 @@ tr:nth-child(even) {
     border-radius: 5px;
 }
 
-.admin-access button {
+.admin-access button{
     padding: 10px;
     background-color: #3498db;
     color: white;
@@ -144,6 +144,16 @@ tr:nth-child(even) {
     align-self: center;
 }
 
+.link-btn{
+    height:20px;
+    width:40%;
+    background-color: #3498db;
+    color:#fff;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 4px;
+}
 
 .form-group {
     display: flex;
@@ -238,4 +248,133 @@ tr:nth-child(even) {
     background: none;
     cursor: pointer;
     font-size: 20px;
+}
+
+
+/* Button styles */
+.button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Popup box style */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 101;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    animation: fadeIn 0.5s;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Popup content style */
+.popup-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border: none;
+    width: 35%;
+    height: 70vh;
+    border-radius: 10px;
+    box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
+    animation: slideIn 0.5s;
+}
+
+/* Slide-in animation */
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Close button style */
+.close {
+    color: #333;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #ff6b6b;
+    text-decoration: none;
+}
+
+/* Form styles */
+form {
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.Details {
+    display: flex;
+    flex-direction: column;
+}
+
+.Details-data {
+    margin-bottom: 15px;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.input-field {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s, transform 0.3s;
+    font-size: 14px;
+}
+
+.input-field:focus {
+    box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
+    transform: scale(1.02);
+    border-color: #007BFF;
+}
+
+/* Mail status styles */
+.mail-status {
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
 }

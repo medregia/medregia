@@ -67,18 +67,11 @@ class TrackingPayment(models.Model):
     
 
 class Invitation(models.Model):
-    position = [
-        ('Admin','Admin'),
-        ('Seinor','Senior'),
-        ('Member','Member'),
-        ('NewUser','NewUser')
-    ]
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True)
     mail_sendername = models.CharField(max_length = 20)
     mail_receiver_name = models.CharField(max_length = 20)
     mail_receiver_email = models.EmailField()
     mail_receiver_phonenumber = models.CharField(max_length=15)
-    mail_receiver_position = models.CharField(max_length = 20,choices=position)
 
 @receiver(pre_delete, sender=Invoice)
 def delete_tracking_payments(sender, instance, **kwargs):

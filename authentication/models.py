@@ -106,7 +106,10 @@ class Person(models.Model):
 class Notification(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_notifications', on_delete=models.CASCADE)
     receiver = models.ForeignKey(CustomUser, related_name='received_notifications', on_delete=models.CASCADE)
+    phonenumber = models.CharField(max_length = 15,null=True)
+    email = models.EmailField(null=True)
     message = models.TextField()
+    position = models.CharField(max_length = 20,null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     is_read = models.BooleanField(default=False)
     request_status = models.BooleanField(default = True)

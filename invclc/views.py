@@ -1464,7 +1464,7 @@ def admin_access(request):
                     'admin_name': request.user.username,
                     'temp_no': None,  
                     'unique_no': unique_code,
-                    'generate_link': 'Line1',
+                    'generate_link': False,
                     'status': 'Active'
                 })
 
@@ -1483,7 +1483,7 @@ def admin_access(request):
                     'admin_name': request.user.username,
                     'temp_no': temp_no,
                     'unique_no': None,
-                    'generate_link': 'Line2',  # Adjust this value as necessary
+                    'generate_link': True,  # Adjust this value as necessary
                     'status': 'Inactive'  # Adjust this value as necessary
                 })
 
@@ -1497,7 +1497,7 @@ def admin_access(request):
 
         username = data.get('username','')
         useremail = data.get('useremail','')
-        userposition = data.get('userposition','')
+        # userposition = data.get('userposition','')
         userphonenumber = data.get('userphone','')  # Assuming phone number is part of the data
 
         # Create and save the invitation instance
@@ -1507,23 +1507,21 @@ def admin_access(request):
             mail_receiver_name=username,
             mail_receiver_email=useremail,
             mail_receiver_phonenumber=userphonenumber,
-            mail_receiver_position=userposition
         )
         invitation.save()
         
         subject = "Invitation to Join Our Platform"
-        text_message = f"Dear {username},\n\nYou have been invited to join our platform as a {userposition}. Please use the following details to access your account.\n\nBest regards,\nThe Team"
+        text_message = f"Dear {username},\n\nYou have been invited to join our platform . Please use the following details to access your account.\n\nBest regards,\nThe Team"
 
         # Generate the signup URL with query parameters
         base_signup_url = "http://127.0.0.1:8000/invite/"  # Use the name of your URL pattern for the signup page
-        query_params = urlencode({'userposition': userposition, 'sendername': request.user.username,'username':username,'useremail':useremail,'userphonenumber':userphonenumber})
+        query_params = urlencode({'sendername': request.user.username,'username':username,'useremail':useremail,'userphonenumber':userphonenumber})
         invite_url = f"{base_signup_url}?{query_params}"
 
         # print(f"Generated signup URL: {invite_url}")
         # Render the HTML message from a template
         html_message = render_to_string('invitation_email.html', {
             'user_name': username,
-            'user_position': userposition,
             'sender_mail': settings.DEFAULT_FROM_EMAIL,
             'sender_name': request.user.username,
             'signup_url': invite_url  # Pass the URL with query parameters to the template context
@@ -1538,12 +1536,11 @@ def admin_access(request):
                 fail_silently=False,  # Do not fail silently, raise exceptions on errors
                 html_message=html_message  # The HTML content
             )
-            return JsonResponse({'status': 'success', 'message': 'Email sent successfully'})
+            return JsonResponse({'status': 'success', 'message': 'Email sent successfully','invite_link':invite_url})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
     return render(request, 'invclc/admin_acess.html',context)
-
 
 
 def invite_user(request):
@@ -1635,3 +1632,52 @@ def invite_user(request):
     }
     
     return render(request, 'invite_user.html', context)
+
+
+@require_POST
+def AddUser(request):
+    if request.method == "POST": 
+        data = json.loads(request.body)
+        receiver_name = data.get('add_name',None)
+        receiver_email = data.get('add_email',None)
+        receiver_phone = data.get('add_number',None)
+        receiver_position = data.get('add_position',None)
+        
+        try:
+            if receiver_name is not None:
+                receiver = CustomUser.objects.get(username=receiver_name)
+                if receiver and receiver_name is not None:
+                    if receiver == request.user:
+                        response_data = {'message': 'Cannot Send Request to Yourself', 'adminName': receiver_name}
+                        # return redirect("profile")
+                        return JsonResponse({'error': response_data}, status=500)
+
+                    # Check if the sender has already sent a request to the receiver
+                    existing_request = Notification.objects.filter(sender=request.user, receiver=receiver).exists()
+                    if existing_request:
+                        response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
+                        # messages.error(request, f'You have already sent a request to this receiver {receiver_name}.')
+                        # return redirect("profile")
+                        return JsonResponse({'error': response_data}, status=500)
+
+                    admin = Notification(
+                        sender=request.user,
+                        receiver=receiver,
+                        message="User Request",
+                        phonenumber = receiver_phone,
+                        email = receiver_email,
+                        position = receiver_position,
+                        )
+                    admin.save()
+                    response_data = {'message': 'Request successfully received', 'adminName': receiver_name}
+                    return JsonResponse(response_data)
+
+                else:   
+                    response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
+                    # messages.error(request, "Admin Request Not Sent")
+                    # return redirect("profile")
+            else:
+                response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
+                
+        except Exception as e:
+            print("Exception : ",e)

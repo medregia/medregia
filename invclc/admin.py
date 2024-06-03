@@ -41,7 +41,7 @@ class InvoiceAdmin(admin.ModelAdmin):
         
 class InvitationAdmin(admin.ModelAdmin):
     list_display = [
-        'mail_sendername','mail_receiver_name','mail_receiver_email','mail_receiver_phonenumber','mail_receiver_position'
+        'mail_sendername','mail_receiver_name','mail_receiver_email','mail_receiver_phonenumber'
     ]
         
 admin.site.register(Invoice, InvoiceAdmin)
