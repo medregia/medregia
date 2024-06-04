@@ -56,12 +56,11 @@
         </div>
       </div>
       <div class="heading">
-        {% if not MedicalStatus or MedicalStatus == '' %}
-        <h2>
-          <h2>
-            {% else %}
-            <h2><a href="{% url 'adminacess' %}" style="color:black;font-size:1.4rem">{{ MedicalStatus }}</a></h2>
-            {% endif %}
+        {% if not medicalname.MedicalShopName or medicalname.MedicalShopName  == '' %}
+        <h2></h2>
+        {% else %}
+            <h2><a href="{% url 'adminacess' %}" style="color:black;font-size:1.4rem">{{ medicalname.MedicalShopName  }}</a></h2>
+        {% endif %}
       </div>
 
           <div class="unique-code">
