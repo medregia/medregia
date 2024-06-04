@@ -3,82 +3,69 @@
     padding: 0;
     box-sizing: border-box;
   }
-h1{
-    text-align: center;
-    margin-top: 50px;
-    text-decoration: underline;
-}
-form{
-    width: 25%;
-    height: 60vh;
-    margin-top: 50px;
-    margin-left: 38%;
-    border-radius: 10px;
+
+.body-container{
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
     display: flex;
-    justify-content: space-around;
-    flex-direction: column;
-    box-shadow: 0px 0px 10px 0px black;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
 }
-.pinchange{
-    max-height: 60vh;
-    max-width: 30vw;
-    margin-left: 60px;
-    margin-top: 5px;
+.container {
+    background-color: #fff;
+    padding: 20px 40px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 400px;
+    height: 350px;
+    text-align: center;
+}
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+.form-group label {
     display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #555;
 }
-.pinchange input {
-    background: transparent;
-    border: 0;
-    border-bottom: 1px solid black;
-    display: block;
-    width: 70%;
-    padding: 15px 0;
-    font-size: 16px;
-    color: black;
-    padding-left: 10px;
-    margin-left: 10px;
-  }
-  .pinchange input:focus,
-  .pinchange input:valid {
-    outline: 0;
-    border-bottom-color: black;
-  }
-.pinchange label{
-    color: black;
-    font-size: 20px;
-    font-weight: 700;
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
 }
-.pinchange button{
-    margin-left: 40%;
-    height: 30px;
-    width: 70px;
-    background-color: blue;
-    border: 1px solid black;
-    color: #fff;
-    border-radius: 5px;
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+.buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
     cursor: pointer;
 }
-.back button{
-    margin-left: 20%;
-    height: 30px;
-    width: 70px;
-    background-color: blue;
-    border: 1px solid black;
+.buttons .change-btn {
+    background-color: #007bff;
     color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-
 }
-.btn-1 button{
-    margin-left: 41%;
-    height: 30px;
-    width: 70px;
-    background-color: blue;
-    border: 1px solid black;
+.buttons .back-btn {
+    background-color: #6c757d;
     color: #fff;
-    border-radius: 5px;
-    cursor: pointer;
-
+}
+.buttons button:hover {
+    opacity: 0.9;
 }
    
 

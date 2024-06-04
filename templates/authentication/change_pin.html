@@ -16,41 +16,45 @@
 {% endblock message %}
 
 {% block content %}
-<h1>Change PIN</h1>
-<form method="post" action=''>
-    {% csrf_token %}
-    <div class="pinchange">
-      <label for="current_pin">Current PIN:</label>
-      <input type="password" name="current_pin" oninput="validateInput()" id="current_pin" required>
-      <br>
-    </div>
-    <div class="pinchange">
-      <label for="new_pin">New PIN:</label>
-      <input type="password" name="new_pin" oninput="validateInput()" id="new_pin" required>
-      <br>
-    </div>
-    <div class="pinchange">
-      <label for="new_pin">Confirm New PIN:</label>
-      <input type="password" name="confirm_new_pin" oninput="validateInput()" id="confirm_new_pin" required>
-      <br>
-    </div>
-    <div class="btn-1">
-      <button type="submit">Change PIN</button>
-    </div>
-    <div class="back">
-      <a href="{% url 'adminacess' %}"><button type="button">Back</button></a> 
-    </div>
-</form>
+<div class="body-container">
+  <div class="container">
+    <h1>Change PIN</h1>
+    <form method="post" action=''>
+      {% csrf_token %}
+        <div class="form-group">
+            <label for="current-pin">Current PIN:</label>
+            <input type="password" name="current_pin" oninput="validateInput()" id="current_pin" required>
+        </div>
+        <div class="form-group">
+            <label for="new-pin">New PIN:</label>
+            <input type="password" name="new_pin" oninput="validateInput()" id="new_pin" required>
+        </div>
+        <div class="form-group">
+            <label for="confirm-new-pin">Confirm New PIN:</label>
+            <input type="password" name="confirm_new_pin" oninput="validateInput()" id="confirm_new_pin" required>
+        </div>
+        <div class="buttons">
+          <button type="submit" class="change-btn">Change PIN</button>
+          <a href="{% url 'adminacess' %}"><button type="button" class="back-btn">Back</button></a>    
+        </div>
+    </form>
+  </div>
+</div>
 
 
 <script>
   function validateInput() {
-    let x = document.getElementById("current_pin");
-    x.value = x.value.replace(/[^0-9]/g, "");
-
-    let y= document.getElementById("new_pin");
-    y.value = y.value.replace(/[^0-9]/g, "");
+    let currentPin = document.getElementById("current_pin");
+    let newPin = document.getElementById("new_pin");
+    let confirmNewPin = document.getElementById("confirm_new_pin");
     
+    currentPin.value = currentPin.value.replace(/[^0-9]/g, "");
+    newPin.value = newPin.value.replace(/[^0-9]/g, "");
+    confirmNewPin.value = confirmNewPin.value.replace(/[^0-9]/g, "");
+    
+    if (currentPin.value.length > 4) currentPin.value = currentPin.value.slice(0, 4);
+    if (newPin.value.length > 4) newPin.value = newPin.value.slice(0, 4);
+    if (confirmNewPin.value.length > 4) confirmNewPin.value = confirmNewPin.value.slice(0, 4);
   }
   </script>
  
