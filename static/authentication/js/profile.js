@@ -170,9 +170,11 @@ document.getElementById('submit_button').addEventListener('click', function(even
     // Get CSRF token from the page
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    // Set default districtId if not provided
-    const districtId = districtElement ? districtElement.value : '';
-
+    if (!districtId) {
+        // Set default districtId here
+        // For example, you can set it to the first option's id
+        districtId = ''
+    }
     // Send data to Django backend
     sendingData(formData, csrfToken, districtId);
 });
@@ -212,7 +214,7 @@ function closePopup(errors) {
 }
 
 function sendingData(formData, csrf, districtId) {
-    formData.districtkey = districtId;
+    formData.districtkey = districtId
     fetch('/profile/', {
         method: 'POST',
         headers: {
@@ -272,12 +274,5 @@ $(document).ready(function() {
     });
 });
 
-// for district dropdowns
-$(document).ready(function() {
-    $('#id_district').select2({
-        placeholder: "Select a district",
-        allowClear: true
-    });
-});
 
 

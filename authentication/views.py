@@ -119,51 +119,69 @@ def login_view(request):
 
 
 def phone_login_view(request):
-    if request.user.is_authenticated:
-        return redirect("index/")
-    else:
-        if request.method == "POST":
-            phone_num = request.POST.get('phone_num', None)
-            pin = request.POST.get('pin', None)
-            if phone_num is not None and pin is not None:
-                try: 
-                    user = CustomUser.objects.get(phone_num=phone_num, pin=int(pin))
-                except CustomUser.DoesNotExist:
-                    messages.error(request, "Invalid UserName")
-                    return redirect("/")
-            if user is not None:
-                login(request,user)
-                messages.success(request, "logged in")
-                return redirect("index/")
-            else:
-                messages.error(request, "Invalid UserName") 
+    if request.method == "POST":
+        phone_num = request.POST.get('phone_num', None)
+        pin = request.POST.get('pin', None)
+        if phone_num is not None and pin is not None:
+            try: 
+                user = CustomUser.objects.get(phone_num=phone_num, pin=int(pin))
+            except CustomUser.DoesNotExist:
+                messages.error(request, "Invalid UserName")
                 return redirect("/")
-        return render(request, 'authentication/phonelogin.html')
+        if user is not None:
+            login(request,user)
+            messages.success(request, "logged in")
+            return redirect("index/")
+        else:
+            messages.error(request, "Invalid UserName") 
+            return redirect("/")
+    return render(request, 'authentication/phonelogin.html')
     
 
 @login_required(login_url='/')
 def profile_view(request):
     BASE_DIR = settings.BASE_DIR
+
     try:
+        # Load and process states data
         with open(BASE_DIR / 'india_locations.json', 'r') as json_file:
             data = json.load(json_file)
+            for item in data:
+                if item['LocationType'] == 'State':
+                    state_instance, created = StateModel.objects.get_or_create(
+                        Pid=item['Pid'],
+                        LocationType=item['LocationType'],
+                        Pname=item['Pname']
+                    )
 
-        for item in data:
-            if item['LocationType'] == 'State':
-                state_instance, created = StateModel.objects.get_or_create(Pid=item['Pid'], LocationType=item['LocationType'], Pname=item['Pname'])
-
+        # Load and process districts data
         with open(BASE_DIR / 'india_district.json', 'r') as json_file:
             district_data = json.load(json_file)
+            for items in district_data:
+                if items['LocationType'] == 'District':
+                    state_instance = StateModel.objects.get(Pid=items['Pid'])
+                    # Check if the district already exists
+                    district_instance = DistrictModel.objects.filter(
+                        id=items['ID'],
+                        Pid=items['Pid'],
+                        LocationType=items['LocationType'],
+                        districtname=items['districtname'],
+                        state=state_instance
+                    ).first()
+                    if not district_instance:
+                        # District does not exist, create it
+                        district_instance = DistrictModel.objects.create(
+                            id=items['ID'],
+                            Pid=items['Pid'],
+                            LocationType=items['LocationType'],
+                            districtname=items['districtname'],
+                            state=state_instance
+                        )
 
-        for items in district_data:
-            if items['LocationType'] == 'District':
-                state_instance = StateModel.objects.get(Pid=items['Pid'])
-                district_instance = DistrictModel.objects.filter(id=items['ID'],Pid=items['Pid'], LocationType=items['LocationType'], districtname=items['districtname']).first()
-                if not district_instance:
-                    district_instance = DistrictModel.objects.create(id=items['ID'],Pid=items['Pid'], LocationType=items['LocationType'], districtname=items['districtname'], state=state_instance)  # set the state field to the state instance
-
+    except FileNotFoundError:
+        print("JSON file not found.")
     except Exception as e:
-        return messages.error(request,"Error State and District upload to Database",e)
+        print(f"An error occurred: {e}")
         
     permissions = Permission.objects.filter(content_type__model='invoice')
 
