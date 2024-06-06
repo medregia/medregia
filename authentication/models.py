@@ -43,7 +43,7 @@ class CustomUser(AbstractUser):
     ]
 
     username = models.CharField(max_length=150, unique=True, verbose_name='Username')
-    phone_num = models.CharField(max_length=15, blank=True, verbose_name='Phone Number')
+    phone_num = models.CharField(max_length=15, blank=True, verbose_name='Phone Number',unique=True)
     email = models.EmailField(unique=True, verbose_name='Email')
     pin = models.PositiveIntegerField(blank=True, null=True, verbose_name='PIN')
     
