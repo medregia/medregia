@@ -17,7 +17,7 @@ body{
   row-gap:5px;
   flex-direction:column;
   /* background-color:red; */
-  margin-left: 30px;
+  /* margin-left: 30px; */
 }
 
 .main-container .main-header{
@@ -64,14 +64,14 @@ body{
 
 .main-container .main-bottom{
   height:48vh;
-  width:95%;
+  width:90%;
   overflow-Y:scroll;
   /* background-color:yellow; */
 }
 
 .main-container .main-footer{
   height:10vh;
-  width:100%;
+  width:92%;
   /* background-color:orange; */
   display:flex;
   justify-content:space-between;
@@ -91,8 +91,8 @@ body{
 
 .main-body-right .status{
   min-height:20px;
-  width:20%;
-  max-width:20%;
+  width:90%;
+  max-width:90%;
   /* background-color:red; */
   display:flex;
   justify-content:space-between;
@@ -157,6 +157,9 @@ td a button{
   justify-content: flex-end;
   padding: 10px;
 }
+h2.heading{
+  text-align: center;
+}
 .csvBtn{
   color: white;
   background-color: blue;
@@ -166,7 +169,7 @@ td a button{
   margin-right: 20px;
 }
   @media print{
-    nav, .btn, .tablinks {
+    nav, .btn, .tablinks ,.sidebar,.csvBtn,button{
       display: none; 
   } 
   nav.invclc-nav{
