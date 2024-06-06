@@ -120,21 +120,23 @@ def login_view(request):
 
 def phone_login_view(request):
     if request.method == "POST":
-        phone_num = request.POST.get('phone_num', None)
-        pin = request.POST.get('pin', None)
-        if phone_num is not None and pin is not None:
+        data = json.loads(request.body)
+        phone_num = data.get('phone_num')
+        pin = data.get('pin')
+        
+        if phone_num and pin:
             try: 
                 user = CustomUser.objects.get(phone_num=phone_num, pin=int(pin))
+                login(request, user)
+                return JsonResponse({'message': 'Logged in'}, status=200)
             except CustomUser.DoesNotExist:
-                messages.error(request, "Invalid UserName")
-                return redirect("/")
-        if user is not None:
-            login(request,user)
-            messages.success(request, "logged in")
-            return redirect("index/")
+                return JsonResponse({'error': 'Invalid Username or PIN'}, status=400)
+            except CustomUser.MultipleObjectsReturned:
+                logout(request)
+                return JsonResponse({'error': 'Phone Number Already Taken'}, status=400)
         else:
-            messages.error(request, "Invalid UserName") 
-            return redirect("/")
+            return JsonResponse({'error': 'Invalid data provided'}, status=400)
+    
     return render(request, 'authentication/phonelogin.html')
     
 
