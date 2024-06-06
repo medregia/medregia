@@ -106,23 +106,53 @@ document.getElementById('copy_button').addEventListener('click', function() {
 const addUserButton = document.getElementById('add_btn');
 const addUserForm = document.getElementById('add_userForm');
 
-addUserButton.addEventListener('click', () => {
+addUserButton.addEventListener('click', (e) => {
+    e.preventDefault();  // Prevent default form submission
+
     let addFormData = new FormData(addUserForm);
     let addData = Object.fromEntries(addFormData.entries());
+    const messages = document.querySelector(".alert-message");
+    const fields = document.querySelectorAll(".input-field");
 
+    messages.textContent = "";
+    messages.classList.remove('alert-success', 'alert-error', 'shake');
+    
     fetch('/adduser/', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRFTOKEN": addData.csrfmiddlewaretoken
+            "X-CSRFToken": addData.csrfmiddlewaretoken  // Ensure correct header name
         },
-        body: JSON.stringify(addData) // Convert addData to JSON string
+        body: JSON.stringify(addData)  // Convert addData to JSON string
     })
-    .then(response => response.json()) // Assuming response is in JSON format
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.error.message); });
+        }
+        return response.json();
+    })
     .then(data => {
+        messages.textContent = data.message || 'User added successfully';
+        messages.classList.add('alert-success');
+        messages.classList.remove('shake');
+        fields.forEach(field => {
+            field.value = "";
+        });
         console.log(data);
     })
     .catch(err => {
+        messages.textContent = err.message || 'An error occurred';
+        messages.classList.add('alert-error', 'shake');
+        messages.classList.remove('alert-success');
+        setTimeout(()=>{
+            fields.forEach(field => {
+                field.value = "";
+            });
+        },3000);
         console.error("Error:", err);
+    })
+    .finally(() => {
+        messages.style.display = 'block'; // Show the message
+        setTimeout(() => { messages.style.display = 'none'; }, 5000); // Hide after 5 seconds
     });
 });

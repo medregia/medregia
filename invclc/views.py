@@ -1464,7 +1464,8 @@ def empty_xlsx(request):
 def admin_access(request):
     context = {}
     table_data = []
-    
+    is_admin_user = None
+
     try:
         # Get all invoices for the logged-in user
         get_all_invoice = Invoice.objects.filter(user=request.user)
@@ -1485,7 +1486,10 @@ def admin_access(request):
             try:
                 profile_data = Person.objects.get(MedicalShopName=get_invoices.pharmacy_name)
                 unique_code = profile_data.UniqueId
-                
+                user_position = profile_data.user.position
+                if user_position == "Admin":
+                    is_admin_user = profile_data.user.username
+                             
                 if "#" in unique_code:
                     unique_code = profile_data.temporaryNo
                 
@@ -1494,7 +1498,7 @@ def admin_access(request):
                     'name': profile_data.MedicalShopName,
                     'dl_number1': profile_data.DrugLiceneseNumber1,
                     'dl_number2': profile_data.DrugLiceneseNumber2,
-                    'admin_name': request.user.username,
+                    'admin_name': is_admin_user,
                     'temp_no': None,  
                     'unique_no': unique_code,
                     'generate_link': False,
@@ -1513,7 +1517,7 @@ def admin_access(request):
                     'name': get_invoices.pharmacy_name,
                     'dl_number1': None,
                     'dl_number2': None,
-                    'admin_name': request.user.username,
+                    'admin_name': None,
                     'temp_no': temp_no,
                     'unique_no': None,
                     'generate_link': True,  # Adjust this value as necessary
@@ -1675,8 +1679,6 @@ def AddUser(request):
         receiver_email = data.get('add_email',None)
         receiver_phone = data.get('add_number',None)
         receiver_position = data.get('add_position',None)
-
-        print("receiver_name : ",receiver_name)
         
         try:
             if receiver_name is not None:
@@ -1715,4 +1717,4 @@ def AddUser(request):
                 response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
                 
         except Exception as e:
-            print("Exception : ",e)
+            return JsonResponse(e,status=500)
