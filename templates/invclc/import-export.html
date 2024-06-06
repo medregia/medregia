@@ -264,10 +264,10 @@
                             </select>
                         </div>
                         <div class="lastbox-content-agency" style="display: none;">
-                            <input type="text" id="user"
+                            <span>Category :<input type="text" id="user"
                                 value="{% if request.user.store_type == 'others' %}{{ request.user.other_value }}{% else %}{{ request.user.store_type }}{% endif %}"
                                 placeholder="Agencyname" disabled>
-                        </div>
+                        </div></span>
                     </div>
                 </div>
                 <div class="upload-msg"></div>
@@ -306,6 +306,8 @@
             </form>
 
             <div id="tableContainer" style="display: none;">
+                <span><p style="color:red">Note :</P>This is a Sample Table Fields To Import Content From Desktop</span>
+                    <hr>
                 <table id="table2">
                     <!-- Data for Format 2 -->
                     <thead>

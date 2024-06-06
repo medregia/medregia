@@ -29,7 +29,7 @@ body {
   cursor: pointer;
   padding: 14px 16px;
   transition: 0.3s;
-  width: 200px;
+  width: 400px;
   font-size: 20px;
 }
 
@@ -363,16 +363,23 @@ button.export-reset{
     align-items:center;
     border: 1px solid black;
   }
-
+  
   .navbar,
   .tab,
   .export2,
-  .box-print1 {
+  .box-print1 ,
+  .print_less_page,
+  .tab button ,
+  .tab button.active{
     display: none;
+  }
+  .address-container{
+    font-size:15px;
+
   }
 
   .export1 {
-    width: 96%;
+    width: 95%;
   }
   .tab,
   .tabcontent{
@@ -383,6 +390,6 @@ button.export-reset{
   }
 .export-content table th,
 .export-content table td{
-  font-size:12px;
+  font-size:14px;
 }
 }
