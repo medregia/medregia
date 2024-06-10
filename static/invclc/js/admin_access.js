@@ -116,7 +116,7 @@ addUserButton.addEventListener('click', (e) => {
 
     messages.textContent = "";
     messages.classList.remove('alert-success', 'alert-error', 'shake');
-    
+
     fetch('/adduser/', {
         method: "POST",
         headers: {
@@ -126,10 +126,12 @@ addUserButton.addEventListener('click', (e) => {
         body: JSON.stringify(addData)  // Convert addData to JSON string
     })
     .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => { throw new Error(err.error.message); });
-        }
-        return response.json();
+        return response.json().then(data => {
+            if (!response.ok) {
+                throw new Error(data.error.message || 'An error occurred');
+            }
+            return data;
+        });
     })
     .then(data => {
         messages.textContent = data.message || 'User added successfully';
@@ -138,17 +140,23 @@ addUserButton.addEventListener('click', (e) => {
         fields.forEach(field => {
             field.value = "";
         });
+        if (document.querySelector('[name="add_position"]').value === "") {
+            document.querySelector('[name="add_position"]').value = "Admin";
+        }
         console.log(data);
     })
     .catch(err => {
         messages.textContent = err.message || 'An error occurred';
         messages.classList.add('alert-error', 'shake');
         messages.classList.remove('alert-success');
-        setTimeout(()=>{
+        setTimeout(() => {
             fields.forEach(field => {
                 field.value = "";
             });
-        },3000);
+            if (document.querySelector('[name="add_position"]').value === "") {
+                document.querySelector('[name="add_position"]').value = "Admin";
+            }
+        }, 3000);
         console.error("Error:", err);
     })
     .finally(() => {

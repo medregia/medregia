@@ -309,22 +309,11 @@ def index_view(request):
     check_user = None
     check_admin = None
     unique_code_id = None
-    
-    
-    profile , created =  Person.objects.get_or_create(user=current_user)
-    profile.temporaryNo = RegisterUserTempNo(current_user)
-    profile.save()
-    
-    try:
-        unique_code = Person.objects.get(user=request.user)
-        unique_id = unique_code.UniqueId
-    except Person.DoesNotExist:
-        unique_code = f"'{request.user}' Please Update Your Profile"
-        unique_id = f"'{request.user}' Please Update Your Profile"
+
 
     try:
         collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
-        
+        print("collaborator_requests : ",collaborator_requests)
         for notification in collaborator_requests:
             collaborator_request_username = notification.sender.username
             get_admin_name = notification.receiver.username
@@ -345,7 +334,20 @@ def index_view(request):
                    return messages.error(request,"Somthing Wrong",a)
 
     except Exception as e:
-        return messages.error(request,"Error Accure in Collabarating to User ",e)
+        return messages.error(request,str(e))
+    
+    
+    profile , created =  Person.objects.get_or_create(user=current_user)
+    profile.temporaryNo = RegisterUserTempNo(current_user)
+    profile.save()
+    
+    try:
+        unique_code = Person.objects.get(user=request.user)
+        unique_id = unique_code.UniqueId
+    except Person.DoesNotExist:
+        unique_code = f"'{request.user}' Please Update Your Profile"
+        unique_id = f"'{request.user}' Please Update Your Profile"
+
 
     if str(request.user) == check_user:
         DeleteHistory = DeletedInvoice.objects.filter(user=collaborator_admin).order_by('-id')
@@ -1675,10 +1677,10 @@ def invite_user(request):
 def AddUser(request):
     if request.method == "POST": 
         data = json.loads(request.body)
-        receiver_name = data.get('add_name',None)
-        receiver_email = data.get('add_email',None)
-        receiver_phone = data.get('add_number',None)
-        receiver_position = data.get('add_position',None)
+        receiver_name = data.get('add_name', None)
+        receiver_email = data.get('add_email', None)
+        receiver_phone = data.get('add_number', None)
+        receiver_position = data.get('add_position', None)
         
         try:
             if receiver_name is not None:
@@ -1686,35 +1688,33 @@ def AddUser(request):
                 if receiver and receiver_name is not None:
                     if receiver == request.user:
                         response_data = {'message': 'Cannot Send Request to Yourself', 'adminName': receiver_name}
-                        # return redirect("profile")
                         return JsonResponse({'error': response_data}, status=500)
 
                     # Check if the sender has already sent a request to the receiver
                     existing_request = Notification.objects.filter(sender=request.user, receiver=receiver).exists()
                     if existing_request:
                         response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
-                        # messages.error(request, f'You have already sent a request to this receiver {receiver_name}.')
-                        # return redirect("profile")
                         return JsonResponse({'error': response_data}, status=500)
 
                     admin = Notification(
                         sender=request.user,
                         receiver=receiver,
                         message="User Request",
-                        phonenumber = receiver_phone,
-                        email = receiver_email,
-                        position = receiver_position,
-                        )
+                        phonenumber=receiver_phone,
+                        email=receiver_email,
+                        position=receiver_position,
+                    )
                     admin.save()
                     response_data = {'message': 'Request successfully received', 'adminName': receiver_name}
                     return JsonResponse(response_data)
 
                 else:   
                     response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
-                    # messages.error(request, "Admin Request Not Sent")
-                    # return redirect("profile")
+                    return JsonResponse({'error': response_data}, status=500)
             else:
                 response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
+                return JsonResponse({'error': response_data}, status=500)
                 
         except Exception as e:
-            return JsonResponse(e,status=500)
+            response_data = {'message': str(e)}
+            return JsonResponse({'error': response_data}, status=500)
