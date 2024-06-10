@@ -193,6 +193,11 @@ span.status{
         top: 12%;
         left: 77%;
     }
+    .expand{
+        margin-left: auto;
+        max-width: 100px;
+        text-align: center;
+    }
 }
 
 
