@@ -94,6 +94,7 @@ button.pay_btn{
     border:none;
     font-weight: bold;
     /* background-color:red; */
+    background: transparent;
   }
     
   .paymore-container button{
@@ -111,9 +112,10 @@ button.pay_btn{
 
 .scrollable-cell {
     max-height: 40px;
-    max-width: 90px;
+    max-width: 100px;
     margin-left: auto;
-    overflow-y: auto;
+    overflow-y: scroll;
+    overflow-x:hidden;
     text-align:center;
 }
 
