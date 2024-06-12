@@ -279,6 +279,7 @@ body{
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  /* flex-direction: column; */
   justify-content: space-evenly;
   border-bottom: 1px solid black;
   /* background-color: #FFE27D; */
@@ -754,3 +755,142 @@ span.importent{
       width:30px
     }
   }
+
+
+
+  /* General Styles */
+
+
+.profile_content {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+}
+
+.profile_content-left {
+  height: 100vh;
+  width: 50%;
+  background-color:#3498DB;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  color: #fff;
+}
+
+.profile_content-header {
+  margin-bottom: 20px;
+}
+
+h3 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+/* Admin Details Section */
+.profile_content-admin {
+  flex: 1;
+}
+
+.profile_admin-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.containers {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+input[type="text"] {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #333;
+}
+
+input[type="text"]:disabled, input[type="text"]:readonly {
+  background-color: #ccc;
+}
+
+/* Current User Details Section */
+.profile_content-current {
+  flex: 1;
+  margin-top: 20px;
+}
+
+.current_user-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bottom-containers {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fa-solid {
+  font-size: 1.2em;
+}
+
+/* Right Section */
+.profile_content-right {
+  height: 100vh;
+  width: 50%;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  color: #333;
+}
+
+.profile_content-right-head {
+  margin-bottom: 20px;
+}
+
+.profile_content-right-table {
+  flex: 1;
+  overflow-y: auto; 
+  min-height: 100vh; 
+  max-height: 100vh; 
+}
+
+.profile_content-tabledata {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.profile_content-tabledata thead td {
+  font-weight: bold;
+  background-color: #d3d3d3;
+  padding: 10px;
+  border: 1px solid #ccc;
+  top: 0;
+  position: sticky;
+}
+
+.profile_content-tabledata tbody td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.profile_content-tabledata td:first-child {
+  width: 70%; /* Adjust this value to make the User Name column wider */
+}
+
+.profile_content-tabledata td:last-child {
+  width: 30%; /* Adjust this value to make the Position column narrower */
+}
+
+
+

@@ -378,53 +378,64 @@
 {% endif %}
 
 {% if request.user.is_superuser == False or request.user.is_staff == False%}
-    <div class="profile-right-bottom">
-        <div class="profile-admin-details">
-            <div class="profile-admin-header">
-                <h3>Admin Details</h3>
-            </div>
-        
-            <div class="profile-admin-main">
-                <div class="profile-admin-name containers">
-                    <label for="name">Name</label>
-                    <input type="text" value="{{ admin_name }}" id="user_name" disabled>
+    
+    <div class="profile_content">
+        <div class="profile_content-left">
+            <div class="profile_content-admin">
+                <div class="profile_content-header">
+                    <h3>Admin Details</h3>
                 </div>
             
-                <div class="profile-admin-contact containers">
-                        <label for="name">Contact</label>
-                        <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
+                <div class="profile_admin-main">
+                    <div class="profile_admin-name containers">
+                        <label for="name">Name</label>
+                        <input type="text" value="{{ admin_name }}" id="user_name" disabled>
+                    </div>
+                
+                    <div class="profile_admin-contact containers">
+                            <label for="name">Contact</label>
+                            <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile_content-current">
+                <div class="profile_content-header">
+                    <h3>Current User Details</h3>
+                </div>
+                
+                <div class="current_user-main-content">
+                    <div class="current_user-main  bottom-containers">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text"id="currentusername" value="{{request.user}}" name="currentusername" placeholder="Name" readonly>
+                    </div>
+                 
+                    <div class="current_user-phone bottom-containers">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="text"id="Currentphone" value="{{user_profile_data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="profile-current-user">
-            <div class="current-user-header">
-                <h3>Current User Details</h3>
+        <div class="profile_content-right">
+            <div class="profile_content-right-head">
+                <h3>Collaprate User</h3>
             </div>
-            
-            <div class="current-user-main-content">
-                <div class="current-user-main  bottom-containers">
-                    <i class="fa-solid fa-user"></i>
-                    <input type="text"id="currentusername" value="{{request.user}}" name="currentusername" placeholder="Name" readonly>
-                </div>
-             
-                <div class="current-user-phone bottom-containers">
-                    <i class="fa-solid fa-phone"></i>
-                    <input type="text"id="Currentphone" value="{{user_profile_data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
-                </div>
-            
-                <div class="current-user-passwor">
-                    <i class="fa-solid fa-lock"></i>
-                    <a href="{% url 'password_change' %}"class="button-paper">Change Password</a>
-                </div>
-            
-                <div class="current-user-pinchange">
-                    <i class="fa-solid fa-key"></i>
-                    <a href="{% url 'change_pin' %}"class="button-paper">Change Pin</a>
-                </div>
+            <div class="profile_content-right-table">
+                <table class="profile_content-tabledata">
+                    <thead>
+                        <td>User Name</td>
+                        <td>Position</td>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>murugan</td>
+                            <td> admin</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-
     </div>
 {% endif %}
     <script src="{% static 'authentication/js/profile.js' %}"></script>
