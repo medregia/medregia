@@ -706,64 +706,65 @@ def check_view(request, id):
 
 
 
-@login_required(login_url='/')
-def edit_view(request, id):
-    Invoice_edit = Invoice.objects.get(id=id)
-    if request.method == 'POST':
-        edit_form = InvoiceForm(request.POST, instance=Invoice_edit)
-        if edit_form.is_valid():
-            edit_form.save()
-            messages.success(request,"You got it ")
-            return redirect("home")
-        else:   
-            messages.error(request,"Please Make Sure You Select the today ")
+# @login_required(login_url='/')
+# def edit_view(request, id):
+#     Invoice_edit = Invoice.objects.get(id=id)
+#     if request.method == 'POST':
+#         edit_form = InvoiceForm(request.POST, instance=Invoice_edit)
+#         if edit_form.is_valid():
+#             edit_form.save()
+#             messages.success(request,"You got it ")
+#             return redirect("home")
+#         else:   
+#             messages.error(request,"Please Make Sure You Select the today ")
         
-    # Convert the invoice_date to dd/mm/yyyy format
-    invoice_date_str = Invoice_edit.invoice_date.strftime('%B %d, %Y')
-    invoice_date_obj = datetime.strptime(invoice_date_str, '%B %d, %Y')
-    formatted_invoice_date = invoice_date_obj.strftime('%d/%m/%Y')
-    Invoice_edit.invoice_date = formatted_invoice_date
+#     # Convert the invoice_date to dd/mm/yyyy format
+#     invoice_date_str = Invoice_edit.invoice_date.strftime('%B %d, %Y')
+#     invoice_date_obj = datetime.strptime(invoice_date_str, '%B %d, %Y')
+#     formatted_invoice_date = invoice_date_obj.strftime('%d/%m/%Y')
+#     Invoice_edit.invoice_date = formatted_invoice_date
     
-    context = { 
-        # 'today_date': formatted_today_date,
-        'invoice': Invoice_edit
-    }
+#     context = { 
+#         # 'today_date': formatted_today_date,
+#         'invoice': Invoice_edit
+#     }
    
-    return render(request, 'invclc/edit.html', context)
+#     return render(request, 'invclc/edit.html', context)
 
 
 
-@login_required(login_url='/')
-def create_view(request):
-    form = InvoiceForm(request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            create_form = form.save(commit = False)
-            create_form.user = request.user
-            create_form.save()
-            return redirect('index')
-        else:
-            messages.error(request,"Invoice Number Must be Unique")
-    return render(request, 'invclc/create.html', {'form': form})
+# @login_required(login_url='/')
+# def create_view(request):
+#     form = InvoiceForm(request.POST or None)
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             create_form = form.save(commit = False)
+#             create_form.user = request.user
+#             create_form.save()
+#             return redirect('index')
+#         else:
+#             messages.error(request,"Invoice Number Must be Unique")
+#     return render(request, 'invclc/create.html', {'form': form})
 
 
-@login_required(login_url='/')
-def delete_view(request, pk):
-    invoice = get_object_or_404(Invoice,id=pk)
-    invoice.delete()
-    return redirect('index')
+# @login_required(login_url='/')
+# def delete_view(request, pk):
+#     invoice = get_object_or_404(Invoice,id=pk)
+#     invoice.delete()
+#     return redirect('index')
         
-class InvoiceResource(ModelResource):
-    class Meta:
-        model = Invoice
-        fields = ('user', 'pharmacy_name', 'invoice_number', 'invoice_date', 'balance_amount', 'payment_amount')
+# class InvoiceResource(ModelResource):
+#     class Meta:
+#         model = Invoice
+#         fields = ('user', 'pharmacy_name', 'invoice_number', 'invoice_date', 'balance_amount', 'payment_amount')
 
 
-# TODO: Import View ..
+# TODO: Import View ...
 @login_required(login_url='/')
 def import_view(request):
     upload_csv_file = UploadFileForm()
-    check_user = None
+    checked_username = None
+    senderName = None
     data = None
     admin_city = None  # Initialize admin_city variable
     admin_ph = None
@@ -777,7 +778,6 @@ def import_view(request):
     user_city =None
     user_ph =None
     unique_id = None
-    collaborator_admin = None
     completed_data = None
     previous_data = None
     user_email = None
@@ -787,29 +787,44 @@ def import_view(request):
     dl2 = None
 
     try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
         
-        for notification in collaborator_requests:
-            collaborator_request_username = notification.sender.username
-            get_admin_name = notification.receiver.username
+        # Loop through each read notification
+        for notification in read_notifications:
+            # Get the username of the sender of the notification
+            sender_username = notification.sender.username
+            # Get the username of the receiver of the notification (current user)
+            receiver_username = notification.receiver.username
             
-            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            # Find all staff users with the same username as the sender
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            # Get the non-staff user (current user) with the specified username
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
             
-            for user in collaborator_request_sender:
-                collaborator_sender_username = user.username
+            # Loop through each staff user with the sender's username
+            for user in staff_senders:
+                sender = user.username
+
                 try:
-                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                    if current_user and collaborator_admin:
-                        check_user = current_user.username
-                except Exception as a:
-                    return messages.error(request,"Something Wrong Please Check",a)
-    except Exception as e:
-        return messages.error(request,"Something Wrong",e)
+                    # Get the staff user with the current username
+                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                    # Get the non-staff user (current user)
+                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                    if receiverName and senderName:
+                        # Store the username of the current non-staff user
+                        checked_username = receiverName.username
+                except Exception as user_error:
+                    # Handle exceptions that occur while processing a specific user
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        # Handle exceptions that occur while processing notifications
+        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
     
-    if str(request.user) == check_user:        
+    if str(request.user) == checked_username:        
         try:
-            person = Person.objects.get(user=collaborator_admin)
+            person = Person.objects.get(user=senderName)
             unique_id = person.UniqueId
             admin_person = person.user.username
             admin_city = person.City
@@ -818,7 +833,7 @@ def import_view(request):
             admin_dl1 = person.DrugLiceneseNumber1
             admin_dl2 = person.DrugLiceneseNumber2
 
-            get_admin_ph = CustomUser.objects.get(username=collaborator_admin) 
+            get_admin_ph = CustomUser.objects.get(username=senderName) 
             admin_ph = get_admin_ph.phone_num
             admin_uniqueid = person.UniqueId
             admin_email = get_admin_ph.email
@@ -834,8 +849,8 @@ def import_view(request):
             dl1 = user.DrugLiceneseNumber1
             dl2 = user.DrugLiceneseNumber2
             
-            data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
-            overall_data = Invoice.objects.filter(user=collaborator_admin).order_by('id')
+            data = Invoice.objects.filter(user=senderName).order_by('id')
+            overall_data = Invoice.objects.filter(user=senderName).order_by('id')
         except Exception as a:
             return messages.error(request,"Something Wrong Please Check",a) 
           
@@ -868,13 +883,13 @@ def import_view(request):
         not_paid = request.POST.get('all',False)
         pharmacy_name = request.POST.get('pharmacyName',False) # Corrected variable name
         
-        if str(request.user) == check_user:
+        if str(request.user) == checked_username:
             try:
                 if completed == 'true':
-                    completed_data = list(Invoice.objects.filter(balance_amount=0, user=collaborator_admin).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    completed_data = list(Invoice.objects.filter(balance_amount=0, user=senderName).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                     return JsonResponse({"completed_data": completed_data})
                 elif not_paid == 'true':
-                    not_paid_datas = list(Invoice.objects.filter(Q(user=collaborator_admin) &~Q(balance_amount=0.00) &(~Q(balance_amount=F('invoice_amount')) |Q(payment_amount=0))).order_by('-id').values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    not_paid_datas = list(Invoice.objects.filter(Q(user=senderName) &~Q(balance_amount=0.00) &(~Q(balance_amount=F('invoice_amount')) |Q(payment_amount=0))).order_by('-id').values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                     return JsonResponse({"not_paid_data": not_paid_datas})
                 elif category:
                     users_with_category = list(CustomUser.objects.filter(store_type__iexact=category).values('username', 'phone_num', 'email', 'store_type'))
@@ -890,7 +905,7 @@ def import_view(request):
                 
                 elif pharmacy_name and pharmacy_name != '':
                     try:
-                        particular_user_invoices = Invoice.objects.filter(user=collaborator_admin, pharmacy_name=pharmacy_name).values()
+                        particular_user_invoices = Invoice.objects.filter(user=senderName, pharmacy_name=pharmacy_name).values()
                         modified_invoices = []
                         for invoice in particular_user_invoices:
                             modified_invoice = {key.replace('_', ' ').capitalize(): value for key, value in invoice.items() if key not in ['id', 'user_id', 'current_time']}
@@ -900,7 +915,7 @@ def import_view(request):
                         return JsonResponse({'error': 'No invoices found for the given pharmacy name'}, status=404)
                 
                 else:
-                    previous_data = list(Invoice.objects.filter(user=collaborator_admin).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
+                    previous_data = list(Invoice.objects.filter(user=senderName).values('invoice_number', 'invoice_amount', 'updated_by', 'today_date', 'payment_amount', 'balance_amount'))
                     return JsonResponse({"previous_data": previous_data})
                 
             except Exception as e:
@@ -965,7 +980,7 @@ def import_view(request):
         'admin_dl2':admin_dl2,
         'admin_street':admin_street,
         'completed_data':completed_data,
-        'check_user': check_user,
+        'check_user': checked_username,
         'request_user': str(request.user),
         'admin_city': admin_city,   
         'admin_ph': admin_ph,
@@ -982,10 +997,10 @@ def import_view(request):
 
 
 
-@login_required(login_url = '/')
-def payment_view(request,payment_id):
-    invoices = Invoice.objects.get(id=payment_id)
-    return render(request, 'invclc/payment.html', {'payment': invoices})
+# @login_required(login_url = '/')
+# def payment_view(request,payment_id):
+#     invoices = Invoice.objects.get(id=payment_id)
+#     return render(request, 'invclc/payment.html', {'payment': invoices})
 
 
 @login_required(login_url='/')
@@ -1017,39 +1032,54 @@ def checkmore_view(request):
     modifiedStore = None
     trackingPayment = None
 
-    check_user = None  # Define check_user here
+    senderName = None
+    checked_username = None  # Define check_user here
         
     try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
         
-        for notification in collaborator_requests:
-            collaborator_request_username = notification.sender.username
-            get_admin_name = notification.receiver.username
+        # Loop through each read notification
+        for notification in read_notifications:
+            # Get the username of the sender of the notification
+            sender_username = notification.sender.username
+            # Get the username of the receiver of the notification (current user)
+            receiver_username = notification.receiver.username
             
-            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            # Find all staff users with the same username as the sender
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            # Get the non-staff user (current user) with the specified username
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
             
-            for user in collaborator_request_sender:
-                collaborator_sender_username = user.username
+            # Loop through each staff user with the sender's username
+            for user in staff_senders:
+                sender = user.username
+
                 try:
-                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                    if current_user and collaborator_admin:
-                        check_user = current_user.username
-                except Exception as a:
-                    return messages.error(request,"Something Wrong Please Check",a)
-            
-    except Exception as e:
-        return messages.error(request,"Something Wrong Please Check",e)
+                    # Get the staff user with the current username
+                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                    # Get the non-staff user (current user)
+                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                    if receiverName and senderName:
+                        # Store the username of the current non-staff user
+                        checked_username = receiverName.username
+                except Exception as user_error:
+                    # Handle exceptions that occur while processing a specific user
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        # Handle exceptions that occur while processing notifications
+        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
     
-    if check_user == str(request.user):
+    if checked_username == str(request.user):
         try:
-            Storename = Person.objects.get(user=collaborator_admin)
+            Storename = Person.objects.get(user=senderName)
             modifiedStore = convert_Medical(Storename.MedicalShopName)
         except Person.DoesNotExist:
             modifiedStore = "Not Found"
                 
-        trackingPayment = TrackingPayment.objects.filter(user=collaborator_admin).order_by('-id')
-        invoices = Invoice.objects.filter(user=collaborator_admin, balance_amount=0.00).order_by('-id')
+        trackingPayment = TrackingPayment.objects.filter(user=senderName).order_by('-id')
+        invoices = Invoice.objects.filter(user=senderName, balance_amount=0.00).order_by('-id')
     else:
         try:
             Storename = Person.objects.get(user=current_user)
@@ -1072,33 +1102,48 @@ def checkmore_view(request):
 @login_required(login_url='/')
 def paymore_view(request):
     current_user = request.user
-    check_user = None 
-    
-    try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+    senderName = None
+    checked_username = None  # Define check_user here
         
-        for notification in collaborator_requests:
-            collaborator_request_username = notification.sender.username
-            get_admin_name = notification.receiver.username
-
-            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+    try:
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
+        
+        # Loop through each read notification
+        for notification in read_notifications:
+            # Get the username of the sender of the notification
+            sender_username = notification.sender.username
+            # Get the username of the receiver of the notification (current user)
+            receiver_username = notification.receiver.username
             
-            for user in collaborator_request_sender:
-                collaborator_sender_username = user.username
+            # Find all staff users with the same username as the sender
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            # Get the non-staff user (current user) with the specified username
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
+            
+            # Loop through each staff user with the sender's username
+            for user in staff_senders:
+                sender = user.username
+
                 try:
-                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                    if current_user and collaborator_admin:
-                        check_user = current_user.username
-                except Exception as a:
-                    return messages.error(request,"Something Wrong Please Check",a)
-                       
-    except Exception as e:
-        return messages.error(request,"Something Wrong",e)
+                    # Get the staff user with the current username
+                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                    # Get the non-staff user (current user)
+                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                    if receiverName and senderName:
+                        # Store the username of the current non-staff user
+                        checked_username = receiverName.username
+                except Exception as user_error:
+                    # Handle exceptions that occur while processing a specific user
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        # Handle exceptions that occur while processing notifications
+        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
     
-    if check_user == str(request.user):
-        invoices = Invoice.objects.filter(Q(user=collaborator_admin ), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
-        trackingPayment = TrackingPayment.objects.filter(user=collaborator_admin).order_by('-id')
+    if checked_username == str(request.user):
+        invoices = Invoice.objects.filter(Q(user=senderName ), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
+        trackingPayment = TrackingPayment.objects.filter(user=senderName).order_by('-id')
     else:
         trackingPayment = TrackingPayment.objects.filter(user=request.user).order_by('-id')
         invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
@@ -1107,66 +1152,97 @@ def paymore_view(request):
 @login_required(login_url='/')
 def updatemore_view(request):
     current_user = request.user
-    check_user = None 
-    collaborator_admin = None
+    senderName = None
+    checked_username = None  # Define check_user here
+        
     try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
         
-        for notification in collaborator_requests:
-            collaborator_request_username = notification.sender.username
-            get_admin_name = notification.receiver.username
+        # Loop through each read notification
+        for notification in read_notifications:
+            # Get the username of the sender of the notification
+            sender_username = notification.sender.username
+            # Get the username of the receiver of the notification (current user)
+            receiver_username = notification.receiver.username
             
-            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            # Find all staff users with the same username as the sender
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            # Get the non-staff user (current user) with the specified username
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
             
-            for user in collaborator_request_sender:
-                collaborator_sender_username = user.username
+            # Loop through each staff user with the sender's username
+            for user in staff_senders:
+                sender = user.username
+
                 try:
-                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                    if current_user and collaborator_admin:
-                        check_user = current_user.username
-                except Exception as a:
-                    return messages.error(request,"Something Wrong Please Check",a)
-            
-    except Exception as e:
-        return messages.error(request,"Something Wrong ",e)
-    if collaborator_admin and collaborator_admin is not None:
-        invoices = Invoice.objects.filter(user = collaborator_admin).order_by('-id')
-    else:
-        
-        invoices = Invoice.objects.filter(user = current_user).order_by('-id')
+                    # Get the staff user with the current username
+                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                    # Get the non-staff user (current user)
+                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                    if receiverName and senderName:
+                        # Store the username of the current non-staff user
+                        checked_username = receiverName.username
+                except Exception as user_error:
+                    # Handle exceptions that occur while processing a specific user
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        # Handle exceptions that occur while processing notifications
+        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
+
+    username = senderName if checked_username == str(request.user) else current_user
+
+    invoices = Invoice.objects.filter(user = username).order_by('-id')
+
     return render(request, 'invclc/updatemore.html',{'invoices': invoices})
 
 @login_required(login_url='/')
 def unpaid_debt(request):
     current_user = request.user
-    check_user = None 
-    collaborator_admin = None
-    try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+    senderName = None
+    checked_username = None  # Define check_user here
         
-        for notification in collaborator_requests:
-            collaborator_request_username = notification.sender.username
-            get_admin_name = notification.receiver.username
+    try:
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
+        
+        # Loop through each read notification
+        for notification in read_notifications:
+            # Get the username of the sender of the notification
+            sender_username = notification.sender.username
+            # Get the username of the receiver of the notification (current user)
+            receiver_username = notification.receiver.username
             
-            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            # Find all staff users with the same username as the sender
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            # Get the non-staff user (current user) with the specified username
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
             
-            for user in collaborator_request_sender:
-                collaborator_sender_username = user.username
+            # Loop through each staff user with the sender's username
+            for user in staff_senders:
+                sender = user.username
+
                 try:
-                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                    if current_user and collaborator_admin:
-                        check_user = current_user.username
-                except Exception as a:
-                    return messages.error(request,"Something Wrong",a)
-            
-    except Exception as e:
-        return messages.error(request,"Something Wrong",e)
-    if collaborator_admin is not None:
-        invoices = Invoice.objects.filter(Q(user=collaborator_admin), ~Q(balance_amount=0.00), Q(payment_amount=0))
-    else:
-        invoices = Invoice.objects.filter(Q(user=current_user), ~Q(balance_amount=0.00), Q(payment_amount=0))
+                    # Get the staff user with the current username
+                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                    # Get the non-staff user (current user)
+                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                    if receiverName and senderName:
+                        # Store the username of the current non-staff user
+                        checked_username = receiverName.username
+                except Exception as user_error:
+                    # Handle exceptions that occur while processing a specific user
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        # Handle exceptions that occur while processing notifications
+        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
+
+    username = senderName if checked_username == str(request.user) else request.user
+
+    invoices = Invoice.objects.filter(Q(user=username), ~Q(balance_amount=0.00), Q(payment_amount=0))
+    
     return render(request, 'invclc/unpaid_debt.html',{'invoices': invoices})
 
 def update_invoice(request, invoice_id):
@@ -1194,33 +1270,48 @@ def update_invoice(request, invoice_id):
         # Save the updated Invoice
         invoice.save()
         
-        check_user = None  # Define check_user here
+        checked_username = None  # Define check_user here
+        senderName = None
         
         try:
-            collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+            # Get all notifications sent to the current user that have been read
+            read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
             
-            for notification in collaborator_requests:
-                collaborator_request_username = notification.sender.username
-                get_admin_name = notification.receiver.username
+            # Loop through each read notification
+            for notification in read_notifications:
+                # Get the username of the sender of the notification
+                sender_username = notification.sender.username
+                # Get the username of the receiver of the notification (current user)
+                receiver_username = notification.receiver.username
                 
-                collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-                collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+                # Find all staff users with the same username as the sender
+                staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+                # Get the non-staff user (current user) with the specified username
+                normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
                 
-                for user in collaborator_request_sender:
-                    collaborator_sender_username = user.username
+                # Loop through each staff user with the sender's username
+                for user in staff_senders:
+                    sender = user.username
+
                     try:
-                        current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                        if current_user and collaborator_admin:
-                            check_user = current_user.username
-                    except Exception as a:
-                        return messages.error(request,"Something Wrong Please Check",a)
-                
-        except Exception as e:
-            return messages.error(request,"Something Wrong",e)
+                        # Get the staff user with the current username
+                        senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                        # Get the non-staff user (current user)
+                        receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                        if receiverName and senderName:
+                            # Store the username of the current non-staff user
+                            checked_username = receiverName.username
+                    except Exception as user_error:
+                        # Handle exceptions that occur while processing a specific user
+                        messages.error(request, user_error)
+        except Exception as general_error:  
+            # Handle exceptions that occur while processing notifications
+            messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
             
-        if check_user == str(request.user):
+        if checked_username == str(request.user):
             modified_invoice = ModifiedInvoice(
-                user=collaborator_admin,
+                user=senderName,
                 modified_pharmacy=invoice.pharmacy_name,
                 modified_Invoice_number=f"{invoice.invoice_number}_{timezone.now().timestamp()}",
                 modified_Invoice_date=invoice.invoice_date,
@@ -1278,34 +1369,49 @@ def delete_invoice(request, invoice_id):
         # Check if the invoice exists
         invoice = Invoice.objects.get(pk=invoice_id)
         
-        check_user = None  # Define check_user here
+        checked_username = None  # Define check_user here
+        senderName = None
         
         try:
-            collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+            # Get all notifications sent to the current user that have been read
+            read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
             
-            for notification in collaborator_requests:
-                collaborator_request_username = notification.sender.username
-                get_admin_name = notification.receiver.username
+            # Loop through each read notification
+            for notification in read_notifications:
+                # Get the username of the sender of the notification
+                sender_username = notification.sender.username
+                # Get the username of the receiver of the notification (current user)
+                receiver_username = notification.receiver.username
                 
-                collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-                collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+                # Find all staff users with the same username as the sender
+                staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+                # Get the non-staff user (current user) with the specified username
+                normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
                 
-                for user in collaborator_request_sender:
-                    collaborator_sender_username = user.username
+                # Loop through each staff user with the sender's username
+                for user in staff_senders:
+                    sender = user.username
+
                     try:
-                        current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                        if current_user and collaborator_admin:
-                            check_user = current_user.username
-                    except Exception as a:
-                        return messages.error(request,"Something Wrong Please Check",a)
-                
-        except Exception as e:
-            return messages.error(request,"Something Wrong",e)
+                        # Get the staff user with the current username
+                        senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                        # Get the non-staff user (current user)
+                        receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                        if receiverName and senderName:
+                            # Store the username of the current non-staff user
+                            checked_username = receiverName.username
+                    except Exception as user_error:
+                        # Handle exceptions that occur while processing a specific user
+                        messages.error(request, user_error)
+        except Exception as general_error:  
+            # Handle exceptions that occur while processing notifications
+            messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
 
         # Create a DeletedInvoice object with a unique number (using timestamp)
-        if check_user == str(request.user):
+        if checked_username == str(request.user):
             deleted_invoice = DeletedInvoice(
-                user=collaborator_admin,
+                user=senderName,
                 pharmacy=invoice.pharmacy_name,
                 number=f"{invoice.invoice_number}_{timezone.now().timestamp()}",
                 date=invoice.invoice_date,
@@ -1493,9 +1599,49 @@ def admin_access(request):
     table_data = []
     is_admin_user = None
 
+    checked_username = None
+    senderName = None
+
     try:
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
+        
+        # Loop through each read notification
+        for notification in read_notifications:
+            # Get the username of the sender of the notification
+            sender_username = notification.sender.username
+            # Get the username of the receiver of the notification (current user)
+            receiver_username = notification.receiver.username
+            
+            # Find all staff users with the same username as the sender
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            # Get the non-staff user (current user) with the specified username
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
+            
+            # Loop through each staff user with the sender's username
+            for user in staff_senders:
+                sender = user.username
+                try:
+                    # Get the staff user with the current username
+                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                    # Get the non-staff user (current user)
+                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+                    if receiverName and senderName:
+                        # Store the username of the current non-staff user
+                        checked_username = receiverName.username
+                except Exception as user_error:
+                    # Handle exceptions that occur while processing a specific user
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        # Handle exceptions that occur while processing notifications
+        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
+
+    try:
+
+        user_data = senderName if checked_username == str(request.user) else request.user
+
         # Get all invoices for the logged-in user
-        get_all_invoice = Invoice.objects.filter(user=request.user)
+        get_all_invoice = Invoice.objects.filter(user=user_data)
         if not get_all_invoice.exists():
             context['error'] = "No invoices found for the user."
             return render(request, 'your_template.html', context)
