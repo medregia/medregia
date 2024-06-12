@@ -447,3 +447,12 @@ label {
     animation: shake 0.5s;
     animation-iteration-count: 2;
 }
+
+
+.current-user-pass{
+    height: 10vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}

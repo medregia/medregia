@@ -1667,6 +1667,7 @@ def admin_access(request):
 
     checked_username = None
     senderName = None
+    uique_Faild = None
 
     try:
         # Get all notifications sent to the current user that have been read
@@ -1702,6 +1703,9 @@ def admin_access(request):
         # Handle exceptions that occur while processing notifications
         messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
 
+    context['checked_username'] = checked_username
+    context['currentUser'] = str(request.user)
+
     try:
 
         user_data = senderName if checked_username == str(request.user) else request.user
@@ -1713,9 +1717,11 @@ def admin_access(request):
             return render(request, 'your_template.html', context)
         
         try:
-            get_currentUser = get_object_or_404(CustomUser,username=request.user)
+            get_currentUser = get_object_or_404(CustomUser,username=user_data)
             user_phone_number = get_currentUser.phone_num
+            user_username = get_currentUser.username
             context['user_phone'] = user_phone_number
+            context['user_username'] = user_username
         except Exception as e:
             user_phone_number = None
             context['user_phone'] = user_phone_number
@@ -1729,8 +1735,10 @@ def admin_access(request):
                 if user_position == "Admin":
                     is_admin_user = profile_data.user.username
                              
-                if "#" in unique_code:
-                    unique_code = profile_data.temporaryNo
+                # if "#" in unique_code:
+                #     unique_code = profile_data.temporaryNo
+
+                uique_Faild = False
                 
                 table_data.append({
                     's_no': idx,
@@ -1740,6 +1748,7 @@ def admin_access(request):
                     'admin_name': is_admin_user,
                     'temp_no': None,  
                     'unique_no': unique_code,
+                    'uique_Faild':uique_Faild,
                     'generate_link': False,
                     'status': 'Active'
                 })
