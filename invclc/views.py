@@ -39,25 +39,44 @@ from .utils import generate_tempno,RegisterUserTempNo
 logger = logging.getLogger(__name__)
 def upload_csv(request):
     
-    check_user = None
+    checked_username= None
+    senderName = None
         
     try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)        
-        for notification in collaborator_requests:
-            collaborator_request_username = notification.sender.username
-            get_admin_name = notification.receiver.username
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
+        
+        # Loop through each read notification
+        for notification in read_notifications:
+            # Get the username of the sender of the notification
+            sender_username = notification.sender.username
+            # Get the username of the receiver of the notification (current user)
+            receiver_username = notification.receiver.username
             
-            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            # Find all staff users with the same username as the sender
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            # Get the non-staff user (current user) with the specified username
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
             
-            for user in collaborator_request_sender:
-                collaborator_sender_username = user.username
+            # Loop through each staff user with the sender's username
+            for user in staff_senders:
+                sender = user.username
+
                 try:
-                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                    if current_user and collaborator_admin:
-                        check_user = current_user.username
-                except Exception as a:
-                    return messages.error(request,"Collaborating Error : ", a)
+                    # Get the staff user with the current username
+                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                    # Get the non-staff user (current user)
+                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                    if receiverName and senderName:
+                        # Store the username of the current non-staff user
+                        checked_username = receiverName.username
+                except Exception as user_error:
+                    # Handle exceptions that occur while processing a specific user
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        # Handle exceptions that occur while processing notifications
+        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
             
 
             
@@ -91,9 +110,9 @@ def upload_csv(request):
                             current_time = datetime.now().time()
                             
                             # Create Invoice object for each row in the CSV file
-                            if str(request.user) == check_user:
+                            if str(request.user) == checked_username :
                                 invoice = Invoice.objects.create(
-                                    user=collaborator_admin,
+                                    user=senderName ,
                                     pharmacy_name=row['pharmacy_name'],
                                     invoice_number=row['invoice_number'],
                                     invoice_date=invoice_date,
@@ -136,29 +155,45 @@ def upload_csv(request):
 
 @login_required(login_url='/')
 def exports_to_csv(request):
-    check_user = None
+    checked_username = None
+    senderName = None
     try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
         
-        for notification in collaborator_requests:
-            collaborator_request_username = notification.sender.username
-            get_admin_name = notification.receiver.username
+        # Loop through each read notification
+        for notification in read_notifications:
+            # Get the username of the sender of the notification
+            sender_username = notification.sender.username
+            # Get the username of the receiver of the notification (current user)
+            receiver_username = notification.receiver.username
             
-            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            # Find all staff users with the same username as the sender
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            # Get the non-staff user (current user) with the specified username
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
             
-            for user in collaborator_request_sender:
-                collaborator_sender_username = user.username
+            # Loop through each staff user with the sender's username
+            for user in staff_senders:
+                sender = user.username
+
                 try:
-                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                    if current_user and collaborator_admin:
-                        check_user = current_user.username
-                except Exception as a:
-                    return messages.error(request,"Collaborating Error : ", a)
-    except Exception as e:
-        return messages.error(request,"Error in Exporting CSV : ", e)
+                    # Get the staff user with the current username
+                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                    # Get the non-staff user (current user)
+                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                    if receiverName and senderName:
+                        # Store the username of the current non-staff user
+                        checked_username = receiverName.username
+                except Exception as user_error:
+                    # Handle exceptions that occur while processing a specific user
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        # Handle exceptions that occur while processing notifications
+        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
     
-    if check_user == str(request.user):
+    if checked_username == str(request.user):
         try:
             currentuser = request.user
             response = HttpResponse(content_type='text/csv')
@@ -166,7 +201,7 @@ def exports_to_csv(request):
 
             writer = csv.writer(response)
             writer.writerow(['invoice_number','invoice_amount', 'payment_amount','updated_by','updated_date', 'Paid/Pending Status'])
-            for obj in Invoice.objects.filter(user=collaborator_admin ):
+            for obj in Invoice.objects.filter(user=senderName ):
                 if obj.balance_amount == 0:
                     status = 'paid'
                 else:
@@ -197,29 +232,45 @@ def exports_to_csv(request):
 
 
 def exports_to_xlsx(request):   
-    check_user = None
+    checked_username = None
+    senderName = None
     try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
         
-        for notification in collaborator_requests:
-            collaborator_request_username = notification.sender.username
-            get_admin_name = notification.receiver.username
+        # Loop through each read notification
+        for notification in read_notifications:
+            # Get the username of the sender of the notification
+            sender_username = notification.sender.username
+            # Get the username of the receiver of the notification (current user)
+            receiver_username = notification.receiver.username
             
-            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            # Find all staff users with the same username as the sender
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            # Get the non-staff user (current user) with the specified username
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
             
-            for user in collaborator_request_sender:
-                collaborator_sender_username = user.username
+            # Loop through each staff user with the sender's username
+            for user in staff_senders:
+                sender = user.username
+
                 try:
-                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                    if current_user and collaborator_admin:
-                        check_user = current_user.username
-                except Exception as a:
-                    return messages.error(request,"Collaborating Error : ", a)
-    except Exception as e:
-        return messages.error(request,"Error in exports_to_xlsx : ", e)
+                    # Get the staff user with the current username
+                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                    # Get the non-staff user (current user)
+                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                    if receiverName and senderName:
+                        # Store the username of the current non-staff user
+                        checked_username = receiverName.username
+                except Exception as user_error:
+                    # Handle exceptions that occur while processing a specific user
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        # Handle exceptions that occur while processing notifications
+        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
         
-    if check_user == str(request.user):
+    if checked_username == str(request.user):
         currentuser = request.user
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = f'attachment; filename="ImportData{currentuser}.xlsx"'
@@ -227,7 +278,7 @@ def exports_to_xlsx(request):
         workbook = Workbook()
         worksheet = workbook.active
         worksheet.append(['IN. No.', 'Total Amount', 'Last Payment Date', 'Payed', 'Paid/Pending'])
-        for obj in Invoice.objects.filter(user=collaborator_admin):
+        for obj in Invoice.objects.filter(user=senderName):
             if obj.balance_amount == 0:
                 status = 'paid'
             else:
@@ -258,34 +309,49 @@ def exports_to_xlsx(request):
 
 @login_required(login_url='/')
 def exports_to_json(request):
-    check_user = None
+    checked_username = None
+    senderName = None
     try:
-        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
         
-        for notification in collaborator_requests:
-            collaborator_request_username = notification.sender.username
-            get_admin_name = notification.receiver.username
+        # Loop through each read notification
+        for notification in read_notifications:
+            # Get the username of the sender of the notification
+            sender_username = notification.sender.username
+            # Get the username of the receiver of the notification (current user)
+            receiver_username = notification.receiver.username
             
-            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
-            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            # Find all staff users with the same username as the sender
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            # Get the non-staff user (current user) with the specified username
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
             
-            for user in collaborator_request_sender:
-                collaborator_sender_username = user.username
-                try:
-                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
-                    if current_user and collaborator_admin:
-                        check_user = current_user.username
-                except Exception as a:
-                    return messages.error(request,"Something Wrong Whlie Exporting Json ", a)
-    except Exception as e:
-        return messages.error(request,"Something Wrong Whlie Exporting Json ", e)
+            # Loop through each staff user with the sender's username
+            for user in staff_senders:
+                sender = user.username
 
+                try:
+                    # Get the staff user with the current username
+                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                    # Get the non-staff user (current user)
+                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                    if receiverName and senderName:
+                        # Store the username of the current non-staff user
+                        checked_username = receiverName.username
+                except Exception as user_error:
+                    # Handle exceptions that occur while processing a specific user
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        # Handle exceptions that occur while processing notifications
+        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
         
-    if check_user == str(request.user):
-        invoices = Invoice.objects.filter(user=collaborator_admin)
+    if checked_username == str(request.user):
+        invoices = Invoice.objects.filter(user= senderName )
         json_data = serialize('json', invoices)
         response = HttpResponse(json_data, content_type='application/json')
-        response['Content-Disposition'] = f'attachment; filename="invoices_{collaborator_admin}.json"'
+        response['Content-Disposition'] = f'attachment; filename="invoices_{ senderName }.json"'
         
         return response
     else:
