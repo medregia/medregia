@@ -10,10 +10,28 @@
 {% block content %}
 <div class="container">
     <h1>Welcome to Medregia</h1>
-    <p class="greeting-message">You have been invited to join Medregia by <span id="inviter-name">Sender Name</span>. Please review and complete your details below to get started.</p>
+    <p class="greeting-message">You have been invited to join Medregia by <span id="inviter-name">{{sendername}}</span> as {{userposition}}. Please review and complete your details below to get started.</p>
     <form id="user-details-form" method="post">
         {% csrf_token %}
         
+      <div class="form-group">
+        <label for="userposition">User Position</label>
+        <div class="input-container">
+          <input type="text" id="user-position" value="{{userposition}}" name="new_userposition" disabled>
+          {% comment %} <span class="edit-icon" onclick="toggleEdit('username')">&#9998;</span> {% endcomment %}
+        </div>
+        <span class="error-message" id="new_userposition-error"></span>
+      </div>
+
+      <div class="form-group">
+        <label for="sendername">Sender Name</label>
+        <div class="input-container">
+            <input type="text" id="sendername" value="{{sendername}}" name="new_sendername" disabled>
+        </div>
+        <span class="error-message" id="new_sendername-error"></span>
+      </div>
+
+
       <div class="form-group">
         <label for="username">Username</label>
         <div class="input-container">
@@ -22,6 +40,7 @@
         </div>
         <span class="error-message" id="new_username-error"></span>
       </div>
+
       <div class="form-group">
         <label for="useremail">User Email</label>
         <div class="input-container">
@@ -73,7 +92,7 @@
       </div>
 
 
-      <div class="form-group">
+      {% comment %} <div class="form-group">
         <label for="userposition">User Position</label>
         <div class="input-container">
           <select id="user-position" required name="new_userposition">
@@ -84,7 +103,7 @@
           </select>
         </div>
         <span class="error-message" id="new_userposition-error"></span>
-      </div>
+      </div> {% endcomment %}
 
       <button type="submit">Submit</button>
     </form>

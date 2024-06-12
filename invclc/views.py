@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q,F
 from django.utils import timezone
-from authentication.models import CustomUser,Person,Notification
+from authentication.models import CustomUser,Person,Notification,AddUsers
 from datetime import datetime
 import csv
 import json
@@ -1663,169 +1663,157 @@ def empty_xlsx(request):
 def admin_access(request):
     context = {}
     table_data = []
-    is_admin_user = None
-
     checked_username = None
-    senderName = None
-    uique_Faild = None
+    sender_name = None
+    is_admin_user = None
 
     try:
         # Get all notifications sent to the current user that have been read
         read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
-        
-        # Loop through each read notification
+
         for notification in read_notifications:
-            # Get the username of the sender of the notification
             sender_username = notification.sender.username
-            # Get the username of the receiver of the notification (current user)
             receiver_username = notification.receiver.username
-            
-            # Find all staff users with the same username as the sender
+
             staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
-            # Get the non-staff user (current user) with the specified username
             normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
-            
-            # Loop through each staff user with the sender's username
+
             for user in staff_senders:
                 sender = user.username
                 try:
-                    # Get the staff user with the current username
-                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
-                    # Get the non-staff user (current user)
-                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
-                    if receiverName and senderName:
-                        # Store the username of the current non-staff user
-                        checked_username = receiverName.username
+                    sender_name = CustomUser.objects.get(username=sender, is_staff=True)
+                    receiver_name = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+                    if receiver_name and sender_name:
+                        checked_username = receiver_name.username
                 except Exception as user_error:
-                    # Handle exceptions that occur while processing a specific user
                     messages.error(request, user_error)
-    except Exception as general_error:  
-        # Handle exceptions that occur while processing notifications
-        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
+    except Exception as general_error:
+        messages.error(request, f"Something went wrong while exporting JSON: {general_error}")
 
     context['checked_username'] = checked_username
     context['currentUser'] = str(request.user)
 
     try:
-
-        user_data = senderName if checked_username == str(request.user) else request.user
-
-        # Get all invoices for the logged-in user
+        user_data = sender_name if checked_username == str(request.user) else request.user
         get_all_invoice = Invoice.objects.filter(user=user_data)
+
         if not get_all_invoice.exists():
             context['error'] = "No invoices found for the user."
             return render(request, 'your_template.html', context)
-        
-        try:
-            get_currentUser = get_object_or_404(CustomUser,username=user_data)
-            user_phone_number = get_currentUser.phone_num
-            user_username = get_currentUser.username
-            context['user_phone'] = user_phone_number
-            context['user_username'] = user_username
-        except Exception as e:
-            user_phone_number = None
-            context['user_phone'] = user_phone_number
-            
 
-        for idx, get_invoices in enumerate(get_all_invoice, start=1):
+        try:
+            current_user = get_object_or_404(CustomUser, username=user_data)
+            context['user_phone'] = current_user.phone_num
+            context['user_username'] = current_user.username
+        except Exception:
+            context['user_phone'] = None
+
+        for idx, invoice in enumerate(get_all_invoice, start=1):
             try:
-                profile_data = Person.objects.get(MedicalShopName=get_invoices.pharmacy_name)
+                profile_data = Person.objects.get(MedicalShopName=invoice.pharmacy_name)
                 unique_code = profile_data.UniqueId
                 user_position = profile_data.user.position
                 if user_position == "Admin":
                     is_admin_user = profile_data.user.username
-                             
-                # if "#" in unique_code:
-                #     unique_code = profile_data.temporaryNo
 
-                uique_Faild = False
-                
                 table_data.append({
                     's_no': idx,
                     'name': profile_data.MedicalShopName,
                     'dl_number1': profile_data.DrugLiceneseNumber1,
                     'dl_number2': profile_data.DrugLiceneseNumber2,
                     'admin_name': is_admin_user,
-                    'temp_no': None,  
+                    'temp_no': None,
                     'unique_no': unique_code,
-                    'uique_Faild':uique_Faild,
+                    'uique_Faild': False,
                     'generate_link': False,
                     'status': 'Active'
                 })
-
-
             except Person.DoesNotExist:
-                userMedicals = get_invoices.pharmacy_name
-                userId = get_invoices.id
-                
-                temp_no = generate_tempno(userMedicals,userId)
-
+                temp_no = generate_tempno(invoice.pharmacy_name, invoice.id)
                 table_data.append({
                     's_no': idx,
-                    'name': get_invoices.pharmacy_name,
+                    'name': invoice.pharmacy_name,
                     'dl_number1': None,
                     'dl_number2': None,
                     'admin_name': None,
                     'temp_no': temp_no,
                     'unique_no': None,
-                    'generate_link': True,  # Adjust this value as necessary
-                    'status': 'Inactive'  # Adjust this value as necessary
+                    'generate_link': True,
+                    'status': 'Inactive'
                 })
-
     except Exception as e:
         context['error'] = f"Error: {e}"
 
     context['table_data'] = table_data
-        
+
     if request.method == "POST":
         data = json.loads(request.body)
-
-        username = data.get('username','')
-        useremail = data.get('useremail','')
-        # userposition = data.get('userposition','')
-        userphonenumber = data.get('userphone','')  # Assuming phone number is part of the data
-
-        # Create and save the invitation instance
-        invitation = Invitation(
-            user=request.user,
-            mail_sendername=request.user.username,
-            mail_receiver_name=username,
-            mail_receiver_email=useremail,
-            mail_receiver_phonenumber=userphonenumber,
-        )
-        invitation.save()
-        
-        subject = "Invitation to Join Our Platform"
-        text_message = f"Dear {username},\n\nYou have been invited to join our platform . Please use the following details to access your account.\n\nBest regards,\nThe Team"
-
-        # Generate the signup URL with query parameters
-        base_signup_url = "http://127.0.0.1:8000/invite/"  # Use the name of your URL pattern for the signup page
-        query_params = urlencode({'sendername': request.user.username,'username':username,'useremail':useremail,'userphonenumber':userphonenumber})
-        invite_url = f"{base_signup_url}?{query_params}"
-
-        # print(f"Generated signup URL: {invite_url}")
-        # Render the HTML message from a template
-        html_message = render_to_string('invitation_email.html', {
-            'user_name': username,
-            'sender_mail': settings.DEFAULT_FROM_EMAIL,
-            'sender_name': request.user.username,
-            'signup_url': invite_url  # Pass the URL with query parameters to the template context
-        })
+        receiver_name = data.get('add_name')
+        receiver_email = data.get('add_email')
+        receiver_phone = data.get('add_number')
+        receiver_position = data.get('add_position')
 
         try:
+            if receiver_name :
+                if AddUsers.objects.filter(sender_name=request.user, receiver_name=receiver_name).exists():
+                    response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
+                    return JsonResponse({'error': response_data}, status=500)
+                else:
+                    admin_notification = AddUsers(
+                        sender_name=request.user,
+                        receiver_name=receiver_name,
+                        message="User Request",
+                        phonenumber=receiver_phone,
+                        email=receiver_email,
+                        position=receiver_position,
+                    )
+                    admin_notification.save()
+
+            subject = "Invitation to Join Our Platform"
+            text_message = f"Dear {receiver_name},\n\nYou have been invited to join our platform as {receiver_position}. Please use the following details to access your account.\n\nBest regards,\nThe Team"
+            base_signup_url = '127.0.0.1:8000/invite/'
+            query_params = urlencode({
+                'sendername': request.user.username,
+                'username': receiver_name,
+                'useremail': receiver_email,
+                'userphonenumber': receiver_phone,
+                'userposition': receiver_position
+            })
+            invite_url = f"{base_signup_url}?{query_params}"
+
+            html_message = render_to_string('invitation_email.html', {
+                'user_name': receiver_name,
+                'sender_mail': settings.DEFAULT_FROM_EMAIL,
+                'sender_name': request.user.username,
+                'signup_url': invite_url,
+                'position':receiver_position,
+            })
+
             send_mail(
                 subject,
                 text_message,
-                settings.DEFAULT_FROM_EMAIL,  # Using the email address from settings
-                [useremail],
-                fail_silently=False,  # Do not fail silently, raise exceptions on errors
-                html_message=html_message  # The HTML content
+                settings.DEFAULT_FROM_EMAIL,
+                [receiver_email],
+                fail_silently=False,
+                html_message=html_message
             )
-            return JsonResponse({'status': 'success', 'message': 'Email sent successfully','invite_link':invite_url})
+            
+            invitation = Invitation(
+                user=request.user,
+                mail_sendername=request.user.username,
+                mail_receiver_name=receiver_name,
+                mail_receiver_email=receiver_email,
+                mail_receiver_phonenumber=receiver_phone,
+                mail_receiver_position=receiver_position
+            )
+            invitation.save()
+            
+            return JsonResponse({'status': 'success', 'message': 'Email sent successfully', 'invite_link': invite_url})
         except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+            response_data = {'message': str(e)}
+            return JsonResponse({'error': response_data}, status=500)
 
-    return render(request, 'invclc/admin_acess.html',context)
+    return render(request, 'invclc/admin_acess.html', context)
 
 
 def invite_user(request):
@@ -1834,79 +1822,136 @@ def invite_user(request):
     username = request.GET.get('username')
     useremail = request.GET.get('useremail')
     userphonenumber = request.GET.get('userphonenumber')
-    
+
+    print("user_position : ", user_position)
+    print("sender_name : ", sender_name)
+    print("username : ", username)
+    print("useremail : ", useremail)
+
     if request.method == "POST":
-        data = json.loads(request.body)
+        try:
+            data = json.loads(request.body)
+            print("Data : ", data)
 
-        new_username = data.get('new_username')
-        new_useremail = data.get('new_useremail')
-        new_userphonenumber = data.get('new_userphonenumber')
-        new_userpassword = data.get('new_userpassword')
-        new_userconfirmpassword = data.get('new_userconfirmpassword')
-        new_userpin = data.get('new_userpin')
-        new_usertype = data.get('new_usertype')
-        new_userothertype = data.get('new_userothertype')
-        new_userposition = data.get('new_userposition')
+            new_username = data.get('new_username')
+            new_useremail = data.get('new_useremail')
+            new_userphonenumber = data.get('new_userphonenumber')
+            new_userpassword = data.get('new_userpassword')
+            new_userconfirmpassword = data.get('new_userconfirmpassword')
+            new_userpin = data.get('new_userpin')
+            new_usertype = data.get('new_usertype')
+            new_userothertype = data.get('new_userothertype')
+            new_userposition = data.get('new_userposition')
 
-        if new_userpassword != new_userconfirmpassword:
-            return JsonResponse({'status': 'error', 'field': 'new_userconfirmpassword', 'message': 'Passwords do not match'})
+            if new_userpassword != new_userconfirmpassword:
+                return JsonResponse({'status': 'error', 'field': 'new_userconfirmpassword', 'message': 'Passwords do not match'})
 
-        # Check if the username or email already exists
-        if CustomUser.objects.filter(username=new_username).exists():
-            return JsonResponse({'status': 'error', 'field': 'new_username', 'message': 'Username already exists'})
-        
-        if CustomUser.objects.filter(email=new_useremail).exists():
-            return JsonResponse({'status': 'error', 'field': 'new_useremail', 'message': 'Email already exists'})
+            if CustomUser.objects.filter(username=new_username).exists():
+                return JsonResponse({'status': 'error', 'field': 'new_username', 'message': 'Username already exists'})
 
-        # Hash the password
-        hashed_password = make_password(new_userconfirmpassword)
+            if CustomUser.objects.filter(email=new_useremail).exists():
+                return JsonResponse({'status': 'error', 'field': 'new_useremail', 'message': 'Email already exists'})
 
-        # Save the new user with the hashed password
-        newUser = CustomUser(
-            username=new_username,
-            password=hashed_password,
-            email=new_useremail,
-            phone_num=new_userphonenumber,
-            pin=new_userpin,
-            store_type=new_usertype,
-            other_value=new_userothertype,
-            position=new_userposition,
-            is_staff = True,
-        )
+            hashed_password = make_password(new_userconfirmpassword)
 
-        newUser.save()
+            newUser = CustomUser(
+                username=new_username,
+                password=hashed_password,
+                email=new_useremail,
+                phone_num=new_userphonenumber,
+                pin=new_userpin,
+                store_type=new_usertype,
+                other_value=new_userothertype,
+                position=new_userposition,
+                is_staff=True if new_userposition == 'Admin' else False
+            )
 
-        # Add user to the group and assign permissions
-        user_group, created = Group.objects.get_or_create(name="Admin Group")
+            newUser.save()
 
-        # Define permissions for different models
-        models_and_permissions = [
-            (DeletedInvoice, ['view_deletedinvoice', 'delete_deletedinvoice']),
-            (Invoice, ['add_invoice', 'view_invoice', 'change_invoice', 'delete_invoice']),
-            (ModifiedInvoice, ['view_modifiedinvoice', 'delete_modifiedinvoice']),
-            (TrackingPayment, ['view_trackingpayment', 'delete_trackingpayment']),
-        ]
+            # Fetch the sender user object
+            try:
+                sender_user = CustomUser.objects.get(username=sender_name)
+            except CustomUser.DoesNotExist:
+                return JsonResponse({'status': 'error', 'field': 'sendername', 'message': 'Sender does not exist'})
 
-        for model, perms in models_and_permissions:
-            content_type = ContentType.objects.get_for_model(model)
-            for perm in perms:
-                permission = Permission.objects.get(codename=perm)
-                user_group.permissions.add(permission)
+            notify = Notification(
+                sender=sender_user,
+                receiver=newUser,
+                is_read=True,
+                request_status=True,
+            )
+            notify.save()
 
-        # Assign the user to the group
-        
-        newUser.groups.add(user_group)
-        newUser.save()
+            # Handling collaborator requests and group assignments
+            collaborator_requests = Notification.objects.filter(receiver=request.user, is_read=True)
 
-        # Send a welcome email to the user
-        subject = 'Welcome to MedRegia!'
-        message = render_to_string('authentication/welcome_email.html', {'user': newUser})
-        email_from = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [newUser.email]
-        send_mail(subject, message, email_from, recipient_list)
+            if collaborator_requests.exists():
+                for collaborator in collaborator_requests:
+                    receiver = collaborator.receiver
+                    sender = collaborator.sender
 
-        messages.success(request, f"New User Created with {new_username}")
-        return JsonResponse({'status': 'success', 'redirect_url': reverse('login')})
+                    if request.user == receiver:
+                        admin_group = Group.objects.get(name='Admin Group')
+                        receiver.groups.remove(admin_group)
+
+                        receiver.is_staff = False
+                        receiver.position = collaborator.position
+                        receiver.save()
+
+                        collaborator.is_read = True
+
+                        grand_accesses = Invoice.objects.filter(user=receiver)
+                        tracking_access = TrackingPayment.objects.filter(user=receiver)
+
+                        for grand_access in grand_accesses:
+                            grand_access.user = sender
+                            grand_access.save()
+
+                        for tracking in tracking_access:
+                            tracking.user = sender
+                            tracking.save()
+
+                        sender.save()
+                        collaborator.save()
+
+                        messages.success(request, f"You have become a collaborator with {sender.username}.")
+                    else:
+                        messages.error(request, "You are not authorized to become an admin.")
+            else:
+                messages.error(request, "There are no pending collaborator requests.")
+
+            if new_userposition == 'Admin':
+                user_group, created = Group.objects.get_or_create(name="Admin Group")
+
+                models_and_permissions = [
+                    (DeletedInvoice, ['view_deletedinvoice', 'delete_deletedinvoice']),
+                    (Invoice, ['add_invoice', 'view_invoice', 'change_invoice', 'delete_invoice']),
+                    (ModifiedInvoice, ['view_modifiedinvoice', 'delete_modifiedinvoice']),
+                    (TrackingPayment, ['view_trackingpayment', 'delete_trackingpayment']),
+                ]
+
+                for model, perms in models_and_permissions:
+                    content_type = ContentType.objects.get_for_model(model)
+                    for perm in perms:
+                        permission = Permission.objects.get(codename=perm)
+                        user_group.permissions.add(permission)
+
+                newUser.groups.add(user_group)
+                newUser.save()
+
+                subject = 'Welcome to MedRegia!'
+                message = render_to_string('authentication/welcome_email.html', {'user': newUser})
+                email_from = settings.DEFAULT_FROM_EMAIL
+                recipient_list = [newUser.email]
+                send_mail(subject, message, email_from, recipient_list)
+
+                messages.success(request, f"New User Created with {new_username}")
+                return JsonResponse({'status': 'success', 'redirect_url': reverse('login')})
+
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
 
     context = {
         'userposition': user_position,
@@ -1915,8 +1960,9 @@ def invite_user(request):
         'useremail': useremail,
         'userphonenumber': userphonenumber,
     }
-    
+
     return render(request, 'invite_user.html', context)
+
 
 
 @require_POST

@@ -106,11 +106,8 @@ class Person(models.Model):
 class Notification(models.Model):
     sender = models.ForeignKey(CustomUser, related_name='sent_notifications', on_delete=models.CASCADE)
     receiver = models.ForeignKey(CustomUser, related_name='received_notifications', on_delete=models.CASCADE)
-    phonenumber = models.CharField(max_length = 15,null=True)
-    email = models.EmailField(null=True)
-    message = models.TextField()
-    position = models.CharField(max_length = 20,null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    message = models.TextField(default = "Notification")
     is_read = models.BooleanField(default=False)
     request_status = models.BooleanField(default = True)
     class Meta:
@@ -118,4 +115,15 @@ class Notification(models.Model):
     
     def __str__(self):
         return f"Notification from {self.sender.username} to {self.receiver.username}"
+    
+class AddUsers(models.Model):
+    sender_name = models.CharField(max_length = 30)
+    receiver_name = models.CharField(max_length = 30)
+    email = models.EmailField(null=True,unique= True)
+    phonenumber = models.CharField(max_length = 15,null=True,unique = True)
+    message = models.TextField(default = "Notification")
+    position = models.CharField(max_length = 20,null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    status = models.BooleanField(default = True)
     

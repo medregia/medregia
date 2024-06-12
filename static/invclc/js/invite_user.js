@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = form.querySelector('input[name="new_userpassword"]').value;
         const confirmPassword = form.querySelector('input[name="new_userconfirmpassword"]').value;
         const pin = form.querySelector('input[name="new_userpin"]').value;
+        const position = form.querySelector('input[name="new_userposition"]').value;
   
         // Validate phone number
         if (phoneNumber.length > 10) {
@@ -75,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
+            console.log("Data :",data)
             if (data.status === 'error') {
                 // Display the error message below the respective field
                 const errorField = document.getElementById(`${data.field}-error`);

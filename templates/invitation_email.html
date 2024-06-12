@@ -75,13 +75,14 @@
         </div>
         <div class="content">
             <p>Dear {{ user_name }},</p>
-            <p>You have been invited by <strong style="color:orange;">{{ sender_name }}</strong> to join our platform as a <strong style="color:orange;">{{ user_position }}</strong>. Please use the following details to access your account.</p>
+            <p>You have been invited by <strong style="color:orange;">{{ sender_name }}</strong> to join our platform as a <strong style="color:orange;">{{ position }}</strong>. Please use the following details to access your account.</p>
 
             <p>Best regards,</p>
             <p>The MedregiA Team</p>
+            {{signup_url}}
             <div class="redirect-button">
-                <a href="{{ signup_url }}"><button type="button">Connect to MedregiA</button></a>
-            </div>
+                <button type="button" onclick="location.href='{{ signup_url }}'">Connect to MedregiA</button>
+            </div>            
         </div>
         <div class="footer">
             <p>If you have any questions, please contact us at <a href="mailto:{{ sender_mail }}">{{ sender_mail }}</a>.</p>

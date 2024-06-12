@@ -72,6 +72,7 @@ class Invitation(models.Model):
     mail_receiver_name = models.CharField(max_length = 20)
     mail_receiver_email = models.EmailField()
     mail_receiver_phonenumber = models.CharField(max_length=15)
+    mail_receiver_position = models.CharField(max_length=15 ,null=True)
 
 @receiver(pre_delete, sender=Invoice)
 def delete_tracking_payments(sender, instance, **kwargs):
