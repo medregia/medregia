@@ -461,36 +461,54 @@ def get_states(request):
 
 @login_required(login_url='/')
 def confirm_admin(request):
+    # Get the unread notifications for the logged-in user
     collaborator_requests = Notification.objects.filter(receiver=request.user, is_read=False)
-    admin_manager = CustomUser.objects.get(username=request.user)
+
+    # If there are collaborator requests
     if collaborator_requests.exists():
         for collaborator in collaborator_requests:
             receiver = collaborator.receiver
             sender = collaborator.sender
             
-            grand_accesses = Invoice.objects.filter(user__username=sender.username)
-            tracking_access = TrackingPayment.objects.filter(user__username = sender.username)
-            
-            if request.user.username == receiver.username:
+            # Check if the logged-in user is the receiver
+            if request.user == receiver:
+                # Remove the receiver from the 'Admin Group'
                 admin_group = Group.objects.get(name='Admin Group')
-                sender.groups.remove(admin_group)
-                sender.is_staff = False
+                receiver.groups.remove(admin_group)
+                
+                # Set the receiver's is_staff status to False
+                receiver.is_staff = False
+                receiver.position = collaborator.position
+                receiver.save()
+
+                # Mark the notification as read
                 collaborator.is_read = True
+                
+                # Get the receiver's invoices and tracking payments
+                grand_accesses = Invoice.objects.filter(user=receiver)
+                tracking_access = TrackingPayment.objects.filter(user=receiver)
+                
+                # Update the user field to the sender
                 for grand_access in grand_accesses:
-                    grand_access.user = receiver
+                    grand_access.user = sender
                     grand_access.save()
                     
                 for tracking in tracking_access:
-                    tracking.user = receiver
+                    tracking.user = sender
                     tracking.save()
+                    
+                # Save the updated sender and collaborator
                 sender.save()
-                collaborator.save()                
-                messages.success(request, f"You have become a collaborator with {sender}.")
-                request_user = CustomUser.objects.get(username=sender)
+                collaborator.save()
+                
+                # Success message
+                messages.success(request, f"You have become a collaborator with {sender.username}.")
                 
             else:
+                # Error message if the logged-in user is not the receiver
                 messages.error(request, "You are not authorized to become an admin.")
     else:
+        # Error message if there are no pending collaborator requests
         messages.error(request, "There are no pending collaborator requests.")
     
     return redirect('index')
