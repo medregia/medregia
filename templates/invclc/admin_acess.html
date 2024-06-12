@@ -109,7 +109,7 @@
             <h2>Admin Access</h2>
             <div class="form-group">
                 <label for="adminUser">Admin User</label>
-                <input type="text" id="adminUser" name="adminUser" value="{{request.user}}" disabled>
+                <input type="text" id="adminUser" name="adminUser" value="{{user_username}}" disabled>
             </div>
             <div class="form-group">
                 <label for="phoneNumber">Phone Number</label>
@@ -123,13 +123,21 @@
                 <label for="pin">Pin</label>
                 <input type="text" id="pin" name="pin">
             </div> {% endcomment %}
-            <div class="form-group">
-                <a href="{% url 'password_change' %}"><button type="button">Change Password</button></a>    
-            </div>
-            <div class="form-group">
-                <a href="{% url 'change_pin' %}"><button type="button">Change Pin</button></a>
-            </div>
 
+            <h2>Current User Access </h2>
+
+            <div class="current-user-pass">
+                <div class="form-group">
+                    <a href="{% url 'password_change' %}"><button type="button">Change Password</button></a>    
+                </div>
+                <div class="form-group">
+                    <a href="{% url 'change_pin' %}"><button type="button">Change Pin</button></a>
+                </div>
+            </div>
+            
+            {% if checked_username == currentUser %}
+            
+            {% else %}
             <div class="add-user">
                 <form method="post" action="#" id="add_userForm">
                     {% csrf_token %}
@@ -162,6 +170,7 @@
                     </div>
                 </form>
             </div>    
+            {% endif %}
         </aside>
         
     </main>    
