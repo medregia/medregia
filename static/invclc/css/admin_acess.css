@@ -456,3 +456,43 @@ label {
     justify-content: space-evenly;
     align-items: center;
 }
+
+
+
+
+.users{
+    min-height: 26vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px 10px;
+  }
+  
+  .users_table {
+    max-height: 20vh;
+    width: 90%;
+    overflow-y: auto; /* Change to 'auto' to only show scrollbar when needed */
+  }
+  
+  .users_table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  
+  .users_table td {
+    border: 1px solid #d3d1d1;
+    height: 30px;
+    text-align: center;
+    padding: 0;
+  }
+  
+  .users_table th {
+    border: 1px solid #d3d1d1;
+    height: 30px;
+    background-color: #dbd9d9;
+    position: sticky;
+    top: 0;
+  }
