@@ -62,16 +62,22 @@
             <h2><a href="{% url 'adminacess' %}" style="color:black;font-size:1.4rem">{{ medicalname.MedicalShopName  }}</a></h2>
         {% endif %}
       </div>
-
+        {% if uniqueid is not None %}
           <div class="unique-code">
             {% if check_user == current_user %}
               <p>UNIQUE-ID :</p><span>{{ uniqueid }}</span>
             {% else %}
                 <p>UNIQUE-ID :</p><span>{{ uniqueid }}</span>
             {% endif %}
-        </div>
+          </div>
+        {% else %}
+          <div class="unique-code">
+            <p>UNIQUE-ID : </p><span>{{request.user}} -  Please Update Your profile </span>
+          </div>
+        {% endif %}
+        
                        
-        </div>
+      </div>
   
         <div class="header-bottom">
           <form id="invoiceForm" method="post">

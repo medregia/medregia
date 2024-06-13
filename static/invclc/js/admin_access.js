@@ -77,9 +77,74 @@
 
 
 
-document.getElementById('copy_button').addEventListener('click', function() {
+document.addEventListener('DOMContentLoaded', () => {
+    const addBtn = document.getElementById('add_btn');
+    const whatsappLink = document.getElementById('id_Whatsapp_link');
+    const messages = document.querySelector('.alert-message');
+
+    messages.textContent = "";
+    addBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const addUserForm = document.getElementById('add_userForm');
+        const form_data = new FormData(addUserForm);
+        const data = Object.fromEntries(form_data.entries());
+        const fields = document.querySelectorAll(".input-field");
+
+        messages.textContent = "Generating a Link ";
+        messages.style.color = "green";
+        messages.classList.remove('alert-success', 'alert-error', 'shake');
+
+        for (const [key, value] of Object.entries(data)) {
+            if (!value) {
+                messages.textContent = `${key.replace('_', ' ')} cannot be empty.`;
+                messages.style.color = "red";
+                return;
+            }
+        }
+
+        try {
+            const response = await fetch('/adminacess/', {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFTOKEN": data.csrfmiddlewaretoken,
+                },
+                body: JSON.stringify(data),
+            });
+
+            messages.textContent = "";
+            messages.style.color = ""; // Reset the color
+
+            if (response.ok) {
+                const responseData = await response.json();
+                whatsappLink.value = responseData.invite_link;
+                messages.textContent = "Link Generated "
+                messages.classList.add('alert-success');
+                messages.classList.remove('shake');
+
+                console.log("Success");
+                console.log("Response: ", responseData);
+            } else {
+                console.log("Failed");
+                const errorData = await response.json();
+                console.error('Error:', errorData);
+                messages.textContent = "Mail sending failed. Please try again.";
+                messages.classList.add('alert-error', 'shake');
+                messages.classList.remove('alert-success');
+            }
+        } catch (error) {
+            console.warn(error);
+            messages.textContent = `An error occurred. Please try again ${error}`;
+            messages.classList.add('alert-error', 'shake');
+            messages.classList.remove('alert-success');
+        }
+    });
+
+
+    document.getElementById('copy_button').addEventListener('click', function() {
     const input = document.getElementById('id_Whatsapp_link');
-    const whatsappStatus = document.querySelector(".mail-status");
+    const whatsappStatus = document.querySelector(".alert-message");
     input.select();
     input.setSelectionRange(0, 99999); // For mobile devices
 
@@ -96,84 +161,10 @@ document.getElementById('copy_button').addEventListener('click', function() {
             whatsappStatus.style.color="red";
         });
     } 
-    // else {
-    //     document.execCommand('copy');
-    //     alert('Link copied: ' + input.value);
-    // }
+    else {
+        document.execCommand('copy');
+        alert('Link copied: ');
+    }
+});
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const addUserButton = document.getElementById('add_btn');
-    const addUserForm = document.getElementById('add_userForm');
-    const whatsappLink = document.getElementById('id_Whatsapp_link');
-
-
-    addUserButton.addEventListener('click', (e) => {
-        e.preventDefault();  // Prevent default form submission
-
-        let addFormData = new FormData(addUserForm);
-        let addData = Object.fromEntries(addFormData.entries());
-        const messages = document.querySelector(".alert-message");
-        const fields = document.querySelectorAll(".input-field");
-
-        messages.textContent = "";
-        messages.classList.remove('alert-success', 'alert-error', 'shake');
-
-        fetch('/adminacess/', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": addData.csrfmiddlewaretoken  // Ensure correct header name
-            },
-            body: JSON.stringify(addData)  // Convert addData to JSON string
-        })
-        .then(response => {
-            return response.json().then(data => {
-                if (!response.ok) {
-                    throw new Error(data.error.message || 'An error occurred');
-                }
-                return data;
-            });
-        })
-        .then(data => {
-            messages.textContent = data.message || 'User added successfully';
-            messages.classList.add('alert-success');
-            messages.classList.remove('shake');
-            whatsappLink.value = data.invite_link;
-            console.log(data.invite_link)
-
-            fields.forEach(field => {
-                field.value = "";
-            });
-            if (document.querySelector('[name="add_position"]').value === "") {
-                document.querySelector('[name="add_position"]').value = "Admin";
-            }
-            if (document.querySelector('[name="add_email"]').value === ""){
-                document.querySelector('[name="add_email"]').value = "@gmail.com";
-            }
-            console.log(data);
-        })
-        .catch(err => {
-            messages.textContent = err.message || 'An error occurred';
-            messages.classList.add('alert-error', 'shake');
-            messages.classList.remove('alert-success');
-            
-            setTimeout(() => {
-                fields.forEach(field => {
-                    field.value = "";
-                });
-                if (document.querySelector('[name="add_position"]').value === "") {
-                    document.querySelector('[name="add_position"]').value = "Admin";
-                }
-
-                if (document.querySelector('[name="add_email"]').value === ""){
-                document.querySelector('[name="add_email"]').value = "@gmail.com";
-                }
-            }, 3000);
-            console.error("Error:", err);
-        })
-        .finally(() => {
-            messages.style.display = 'block'; // Show the message
-        });
-    });
-});

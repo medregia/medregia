@@ -418,8 +418,8 @@ def index_view(request):
     profile.temporaryNo = RegisterUserTempNo(current_user)
     profile.save()
     
+    unique_id = f"{request.user} - Please Update Your Profile"
     userCode = senderName if str(request.user) == checked_username else request.user
-    
     try:
         unique_code = Person.objects.get(user=userCode)
         unique_id = unique_code.UniqueId
