@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser,StateModel, DistrictModel, Person,Notification
+from .models import CustomUser,StateModel, DistrictModel, Person,Notification,AddUsers
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
@@ -57,9 +57,13 @@ class NotificationAdmin(admin.ModelAdmin):
     model = Notification
     list_display = ('sender','receiver','message','timestamp','is_read','request_status')
     
+class AddUsersAdmin(admin.ModelAdmin):
+    model = AddUsers
+    list_display = ('sender_name','receiver_name','email','phonenumber')
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(StateModel, StateModelAdmin)
 admin.site.register(DistrictModel, DistrictModelAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Notification, NotificationAdmin)
+admin.site.register(AddUsers, AddUsersAdmin)

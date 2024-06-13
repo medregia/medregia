@@ -119,8 +119,8 @@ class Notification(models.Model):
 class AddUsers(models.Model):
     sender_name = models.CharField(max_length = 30)
     receiver_name = models.CharField(max_length = 30)
-    email = models.EmailField(null=True,unique= True)
-    phonenumber = models.CharField(max_length = 15,null=True,unique = True)
+    email = models.EmailField(null=True)
+    phonenumber = models.CharField(max_length = 15,null=True)
     message = models.TextField(default = "Notification")
     position = models.CharField(max_length = 20,null=True)
     timestamp = models.DateTimeField(auto_now_add=True)

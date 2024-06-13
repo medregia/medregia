@@ -79,10 +79,9 @@
 
             <p>Best regards,</p>
             <p>The MedregiA Team</p>
-            {{signup_url}}
             <div class="redirect-button">
-                <button type="button" onclick="location.href='{{ signup_url }}'">Connect to MedregiA</button>
-            </div>            
+                <a href="{{ signup_url }}"><button type="button">Connect to MedregiA</button></a>
+            </div>
         </div>
         <div class="footer">
             <p>If you have any questions, please contact us at <a href="mailto:{{ sender_mail }}">{{ sender_mail }}</a>.</p>

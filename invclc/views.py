@@ -1771,9 +1771,9 @@ def admin_access(request):
 
             subject = "Invitation to Join Our Platform"
             text_message = f"Dear {receiver_name},\n\nYou have been invited to join our platform as {receiver_position}. Please use the following details to access your account.\n\nBest regards,\nThe Team"
-            base_signup_url = '127.0.0.1:8000/invite/'
+            base_signup_url = 'http://127.0.0.1:8000/invite/'
             query_params = urlencode({
-                'sendername': request.user.username,
+                'sendername': request.user,
                 'username': receiver_name,
                 'useremail': receiver_email,
                 'userphonenumber': receiver_phone,
@@ -1784,7 +1784,7 @@ def admin_access(request):
             html_message = render_to_string('invitation_email.html', {
                 'user_name': receiver_name,
                 'sender_mail': settings.DEFAULT_FROM_EMAIL,
-                'sender_name': request.user.username,
+                'sender_name': request.user,
                 'signup_url': invite_url,
                 'position':receiver_position,
             })
@@ -1800,7 +1800,7 @@ def admin_access(request):
             
             invitation = Invitation(
                 user=request.user,
-                mail_sendername=request.user.username,
+                mail_sendername=request.user,
                 mail_receiver_name=receiver_name,
                 mail_receiver_email=receiver_email,
                 mail_receiver_phonenumber=receiver_phone,
@@ -1823,15 +1823,15 @@ def invite_user(request):
     useremail = request.GET.get('useremail')
     userphonenumber = request.GET.get('userphonenumber')
 
-    print("user_position : ", user_position)
-    print("sender_name : ", sender_name)
-    print("username : ", username)
-    print("useremail : ", useremail)
+    print("user_position:", user_position)
+    print("sender_name:", sender_name)
+    print("username:", username)
+    print("useremail:", useremail)
 
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            print("Data : ", data)
+            print("Data:", data)
 
             new_username = data.get('new_username')
             new_useremail = data.get('new_useremail')
@@ -1842,6 +1842,7 @@ def invite_user(request):
             new_usertype = data.get('new_usertype')
             new_userothertype = data.get('new_userothertype')
             new_userposition = data.get('new_userposition')
+            new_sendername = data.get('new_sendername')
 
             if new_userpassword != new_userconfirmpassword:
                 return JsonResponse({'status': 'error', 'field': 'new_userconfirmpassword', 'message': 'Passwords do not match'})
@@ -1851,6 +1852,13 @@ def invite_user(request):
 
             if CustomUser.objects.filter(email=new_useremail).exists():
                 return JsonResponse({'status': 'error', 'field': 'new_useremail', 'message': 'Email already exists'})
+
+            # Fetch the sender user object
+            try:
+                sender_user = CustomUser.objects.get(username=new_sendername)
+                print(sender_user)
+            except CustomUser.DoesNotExist:
+                return JsonResponse({'status': 'error', 'field': 'sendername', 'message': 'Sender does not exist'})
 
             hashed_password = make_password(new_userconfirmpassword)
 
@@ -1867,12 +1875,6 @@ def invite_user(request):
             )
 
             newUser.save()
-
-            # Fetch the sender user object
-            try:
-                sender_user = CustomUser.objects.get(username=sender_name)
-            except CustomUser.DoesNotExist:
-                return JsonResponse({'status': 'error', 'field': 'sendername', 'message': 'Sender does not exist'})
 
             notify = Notification(
                 sender=sender_user,
@@ -1920,6 +1922,7 @@ def invite_user(request):
             else:
                 messages.error(request, "There are no pending collaborator requests.")
 
+            print('new_userposition:', new_userposition)
             if new_userposition == 'Admin':
                 user_group, created = Group.objects.get_or_create(name="Admin Group")
 
@@ -1962,6 +1965,7 @@ def invite_user(request):
     }
 
     return render(request, 'invite_user.html', context)
+
 
 
 

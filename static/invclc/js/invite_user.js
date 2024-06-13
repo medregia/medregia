@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('user-details-form');
+    const inviteBtn = document.getElementById('invite_userBtn');
   
     const pinField = form.querySelector('input[name="new_userpin"]');
     pinField.addEventListener('input', function() {
@@ -8,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
   
-    form.addEventListener('submit', function(event) {
+    inviteBtn.addEventListener('click', function(event) {
         event.preventDefault();  // Prevent the form from submitting the traditional way
   
         // Clear previous error messages
@@ -115,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const isValid = hasUpperCase && hasLowerCase && hasNumbers && isLongEnough;
         return { isValid, suggestions };
     }
-  });
+});
   
   function toggleEdit(fieldId) {
     const inputField = document.getElementById(fieldId);
