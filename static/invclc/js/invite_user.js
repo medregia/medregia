@@ -15,8 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clear previous error messages
         document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
   
-        let hasError = false;
-  
         // Get input values
         const phoneNumber = form.querySelector('input[name="new_userphonenumber"]').value;
         const password = form.querySelector('input[name="new_userpassword"]').value;
@@ -27,30 +25,26 @@ document.addEventListener('DOMContentLoaded', function() {
         // Validate phone number
         if (phoneNumber.length > 10) {
             document.getElementById('new_userphonenumber-error').textContent = 'Phone number cannot exceed 10 digits.';
-            hasError = true;
+            return;
         }
   
         // Validate password match
         if (password !== confirmPassword) {
             document.getElementById('new_userconfirmpassword-error').textContent = 'Passwords do not match. Please try again.';
-            hasError = true;
+            return;
         }
   
         // Validate password strength
         const passwordValidation = validatePasswordStrength(password);
         if (!passwordValidation.isValid) {
             document.getElementById('new_userpassword-error').textContent = `Password is not strong enough. Suggestions: ${passwordValidation.suggestions.join(', ')}`;
-            hasError = true;
+            return;
         }
   
         // Validate PIN length
         if (pin.length !== 4) {
             document.getElementById('new_userpin-error').textContent = 'PIN must be exactly 4 digits.';
-            hasError = true;
-        }
-  
-        if (hasError) {
-            return;  // Stop form submission
+            return;
         }
   
         // Enable all disabled form fields before collecting data
@@ -75,16 +69,24 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(data)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
-            console.log("Data :",data)
             if (data.status === 'error') {
                 // Display the error message below the respective field
                 const errorField = document.getElementById(`${data.field}-error`);
                 if (errorField) {
                     errorField.textContent = data.message;
-                } else {
+                }
+                 else {
+                    // Handle unexpected error fields
                     console.error(`Error field ${data.field}-error not found`);
+                    console.log(data.message)
+                    alert(`An error occurred: ${data.message}`);
                 }
             } else if (data.status === 'success') {
                 // Redirect on success
@@ -93,13 +95,16 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch((error) => {
             console.error('Error:', error);
-            // Handle error - show error message to user
+            alert('An error occurred: ' + error.message);
         })
         .finally(() => {
             // Re-disable the fields after data is collected
             disabledFields.forEach(field => field.disabled = true);
         });
     });
+});
+
+
   
     function validatePasswordStrength(password) {
         const suggestions = [];
@@ -116,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const isValid = hasUpperCase && hasLowerCase && hasNumbers && isLongEnough;
         return { isValid, suggestions };
     }
-});
   
   function toggleEdit(fieldId) {
     const inputField = document.getElementById(fieldId);

@@ -1816,6 +1816,158 @@ def admin_access(request):
     return render(request, 'invclc/admin_acess.html', context)
 
 
+# def invite_user(request):
+#     user_position = request.GET.get('userposition')
+#     sender_name = request.GET.get('sendername')
+#     username = request.GET.get('username')
+#     useremail = request.GET.get('useremail')
+#     userphonenumber = request.GET.get('userphonenumber')
+
+#     print("user_position:", user_position)
+#     print("sender_name:", sender_name)
+#     print("username:", username)
+#     print("useremail:", useremail)
+
+#     if request.method == "POST":
+#         try:
+#             data = json.loads(request.body)
+#             print("Data:", data)
+
+#             new_username = data.get('new_username')
+#             new_useremail = data.get('new_useremail')
+#             new_userphonenumber = data.get('new_userphonenumber')
+#             new_userpassword = data.get('new_userpassword')
+#             new_userconfirmpassword = data.get('new_userconfirmpassword')
+#             new_userpin = data.get('new_userpin')
+#             new_usertype = data.get('new_usertype')
+#             new_userothertype = data.get('new_userothertype')
+#             new_userposition = data.get('new_userposition')
+#             new_sendername = data.get('new_sendername')
+
+#             if new_userpassword != new_userconfirmpassword:
+#                 return JsonResponse({'status': 'error', 'field': 'new_userconfirmpassword', 'message': 'Passwords do not match'})
+
+#             if CustomUser.objects.filter(username=new_username).exists():
+#                 return JsonResponse({'status': 'error', 'field': 'new_username', 'message': 'Username already exists'})
+
+#             if CustomUser.objects.filter(email=new_useremail).exists():
+#                 return JsonResponse({'status': 'error', 'field': 'new_useremail', 'message': 'Email already exists'})
+
+#             # Fetch the sender user object
+#             try:
+#                 sender_user = CustomUser.objects.get(username=new_sendername)
+#                 print(sender_user)
+#             except CustomUser.DoesNotExist:
+#                 return JsonResponse({'status': 'error', 'field': 'sendername', 'message': 'Sender does not exist'})
+
+#             hashed_password = make_password(new_userconfirmpassword)
+
+#             newUser = CustomUser(
+#                 username=new_username,
+#                 password=hashed_password,
+#                 email=new_useremail,
+#                 phone_num=new_userphonenumber,
+#                 pin=new_userpin,
+#                 store_type=new_usertype,
+#                 other_value=new_userothertype,
+#                 position=new_userposition,
+#                 is_staff=True if new_userposition == 'Admin' else False
+#             )
+
+#             newUser.save()
+
+#             notify = Notification(
+#                 sender=sender_user,
+#                 receiver=newUser,
+#                 is_read=True,
+#                 request_status=True,
+#             )
+#             notify.save()
+
+#             # Handling collaborator requests and group assignments
+#             collaborator_requests = Notification.objects.filter(receiver=request.user, is_read=True)
+
+#             if collaborator_requests.exists():
+#                 for collaborator in collaborator_requests:
+#                     receiver = collaborator.receiver
+#                     sender = collaborator.sender
+
+#                     if request.user == receiver:
+#                         admin_group = Group.objects.get(name='Admin Group')
+#                         receiver.groups.remove(admin_group)
+
+#                         receiver.is_staff = False
+#                         receiver.position = collaborator.position
+#                         receiver.save()
+
+#                         collaborator.is_read = True
+
+#                         grand_accesses = Invoice.objects.filter(user=receiver)
+#                         tracking_access = TrackingPayment.objects.filter(user=receiver)
+
+#                         for grand_access in grand_accesses:
+#                             grand_access.user = sender
+#                             grand_access.save()
+
+#                         for tracking in tracking_access:
+#                             tracking.user = sender
+#                             tracking.save()
+
+#                         sender.save()
+#                         collaborator.save()
+
+#                         messages.success(request, f"You have become a collaborator with {sender.username}.")
+#                     else:
+#                         messages.error(request, "You are not authorized to become an admin.")
+#             else:
+#                 messages.error(request, "There are no pending collaborator requests.")
+
+#             print('new_userposition:', new_userposition)
+#             if new_userposition == 'Admin':
+#                 user_group, created = Group.objects.get_or_create(name="Admin Group")
+
+#                 models_and_permissions = [
+#                     (DeletedInvoice, ['view_deletedinvoice', 'delete_deletedinvoice']),
+#                     (Invoice, ['add_invoice', 'view_invoice', 'change_invoice', 'delete_invoice']),
+#                     (ModifiedInvoice, ['view_modifiedinvoice', 'delete_modifiedinvoice']),
+#                     (TrackingPayment, ['view_trackingpayment', 'delete_trackingpayment']),
+#                 ]
+
+#                 for model, perms in models_and_permissions:
+#                     content_type = ContentType.objects.get_for_model(model)
+#                     for perm in perms:
+#                         permission = Permission.objects.get(codename=perm)
+#                         user_group.permissions.add(permission)
+
+#                 newUser.groups.add(user_group)
+#                 newUser.save()
+
+#                 subject = 'Welcome to MedRegia!'
+#                 message = render_to_string('authentication/welcome_email.html', {'user': newUser})
+#                 email_from = settings.DEFAULT_FROM_EMAIL
+#                 recipient_list = [newUser.email]
+#                 send_mail(subject, message, email_from, recipient_list)
+
+#                 messages.success(request, f"New User Created with {new_username}")
+#                 return JsonResponse({'status': 'success', 'redirect_url': reverse('login')})
+
+#         except json.JSONDecodeError:
+#             return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'})
+#         except Exception as e:
+#             return JsonResponse({'status': 'error', 'message': str(e)})
+
+#     context = {
+#         'userposition': user_position,
+#         'sendername': sender_name,
+#         'username': username,
+#         'useremail': useremail,
+#         'userphonenumber': userphonenumber,
+#     }
+
+#     return render(request, 'invite_user.html', context)
+
+
+
 def invite_user(request):
     user_position = request.GET.get('userposition')
     sender_name = request.GET.get('sendername')
@@ -1823,16 +1975,12 @@ def invite_user(request):
     useremail = request.GET.get('useremail')
     userphonenumber = request.GET.get('userphonenumber')
 
-    print("user_position:", user_position)
-    print("sender_name:", sender_name)
-    print("username:", username)
-    print("useremail:", useremail)
+
 
     if request.method == "POST":
         try:
+            # Extract data from JSON request body
             data = json.loads(request.body)
-            print("Data:", data)
-
             new_username = data.get('new_username')
             new_useremail = data.get('new_useremail')
             new_userphonenumber = data.get('new_userphonenumber')
@@ -1844,9 +1992,11 @@ def invite_user(request):
             new_userposition = data.get('new_userposition')
             new_sendername = data.get('new_sendername')
 
+            # Validate password match
             if new_userpassword != new_userconfirmpassword:
                 return JsonResponse({'status': 'error', 'field': 'new_userconfirmpassword', 'message': 'Passwords do not match'})
 
+            # Check if username or email already exists
             if CustomUser.objects.filter(username=new_username).exists():
                 return JsonResponse({'status': 'error', 'field': 'new_username', 'message': 'Username already exists'})
 
@@ -1856,13 +2006,14 @@ def invite_user(request):
             # Fetch the sender user object
             try:
                 sender_user = CustomUser.objects.get(username=new_sendername)
-                print(sender_user)
             except CustomUser.DoesNotExist:
-                return JsonResponse({'status': 'error', 'field': 'sendername', 'message': 'Sender does not exist'})
+                return JsonResponse({'status': 'error', 'field': 'new_sendername', 'message': 'Sender does not exist'})
 
+            # Hash the password
             hashed_password = make_password(new_userconfirmpassword)
 
-            newUser = CustomUser(
+            # Create the new CustomUser object
+            new_user = CustomUser.objects.create(
                 username=new_username,
                 password=hashed_password,
                 email=new_useremail,
@@ -1871,36 +2022,36 @@ def invite_user(request):
                 store_type=new_usertype,
                 other_value=new_userothertype,
                 position=new_userposition,
-                is_staff=True if new_userposition == 'Admin' else False
+                is_staff= True if new_userposition == 'Admin' else False
             )
 
-            newUser.save()
+            # Save the new user
+            new_user.save()
 
+            # Create notification
             notify = Notification(
                 sender=sender_user,
-                receiver=newUser,
+                receiver=new_user,
                 is_read=True,
                 request_status=True,
             )
             notify.save()
 
-            # Handling collaborator requests and group assignments
-            collaborator_requests = Notification.objects.filter(receiver=request.user, is_read=True)
+            print("Request User : ", new_username)
+            # Handle collaborator requests and group assignments
+            collaborator_requests = Notification.objects.filter(receiver=new_username, is_read=True)
 
             if collaborator_requests.exists():
                 for collaborator in collaborator_requests:
                     receiver = collaborator.receiver
                     sender = collaborator.sender
 
-                    if request.user == receiver:
+                    if new_username == receiver:
                         admin_group = Group.objects.get(name='Admin Group')
                         receiver.groups.remove(admin_group)
-
                         receiver.is_staff = False
                         receiver.position = collaborator.position
                         receiver.save()
-
-                        collaborator.is_read = True
 
                         grand_accesses = Invoice.objects.filter(user=receiver)
                         tracking_access = TrackingPayment.objects.filter(user=receiver)
@@ -1914,16 +2065,16 @@ def invite_user(request):
                             tracking.save()
 
                         sender.save()
+                        collaborator.is_read = True
                         collaborator.save()
 
-                        messages.success(request, f"You have become a collaborator with {sender.username}.")
                     else:
                         messages.error(request, "You are not authorized to become an admin.")
             else:
                 messages.error(request, "There are no pending collaborator requests.")
 
-            print('new_userposition:', new_userposition)
-            if new_userposition == 'Admin':
+            # Assign user to admin group with specific permissions
+            if new_userposition == 'Admin' and new_user.is_staff == True:
                 user_group, created = Group.objects.get_or_create(name="Admin Group")
 
                 models_and_permissions = [
@@ -1939,23 +2090,27 @@ def invite_user(request):
                         permission = Permission.objects.get(codename=perm)
                         user_group.permissions.add(permission)
 
-                newUser.groups.add(user_group)
-                newUser.save()
+                new_user.groups.add(user_group)
+                new_user.save()
 
+                # Send welcome email
                 subject = 'Welcome to MedRegia!'
-                message = render_to_string('authentication/welcome_email.html', {'user': newUser})
+                message = render_to_string('authentication/welcome_email.html', {'user': new_user})
                 email_from = settings.DEFAULT_FROM_EMAIL
-                recipient_list = [newUser.email]
+                recipient_list = [new_user.email]
                 send_mail(subject, message, email_from, recipient_list)
 
                 messages.success(request, f"New User Created with {new_username}")
                 return JsonResponse({'status': 'success', 'redirect_url': reverse('login')})
+
+            return JsonResponse({'status': 'success', 'message': 'User created successfully'})
 
         except json.JSONDecodeError:
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'})
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
 
+    # If GET or any other method, handle as needed
     context = {
         'userposition': user_position,
         'sendername': sender_name,
@@ -1963,9 +2118,7 @@ def invite_user(request):
         'useremail': useremail,
         'userphonenumber': userphonenumber,
     }
-
     return render(request, 'invite_user.html', context)
-
 
 
 

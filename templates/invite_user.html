@@ -28,7 +28,7 @@
         <div class="input-container">
             <input type="text" id="sendername" value="{{sendername}}" name="new_sendername" disabled>
         </div>
-        <span class="error-message" id="sendername-error"></span>
+        <span class="error-message" id="new_sendername-error"></span>
       </div>
 
 
@@ -90,21 +90,7 @@
         <input type="text" id="othertype" name="new_userothertype">
         <span class="error-message" id="new_userothertype-error"></span>
       </div>
-
-
-      {% comment %} <div class="form-group">
-        <label for="userposition">User Position</label>
-        <div class="input-container">
-          <select id="user-position" required name="new_userposition">
-            <option value=""> Select </option>
-            <option value="Admin">Admin</option>
-            <option value="Senior">Senior</option>
-            <option value="Member">Member</option>
-          </select>
-        </div>
-        <span class="error-message" id="new_userposition-error"></span>
-      </div> {% endcomment %}
-
+      
       <button type="submit" id="invite_userBtn">Submit</button>
     </form>
   </div>
