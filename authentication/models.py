@@ -110,6 +110,8 @@ class Notification(models.Model):
     message = models.TextField(default = "Notification")
     is_read = models.BooleanField(default=False)
     request_status = models.BooleanField(default = True)
+    position = models.CharField(max_length = 20,null=True)
+        
     class Meta:
         unique_together = ('sender', 'receiver')
     

@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
+            console.log("Getting a Data : ",data)
             if (data.status === 'error') {
                 // Display the error message below the respective field
                 const errorField = document.getElementById(`${data.field}-error`);
