@@ -1697,16 +1697,17 @@ def admin_access(request):
         user_data = sender_name if checked_username == str(request.user) else request.user
         get_all_invoice = Invoice.objects.filter(user=user_data)
 
-        if not get_all_invoice.exists():
-            context['error'] = "No invoices found for the user."
-            return render(request, 'your_template.html', context)
-
         try:
             current_user = get_object_or_404(CustomUser, username=user_data)
             context['user_phone'] = current_user.phone_num
             context['user_username'] = current_user.username
-        except Exception:
+            context['user_position'] = current_user.position
+        except Exception as e:
             context['user_phone'] = None
+            context['user_username'] = None
+
+        if not get_all_invoice.exists():
+            context['error'] = "No invoices found for the user."
 
         for idx, invoice in enumerate(get_all_invoice, start=1):
             try:
@@ -1789,14 +1790,14 @@ def admin_access(request):
                 'position':receiver_position,
             })
 
-            send_mail(
-                subject,
-                text_message,
-                settings.DEFAULT_FROM_EMAIL,
-                [receiver_email],
-                fail_silently=False,
-                html_message=html_message
-            )
+            # send_mail(
+            #     subject,
+            #     text_message,
+            #     settings.DEFAULT_FROM_EMAIL,
+            #     [receiver_email],
+            #     fail_silently=False,
+            #     html_message=html_message
+            # )
             
             invitation = Invitation(
                 user=request.user,

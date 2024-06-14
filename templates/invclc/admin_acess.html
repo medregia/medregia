@@ -50,7 +50,7 @@
                         <td><div class="input-container"><input type="text" value="{{ row.temp_no }}" disabled></div></td>
                         <td><div class="input-container"><input type="text" value="{{ row.unique_no }}" disabled></div></td>
                         {% if row.generate_link %}
-                            <td><button type="button" class="openPopup link-btn" title="User not Found in Database">Invite</button></td>
+                            <td><button type="button" class="inviteUser link-btn" title="User not Found in Database">Invite</button></td>
                         {% else %}
                             <td style="color:green;font-size:24px;" title="User Found in Database">&#10003;</td>
                         {% endif %}
@@ -104,20 +104,20 @@
                         </thead>
                         <tbody>   
                             <tr>
-                                <td>murugan</td>
-                                <td>admin</td>
+                                <td>{{user_username}}</td>
+                                <td>{{user_position}}</td>
                             </tr>
                             <tr>
-                                <td>murugan</td>
-                                <td>admin</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
-                                <td>murugan</td>
-                                <td>admin</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             <tr>
-                                <td>murugan</td>
-                                <td>admin</td>
+                                <td></td>
+                                <td></td>
                             </tr>  
                         </tbody>
                     </table>    

@@ -91,11 +91,11 @@ def signup_view(request):
             user.groups.add(user_group)
             user.save()
             
-            subject = 'Welcome to MedRegia !'
-            message = render_to_string('authentication/welcome_email.html', {'user': user})
-            email_from = settings.DEFAULT_FROM_EMAIL
-            recipient_list = [user.email]
-            send_mail(subject, message, email_from, recipient_list)
+            # subject = 'Welcome to MedRegia !'
+            # message = render_to_string('authentication/welcome_email.html', {'user': user})
+            # email_from = settings.DEFAULT_FROM_EMAIL
+            # recipient_list = [user.email]
+            # send_mail(subject, message, email_from, recipient_list)
 
             messages.success(request, "Signup Success")
             return redirect("/")
@@ -342,16 +342,17 @@ def profile_view(request):
         # messages.error(request, "Error: Duplicate entry for Drug License Number")
         # return redirect("profile") 
 
-    existing_admin = Notification.objects.filter(sender=request.user,is_read=True, request_status=True)
+    existing_admin = Notification.objects.filter(receiver=request.user,is_read=True, request_status=True)
     existing_admin_optional = Notification.objects.filter(sender=request.user,is_read=True, request_status=False)
     
     if existing_admin.exists():
-        admin_data = CustomUser.objects.get(username=existing_admin.first().receiver)
+        admin_data = CustomUser.objects.get(username=existing_admin.first().sender)
         admin_name = admin_data.username
         admin_ph = admin_data.phone_num
+        admin_position = admin_data.position
         
     elif existing_admin_optional.exists():
-        admin_data = CustomUser.objects.get(username=request.user)
+        admin_data = CustomUser.objects.get(username=request.user)  
         admin_name = admin_data.username
         admin_ph = admin_data.phone_num
     else:
@@ -395,6 +396,7 @@ def profile_view(request):
         'data': profile,
         'admin_name': admin_name,
         'admin_ph': admin_ph,
+        'admin_position':admin_position,
         'sendShopName': sendShopName,
     }
     

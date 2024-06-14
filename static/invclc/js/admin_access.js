@@ -142,6 +142,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
+
+    const inviteUsers = document.querySelectorAll('.inviteUser');
+    inviteUsers.forEach(inviteUser => {
+        inviteUser.addEventListener('click', () => {
+            alert("We will update it soon");
+        });
+    });
+
+
     document.getElementById('copy_button').addEventListener('click', function() {
     const input = document.getElementById('id_Whatsapp_link');
     const whatsappStatus = document.querySelector(".alert-message");

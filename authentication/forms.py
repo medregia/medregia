@@ -22,7 +22,7 @@ class SignUpForm(UserCreationForm):
     store_type = forms.ChoiceField(choices=STORE_TYPES)
     other_value = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'placeholder':'Categories'}), required=False)
 
-    email = forms.EmailField(max_length=200, help_text='Required', widget=forms.EmailInput(attrs={'placeholder': 'Enter your email'}))
+    email = forms.EmailField(max_length=200, help_text='Required', widget=forms.EmailInput(attrs={'placeholder': 'Enter your email','value':'@gmail.com'}))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password'}))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Repeat your password'}))
 
