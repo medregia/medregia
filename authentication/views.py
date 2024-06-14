@@ -142,6 +142,9 @@ def phone_login_view(request):
 
 @login_required(login_url='/')
 def profile_view(request):
+
+    checked_username = None
+
     BASE_DIR = settings.BASE_DIR
 
     try:
@@ -201,40 +204,31 @@ def profile_view(request):
     existing_admin = None
     
     profile = Person.objects.get(user=current_user)
+
+    try:
+        # Get all notifications sent to the current user that have been read
+        read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
+        for notification in read_notifications:
+            sender_username = notification.sender.username
+            receiver_username = notification.receiver.username
+            
+            staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
+            for user in staff_senders:
+                sender = user.username
+                try:
+                    sender_name = CustomUser.objects.get(username=sender, is_staff=True)
+                    receiver_name = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+
+                    if receiver_name and sender_name:
+                        checked_username = receiver_name.username
+                except Exception as user_error:
+                    messages.error(request, user_error)
+    except Exception as general_error:  
+        messages.error(request, f"Something went wrong while exporting JSON: {general_error}")
     
     if request.method == "POST": 
         data = json.loads(request.body)
-        # receiver_name = data.get('adminName',None)
-        # # print(data)
-        # try:
-        #     if receiver_name is not None:
-        #         receiver = CustomUser.objects.get(username=receiver_name)
-        #         if receiver and receiver_name is not None:
-        #             if receiver == request.user:
-        #                 response_data = {'message': 'Cannot Send Request to Yourself', 'adminName': receiver_name}
-        #                 # return redirect("profile")
-        #                 return JsonResponse({'error': response_data}, status=500)
-
-        #             # Check if the sender has already sent a request to the receiver
-        #             existing_request = Notification.objects.filter(sender=request.user, receiver=receiver).exists()
-        #             if existing_request:
-        #                 response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
-        #                 # messages.error(request, f'You have already sent a request to this receiver {receiver_name}.')
-        #                 # return redirect("profile")
-        #                 return JsonResponse({'error': response_data}, status=500)
-
-        #             admin = Notification(sender=request.user, receiver=receiver, message="User Request")
-        #             admin.save()
-        #             response_data = {'message': 'Request successfully received', 'adminName': receiver_name}
-        #             return JsonResponse(response_data)
-
-        #         else:   
-        #             response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
-        #             # messages.error(request, "Admin Request Not Sent")
-        #             # return redirect("profile")
-        #     else:
-        #         response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
-                
                     
         check_person = Person.objects.get(user=request.user)
         if profile and check_person:
@@ -281,6 +275,8 @@ def profile_view(request):
                     # return JsonResponse({'errors': errors}, status=405)
                 else:
                     profile.DrugLiceneseNumber1 = data.get('DrugLiceneseNumber1')  
+
+                    
             state_id = data.get('state')
             district_id = data.get('district')
             districtKey = data.get('districtkey')
@@ -344,6 +340,9 @@ def profile_view(request):
     admin_position = None
     existing_admin = Notification.objects.filter(receiver=request.user,is_read=True, request_status=True)
     existing_admin_optional = Notification.objects.filter(sender=request.user,is_read=True, request_status=False)
+
+    checkUser = sender_name if checked_username == str(request.user) else request.user
+    colaborator = Notification.objects.filter(sender=checkUser,is_read = True)
     
     if existing_admin.exists():
         admin_data = CustomUser.objects.get(username=existing_admin.first().sender)
@@ -398,6 +397,7 @@ def profile_view(request):
         'admin_ph': admin_ph,
         'admin_position':admin_position,
         'sendShopName': sendShopName,
+        'colaborator':colaborator,
     }
     
     return render(request, 'authentication/profile.html', context)

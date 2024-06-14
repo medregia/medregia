@@ -96,29 +96,31 @@
             <div class="users">
                 <h2>Users</h2>
                 <div class="users_table">
-                    
-                    <table>
-                        <thead>
-                            <th>Users Name</th>
-                            <th>position</th>
-                        </thead>
-                        {% if colaborator%}
-                            <tbody>   
-                                {% if colaborators in colaborator %}
-                                    {{colaborators}}
+                    {% if colaborator %}
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Users Name</th>
+                                    <th>Position</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if user_username and admin_position %}
                                     <tr>
-                                        <td>{{colaborators.sender}}</td>
-                                        <td>{{colaborators.user.position}}</td>
+                                        <td>{{user_username}}</td>
+                                        <td>{{admin_position}}</td>
                                     </tr>
                                 {% endif %}
-                                
+                                {% for colaborators in colaborator %}
+                                <tr>
+                                    <td>{{ colaborators.receiver }}</td>
+                                    <td>{{ colaborators.position }}</td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
-
-                        {% else %}
-                            
-                        {% endif %}
-                        
-                    </table>    
+                        </table>
+                    {% endif %}
+                    
                 </div>
             </div>
 
