@@ -341,7 +341,7 @@ def profile_view(request):
             return JsonResponse({'success': False})
         # messages.error(request, "Error: Duplicate entry for Drug License Number")
         # return redirect("profile") 
-
+    admin_position = None
     existing_admin = Notification.objects.filter(receiver=request.user,is_read=True, request_status=True)
     existing_admin_optional = Notification.objects.filter(sender=request.user,is_read=True, request_status=False)
     

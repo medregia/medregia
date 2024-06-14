@@ -96,30 +96,28 @@
             <div class="users">
                 <h2>Users</h2>
                 <div class="users_table">
-                
+                    
                     <table>
                         <thead>
                             <th>Users Name</th>
                             <th>position</th>
                         </thead>
-                        <tbody>   
-                            <tr>
-                                <td>{{user_username}}</td>
-                                <td>{{user_position}}</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                            </tr>  
-                        </tbody>
+                        {% if colaborator%}
+                            <tbody>   
+                                {% if colaborators in colaborator %}
+                                    {{colaborators}}
+                                    <tr>
+                                        <td>{{colaborators.sender}}</td>
+                                        <td>{{colaborators.user.position}}</td>
+                                    </tr>
+                                {% endif %}
+                                
+                            </tbody>
+
+                        {% else %}
+                            
+                        {% endif %}
+                        
                     </table>    
                 </div>
             </div>

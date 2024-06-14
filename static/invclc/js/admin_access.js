@@ -123,18 +123,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 messages.classList.add('alert-success');
                 messages.classList.remove('shake');
 
-                console.log("Success");
-                console.log("Response: ", responseData);
+                console.info("Success");
+                // console.log("Response: ", responseData);
             } else {
-                console.log("Failed");
+                console.error("Failed");
                 const errorData = await response.json();
-                console.error('Error:', errorData);
-                messages.textContent = "Mail sending failed. Please try again.";
+                // console.error('Error:', errorData);
+                messages.textContent = `Mail sending failed. Please try again. ${errorData.error.message}`;
                 messages.classList.add('alert-error', 'shake');
                 messages.classList.remove('alert-success');
             }
         } catch (error) {
-            console.warn(error);
+            console.error(error);
             messages.textContent = `An error occurred. Please try again ${error}`;
             messages.classList.add('alert-error', 'shake');
             messages.classList.remove('alert-success');

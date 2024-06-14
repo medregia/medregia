@@ -1696,15 +1696,25 @@ def admin_access(request):
     try:
         user_data = sender_name if checked_username == str(request.user) else request.user
         get_all_invoice = Invoice.objects.filter(user=user_data)
+        colaborator = Notification.objects.filter(receiver=user_data)
 
+        print("user_data : ",user_data)
         try:
             current_user = get_object_or_404(CustomUser, username=user_data)
+            colaborator = get_object_or_404(Notification, sender=user_data)
+
             context['user_phone'] = current_user.phone_num
             context['user_username'] = current_user.username
             context['user_position'] = current_user.position
+            context['colaborator'] = colaborator
+
+            print("coloborator : ",colaborator)
+
         except Exception as e:
+            print("Error : ",e)
             context['user_phone'] = None
             context['user_username'] = None
+            context['user_position'] = None
 
         if not get_all_invoice.exists():
             context['error'] = "No invoices found for the user."
@@ -1790,14 +1800,14 @@ def admin_access(request):
                 'position':receiver_position,
             })
 
-            # send_mail(
-            #     subject,
-            #     text_message,
-            #     settings.DEFAULT_FROM_EMAIL,
-            #     [receiver_email],
-            #     fail_silently=False,
-            #     html_message=html_message
-            # )
+            send_mail(
+                subject,
+                text_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [receiver_email],
+                fail_silently=False,
+                html_message=html_message
+            )
             
             invitation = Invitation(
                 user=request.user,
