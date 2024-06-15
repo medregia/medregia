@@ -142,4 +142,5 @@ class RegisterMedicals(models.Model):
     Medical_name = models.CharField(max_length=50)
     dl_number1 = models.CharField(max_length=30)
     dl_number2 = models.CharField(max_length=30)
+    UniqueId = models.CharField(max_length = 30 , null=True)
     medical_timestamp = models.DateTimeField(auto_now_add=True)

@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q,F
 from django.utils import timezone
-from authentication.models import CustomUser,Person,Notification,AddUsers
+from authentication.models import CustomUser,Person,Notification,AddUsers,RegisterMedicals
 from datetime import datetime
 import csv
 import json
@@ -35,6 +35,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from .utils import generate_tempno,RegisterUserTempNo
+from authentication.service import send_notification
 
 logger = logging.getLogger(__name__)
 def upload_csv(request):
@@ -1998,5 +1999,74 @@ def invite_user(request):
 
 
 @require_POST
-def ConnectMedical(request):
-    pass
+def connect_view(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Refresh the page again.', 'data': None}, status=400)
+
+        name = data.get('name')
+        dl_number1 = data.get('dl_number1')
+        dl_number2 = data.get('dl_number2')
+        unique_number = data.get('unique_number')
+
+        if dl_number1 and dl_number2:
+            if dl_number1 == 'None' and dl_number2 == 'None':
+                return JsonResponse({'message': 'Please enter DL numbers.', 'data': data}, status=400)
+            elif dl_number1 == 'None':
+                return JsonResponse({'message': 'Please enter DL number 1.', 'data': data}, status=400)
+            elif dl_number2 == 'None':
+                return JsonResponse({'message': 'Please enter DL number 2.', 'data': data}, status=400)
+        
+        try:
+            person = Person.objects.get(MedicalShopName=name, DrugLiceneseNumber1=dl_number1, DrugLiceneseNumber2=dl_number2)
+        except Person.DoesNotExist:
+            return JsonResponse({'message': 'No medical shop found with the given name and DL numbers. Click OK to create a new record, or Cancel to abort.',
+                                'data': data,
+                                'status':404},
+                                status=404)
+
+        user_uniqueId = person.UniqueId
+        if user_uniqueId:
+            if user_uniqueId == unique_number:
+                notification_message = 'Collaboration request sent successfully.'
+                send_notification(request.user, person.user, notification_message)
+                return JsonResponse({'message': notification_message})
+            else:
+                return JsonResponse({'message': "Unique ID does not match with user's Unique ID.", 'data': data})
+        else:
+            update_profile_message = 'Please update your profile.'
+            send_notification(request.user, person.user, update_profile_message)
+            return JsonResponse({'message': update_profile_message})
+
+    return JsonResponse({'message': 'Invalid request method.', 'data': None}, status=405)
+
+
+@require_POST
+def create_medical_record(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'message': 'Invalid JSON.'}, status=400)
+
+        name = data.get('name')
+        dl_number1 = data.get('dl_number1')
+        dl_number2 = data.get('dl_number2')
+        unique_number = data.get('unique_number')
+
+        # Create new Person record
+        person = RegisterMedicals.objects.create(
+            Medical_name=name,
+            dl_number1=dl_number1,
+            dl_number2=dl_number2,
+            UniqueId=unique_number
+        )
+        person.save()
+        
+        return JsonResponse({'message': 'New medical record created successfully.'})
+
+    return JsonResponse({'message': 'Invalid request method.'}, status=405)
+
+    

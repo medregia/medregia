@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser,StateModel, DistrictModel, Person,Notification,AddUsers
+from .models import CustomUser,StateModel, DistrictModel, Person,Notification,AddUsers,ConnectMedicals,RegisterMedicals
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
@@ -60,10 +60,21 @@ class NotificationAdmin(admin.ModelAdmin):
 class AddUsersAdmin(admin.ModelAdmin):
     model = AddUsers
     list_display = ('sender_name','receiver_name','email','phonenumber')
+    
+class ConnectMedicalsAdmin(admin.ModelAdmin):
+    model = ConnectMedicals
+    list_display = ('request_sender','request_receiver','is_read','attcept_status','timestamp')
+    
 
+class RegisterMedicalsAdmin(admin.ModelAdmin):
+    model = RegisterMedicals
+    list_display = ('Medical_name','dl_number1','dl_number2','medical_timestamp')
+    
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(StateModel, StateModelAdmin)
 admin.site.register(DistrictModel, DistrictModelAdmin)
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Notification, NotificationAdmin)
 admin.site.register(AddUsers, AddUsersAdmin)
+admin.site.register(ConnectMedicals, ConnectMedicalsAdmin)
+admin.site.register(RegisterMedicals, RegisterMedicalsAdmin)

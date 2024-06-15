@@ -87,83 +87,151 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     });
 
-            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-            function toggleEditIcon(icon) {
-                const row = icon.closest('tr');
-                const type = icon.getAttribute('data-type');
-                const input = row.querySelector(`td:nth-child(${type === 'dl_number1' ? 3 : 4}) input`);
-                if (icon.classList.contains('edit-icon')) {
-                    input.removeAttribute('disabled');
-                    icon.innerHTML = '&#10003;';
-                    icon.classList.remove('edit-icon');
-                    icon.classList.add('save-icon');
-                } else if (icon.classList.contains('save-icon')) {
-                    input.setAttribute('disabled', true);
-                    icon.innerHTML = '&#9998;';
-                    icon.classList.remove('save-icon');
-                    icon.classList.add('edit-icon');
+    function toggleEditIcon(icon) {
+        const row = icon.closest('tr');
+        const type = icon.getAttribute('data-type');
+        const input = row.querySelector(`td:nth-child(${type === 'dl_number1' ? 3 : 4}) input`);
+        if (icon.classList.contains('edit-icon')) {
+            input.removeAttribute('disabled');
+            icon.innerHTML = '&#10003;';
+            icon.classList.remove('edit-icon');
+            icon.classList.add('save-icon');
+        } else if (icon.classList.contains('save-icon')) {
+            input.setAttribute('disabled', true);
+            icon.innerHTML = '&#9998;';
+            icon.classList.remove('save-icon');
+            icon.classList.add('edit-icon');
 
-                    const dl_number1 = row.querySelector('td:nth-child(3) input').value;
-                    const dl_number2 = row.querySelector('td:nth-child(4) input').value;
+            const dl_number1 = row.querySelector('td:nth-child(3) input').value;
+            const dl_number2 = row.querySelector('td:nth-child(4) input').value;
 
-                    const button = row.querySelector('.inviteUser');
-                    const statusIcon = row.querySelector('.icon.disabled');
-                    const inviteBtnStatus = row.querySelector('.icon.button-invite')
-
-                    if (dl_number1 != 'None' && dl_number2 != 'None') {
-                        button.removeAttribute('disabled');
-                        if (inviteBtnStatus) {
-                            inviteBtnStatus.innerHTML = '&#10003;';
-                            inviteBtnStatus.classList.remove('disabled');
-                        }
-                    } else {
-                        button.setAttribute('disabled', true);
-                        if (inviteBtnStatus) {
-                            inviteBtnStatus.innerHTML = '&#10060;';
-                            inviteBtnStatus.classList.add('disabled');
-                        }
-                    }
+            const button = row.querySelector('.inviteUser');
+            const statusIcon = row.querySelector('.icon.disabled');
+            if (dl_number1 && dl_number2) {
+                button.removeAttribute('disabled');
+                if (statusIcon) {
+                    statusIcon.innerHTML = '&#10003;';
+                    statusIcon.classList.remove('disabled');
+                }
+            } else {
+                button.setAttribute('disabled', true);
+                if (statusIcon) {
+                    statusIcon.innerHTML = '&#10060;';
+                    statusIcon.classList.add('disabled');
                 }
             }
+        }
+    }
 
-            document.querySelectorAll('.edit-icon, .save-icon').forEach(icon => {
-                icon.addEventListener('click', function () {
-                    toggleEditIcon(icon);
-                });
+    document.querySelectorAll('.edit-icon, .save-icon').forEach(icon => {
+        icon.addEventListener('click', function () {
+            toggleEditIcon(icon);
+        });
+    });
+
+    document.querySelectorAll('.inviteUser').forEach(button => {
+        button.addEventListener('click', function () {
+            const row = button.closest('tr');
+            const name = row.querySelector('td:nth-child(2) input').value;
+            const dl_number1 = row.querySelector('td:nth-child(3) input').value;
+            const dl_number2 = row.querySelector('td:nth-child(4) input').value;
+            const uniqueNumber = row.querySelector('td:nth-child(7) input').value;
+
+            const data = {
+                name: name,
+                dl_number1: dl_number1,
+                dl_number2: dl_number2,
+                unique_number: uniqueNumber
+            };
+
+            fetch('/connect/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Data : ",data)
+                console.log("Data Data : ",data.data)
+                console.log("status : ",data.status)
+                if (data.status === 404 && data.data) {
+                    showModal(data.message, true, data.data);
+                } else {
+                    showModal(data.message, false);
+                }
+            })
+            .catch((error) => {
+                showModal('Error: ' + error.message, false);
             });
+        });
+    });
 
-            document.querySelectorAll('.inviteUser').forEach(button => {
-                button.addEventListener('click', function () {
-                    const row = button.closest('tr');
-                    const name = row.querySelector('td:nth-child(2) input').value;
-                    const dl_number1 = row.querySelector('td:nth-child(3) input').value;
-                    const dl_number2 = row.querySelector('td:nth-child(4) input').value;
-                    const uniqueNumber = row.querySelector('td:nth-child(7) input').value;
+    function createNewMedicalRecord(data) {
+        fetch('/create_medical/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            showModal('Records are saved successfully.', false);
+        })
+        .catch((error) => {
+            showModal('Error: ' + error.message, false);
+        });
+    }
 
-                    const data = {
-                        name: name,
-                        dl_number1: dl_number1,
-                        dl_number2: dl_number2,
-                        unique_number: uniqueNumber
-                    };
+    function showModal(message, showButtons, data) {
+        const modal = document.getElementById('myModal');
+        const modalMessage = document.getElementById('modal-message');
+        const modalOkButton = document.getElementById('modal-ok-button');
+        const modalCancelButton = document.getElementById('modal-cancel-button');
 
-                    fetch('/connect/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': csrftoken
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Success:', data);
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-                });
-            });
+        modalMessage.textContent = message;
+        modal.style.display = "block";
+
+        if (showButtons) {
+            modalOkButton.style.display = "inline-block";
+            modalCancelButton.style.display = "inline-block";
+
+            modalOkButton.onclick = function() {
+                createNewMedicalRecord(data);
+                modal.style.display = "none";
+            };
+
+            modalCancelButton.onclick = function() {
+                modal.style.display = "none";
+                showModal('Collaboration request failed.', false);
+            };
+        } else {
+            modalOkButton.style.display = "none";
+            modalCancelButton.style.display = "none";
+        }
+    }
+
+    document.querySelector('.close').onclick = function() {
+        const modal = document.getElementById('myModal');
+        modal.style.display = "none";
+    }
+
+    document.getElementById('modal-ok-button').onclick = function() {
+        const modal = document.getElementById('myModal');
+        modal.style.display = "none";
+    }
+
+    document.getElementById('modal-cancel-button').onclick = function() {
+        const modal = document.getElementById('myModal');
+        modal.style.display = "none";
+        showModal('Collaboration request failed.', false);
+    }
+
 });
 
