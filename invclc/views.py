@@ -1696,7 +1696,6 @@ def admin_access(request):
     try:
         user_data = sender_name if checked_username == str(request.user) else request.user
         get_all_invoice = Invoice.objects.filter(user=user_data)
-        print("user_data : ",user_data)
         
         try:
             current_user = get_object_or_404(CustomUser, username=user_data)
@@ -1716,7 +1715,6 @@ def admin_access(request):
             context['user_username'] = None
             context['user_position'] = None
             context['admin_position'] = None
-            print("Error : ",e)
 
         if not get_all_invoice.exists():
             context['error'] = "No invoices found for the user."
@@ -1999,49 +1997,6 @@ def invite_user(request):
     return render(request, 'invite_user.html', context)
 
 
-
 @require_POST
-def AddUser(request):
-    if request.method == "POST": 
-        data = json.loads(request.body)
-        receiver_name = data.get('add_name', None)
-        receiver_email = data.get('add_email', None)
-        receiver_phone = data.get('add_number', None)
-        receiver_position = data.get('add_position', None)
-        
-        try:
-            if receiver_name is not None:
-                receiver = CustomUser.objects.get(username=receiver_name)
-                if receiver and receiver_name is not None:
-                    if receiver == request.user:
-                        response_data = {'message': 'Cannot Send Request to Yourself', 'adminName': receiver_name}
-                        return JsonResponse({'error': response_data}, status=500)
-
-                    # Check if the sender has already sent a request to the receiver
-                    existing_request = Notification.objects.filter(sender=request.user, receiver=receiver).exists()
-                    if existing_request:
-                        response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
-                        return JsonResponse({'error': response_data}, status=500)
-
-                    admin = Notification(
-                        sender=request.user,
-                        receiver=receiver,
-                        message="User Request",
-                        phonenumber=receiver_phone,
-                        email=receiver_email,
-                        position=receiver_position,
-                    )
-                    admin.save()
-                    response_data = {'message': 'Request successfully received', 'adminName': receiver_name}
-                    return JsonResponse(response_data)
-
-                else:   
-                    response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
-                    return JsonResponse({'error': response_data}, status=500)
-            else:
-                response_data = {'message': 'Admin Request Not Sent', 'adminName': receiver_name}
-                return JsonResponse({'error': response_data}, status=500)
-                
-        except Exception as e:
-            response_data = {'message': str(e)}
-            return JsonResponse({'error': response_data}, status=500)
+def ConnectMedical(request):
+    pass

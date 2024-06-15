@@ -129,3 +129,17 @@ class AddUsers(models.Model):
     is_read = models.BooleanField(default=False)
     status = models.BooleanField(default = True)
     
+    
+class ConnectMedicals(models.Model):
+    request_sender = models.ForeignKey(CustomUser, related_name='request_sender', on_delete=models.CASCADE)
+    request_receiver = models.ForeignKey(CustomUser, related_name='request_receiver', on_delete=models.CASCADE)
+    is_read = models.BooleanField(default = False)
+    attcept_status = models.BooleanField(default = True)
+    request_message = models.TextField(null= True , blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+class RegisterMedicals(models.Model):
+    Medical_name = models.CharField(max_length=50)
+    dl_number1 = models.CharField(max_length=30)
+    dl_number2 = models.CharField(max_length=30)
+    medical_timestamp = models.DateTimeField(auto_now_add=True)

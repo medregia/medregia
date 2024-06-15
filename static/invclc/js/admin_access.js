@@ -1,82 +1,3 @@
-// document.addEventListener('DOMContentLoaded', () => {
-//     const openPopupButtons = document.querySelectorAll('.openPopup');
-//     const closePopup = document.getElementById('closePopup');
-//     const popup = document.getElementById('popup');
-//     const sendBtn = document.getElementById('submit_button');
-//     const mailStatus = document.querySelector(".mail-status");
-//     const whatsappLink = document.getElementById('id_Whatsapp_link');
-
-//     openPopupButtons.forEach(button => {
-//         button.addEventListener('click', () => {
-//             popup.style.display = 'block';
-//         });
-//     });
-
-//     closePopup.addEventListener('click', () => {
-//         popup.style.display = 'none';
-//         whatsappLink.value = ""
-//         location.reload()
-//     });
-
-//     sendBtn.addEventListener('click', async function(event) {
-//         event.preventDefault(); // Prevent the default form submission
-        
-//         const sendForm = document.getElementById('add_user');
-//         const sendFormData = new FormData(sendForm);
-//         const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
-
-//         mailStatus.textContent = "Generating Link ...";
-//         mailStatus.style.color = "green";
-
-//         const data = {
-//             username: sendFormData.get('user_name'),
-//             useremail: sendFormData.get('user_email'),
-//             userphone: sendFormData.get('phone_number'),
-//         };
-
-//         for (const [key, value] of Object.entries(data)) {
-//             if (!value) {
-//                 mailStatus.textContent = `${key.replace('_', ' ')} cannot be empty.`;
-//                 mailStatus.style.color = "red";
-//                 return; 
-//             }
-//         }
-
-//         try {
-//             const response = await fetch('/adminacess/', {
-//                 method: "POST",
-//                 headers: {
-//                     "Content-Type": "application/json",
-//                     "X-CSRFTOKEN": csrfToken,
-//                 },
-//                 body: JSON.stringify(data),
-//             });
-
-//             mailStatus.textContent = "";
-//             mailStatus.style.color = ""; // Reset the color
-            
-//             if (response.ok) {
-//                 const responseData = await response.json();
-//                 whatsappLink.value = responseData.invite_link;
-//                 console.log("Success");
-//                 console.log("Response: ", responseData);
-//             } else {
-//                 console.log("Failed");
-//                 const errorData = await response.json();
-//                 console.error('Error:', errorData);
-//                 mailStatus.textContent = "Mail sending failed. Please try again.";
-//                 mailStatus.style.color = "red";
-//             }
-//         } catch (error) {
-//             console.warn(error);
-//             mailStatus.textContent = "An error occurred. Please try again.";
-//             mailStatus.style.color = "red";
-//         }
-//     });
-// });
-
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const addBtn = document.getElementById('add_btn');
     const whatsappLink = document.getElementById('id_Whatsapp_link');
@@ -141,16 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-
-    const inviteUsers = document.querySelectorAll('.inviteUser');
-    inviteUsers.forEach(inviteUser => {
-        inviteUser.addEventListener('click', () => {
-            alert("We will update it soon");
-        });
-    });
-
-
     document.getElementById('copy_button').addEventListener('click', function() {
     const input = document.getElementById('id_Whatsapp_link');
     const whatsappStatus = document.querySelector(".alert-message");
@@ -174,6 +85,85 @@ document.addEventListener('DOMContentLoaded', () => {
         document.execCommand('copy');
         alert('Link copied: ');
     }
-});
+    });
+
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            function toggleEditIcon(icon) {
+                const row = icon.closest('tr');
+                const type = icon.getAttribute('data-type');
+                const input = row.querySelector(`td:nth-child(${type === 'dl_number1' ? 3 : 4}) input`);
+                if (icon.classList.contains('edit-icon')) {
+                    input.removeAttribute('disabled');
+                    icon.innerHTML = '&#10003;';
+                    icon.classList.remove('edit-icon');
+                    icon.classList.add('save-icon');
+                } else if (icon.classList.contains('save-icon')) {
+                    input.setAttribute('disabled', true);
+                    icon.innerHTML = '&#9998;';
+                    icon.classList.remove('save-icon');
+                    icon.classList.add('edit-icon');
+
+                    const dl_number1 = row.querySelector('td:nth-child(3) input').value;
+                    const dl_number2 = row.querySelector('td:nth-child(4) input').value;
+
+                    const button = row.querySelector('.inviteUser');
+                    const statusIcon = row.querySelector('.icon.disabled');
+                    const inviteBtnStatus = row.querySelector('.icon.button-invite')
+
+                    if (dl_number1 != 'None' && dl_number2 != 'None') {
+                        button.removeAttribute('disabled');
+                        if (inviteBtnStatus) {
+                            inviteBtnStatus.innerHTML = '&#10003;';
+                            inviteBtnStatus.classList.remove('disabled');
+                        }
+                    } else {
+                        button.setAttribute('disabled', true);
+                        if (inviteBtnStatus) {
+                            inviteBtnStatus.innerHTML = '&#10060;';
+                            inviteBtnStatus.classList.add('disabled');
+                        }
+                    }
+                }
+            }
+
+            document.querySelectorAll('.edit-icon, .save-icon').forEach(icon => {
+                icon.addEventListener('click', function () {
+                    toggleEditIcon(icon);
+                });
+            });
+
+            document.querySelectorAll('.inviteUser').forEach(button => {
+                button.addEventListener('click', function () {
+                    const row = button.closest('tr');
+                    const name = row.querySelector('td:nth-child(2) input').value;
+                    const dl_number1 = row.querySelector('td:nth-child(3) input').value;
+                    const dl_number2 = row.querySelector('td:nth-child(4) input').value;
+                    const uniqueNumber = row.querySelector('td:nth-child(7) input').value;
+
+                    const data = {
+                        name: name,
+                        dl_number1: dl_number1,
+                        dl_number2: dl_number2,
+                        unique_number: uniqueNumber
+                    };
+
+                    fetch('/connect/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                });
+            });
 });
 
