@@ -138,7 +138,7 @@ def upload_csv(request):
                                     updated_by=row['updated_by']
                                 )
 
-                        
+                        invoice.save()
                         return JsonResponse({'message': 'CSV Data uploaded successfully'})
                     except Exception as e:
                         logger.exception("Error processing CSV file")
@@ -149,9 +149,6 @@ def upload_csv(request):
                 return JsonResponse({'error': 'Form is not valid'}, status=400)
         else:
             return JsonResponse({'error': 'Invalid request'}, status=400)
-    except Exception as e:
-        logger.exception("Error in upload_csv view")
-        return JsonResponse({'error': 'Server error'}, status=500)
 
 
 @login_required(login_url='/')
@@ -386,13 +383,19 @@ def index_view(request):
         for notification in read_notifications:
             # Get the username of the sender of the notification
             sender_username = notification.sender.username
+            print("sender_username : ",sender_username)
+            
             # Get the username of the receiver of the notification (current user)
             receiver_username = notification.receiver.username
+            print("receiver_username : ",receiver_username)
             
             # Find all staff users with the same username as the sender
             staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
+            print("staff_senders : ",staff_senders)
+            
             # Get the non-staff user (current user) with the specified username
             normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
+            print("normal_user : ",normal_user)
             
             # Loop through each staff user with the sender's username
             for user in staff_senders:
@@ -472,18 +475,27 @@ def index_view(request):
 
     try:
         user_to_check = request.user
-
-        userProfile = Person.objects.get(user=user_to_check)
-
-        if (userProfile.MedicalShopName and
-            userProfile.DrugLiceneseNumber1 and
-            userProfile.DrugLiceneseNumber2):
+        userObject = CustomUser.objects.get(username=user_to_check.username)
+        userPosition = userObject.position
+        
+        if userPosition in ['Member', 'Senior']:
             entryDisable = False
         else:
-            entryDisable = True
-    except Person.DoesNotExist:
+            try:
+                userProfile = Person.objects.get(user=user_to_check)
+                if (userProfile.MedicalShopName and
+                    userProfile.DrugLiceneseNumber1 and
+                    userProfile.DrugLiceneseNumber2):
+                    entryDisable = False
+                else:
+                    entryDisable = True
+            except Person.DoesNotExist:
+                entryDisable = True
+                messages.error(request, "Please complete your profile details to access the fields.")
+                
+    except CustomUser.DoesNotExist:
         entryDisable = True
-        messages.error(request, "Please complete your profile details to access the fields.")
+        messages.error(request, "User does not exist.")
 
     
     full_paid =None
@@ -635,20 +647,41 @@ def update_profile(request):
 
             user_to_save = request.user
 
-            # Here you would update the user's profile data in the database
+            # Check for duplicates
+            duplicate_errors = []
+
+            if Person.objects.filter(MedicalShopName=data['pharmacy_name']).exists():
+                duplicate_errors.append('Pharmacy name already exists')
+
+            if Person.objects.filter(DrugLiceneseNumber1=data['dl1']).exists():
+                duplicate_errors.append('Drug license number 1 already exists')
+
+            if Person.objects.filter(DrugLiceneseNumber2=data['dl2']).exists():
+                duplicate_errors.append('Drug license number 2 already exists')
+
+            if duplicate_errors:
+                return JsonResponse({
+                    'success': False,
+                    'message': ' '.join(duplicate_errors)
+                }, status=400)
+
             # Assuming you have a Profile model linked to the User model
-            profile = get_object_or_404(Person,user=user_to_save)
+            profile = get_object_or_404(Person, user=user_to_save)
             profile.MedicalShopName = data['pharmacy_name']
             profile.DrugLiceneseNumber1 = data['dl1']
             profile.DrugLiceneseNumber2 = data['dl2']
             profile.save()
-            messages.success(request,"Data Added Successfully ...")
+            
+            messages.success(request, "Data added successfully.")
             return JsonResponse({'success': True, 'message': 'Profile updated successfully!'})
+
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'message': 'Invalid JSON data'}, status=400)
         except Exception as e:
-            messages.success(request,"Data Added Successfully ...")
+            messages.error(request, "An error occurred while updating the profile.")
             return JsonResponse({'success': False, 'message': str(e)}, status=500)
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method.'}, status=405)
     
 def convert_Medical(shopname):
     
@@ -1742,11 +1775,32 @@ def admin_access(request):
                 })
             except Person.DoesNotExist:
                 temp_no = generate_tempno(invoice.pharmacy_name, invoice.id)
+                check_Medical = None
+                check_dl1 = None
+                check_dl1 = None
+                
+                try:
+                    check_data_medical = RegisterMedicals.objects.filter(Medical_name = invoice.pharmacy_name)
+                    if check_data_medical:
+                        for register_medical in check_data_medical:
+                            check_Medical = register_medical.Medical_name
+                            check_dl1 = register_medical.dl_number1
+                            check_dl2 = register_medical.dl_number2
+                    else:
+                        check_Medical = invoice.pharmacy_name
+                        check_dl1 = None                        
+                        check_dl2 = None
+
+                except RegisterMedicals.DoesNotExist:
+                    check_Medical = invoice.pharmacy_name
+                    check_dl1 = None
+                    check_dl2 = None
+                     
                 table_data.append({
                     's_no': idx,
-                    'name': invoice.pharmacy_name,
-                    'dl_number1': None,
-                    'dl_number2': None,
+                    'name': check_Medical,
+                    'dl_number1': check_dl1,
+                    'dl_number2': check_dl2,
                     'admin_name': None,
                     'temp_no': temp_no,
                     'unique_no': None,

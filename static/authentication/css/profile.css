@@ -811,7 +811,7 @@ label {
 input[type="text"] {
   padding: 10px;
   /* border: none; */
-  border-radius: 5px;
+  /* border-radius: 5px; */
   background-color: #fff;
   color: #333;
 }
