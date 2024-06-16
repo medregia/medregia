@@ -47,9 +47,13 @@
           {% if notify_message %}
           <div id="admin-request-message" class="admin-request"> 
             <div class="admin-body">
-              <h4>User <span>"{{ notify.request_sender }}"</span> Wants to Collaborate with You <span>"{{ notify.request_receiver }}"</span>
-                but PLease Update Your Profile then asscess the request
-              </h4>
+              <h4>User <span>"{{ notify.request_sender }}"</span> Wants to Collaborate with You <span>"{{ notify.request_receiver }}"</span></h4>
+              
+              {% if incomplete_message %}
+                <span>{{incomplete_message}}</span>
+              {% else %}
+                <span>but Pease Update Your Profile then asscess the request</span>
+              {% endif %}
             </div>
           </div>
           {% else %}
