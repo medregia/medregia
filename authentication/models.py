@@ -118,25 +118,16 @@ class Notification(models.Model):
     def __str__(self):
         return f"Notification from {self.sender.username} to {self.receiver.username}"
     
-class AddUsers(models.Model):
-    sender_name = models.CharField(max_length = 30)
-    receiver_name = models.CharField(max_length = 30)
-    email = models.EmailField(null=True)
-    phonenumber = models.CharField(max_length = 15,null=True)
-    message = models.TextField(default = "Notification")
-    position = models.CharField(max_length = 20,null=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=False)
-    status = models.BooleanField(default = True)
-    
-    
 class ConnectMedicals(models.Model):
     request_sender = models.ForeignKey(CustomUser, related_name='request_sender', on_delete=models.CASCADE)
     request_receiver = models.ForeignKey(CustomUser, related_name='request_receiver', on_delete=models.CASCADE)
     is_read = models.BooleanField(default = False)
-    attcept_status = models.BooleanField(default = True)
+    accept_status = models.BooleanField(default = True)
     request_message = models.TextField(null= True , blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Notification from {self.request_sender.username} to {self.request_receiver.username}"
     
 class RegisterMedicals(models.Model):
     Medical_name = models.CharField(max_length=50)

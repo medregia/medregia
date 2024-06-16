@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q,F
 from django.utils import timezone
-from authentication.models import CustomUser,Person,Notification,AddUsers,RegisterMedicals
+from authentication.models import CustomUser,Person,Notification,RegisterMedicals,ConnectMedicals
 from datetime import datetime
 import csv
 import json
@@ -1821,19 +1821,19 @@ def admin_access(request):
 
         try:
             if receiver_name :
-                if AddUsers.objects.filter(sender_name=request.user, receiver_name=receiver_name).exists():
+                if Invitation.objects.filter(mail_sendername=request.user, mail_receiver_name=receiver_name).exists():
                     response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
                     return JsonResponse({'error': response_data}, status=500)
                 else:
-                    admin_notification = AddUsers(
-                        sender_name=request.user,
-                        receiver_name=receiver_name,
-                        message="User Request",
-                        phonenumber=receiver_phone,
-                        email=receiver_email,
-                        position=receiver_position,
+                   invitation = Invitation(
+                        user=request.user,
+                        mail_sendername=request.user,
+                        mail_receiver_name=receiver_name,
+                        mail_receiver_email=receiver_email,
+                        mail_receiver_phonenumber=receiver_phone,
+                        mail_receiver_position=receiver_position
                     )
-                    admin_notification.save()
+                invitation.save()
 
             subject = "Invitation to Join Our Platform"
             text_message = f"Dear {receiver_name},\n\nYou have been invited to join our platform as {receiver_position}. Please use the following details to access your account.\n\nBest regards,\nThe Team"
@@ -1863,16 +1863,6 @@ def admin_access(request):
             #     fail_silently=False,
             #     html_message=html_message
             # )
-            
-            invitation = Invitation(
-                user=request.user,
-                mail_sendername=request.user,
-                mail_receiver_name=receiver_name,
-                mail_receiver_email=receiver_email,
-                mail_receiver_phonenumber=receiver_phone,
-                mail_receiver_position=receiver_position
-            )
-            invitation.save()
             
             return JsonResponse({'status': 'success', 'message': 'Email sent successfully', 'invite_link': invite_url})
         except Exception as e:
@@ -2075,6 +2065,10 @@ def connect_view(request):
         
         try:
             person = Person.objects.get(MedicalShopName=name, DrugLiceneseNumber1=dl_number1, DrugLiceneseNumber2=dl_number2)
+            check_request = ConnectMedicals.objects.filter(request_receiver = person.user,request_sender = request.user)
+            
+            if check_request.exists():
+                return JsonResponse({'message':f'Request Already sent to {person.user.username}'},status = 400)
         except Person.DoesNotExist:
             return JsonResponse({'message': 'No medical shop found with the given name and DL numbers. Click OK to create a new record, or Cancel to abort.',
                                 'data': data,
@@ -2091,8 +2085,7 @@ def connect_view(request):
                 return JsonResponse({'message': "Unique ID does not match with user's Unique ID.", 'data': data})
         else:
             update_profile_message = 'Please update your profile.'
-            send_notification(request.user, person.user, update_profile_message)
-            return JsonResponse({'message': update_profile_message})
+            return send_notification(request.user, person.user, update_profile_message)
 
     return JsonResponse({'message': 'Invalid request method.', 'data': None}, status=405)
 
