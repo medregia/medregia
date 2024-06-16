@@ -9,7 +9,7 @@ urlpatterns = [
     path('phone_login/', views.phone_login_view, name='phone_login'),
     path('signup/', views.signup_view, name='signup'),
     path('logout/', views.logout_view, name='logout'), 
-    path('confirm_admin/',views.confirm_admin, name='confirm_admin'),
+    path('confirm_admin/<str:uniqueid>',views.confirm_admin, name='confirm_admin'),
     path('admin_cancel/',views.admin_cancel, name='admin_cancel'),
     
     # path('home/', views.home_page, name='home'),

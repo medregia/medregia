@@ -14,10 +14,18 @@ def nav_message(request):
         current_user = request.user
         notify_message = None
         incomplete_message = None
+        sender_uniqueId = None
         
         notifications = ConnectMedicals.objects.filter(request_receiver=current_user, is_read=False, accept_status=True)
         
         try:
+            
+            collaborator_requests = ConnectMedicals.objects.filter(request_receiver=request.user, is_read=False).first()
+            if collaborator_requests:
+                get_sender_uniqueId = Person.objects.get(user=collaborator_requests.request_sender)
+                if get_sender_uniqueId:
+                    sender_uniqueId = get_sender_uniqueId.UniqueId
+            
             if notifications.exists():
                 check_profile = Person.objects.get(user=current_user)
                 profile_uniqueId = check_profile.UniqueId
@@ -34,8 +42,16 @@ def nav_message(request):
         except Exception as e:
             messages.error(request, f"Error: {str(e)}")
     else:
-        # If the user is not authenticated, return an empty list of notifications
+        # If the user is not authenticated, return empty values
         notifications = []
         notify_message = None
+        incomplete_message = None
+        sender_uniqueId = None
     
-    return {'notifications': notifications, 'notify_message': notify_message, 'incomplete_message': incomplete_message}
+    return {
+        'notifications': notifications,
+        'notify_message': notify_message,
+        'incomplete_message': incomplete_message,
+        'sender_uniqueId': sender_uniqueId
+    }
+
