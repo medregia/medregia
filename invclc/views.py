@@ -383,36 +383,33 @@ def index_view(request):
         for notification in read_notifications:
             # Get the username of the sender of the notification
             sender_username = notification.sender.username
-            print("sender_username : ",sender_username)
             
             # Get the username of the receiver of the notification (current user)
             receiver_username = notification.receiver.username
-            print("receiver_username : ",receiver_username)
             
             # Find all staff users with the same username as the sender
             staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
-            print("staff_senders : ",staff_senders)
             
-            # Get the non-staff user (current user) with the specified username
-            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
-            print("normal_user : ",normal_user)
-            
-            # Loop through each staff user with the sender's username
-            for user in staff_senders:
-                sender = user.username
+            if staff_senders.exists():
+                # Get the non-staff user (current user) with the specified username
+                normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
+                
+                # Loop through each staff user with the sender's username
+                for user in staff_senders:
+                    sender = user.username
 
-                try:
-                    # Get the staff user with the current username
-                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
-                    # Get the non-staff user (current user)
-                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+                    try:
+                        # Get the staff user with the current username
+                        senderName = CustomUser.objects.get(username=sender, is_staff=True)
+                        # Get the non-staff user (current user)
+                        receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
 
-                    if receiverName and senderName:
-                        # Store the username of the current non-staff user
-                        checked_username = receiverName.username
-                except Exception as user_error:
-                    # Handle exceptions that occur while processing a specific user
-                    messages.error(request, user_error)
+                        if receiverName and senderName:
+                            # Store the username of the current non-staff user
+                            checked_username = receiverName.username
+                    except Exception as user_error:
+                        # Handle exceptions that occur while processing a specific user
+                        messages.error(request, user_error)
     except Exception as general_error:  
         # Handle exceptions that occur while processing notifications
         messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))

@@ -162,7 +162,44 @@
 
             
             {% if checked_username == currentUser %}
-            
+                <div class="add-user">
+                    <form method="post" action="#" id="add_userForm">
+                        {% csrf_token %}
+                        <h2> Add User </h2>
+                        <div class="alert-message" style="display: inline-block; text-align: center;">
+                            
+                        </div>
+                        <div class="Details">
+                            <div class="Details-data">
+                                <label for="id_name">Name:</label>
+                                <input type="text" id="id_addname" name="add_name" class="input-field">
+                            </div>
+                            <div class="Details-data">
+                                <label for="id_email">Email:</label>
+                                <input type="email" id="id_addemail" name="add_email" class="input-field" value="@gmail.com">
+                            </div>
+                            <div class="Details-data">
+                                <label for="id_phone">Phone:</label>
+                                <input type="tel" id="id_addphone" name="add_number" class="input-field">
+                            </div>
+                            <div class="Details-data">
+                                <label for="id_position">Position:</label>
+                                <select id="id_addposition" name="add_position" class="input-field">
+                                    <option value="Admin">Admin</option>
+                                    <option value="Senior">Senior</option>
+                                    <option value="Member">Member</option>
+                                </select>
+                            </div>
+
+                            <div class="Details-data">
+                                <label for="id_Whatsapp_link">Whatsapp link</label>
+                                <input type="text" id="id_Whatsapp_link"  placeholder="Whatsapp link" class="input-field" disabled>
+                                <button type="button" id="copy_button" class="button">&#x1F4CB</button>
+                            </div>
+                            <button type="button" id="add_btn" class="button">Add</button>
+                        </div>
+                    </form>
+                </div>
             {% else %}
             <div class="add-user">
                 <form method="post" action="#" id="add_userForm">

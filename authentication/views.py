@@ -215,17 +215,19 @@ def profile_view(request):
             receiver_username = notification.receiver.username
             
             staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
-            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
-            for user in staff_senders:
-                sender = user.username
-                try:
-                    sender_name = CustomUser.objects.get(username=sender, is_staff=True)
-                    receiver_name = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+            if staff_senders.exists():
+                normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
+                for user in staff_senders:
+                    sender = user.username
+                    try:
+                        sender_name = CustomUser.objects.get(username=sender, is_staff=True)
+                        receiver_name = CustomUser.objects.get(username=normal_user.username, is_staff=False)
 
-                    if receiver_name and sender_name:
-                        checked_username = receiver_name.username
-                except Exception as user_error:
-                    messages.error(request, user_error)
+                        if receiver_name and sender_name:
+                            checked_username = receiver_name.username
+                    except Exception as user_error:
+                        messages.error(request, user_error)
+
     except Exception as general_error:  
         messages.error(request, f"Something went wrong while exporting JSON: {general_error}")
     
