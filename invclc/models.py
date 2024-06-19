@@ -11,7 +11,7 @@ from django.dispatch import receiver
 class Invoice(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
     pharmacy_name = models.CharField(max_length=100)
-    invoice_number = models.CharField(max_length=50, unique=True)
+    invoice_number = models.CharField(max_length=50)
     invoice_date = models.DateField(default=timezone.now)
     invoice_amount = models.DecimalField(max_digits=10, decimal_places=2)
     balance_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)

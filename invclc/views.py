@@ -102,6 +102,8 @@ def upload_csv(request):
                             # Convert string values to integers
                             invoice_amount = int(row['invoice_amount'])
                             payment_amount = int(row['payment_amount'])
+                            invoice_numbers :str = row['invoice_number']
+
                             
                             # Calculate balance amount
                             balance_amount = invoice_amount - payment_amount
@@ -112,6 +114,10 @@ def upload_csv(request):
                             
                             # Create Invoice object for each row in the CSV file
                             if str(request.user) == checked_username :
+                                check_invoice_number = Invoice.objects.filter(user = senderName ,invoice_number = invoice_numbers)
+                                if check_invoice_number.exists():
+                                    return JsonResponse({'error':'This Invoice Already Exists in Your Medical '},status = 400)
+                                
                                 invoice = Invoice.objects.create(
                                     user=senderName ,
                                     pharmacy_name=row['pharmacy_name'],
@@ -125,6 +131,10 @@ def upload_csv(request):
                                     updated_by=row['updated_by']
                                 )
                             else:
+                                check_invoice = Invoice.objects.filter(user = current_user ,invoice_number = invoice_numbers)
+                                if check_invoice.exists():
+                                    return JsonResponse({'error':'This Invoice Already Exists in Your Medical '},status = 400)
+                                
                                 invoice = Invoice.objects.create(
                                     user=current_user,
                                     pharmacy_name=row['pharmacy_name'],
@@ -551,6 +561,7 @@ def index_view(request):
                     'message': 'Invoice amount and payment amount must be numeric'
                 }, status=400)
 
+            
             # Convert invoice_date to YYYY-MM-DD format
             try:
                 invoice_date = datetime.strptime(data['invoice_date'], '%d/%m/%Y').date()
@@ -560,20 +571,41 @@ def index_view(request):
                     'success': False,
                     'message': 'Invoice date must be in DD/MM/YYYY format'
                 }, status=400)
+           
 
-            user_to_save = senderName if checked_username == str(request.user) else request.user
+            if checked_username == str(request.user):
+                check_invoice_number :object = Invoice.objects.filter(user = senderName, invoice_number = data['invoice_number'])
+                if check_invoice_number.exists():
+                    return JsonResponse({'success':False,'message':'This Invoice Number Already Exists in Your Medical'})
+                
+                invoice_data = Invoice(
+                    user=senderName,
+                    pharmacy_name=data['pharmacy_name'],  # Keep as string
+                    invoice_number=data['invoice_number'],
+                    invoice_date=invoice_date,  # Use converted date
+                    invoice_amount=invoice_amount,  # Convert to float or int
+                    payment_amount=payment_amount,  # Convert to float or int
+                    today_date=datetime.now().date(),  # Set to current date
+                    current_time=datetime.now().time(),  # Set to current time
+                )
+                invoice_data.updated_by=request.user
 
-            invoice_data = Invoice(
-                user=user_to_save,
-                pharmacy_name=data['pharmacy_name'],  # Keep as string
-                invoice_number=data['invoice_number'],
-                invoice_date=invoice_date,  # Use converted date
-                invoice_amount=invoice_amount,  # Convert to float or int
-                payment_amount=payment_amount,  # Convert to float or int
-                today_date=datetime.now().date(),  # Set to current date
-                current_time=datetime.now().time(),  # Set to current time
-            )
-            invoice_data.updated_by=request.user
+            else:
+                check_invoice :object = Invoice.objects.filter(user = request.user, invoice_number = data['invoice_number'])
+                if check_invoice.exists():
+                    return JsonResponse({'success':False,'message':'This Invoice Number Already Exists in Your Medical'})
+                
+                invoice_data = Invoice(
+                    user=request.user,
+                    pharmacy_name=data['pharmacy_name'],  # Keep as string
+                    invoice_number=data['invoice_number'],
+                    invoice_date=invoice_date,  # Use converted date
+                    invoice_amount=invoice_amount,  # Convert to float or int
+                    payment_amount=payment_amount,  # Convert to float or int
+                    today_date=datetime.now().date(),  # Set to current date
+                    current_time=datetime.now().time(),  # Set to current time
+                )
+                invoice_data.updated_by=request.user
 
             if entryDisable:
                 messages.error(request,'Please Fill Up the data in Profile Page')
@@ -584,6 +616,8 @@ def index_view(request):
             else:
                 invoice_data.save()
             
+            user_to_save = senderName if checked_username == str(request.user) else request.user
+
             tracking_payment = TrackingPayment(
                 user=user_to_save,
                 Medical_name = data['pharmacy_name'],

@@ -217,7 +217,7 @@ def profile_view(request):
             staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
             if staff_senders.exists():
                 normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
-                for user in staff_senders:
+                for user in staff_senders:  
                     sender = user.username
                     try:
                         sender_name = CustomUser.objects.get(username=sender, is_staff=True)
