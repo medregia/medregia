@@ -165,10 +165,11 @@ def upload_csv(request):
 def exports_to_csv(request):
     checked_username = None
     senderName = None
+
     try:
         # Get all notifications sent to the current user that have been read
         read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
-        
+
         # Loop through each read notification
         for notification in read_notifications:
             # Get the username of the sender of the notification
@@ -196,29 +197,37 @@ def exports_to_csv(request):
                         checked_username = receiverName.username
                 except Exception as user_error:
                     # Handle exceptions that occur while processing a specific user
-                    messages.error(request, user_error)
+                    messages.error(request, str(user_error))
     except Exception as general_error:  
         # Handle exceptions that occur while processing notifications
-        messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
-    
+        messages.error(request, "Something went wrong while exporting CSV: " + str(general_error))
+
     if checked_username == str(request.user):
         try:
             currentuser = request.user
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
-
+                
             writer = csv.writer(response)
-            writer.writerow(['invoice_number','invoice_amount', 'payment_amount','updated_by','updated_date', 'Paid/Pending Status'])
-            for obj in Invoice.objects.filter(user=senderName ):
+            writer.writerow(['invoice_number', 'invoice_amount', 'payment_amount', 'updated_by', 'updated_date', 'Paid/Pending Status'])
+
+            for obj in Invoice.objects.filter(user=senderName):
+                check_invoice_number = Invoice.objects.filter(user=senderName, invoice_number=obj.invoice_number)
+                if check_invoice_number.exists():
+                    messages.error(request, "This Invoice Number already exists")
+                    return HttpResponse(status=400)  # Return an error response
+
                 if obj.balance_amount == 0:
                     status = 'paid'
                 else:
                     status = 'pending'
-                writer.writerow([obj.invoice_number, obj.invoice_amount,obj.payment_amount,obj.updated_by, obj.today_date,  status])
+
+                writer.writerow([obj.invoice_number, obj.invoice_amount, obj.payment_amount, obj.updated_by, obj.today_date, status])
 
             return response
         except Exception as e:
-            return messages.error(request,"Collaborating Error : ", e)
+            messages.error(request, "Error while exporting data: " + str(e))
+            return HttpResponse(status=500)  # Return an error response
     else:
         try:
             currentuser = request.user
@@ -226,17 +235,25 @@ def exports_to_csv(request):
             response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
 
             writer = csv.writer(response)
-            writer.writerow(['invoice_number','invoice_amount', 'payment_amount','updated_by','updated_date', 'Paid/Pending Status'])
-            for obj in Invoice.objects.filter(user=currentuser ):
+            writer.writerow(['invoice_number', 'invoice_amount', 'payment_amount', 'updated_by', 'updated_date', 'Paid/Pending Status'])
+
+            for obj in Invoice.objects.filter(user=currentuser):
+                check_invoice = Invoice.objects.filter(user=currentuser, invoice_number=obj.invoice_number)
+                if check_invoice.exists():
+                    messages.error(request, "This Invoice Number already exists")
+                    return HttpResponse(status=400)  # Return an error response
+
                 if obj.balance_amount == 0:
                     status = 'paid'
                 else:
                     status = 'pending'
-                writer.writerow([obj.invoice_number, obj.invoice_amount,obj.payment_amount,obj.updated_by, obj.today_date,  status])
+
+                writer.writerow([obj.invoice_number, obj.invoice_amount, obj.payment_amount, obj.updated_by, obj.today_date, status])
 
             return response
         except Exception as a:
-            return messages.error(request,"Collaborating Error : ", a)
+            messages.error(request, "Error while exporting data: " + str(a))
+            return HttpResponse(status=500)  # Return an error response
 
 
 def exports_to_xlsx(request):   
@@ -576,7 +593,8 @@ def index_view(request):
             if checked_username == str(request.user):
                 check_invoice_number :object = Invoice.objects.filter(user = senderName, invoice_number = data['invoice_number'])
                 if check_invoice_number.exists():
-                    return JsonResponse({'success':False,'message':'This Invoice Number Already Exists in Your Medical'})
+                    messages.error(request,"This Invoice Number Already Exists in Your Medical")
+                    return JsonResponse({'success':False,'message':'This Invoice Number Already Exists in Your Medical'},status = 400)
                 
                 invoice_data = Invoice(
                     user=senderName,
@@ -593,7 +611,8 @@ def index_view(request):
             else:
                 check_invoice :object = Invoice.objects.filter(user = request.user, invoice_number = data['invoice_number'])
                 if check_invoice.exists():
-                    return JsonResponse({'success':False,'message':'This Invoice Number Already Exists in Your Medical'})
+                    messages.error(request,"This Invoice Number Already Exists in Your Medical")
+                    return JsonResponse({'success':False,'message':'This Invoice Number Already Exists in Your Medical'},status = 400)
                 
                 invoice_data = Invoice(
                     user=request.user,
