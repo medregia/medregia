@@ -576,7 +576,7 @@ def index_view(request):
             if checked_username == str(request.user):
                 check_invoice_number :object = Invoice.objects.filter(user = senderName, invoice_number = data['invoice_number'])
                 if check_invoice_number.exists():
-                    return JsonResponse({'success':False,'message':'This Invoice Number Already Exists in Your Medical'})
+                    return JsonResponse({'success':False,'message':'This Invoice Number Already Exists in Your Medical'},status= 400)
                 
                 invoice_data = Invoice(
                     user=senderName,
@@ -593,7 +593,7 @@ def index_view(request):
             else:
                 check_invoice :object = Invoice.objects.filter(user = request.user, invoice_number = data['invoice_number'])
                 if check_invoice.exists():
-                    return JsonResponse({'success':False,'message':'This Invoice Number Already Exists in Your Medical'})
+                    return JsonResponse({'success':False,'message':'This Invoice Number Already Exists in Your Medical'},status = 400)
                 
                 invoice_data = Invoice(
                     user=request.user,
