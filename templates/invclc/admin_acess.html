@@ -25,17 +25,39 @@
         cursor: not-allowed;
     }
 </style>
-<div id="myModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <p id="modal-message"></p>
-        <button id="modal-ok-button" style="display: none;" class="model-btn">OK</button>
-        <button id="modal-cancel-button" style="display: none;" class="model-btn">Cancel</button>
+    <div class="message-popup" id="message-popup" style="display: none;">
+        <div class="message-header">
+            <h3 class="medical-name"></h3>
+        </div>
+
+        <div class="popup-body">
+            <form id="popup-form">
+                <h4> Please Enter the Following Details to Send Request</h4>
+
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="hidden" name="medicalname" id="medicalname" readonly style="background-color:#d1c9c9;">
+                </div>
+                <div class="form-group">
+                    <label for="dl1">Drug License Number 1</label>
+                    <input type="text" name="dl1" id="dl1" placeholder="DL Number 1">
+                </div>
+                <div class="form-group">
+                    <label for="dl2">Drug License Number 2</label>
+                    <input type="text" name="dl2" id="dl2" placeholder="DL Number 2">
+                </div>
+                <div class="button-group">
+                    <button type="button" id="send-btn" class="btn btn-primary">Send</button>
+                    <button type="button" id="abort-btn" class="btn btn-secondary">Abort</button>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" name="uniqueno" id="uniqueno" readonly style="background-color:#d1c9c9;">
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
     <main class="admin-main-container"> 
-        
         <div class="admin-container">
             <h2>General Access</h2>
             <table class="table-content">
@@ -60,37 +82,25 @@
                         <td>
                             <div class="input-container">
                                 <input type="text" value="{{ row.dl_number1 }}" disabled>
-                                {% if not row.dl_number1 %}
-                                    <span class="icon edit-icon" data-type="dl_number1">&#9998;</span>
-                                {% else %}
-                                    <span class="icon correct-icon" data-type="dl_number1">&#10003;</span>
-                                {% endif %}
                             </div>
                         </td>
                         <td>
                             <div class="input-container">
                                 <input type="text" value="{{ row.dl_number2 }}" disabled>
-                                {% if not row.dl_number2 %}
-                                    <span class="icon edit-icon" data-type="dl_number2">&#9998;</span>
-                                {% else %}
-                                    <span class="icon correct-icon" data-type="dl_number2">&#10003;</span>
-                                {% endif %}
                             </div>
                         </td>
                         <td><div class="input-container"><input type="text" value="{{ row.admin_name }}" disabled></div></td>
                         <td><div class="input-container"><input type="text" value="{{ row.temp_no }}" disabled></div></td>
                         <td><div class="input-container"><input type="text" value="{{ row.unique_no }}" disabled></div></td>
-                        {% if row.generate_link %}
-                            <td><span class="icon disabled button-invite" style="color:red;font-size:24px;">&#215;</span><button type="button" class="inviteUser link-btn">Invite</button></td>
-                        {% else %}
-                            <td><span class="icon button-invite" style="color:green;font-size:24px;">&#10003;<button type="button" class="inviteUser link-btn">Invite</button></td>
-                        {% endif %}
+                        <td><button type="button" class="inviteUser link-btn">Invite</button></td>
                         <td><div class="input-container"><input type="text" value="{{ row.status }}" disabled></div></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+    
+
             
         <aside class="admin-access">
             <h2>Admin Access</h2>

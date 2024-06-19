@@ -89,88 +89,103 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    function toggleEditIcon(icon) {
-        const row = icon.closest('tr');
-        const type = icon.getAttribute('data-type');
-        const input = row.querySelector(`td:nth-child(${type === 'dl_number1' ? 3 : 4}) input`);
-        if (icon.classList.contains('edit-icon')) {
-            input.removeAttribute('disabled');
-            icon.innerHTML = '&#10003;';
-            icon.classList.remove('edit-icon');
-            icon.classList.add('save-icon');
-        } else if (icon.classList.contains('save-icon')) {
-            input.setAttribute('disabled', true);
-            icon.innerHTML = '&#9998;';
-            icon.classList.remove('save-icon');
-            icon.classList.add('edit-icon');
+    const popup = document.getElementById('message-popup');
+    const sendBtn = document.getElementById('send-btn');
+    const abortBtn = document.getElementById('abort-btn');
+    const form = document.getElementById('popup-form');
+    const headerMessage = document.querySelector('.message-header');
 
-            const dl_number1 = row.querySelector('td:nth-child(3) input').value;
-            const dl_number2 = row.querySelector('td:nth-child(4) input').value;
+    let currentRow = null;
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
-            const button = row.querySelector('.inviteUser');
-            const statusIcon = row.querySelector('.icon.disabled');
-            if (dl_number1 && dl_number2) {
-                button.removeAttribute('disabled');
-                if (statusIcon) {
-                    statusIcon.innerHTML = '&#10003;';
-                    statusIcon.classList.remove('disabled');
-                }
+
+    document.querySelectorAll('.inviteUser').forEach(button => {
+        button.addEventListener('click', (event) => {
+            console.log("Clicked")
+            const row = event.target.closest('tr');
+            const MedicalName = row.querySelector('td:nth-child(2) input').value;
+            const dlNumber1 = row.querySelector('td:nth-child(3) input').value;
+            const dlNumber2 = row.querySelector('td:nth-child(4) input').value;
+            const unique_number = row.querySelector('td:nth-child(7) input').value;
+
+            const medicalInput = document.getElementById('medicalname')
+            const UniqueInput = document.getElementById('uniqueno')
+
+
+            if (dlNumber1 === 'None' || dlNumber2 === 'None') {
+                currentRow = row;
+                popup.style.display = 'block';
+                headerMessage.textContent = MedicalName;
+                medicalInput.value = MedicalName;
+                UniqueInput.value = unique_number;
+
             } else {
-                button.setAttribute('disabled', true);
-                if (statusIcon) {
-                    statusIcon.innerHTML = '&#10060;';
-                    statusIcon.classList.add('disabled');
-                }
-            }
-        }
-    }
+                Data = 
+                fetch('/connect/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ medicalName:MedicalName,dl1:dlNumber1, dl2:dlNumber2 ,UniqueNo:unique_number})
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                popup.style.display = 'none';
+                form.reset();
+                currentRow = null;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
 
-    document.querySelectorAll('.edit-icon, .save-icon').forEach(icon => {
-        icon.addEventListener('click', function () {
-            toggleEditIcon(icon);
+            }
         });
     });
 
-    document.querySelectorAll('.inviteUser').forEach(button => {
-        button.addEventListener('click', function () {
-            const row = button.closest('tr');
-            const name = row.querySelector('td:nth-child(2) input').value;
-            const dl_number1 = row.querySelector('td:nth-child(3) input').value;
-            const dl_number2 = row.querySelector('td:nth-child(4) input').value;
-            const uniqueNumber = row.querySelector('td:nth-child(7) input').value;
+    sendBtn.addEventListener('click', () => {
+        const dl1 = form.querySelector('#dl1').value;
+        const dl2 = form.querySelector('#dl2').value;
+        const medicalName = form.querySelector('#medicalname').value;
+        const UniqueNo = form.querySelector('#uniqueno').value
 
-            const data = {
-                name: name,
-                dl_number1: dl_number1,
-                dl_number2: dl_number2,
-                unique_number: uniqueNumber
-            };
+        if (dl1 && dl2) {
+            const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
             fetch('/connect/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken
+                    'X-CSRFToken': csrfToken
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify({ medicalName,dl1, dl2 ,UniqueNo})
             })
             .then(response => response.json())
             .then(data => {
-                console.log("Data : ",data)
-                console.log("Data Data : ",data.data)
-                console.log("status : ",data.status)
-                if (data.status === 404 && data.data) {
-                    showModal(data.message, true, data.data);
-                } else {
-                    showModal(data.message, false);
-                }
+                console.log(data)
+                popup.style.display = 'none';
+                form.reset();
+                currentRow = null;
             })
-            .catch((error) => {
-                showModal('Error: ' + error.message, false);
+            .catch(error => {
+                console.error('Error:', error);
             });
-        });
+        } else {
+            alert('Please enter both DL numbers.');
+        }
     });
 
+    abortBtn.addEventListener('click', () => {
+        popup.style.display = 'none';
+
+        form.reset();
+        currentRow = null;
+        location.reload()
+    });
+
+
+    
     function createNewMedicalRecord(data) {
         fetch('/create_medical/', {
             method: 'POST',
@@ -187,50 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch((error) => {
             showModal('Error: ' + error.message, false);
         });
-    }
-
-    function showModal(message, showButtons, data) {
-        const modal = document.getElementById('myModal');
-        const modalMessage = document.getElementById('modal-message');
-        const modalOkButton = document.getElementById('modal-ok-button');
-        const modalCancelButton = document.getElementById('modal-cancel-button');
-
-        modalMessage.textContent = message;
-        modal.style.display = "block";
-
-        if (showButtons) {
-            modalOkButton.style.display = "inline-block";
-            modalCancelButton.style.display = "inline-block";
-
-            modalOkButton.onclick = function() {
-                createNewMedicalRecord(data);
-                modal.style.display = "none";
-            };
-
-            modalCancelButton.onclick = function() {
-                modal.style.display = "none";
-                showModal('Collaboration request failed.', false);
-            };
-        } else {
-            modalOkButton.style.display = "none";
-            modalCancelButton.style.display = "none";
-        }
-    }
-
-    document.querySelector('.close').onclick = function() {
-        const modal = document.getElementById('myModal');
-        modal.style.display = "none";
-    }
-
-    document.getElementById('modal-ok-button').onclick = function() {
-        const modal = document.getElementById('myModal');
-        modal.style.display = "none";
-    }
-
-    document.getElementById('modal-cancel-button').onclick = function() {
-        const modal = document.getElementById('myModal');
-        modal.style.display = "none";
-        showModal('Collaboration request failed.', false);
     }
 
 });

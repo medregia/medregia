@@ -2100,10 +2100,12 @@ def connect_view(request):
         except json.JSONDecodeError:
             return JsonResponse({'message': 'Refresh the page again.', 'data': None}, status=400)
 
-        name = data.get('name')
-        dl_number1 = data.get('dl_number1')
-        dl_number2 = data.get('dl_number2')
-        unique_number = data.get('unique_number')
+        name = data.get('medicalName')
+        dl_number1 = data.get('dl1')
+        dl_number2 = data.get('dl2')
+        unique_number = data.get('UniqueNo')
+        
+        print("data : ",data)
 
         if dl_number1 and dl_number2:
             if dl_number1 == 'None' and dl_number2 == 'None':
@@ -2113,17 +2115,17 @@ def connect_view(request):
             elif dl_number2 == 'None':
                 return JsonResponse({'message': 'Please enter DL number 2.', 'data': data}, status=400)
         
+        print("outside")
         try:
-            person = Person.objects.get(MedicalShopName=name, DrugLiceneseNumber1=dl_number1, DrugLiceneseNumber2=dl_number2)
-            check_request = ConnectMedicals.objects.filter(request_receiver = person.user,request_sender = request.user)
+            print("inside")
             
-            if check_request.exists():
-                return JsonResponse({'message':f'Request Already sent to {person.user.username}'},status = 400)
+            person = Person.objects.get(MedicalShopName__iexact=name, DrugLiceneseNumber1=dl_number1, DrugLiceneseNumber2=dl_number2)
+
         except Person.DoesNotExist:
             return JsonResponse({'message': 'No medical shop found with the given name and DL numbers. Click OK to create a new record, or Cancel to abort.',
                                 'data': data,
                                 'status':404},
-                                status=404)
+                                status=400)
 
         user_uniqueId = person.UniqueId
         if user_uniqueId:
