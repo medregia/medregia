@@ -96,6 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('popup-form');
     const headerMessage = document.querySelector('.message-header');
 
+    const registerContainer = document.querySelector(".register-medicals");
+    const registerh3 = document.querySelector(".register-medicals h3");
+    const registerSaveBtn = document.getElementById("saverecord");
+    const registerAbortBtn = document.getElementById("abortrecord");
+
     let currentRow = null;
 
     document.querySelectorAll('.inviteUser').forEach(button => {
@@ -138,29 +143,19 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => {
                 console.log("Error: ", error);
                 error.json().then(errData => {
-                    if (error.status === 404 && errData.popup) {
-                        createNewMedicalRecord(errData.data);
-                    }
-                    else if(error.status === 400){
-                        console.error('Error:', errData.message);
-                        popup.style.display = 'block';
-                        headerMessage.textContent = errData.message;
-
-                        registerSaveBtn.addEventListener('click',()=>{
-                            createNewMedicalRecord(errData)
-                        })
-
-                        registerAbortBtn.addEventListener('click',()=>{
-                            popup.style.display = 'none';
-                            form.reset();
-                            currentRow = null;
-                            location.reload();
-                        })
-                    }         
+                    console.log("error : ",error);
+                    console.log("errData : ",errData);
+                    displayPopupMessage(error.status,errData);
                 });
             });
         });
     });
+
+    // popup.style.display = 'block';
+    // form.style.display = 'none';
+    // headerMessage.textContent = "NO Medical Name found in this name  Click Save Button to Save a New Record ";
+    // registerContainer.style.display = 'block';
+    // registerh3.textContent = "NO Medical Name found in this name  Click Save Button to Save a New Record"; 
 
     sendBtn.addEventListener('click', () => {
         const dl1 = form.querySelector('#dl1').value;
@@ -201,14 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentRow = null;
             })
             .catch(error => {
-                // const registerContainer = document.querySelector(".register-medicals");
-                // const registerh3 = document.querySelector(".register-medicals h3");
-                // const registerSaveBtn = document.getElementById("saverecord");
-                // const registerAbortBtn = document.getElementById("abortrecord");
-
                 console.error('Error:', error);
                 error.json().then(errData => {
-                    
                     normalPopupMessage(errData)
                 })
             });
@@ -269,5 +258,101 @@ document.addEventListener('DOMContentLoaded', () => {
             location.reload();
         })
     }   
+
+
+    function displayPopupMessage(status,message){
+        if(status === 400){
+            console.error('Error:', message.message);
+            console.log('Status Code :',status);
+            
+            popup.style.display = 'block';
+            headerMessage.textContent = message.message;
+            const formcontent = document.getElementById('popup-form')
+    
+            const formData = new FormData(formcontent)
+            const DataEntries = Object.entries(formData.entries)
+            
+            fetch('/connect/',({
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ 
+                    DataEntries
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw response;
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                   console.log("Display Popup Response : ",data)
+                })
+                .catch(error =>{
+                    console.log("Error: ", error);
+                    error.json().then(errData =>{
+                        console.log("Display Popup Error : ",errData)
+                    })
+                })
+    
+            }))
+            
+        }
+
+        else if(status === 404 && message.popup){
+            popup.style.display = 'block';
+            headerMessage.textContent = message.message;
+            registerContainer.style.display = 'block';
+            registerh3.textContent = message.message
+
+            console.log(data);
+            registerSaveBtn.addEventListener('click',()=>{
+                createNewMedicalRecord(message)
+            })
+            // popup.style.display = 'none';
+            registerAbortBtn.addEventListener('click',()=>{
+                popup.style.display = 'none';
+                form.reset();
+                currentRow = null;
+                location.reload();
+            })
+            form.reset();
+            currentRow = null;  
+        }
+        else{
+            normalPopupMessage(message)
+        }
+    }
+    
 });
 
+
+
+// .then(data => {
+//     popup.style.display = 'block';
+//     headerMessage.textContent = errData.message;
+//     registerContainer.style.display = 'block';
+//     registerh3.textContent = errData.message
+
+//     console.log(data);
+//     registerSaveBtn.addEventListener('click',()=>{
+//         createNewMedicalRecord(data)
+//     })
+//     // popup.style.display = 'none';
+//     registerAbortBtn.addEventListener('click',()=>{
+//         popup.style.display = 'none';
+//         form.reset();
+//         currentRow = null;
+//         location.reload();
+//     })
+//     form.reset();
+//     currentRow = null;
+// })
+// .catch(error =>{
+//     console.log("Error: ", error);
+//     error.json().then(errData =>{
+//         console.log(errData)
+//     })
+// })
