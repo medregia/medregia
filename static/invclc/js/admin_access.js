@@ -87,7 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     });
 
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
     const popup = document.getElementById('message-popup');
     const sendBtn = document.getElementById('send-btn');
@@ -96,62 +97,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerMessage = document.querySelector('.message-header');
 
     let currentRow = null;
-    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-
 
     document.querySelectorAll('.inviteUser').forEach(button => {
         button.addEventListener('click', (event) => {
-            console.log("Clicked")
             const row = event.target.closest('tr');
             const MedicalName = row.querySelector('td:nth-child(2) input').value;
             const dlNumber1 = row.querySelector('td:nth-child(3) input').value;
             const dlNumber2 = row.querySelector('td:nth-child(4) input').value;
             const unique_number = row.querySelector('td:nth-child(7) input').value;
 
-            const medicalInput = document.getElementById('medicalname')
-            const UniqueInput = document.getElementById('uniqueno')
-
-
-            if (dlNumber1 === 'None' || dlNumber2 === 'None') {
-                currentRow = row;
-                popup.style.display = 'block';
-                headerMessage.textContent = MedicalName;
-                medicalInput.value = MedicalName;
-                UniqueInput.value = unique_number;
-
-            } else {
-                Data = 
-                fetch('/connect/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify({ medicalName:MedicalName,dl1:dlNumber1, dl2:dlNumber2 ,UniqueNo:unique_number})
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                popup.style.display = 'none';
-                form.reset();
-                currentRow = null;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-
-            }
-        });
-    });
-
-    sendBtn.addEventListener('click', () => {
-        const dl1 = form.querySelector('#dl1').value;
-        const dl2 = form.querySelector('#dl2').value;
-        const medicalName = form.querySelector('#medicalname').value;
-        const UniqueNo = form.querySelector('#uniqueno').value
-
-        if (dl1 && dl2) {
-            const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+            const medicalInput = document.getElementById('medicalname');
+            const UniqueInput = document.getElementById('uniqueno');
 
             fetch('/connect/', {
                 method: 'POST',
@@ -159,17 +115,102 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
-                body: JSON.stringify({ medicalName,dl1, dl2 ,UniqueNo})
+                body: JSON.stringify({ 
+                    medicalName: MedicalName,
+                    dl1: dlNumber1,
+                    dl2: dlNumber2,
+                    UniqueNo: unique_number
+                })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw response;
+                }
+                return response.json();
+            })
             .then(data => {
-                console.log(data)
-                popup.style.display = 'none';
+                console.log(data);
+                normalPopupMessage(data)
+                // popup.style.display = 'none';
                 form.reset();
                 currentRow = null;
             })
             .catch(error => {
+                console.log("Error: ", error);
+                error.json().then(errData => {
+                    if (error.status === 404 && errData.popup) {
+                        createNewMedicalRecord(errData.data);
+                    }
+                    else if(error.status === 400){
+                        console.error('Error:', errData.message);
+                        popup.style.display = 'block';
+                        headerMessage.textContent = errData.message;
+
+                        registerSaveBtn.addEventListener('click',()=>{
+                            createNewMedicalRecord(errData)
+                        })
+
+                        registerAbortBtn.addEventListener('click',()=>{
+                            popup.style.display = 'none';
+                            form.reset();
+                            currentRow = null;
+                            location.reload();
+                        })
+                    }         
+                });
+            });
+        });
+    });
+
+    sendBtn.addEventListener('click', () => {
+        const dl1 = form.querySelector('#dl1').value;
+        const dl2 = form.querySelector('#dl2').value;
+        const medicalName = form.querySelector('#medicalname').value;
+        const UniqueNo = form.querySelector('#uniqueno').value;
+        
+        console.log("dl1 :",dl1)
+        console.log("dl2 :",dl2)
+        console.log("medicalName :",medicalName)
+        console.log("UniqueNo :",UniqueNo)
+
+        if (dl1 && dl2) {
+            fetch('/connect/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    medicalName:medicalName,
+                    dl1:dl1, 
+                    dl2:dl2, 
+                    UniqueNo:UniqueNo,
+                })
+            })
+
+            .then(response => {
+                if (!response.ok) {
+                    throw response;
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                normalPopupMessage(data);
+                form.reset();
+                currentRow = null;
+            })
+            .catch(error => {
+                // const registerContainer = document.querySelector(".register-medicals");
+                // const registerh3 = document.querySelector(".register-medicals h3");
+                // const registerSaveBtn = document.getElementById("saverecord");
+                // const registerAbortBtn = document.getElementById("abortrecord");
+
                 console.error('Error:', error);
+                error.json().then(errData => {
+                    
+                    normalPopupMessage(errData)
+                })
             });
         } else {
             alert('Please enter both DL numbers.');
@@ -178,31 +219,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     abortBtn.addEventListener('click', () => {
         popup.style.display = 'none';
-
         form.reset();
         currentRow = null;
-        location.reload()
+        location.reload();
     });
 
-
-    
     function createNewMedicalRecord(data) {
+        console.log("Create Record : ",data)
         fetch('/create_medical/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken
+                'X-CSRFToken': csrfToken
             },
             body: JSON.stringify(data)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw response;
+            }
+            return response.json();
+        })
         .then(data => {
-            showModal('Records are saved successfully.', false);
+            console.info(data)
+            normalPopupMessage(data)
         })
         .catch((error) => {
-            showModal('Error: ' + error.message, false);
+            error.json().then(errData => {
+                console.error(errData)
+                normalPopupMessage(errData);
+            });
         });
     }
 
+    function normalPopupMessage(data) {
+        console.log("Normal Popup : ",data)
+        const popupBodyMessage = document.querySelector('.message-content');
+        const popupBodyh4 = document.querySelector('.message-content h3');
+        const popupBodyCloseBtn = document.querySelector('.message-content button');
+
+        popup.style.display = 'block';
+        headerMessage.textContent = data.message;
+        form.style.display = 'none';
+        popupBodyMessage.style.display = "block";
+        popupBodyh4.textContent = data.message;
+
+        popupBodyCloseBtn.addEventListener('click',()=>{
+            popup.style.display = 'none';
+            location.reload();
+        })
+    }   
 });
 

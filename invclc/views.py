@@ -2104,28 +2104,27 @@ def connect_view(request):
         dl_number1 = data.get('dl1')
         dl_number2 = data.get('dl2')
         unique_number = data.get('UniqueNo')
-        
-        print("data : ",data)
 
-        if dl_number1 and dl_number2:
-            if dl_number1 == 'None' and dl_number2 == 'None':
-                return JsonResponse({'message': 'Please enter DL numbers.', 'data': data}, status=400)
-            elif dl_number1 == 'None':
-                return JsonResponse({'message': 'Please enter DL number 1.', 'data': data}, status=400)
-            elif dl_number2 == 'None':
-                return JsonResponse({'message': 'Please enter DL number 2.', 'data': data}, status=400)
-        
-        print("outside")
+        print("Data : ",data)
+
+        if not dl_number1 or not dl_number2:
+            return JsonResponse({'message': 'Both DL numbers are required.', 'data': data}, status=400)
+        if dl_number1 == 'None' and dl_number2 == 'None':
+            return JsonResponse({'message': 'Please enter DL numbers.', 'data': data, 'error': 'No_dlno'}, status=400)
+        elif dl_number1 == 'None':
+            return JsonResponse({'message': 'Please enter DL number 1.', 'data': data, 'error': 'No_dlno1'}, status=400)
+        elif dl_number2 == 'None':
+            return JsonResponse({'message': 'Please enter DL number 2.', 'data': data, 'error': 'No_dlno2'}, status=400)
+
         try:
-            print("inside")
-            
             person = Person.objects.get(MedicalShopName__iexact=name, DrugLiceneseNumber1=dl_number1, DrugLiceneseNumber2=dl_number2)
-
         except Person.DoesNotExist:
-            return JsonResponse({'message': 'No medical shop found with the given name and DL numbers. Click OK to create a new record, or Cancel to abort.',
-                                'data': data,
-                                'status':404},
-                                status=400)
+            return JsonResponse({
+                'message': 'No medical shop found with the given name and DL numbers. Click OK to create a new record, or Cancel to abort.',
+                'data': data,
+                'status': 404,
+                'popup': True
+            }, status=404)
 
         user_uniqueId = person.UniqueId
         if user_uniqueId:
@@ -2137,7 +2136,8 @@ def connect_view(request):
                 return JsonResponse({'message': "Unique ID does not match with user's Unique ID.", 'data': data})
         else:
             update_profile_message = 'Please update your profile.'
-            return send_notification(request.user, person.user, update_profile_message)
+            send_notification(request.user, person.user, update_profile_message)
+            return JsonResponse({'message': update_profile_message, 'data': data})
 
     return JsonResponse({'message': 'Invalid request method.', 'data': None}, status=405)
 
@@ -2150,10 +2150,10 @@ def create_medical_record(request):
         except json.JSONDecodeError:
             return JsonResponse({'message': 'Invalid JSON.'}, status=400)
 
-        name = data.get('name')
-        dl_number1 = data.get('dl_number1')
-        dl_number2 = data.get('dl_number2')
-        unique_number = data.get('unique_number')
+        name = data.get('medicalName')
+        dl_number1 = data.get('dl1')
+        dl_number2 = data.get('dl2')
+        unique_number = data.get('UniqueNo')
 
         # Create new Person record
         person = RegisterMedicals.objects.create(

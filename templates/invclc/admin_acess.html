@@ -32,8 +32,7 @@
 
         <div class="popup-body">
             <form id="popup-form">
-                <h4> Please Enter the Following Details to Send Request</h4>
-
+                <h4>Please Enter the Following Details to Send Request</h4>
                 {% csrf_token %}
                 <div class="form-group">
                     <input type="hidden" name="medicalname" id="medicalname" readonly style="background-color:#d1c9c9;">
@@ -46,16 +45,27 @@
                     <label for="dl2">Drug License Number 2</label>
                     <input type="text" name="dl2" id="dl2" placeholder="DL Number 2">
                 </div>
+                <div class="form-group">
+                    <input type="hidden" name="uniqueno" id="uniqueno" readonly style="background-color:#d1c9c9;">
+                </div>
                 <div class="button-group">
                     <button type="button" id="send-btn" class="btn btn-primary">Send</button>
                     <button type="button" id="abort-btn" class="btn btn-secondary">Abort</button>
                 </div>
-                <div class="form-group">
-                    <input type="hidden" name="uniqueno" id="uniqueno" readonly style="background-color:#d1c9c9;">
-                </div>
             </form>
+            <div class="message-content popup-form">
+                <h3></h3>
+                <button type="button" id="abort-btn" class="btn btn-secondary">Abort</button>
+            </div>
+
+            <div class="register-medicals">
+                <h3></h3>
+                <button type="button" id="saverecord">Save</button>
+                <button type="button" id="abortrecord">Abort</button>
+            </div>
         </div>
     </div>
+
 
     <main class="admin-main-container"> 
         <div class="admin-container">
