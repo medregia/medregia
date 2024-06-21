@@ -855,60 +855,6 @@ def check_view(request, id):
     return render(request, 'invclc/check.html', context)
 
 
-
-# @login_required(login_url='/')
-# def edit_view(request, id):
-#     Invoice_edit = Invoice.objects.get(id=id)
-#     if request.method == 'POST':
-#         edit_form = InvoiceForm(request.POST, instance=Invoice_edit)
-#         if edit_form.is_valid():
-#             edit_form.save()
-#             messages.success(request,"You got it ")
-#             return redirect("home")
-#         else:   
-#             messages.error(request,"Please Make Sure You Select the today ")
-        
-#     # Convert the invoice_date to dd/mm/yyyy format
-#     invoice_date_str = Invoice_edit.invoice_date.strftime('%B %d, %Y')
-#     invoice_date_obj = datetime.strptime(invoice_date_str, '%B %d, %Y')
-#     formatted_invoice_date = invoice_date_obj.strftime('%d/%m/%Y')
-#     Invoice_edit.invoice_date = formatted_invoice_date
-    
-#     context = { 
-#         # 'today_date': formatted_today_date,
-#         'invoice': Invoice_edit
-#     }
-   
-#     return render(request, 'invclc/edit.html', context)
-
-
-
-# @login_required(login_url='/')
-# def create_view(request):
-#     form = InvoiceForm(request.POST or None)
-#     if request.method == 'POST':
-#         if form.is_valid():
-#             create_form = form.save(commit = False)
-#             create_form.user = request.user
-#             create_form.save()
-#             return redirect('index')
-#         else:
-#             messages.error(request,"Invoice Number Must be Unique")
-#     return render(request, 'invclc/create.html', {'form': form})
-
-
-# @login_required(login_url='/')
-# def delete_view(request, pk):
-#     invoice = get_object_or_404(Invoice,id=pk)
-#     invoice.delete()
-#     return redirect('index')
-        
-# class InvoiceResource(ModelResource):
-#     class Meta:
-#         model = Invoice
-#         fields = ('user', 'pharmacy_name', 'invoice_number', 'invoice_date', 'balance_amount', 'payment_amount')
-
-
 # TODO: Import View ...
 @login_required(login_url='/')
 def import_view(request):
@@ -2104,18 +2050,28 @@ def connect_view(request):
         dl_number1 = data.get('dl1')
         dl_number2 = data.get('dl2')
         unique_number = data.get('UniqueNo')
+        
+        check_currentuser_uniqueId:object = Person.objects.get(user = request.user)
 
         if not dl_number1 or not dl_number2:
             return JsonResponse({'message': 'Both DL numbers are required.', 'data': data}, status=400)
+        
         if dl_number1 == 'None' and dl_number2 == 'None':
-            return JsonResponse({'message': 'Please enter DL numbers.', 'data': data, 'Inputpopup': True }, status=400)
+            return JsonResponse({'message': 'Please enter DL numbers.', 'data': data, 'Inputpopup': True}, status=400)
         elif dl_number1 == 'None':
-            return JsonResponse({'message': 'Please enter DL number 1.', 'data': data, 'Inputpopup': True }, status=400)
+            return JsonResponse({'message': 'Please enter DL number 1.', 'data': data, 'Inputpopup': True}, status=400)
         elif dl_number2 == 'None':
-            return JsonResponse({'message': 'Please enter DL number 2.', 'data': data, 'Inputpopup': True }, status=400)
+            return JsonResponse({'message': 'Please enter DL number 2.', 'data': data, 'Inputpopup': True}, status=400)
 
         try:
-            person = Person.objects.get(MedicalShopName__iexact=name, DrugLiceneseNumber1=dl_number1, DrugLiceneseNumber2=dl_number2)
+            person = Person.objects.get(MedicalShopName__iexact=name)
+            
+            # Check and update DL numbers if not set
+            if not person.DrugLiceneseNumber1 or not person.DrugLiceneseNumber2:
+                person.DrugLiceneseNumber1 = person.DrugLiceneseNumber1 or dl_number1
+                person.DrugLiceneseNumber2 = person.DrugLiceneseNumber2 or dl_number2
+                person.save()
+
         except Person.DoesNotExist:
             return JsonResponse({
                 'message': 'No medical shop found with the given name and DL numbers. Click OK to create a new record, or Cancel to abort.',
@@ -2124,20 +2080,24 @@ def connect_view(request):
                 'Inputpopup': True
             }, status=404)
 
+        if not check_currentuser_uniqueId.UniqueId:
+            return JsonResponse({'message':'Please Complete Your Profile then Sent the request'},status=403)
+
         user_uniqueId = person.UniqueId
+        
         if user_uniqueId:
             if user_uniqueId == unique_number:
                 notification_message = 'Collaboration request sent successfully.'
                 send_notification(request.user, person.user, notification_message)
-                return JsonResponse({'message': notification_message,'Inputpopup':False})
+                return JsonResponse({'message': notification_message, 'Inputpopup': False})
             else:
                 return JsonResponse({'message': "Unique ID does not match with user's Unique ID.", 'data': data})
         else:
-            update_profile_message = 'Please update your profile.'
+            update_profile_message = f"{name} doesn't have a Unique Id, but request sent."
             send_notification(request.user, person.user, update_profile_message)
-            return JsonResponse({'message': update_profile_message, 'data': data,'Inputpopup':True})
+            return JsonResponse({'message': update_profile_message, 'data': data, 'Inputpopup': True}, status=403)
 
-    return JsonResponse({'message': 'Invalid request method.', 'data': None,'Inputpopup':False}, status=405)
+    return JsonResponse({'message': 'Invalid request method.', 'data': None, 'Inputpopup': False}, status=405)
 
 
 @require_POST

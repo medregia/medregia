@@ -334,7 +334,6 @@ def profile_view(request):
                 profile.save()
                 return JsonResponse({'success': True})
             else:
-                # print(errors)
                 return JsonResponse({'errors': errors}, status=400)
 
         else:
@@ -473,55 +472,53 @@ def confirm_admin(request, uniqueid):
         
         get_selected_invoice = Invoice.objects.filter(user=sender_uniqueId.user, pharmacy_name=receiver_Medical.MedicalShopName)
         
-        if sender_uniqueId:
-            if get_selected_invoice.exists():
-                for idx, selected_invoice in enumerate(get_selected_invoice):
+        if sender_uniqueId and get_selected_invoice.exists():
+            for idx, selected_invoice in enumerate(get_selected_invoice):
                 
-                    # Check if invoice_number already exists for the current user
-                    check_invoice_number = Invoice.objects.filter(invoice_number=selected_invoice.invoice_number).exists()
-                    
-                    # Ensure the fields are not None before creating a new Invoice object
-                    invoice_amount = selected_invoice.invoice_amount if selected_invoice.invoice_amount is not None else Decimal('0.00')
-                    balance_amount = selected_invoice.balance_amount if selected_invoice.balance_amount is not None else Decimal('0.00')
-                    payment_amount = selected_invoice.payment_amount if selected_invoice.payment_amount is not None else Decimal('0.00')
-                    
-                    # Create a new Invoice object only if the invoice_number doesn't exist for the current user
-                    if not check_invoice_number:
-                        fetch_invoice = Invoice.objects.create(
-                            user=request.user,
-                            pharmacy_name=selected_invoice.pharmacy_name,
-                            invoice_number=selected_invoice.invoice_number,
-                            invoice_date=selected_invoice.invoice_date,
-                            invoice_amount=invoice_amount,
-                            balance_amount=balance_amount,
-                            payment_amount=payment_amount,
-                            today_date=selected_invoice.today_date,
-                            current_time=selected_invoice.current_time,
-                            updated_by=selected_invoice.updated_by
-                        )
-                        fetch_invoice.save()
-                    else:
-                        # Modify the invoice_number if it already exists
-                        fetch_invoice = Invoice.objects.create(
-                            user=request.user,
-                            pharmacy_name=selected_invoice.pharmacy_name,
-                            invoice_number=f"Already Exist {idx + 1}",
-                            invoice_date=selected_invoice.invoice_date,
-                            invoice_amount=invoice_amount,
-                            balance_amount=balance_amount,
-                            payment_amount=payment_amount,
-                            today_date=selected_invoice.today_date,
-                            current_time=selected_invoice.current_time,
-                            updated_by=selected_invoice.updated_by
-                        )
-                        fetch_invoice.save()
-            else:
-                messages.error(request, "No Invoice Found in this Name")
+                # Ensure the fields are not None before creating a new Invoice object
+                invoice_amount = selected_invoice.invoice_amount if selected_invoice.invoice_amount is not None else Decimal('0.00')
+                balance_amount = selected_invoice.balance_amount if selected_invoice.balance_amount is not None else Decimal('0.00')
+                payment_amount = selected_invoice.payment_amount if selected_invoice.payment_amount is not None else Decimal('0.00')
                 
+                # Check if the invoice already exists for the current user
+                invoice_exists = Invoice.objects.filter(
+                    user=request.user,
+                    pharmacy_name=selected_invoice.pharmacy_name,
+                    invoice_number=selected_invoice.invoice_number,
+                    invoice_date=selected_invoice.invoice_date,
+                    invoice_amount=invoice_amount,
+                    balance_amount=balance_amount,
+                    payment_amount=payment_amount,
+                    today_date=selected_invoice.today_date,
+                    current_time=selected_invoice.current_time,
+                    updated_by=selected_invoice.updated_by
+                ).exists()
+                
+                if invoice_exists:
+                    continue  # Skip if the invoice already exists
+                
+                # Create a new Invoice object
+                Invoice.objects.create(
+                    user=request.user,
+                    pharmacy_name=selected_invoice.pharmacy_name,
+                    invoice_number=selected_invoice.invoice_number,
+                    invoice_date=selected_invoice.invoice_date,
+                    invoice_amount=invoice_amount,
+                    balance_amount=balance_amount,
+                    payment_amount=payment_amount,
+                    today_date=selected_invoice.today_date,
+                    current_time=selected_invoice.current_time,
+                    updated_by=selected_invoice.updated_by
+                )
+            messages.success(request, "Collaboration Success.")
+        else:
+            messages.error(request, "No Invoice Found in this Name")
+
+        # Update the ConnectMedicals object to mark it as read
         get_ConnectMedicals = ConnectMedicals.objects.get(request_receiver=request.user, is_read=False, accept_status=True)
         get_ConnectMedicals.is_read = True
         get_ConnectMedicals.save()
-        messages.success(request,"Colloborate Success ...")
+
     except Person.DoesNotExist:
         messages.error(request, f"Person with UniqueId {uniqueid} does not exist.")
     except Invoice.DoesNotExist:

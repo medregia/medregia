@@ -36,7 +36,7 @@
       <form action="#" method="post">
           {% csrf_token %}
           <label for="pharmacy_name">Pharmacy Name</label>
-          <input type="text" name="pharmacy_name" id="pharmacy_name" required placeholder="Enter Your Pharmacy Name">
+          <input type="text" name="pharmacy_name" id="pharmacy_name" required placeholder="Enter Your Pharmacy Name" autofocus >
           <label for="dl1">Drug License Number 1</label>
           <input type="text" name="dl1" id="dl1" required placeholder="Enter Your Drug License Number 1">
           <label for="dl2">Drug License Number 2</label>
@@ -97,7 +97,7 @@
                 <tbody>
                   {% if entryDisable %}
                     <tr id="not_accessable_profile">
-                      <td><input type="text" name="pharmacy_name" placeholder="Pharmacy Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name"></td>
+                      <td><input type="text" name="pharmacy_name" placeholder="Pharmacy Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name" autofocus ></td>
                       <td><input type="text" name="invoice_number" placeholder="Invoice Number" class="invoice_number" maxlength="50" required id="id_invoice_number"></td>
                       <td><input type="text" name="invoice_date" placeholder="DD/MM/YYYY" required id="id_invoice_date"></td>
                       <td><input type="number" name="invoice_amount" placeholder="Invoice Amount" class="invoice_amount" step="0.01" required id="id_invoice_amount"></td>
@@ -112,7 +112,7 @@
                     </tr>
                   {% else %}
                     <tr>
-                        <td><input type="text" name="pharmacy_name" placeholder="Pharmacy Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name"></td>
+                        <td><input type="text" name="pharmacy_name" placeholder="Pharmacy Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name" autofocus></td>
                         <td><input type="text" name="invoice_number" placeholder="Invoice Number" class="invoice_number" maxlength="50" required id="id_invoice_number"></td>
                         <td><input type="text" name="invoice_date" placeholder="DD/MM/YYYY" required id="id_invoice_date"></td>
                         <td><input type="number" name="invoice_amount" placeholder="Invoice Amount" class="invoice_amount" step="0.01" required id="id_invoice_amount"></td>

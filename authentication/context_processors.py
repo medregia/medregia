@@ -19,10 +19,10 @@ def nav_message(request):
         notifications = ConnectMedicals.objects.filter(request_receiver=current_user, is_read=False, accept_status=True)
         
         try:
-            
             collaborator_requests = ConnectMedicals.objects.filter(request_receiver=request.user, is_read=False).first()
             if collaborator_requests:
                 get_sender_uniqueId = Person.objects.get(user=collaborator_requests.request_sender)
+                
                 if get_sender_uniqueId:
                     sender_uniqueId = get_sender_uniqueId.UniqueId
             
@@ -30,10 +30,11 @@ def nav_message(request):
                 check_profile = Person.objects.get(user=current_user)
                 profile_uniqueId = check_profile.UniqueId
 
-                if not profile_uniqueId or '####' in profile_uniqueId:
+                if not profile_uniqueId:
                     notify_message = True
-                    if '####' in profile_uniqueId:
-                        incomplete_message = "Your profile is still incomplete. Register the address section on your profile to access the request."
+                elif '####' in profile_uniqueId:
+                    notify_message = True
+                    incomplete_message = "Your profile is still incomplete. Register the address section on your profile to access the request."
                 else:
                     notify_message = False
                     
@@ -54,4 +55,3 @@ def nav_message(request):
         'incomplete_message': incomplete_message,
         'sender_uniqueId': sender_uniqueId
     }
-
