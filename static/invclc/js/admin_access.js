@@ -43,9 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 messages.textContent = "Link Generated "
                 messages.classList.add('alert-success');
                 messages.classList.remove('shake');
-
-                console.info("Success");
-                // console.log("Response: ", responseData);
             } else {
                 console.error("Failed");
                 const errorData = await response.json();
@@ -95,10 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const abortBtn = document.getElementById('abort-btn');
     const form = document.getElementById('popup-form');
     const headerMessage = document.querySelector('.message-header');
-
+    
     const medicalNameInput = document.getElementById('medicalname');
     const uniquenoInput = document.getElementById('uniqueno');
-
+    
     let currentRow = null;
     
     function handleInviteUserClick(event) {
@@ -107,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const dlNumber1 = row.querySelector('td:nth-child(3) input').value;
         const dlNumber2 = row.querySelector('td:nth-child(4) input').value;
         const unique_number = row.querySelector('td:nth-child(7) input').value;
-
+    
         medicalNameInput.value = MedicalName;
         uniquenoInput.value = unique_number;
     
@@ -120,8 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         sendData('/connect/', data);
     }
-
-
+    
     function sendData(url, data) {
         fetch(url, {
             method: 'POST',
@@ -138,14 +134,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            console.log(data);
             MessageforUsers(data);
             form.reset();
             currentRow = null;
         })
         .catch(error => {
             error.json().then(errData => {
-                popupmain(error.status, errData, errData.Inputpopup); //status , errorDataObject,popup(True or False)
+                popupmain(error.status, errData, errData.Inputpopup); //status, errorDataObject, popup (True or False)
+            }).catch(() => {
+                console.error('Failed to parse error response as JSON.');
             });
         });
     }
@@ -156,21 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Initialize event listeners when the script loads
-    attachInviteUserEventListeners();
-    
-    function sendBtnClicked(){
+    function setupSendButtonListener() {
         sendBtn.addEventListener('click', () => {
             const dl1 = form.querySelector('#dl1').value;
             const dl2 = form.querySelector('#dl2').value;
             const medicalName = form.querySelector('#medicalname').value;
             const UniqueNo = form.querySelector('#uniqueno').value;
-            
-            console.log("dl1:", dl1);
-            console.log("dl2:", dl2);
-            console.log("medicalName:", medicalName);
-            console.log("UniqueNo:", UniqueNo);
-        
+    
             if (dl1 && dl2) {
                 const data = {
                     medicalName: medicalName,
@@ -185,7 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    
     abortBtn.addEventListener('click', () => {
         popup.style.display = 'none';
         form.reset();
@@ -194,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     function createNewMedicalRecord(data) {
-        console.log("Create Record:", data);
         fetch('/create_medical/', {
             method: 'POST',
             headers: {
@@ -217,13 +204,13 @@ document.addEventListener('DOMContentLoaded', () => {
             error.json().then(errData => {
                 console.error(errData);
                 MessageforUsers(errData);
+            }).catch(() => {
+                console.error('Failed to parse error response as JSON.');
             });
         });
     }
     
-    function normalPopupMessage(status,data) {
-        console.log("Normal Popup:", data);
-        console.log("Normal Popup status :", status);
+    function normalPopupMessage(status, data) {
         const registerContainer = document.querySelector(".register-medicals");
         const registerh3 = document.querySelector(".register-medicals h3");
         const registerSaveBtn = document.getElementById("saverecord");
@@ -238,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
         registerSaveBtn.addEventListener('click', () => {
             popup.style.display = 'none';
-    
             registerContainer.style.display = "none";
             createNewMedicalRecord(data.data);
         });
@@ -249,35 +235,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    function displayPopupMessage(status, data) {
-        console.error('Error:', data.message);
-        console.log('Status Code:', status);
-
+    function displayPopupMessage(status, data) {    
         popup.style.display = 'block';
         headerMessage.textContent = data.message;
-        
-        sendBtnClicked()
-        
     }
     
     function popupmain(status, data, popup) {
-        console.log("Popup Main");
-        console.log("status:", status);
-        console.log("data:", data);
-        console.log("popup:", popup);
     
         if (status === 400 && popup) {
-            console.log("Inside");
             displayPopupMessage(status, data);
         } else if (status === 404 && popup) {
-            normalPopupMessage(status,data)
+            normalPopupMessage(status, data);
         }
-        
     }
     
     function MessageforUsers(message) {
-        console.log(message);
-        console.log(message.message);
     
         const messageContainer = document.querySelector(".message-content");
         const messageContainerh3 = document.querySelector(".message-content h3");
@@ -295,34 +267,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // Initialize event listeners when the script loads
+    attachInviteUserEventListeners();
+    setupSendButtonListener();
+    
+    
     
 });
 
-
-
-// .then(data => {
-//     popup.style.display = 'block';
-//     headerMessage.textContent = errData.message;
-//     registerContainer.style.display = 'block';
-//     registerh3.textContent = errData.message
-
-//     console.log(data);
-//     registerSaveBtn.addEventListener('click',()=>{
-//         createNewMedicalRecord(data)
-//     })
-//     // popup.style.display = 'none';
-//     registerAbortBtn.addEventListener('click',()=>{
-//         popup.style.display = 'none';
-//         form.reset();
-//         currentRow = null;
-//         location.reload();
-//     })
-//     form.reset();
-//     currentRow = null;
-// })
-// .catch(error =>{
-//     console.log("Error: ", error);
-//     error.json().then(errData =>{
-//         console.log(errData)
-//     })
-// })
