@@ -620,3 +620,43 @@ function togglePopup() {
     });
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// if(status === 404 && message.popup){
+//   popup.style.display = 'block';
+//   headerMessage.textContent = message.message;
+//   registerContainer.style.display = 'block';
+//   registerh3.textContent = message.message
+
+//   console.log(data);
+//   registerSaveBtn.addEventListener('click',()=>{
+//       createNewMedicalRecord(message)
+//   })
+//   // popup.style.display = 'none';
+//   registerAbortBtn.addEventListener('click',()=>{
+//       popup.style.display = 'none';
+//       form.reset();
+//       currentRow = null;
+//       location.reload();
+//   })
+//   form.reset();
+//   currentRow = null;  
+// }
+// else{
+//   normalPopupMessage(message)
+// }
+
