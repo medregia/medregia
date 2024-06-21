@@ -2105,8 +2105,6 @@ def connect_view(request):
         dl_number2 = data.get('dl2')
         unique_number = data.get('UniqueNo')
 
-        print("Data : ",data)
-
         if not dl_number1 or not dl_number2:
             return JsonResponse({'message': 'Both DL numbers are required.', 'data': data}, status=400)
         if dl_number1 == 'None' and dl_number2 == 'None':
