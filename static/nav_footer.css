@@ -73,6 +73,11 @@
   position: absolute;
   right: 200px;
   z-index: 999;
+  overflow-y:hidden;
+
+}
+.notifications:hover{
+  overflow-y:auto
 }
 
 .admin-request form input{

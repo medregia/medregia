@@ -1851,14 +1851,14 @@ def admin_access(request):
                 'position':receiver_position,
             })
 
-            # send_mail(
-            #     subject,
-            #     text_message,
-            #     settings.DEFAULT_FROM_EMAIL,
-            #     [receiver_email],
-            #     fail_silently=False,
-            #     html_message=html_message
-            # )
+            send_mail(
+                subject,
+                text_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [receiver_email],
+                fail_silently=False,
+                html_message=html_message
+            )
             
             return JsonResponse({'status': 'success', 'message': 'Email sent successfully', 'invite_link': invite_url})
         except Exception as e:
@@ -2012,11 +2012,11 @@ def invite_user(request):
                 new_user.save()
             
             # Send welcome email
-            # subject = 'Welcome to MedRegia!'
-            # message = render_to_string('authentication/welcome_email.html', {'user': new_user})
-            # email_from = settings.DEFAULT_FROM_EMAIL
-            # recipient_list = [new_user.email]
-            # send_mail(subject, message, email_from, recipient_list)
+            subject = 'Welcome to MedRegia!'
+            message = render_to_string('authentication/welcome_email.html', {'user': new_user})
+            email_from = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [new_user.email]
+            send_mail(subject, message, email_from, recipient_list)
             messages.success(request, f"Hey ,{new_username} Get Started with MedregiA, this Username ")
             return JsonResponse({'status': 'success', 'redirect_url': reverse('login')})
             
@@ -2052,6 +2052,7 @@ def connect_view(request):
         unique_number = data.get('UniqueNo')
         
         check_currentuser_uniqueId:object = Person.objects.get(user = request.user)
+        check_pending_request:object = ConnectMedicals.objects.filter(request_sender=request.user, is_read=False, accept_status=True)
 
         if not dl_number1 or not dl_number2:
             return JsonResponse({'message': 'Both DL numbers are required.', 'data': data}, status=400)
@@ -2082,6 +2083,9 @@ def connect_view(request):
 
         if not check_currentuser_uniqueId.UniqueId:
             return JsonResponse({'message':'Please Complete Your Profile then Sent the request'},status=403)
+        
+        if check_pending_request.exists():
+            return JsonResponse({'message':"Request not sent until user attcept the request "},status = 403)
 
         user_uniqueId = person.UniqueId
         

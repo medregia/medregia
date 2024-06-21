@@ -93,11 +93,11 @@ def signup_view(request):
             user.groups.add(user_group)
             user.save()
             
-            # subject = 'Welcome to MedRegia !'
-            # message = render_to_string('authentication/welcome_email.html', {'user': user})
-            # email_from = settings.DEFAULT_FROM_EMAIL
-            # recipient_list = [user.email]
-            # send_mail(subject, message, email_from, recipient_list)
+            subject = 'Welcome to MedRegia !'
+            message = render_to_string('authentication/welcome_email.html', {'user': user})
+            email_from = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [user.email]
+            send_mail(subject, message, email_from, recipient_list)
 
             messages.success(request, "Signup Success")
             return redirect("/")
@@ -472,6 +472,7 @@ def confirm_admin(request, uniqueid):
         
         get_selected_invoice = Invoice.objects.filter(user=sender_uniqueId.user, pharmacy_name=receiver_Medical.MedicalShopName)
         
+        
         if sender_uniqueId and get_selected_invoice.exists():
             for idx, selected_invoice in enumerate(get_selected_invoice):
                 
@@ -510,7 +511,7 @@ def confirm_admin(request, uniqueid):
                     current_time=selected_invoice.current_time,
                     updated_by=selected_invoice.updated_by
                 )
-            messages.success(request, "Collaboration Success.")
+            messages.success(request, f"Collaboration Success with {sender_uniqueId.user.username}")
         else:
             messages.error(request, "No Invoice Found in this Name")
 
@@ -524,7 +525,8 @@ def confirm_admin(request, uniqueid):
     except Invoice.DoesNotExist:
         messages.error(request, "Invoice does not exist for the logged-in user.")
     except Exception as e:
-        messages.error(request, f"An error occurred: {traceback.format_exc()}")
+        print("Error :",e)
+        messages.error(request, f"An error occurred: {e}")
     
     return redirect('index')
 
