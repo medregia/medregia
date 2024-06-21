@@ -2135,7 +2135,7 @@ def connect_view(request):
         else:
             update_profile_message = 'Please update your profile.'
             send_notification(request.user, person.user, update_profile_message)
-            return JsonResponse({'message': update_profile_message, 'data': data,'Inputpopup':False})
+            return JsonResponse({'message': update_profile_message, 'data': data,'Inputpopup':True})
 
     return JsonResponse({'message': 'Invalid request method.', 'data': None,'Inputpopup':False}, status=405)
 
@@ -2157,7 +2157,7 @@ def create_medical_record(request):
         check_register = RegisterMedicals.objects.filter(Medical_name = name , dl_number1 = dl_number1, dl_number2 = dl_number2, UniqueId = unique_number)
 
         if check_register.exists():
-            return JsonResponse({'message':"This Medical Already Register in our Reacord "})
+            return JsonResponse({'message':"This Medical Already Register in our Records "})
 
         person = RegisterMedicals.objects.create(
             Medical_name=name,
