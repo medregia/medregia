@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 const responseData = await response.json();
-                console.log("responseData.invite_link : ",responseData.invite_link)
                 whatsappLink.value = responseData.invite_link;
                 messages.textContent = "Link Generated "
                 messages.classList.add('alert-success');

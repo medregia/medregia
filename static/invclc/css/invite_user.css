@@ -115,3 +115,22 @@ body {
     80% { transform: translateX(5px); }
     100% { transform: translateX(0); }
 }
+
+#loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8); /* semi-transparent white background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* ensure it's above other content */
+}
+
+#loader p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333; /* dark text color */
+}
