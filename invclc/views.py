@@ -528,6 +528,9 @@ def index_view(request):
     debt_paid = None
     delete_history = None
     modified_history = None
+    display_medicalname = None
+    display_dl1 = None
+    display_dl2 = None
     
     if checked_username == str(request.user):
         admin_invoices = Invoice.objects.filter(user=senderName)
@@ -542,6 +545,13 @@ def index_view(request):
         edit_paid = admin_invoices.filter().order_by('-id')
         partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
         debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
+        
+    get_medicalname = Person.objects.get(user = request.user)
+    if get_medicalname:
+        is_medical_exists :object = get_medicalname.MedicalShopName
+        is_dl1_exists :object = get_medicalname.DrugLiceneseNumber1
+        is_dl2_exists :object = get_medicalname.DrugLiceneseNumber2
+    
         
     if request.method == 'POST':
         try:
@@ -678,35 +688,34 @@ def index_view(request):
         'debt_paid': debt_paid,
         'coloborate_delete':delete_history,
         'colloborate_modified':modified_history,
+        'is_medical_exists':is_medical_exists,
+        'is_dl1_exists':is_dl1_exists,
+        'is_dl2_exists':is_dl2_exists,
     }
     return render(request, 'invclc/index.html', context)
 
-
+@require_POST
 def update_profile(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            required_fields = ['pharmacy_name', 'dl1', 'dl2']
             
-            missing_fields = [field for field in required_fields if not data.get(field)]
-            if missing_fields:
-                return JsonResponse({
-                    'success': False,
-                    'message': f'Missing fields: {", ".join(missing_fields)}'
-                }, status=400)
+            pharmacy_name = data.get('pharmacy_name', "")
+            dl1 = data.get('dl1', "")
+            dl2 = data.get('dl2', "")
 
             user_to_save = request.user
 
             # Check for duplicates
             duplicate_errors = []
 
-            if Person.objects.filter(MedicalShopName=data['pharmacy_name']).exists():
+            if Person.objects.exclude(user=request.user).filter(MedicalShopName=pharmacy_name).exists():
                 duplicate_errors.append('Pharmacy name already exists')
 
-            if Person.objects.filter(DrugLiceneseNumber1=data['dl1']).exists():
+            if Person.objects.exclude(user=request.user).filter(DrugLiceneseNumber1=dl1).exists():
                 duplicate_errors.append('Drug license number 1 already exists')
 
-            if Person.objects.filter(DrugLiceneseNumber2=data['dl2']).exists():
+            if Person.objects.exclude(user=request.user).filter(DrugLiceneseNumber2=dl2).exists():
                 duplicate_errors.append('Drug license number 2 already exists')
 
             if duplicate_errors:
@@ -715,11 +724,17 @@ def update_profile(request):
                     'message': ' '.join(duplicate_errors)
                 }, status=400)
 
-            # Assuming you have a Profile model linked to the User model
             profile = get_object_or_404(Person, user=user_to_save)
-            profile.MedicalShopName = data['pharmacy_name']
-            profile.DrugLiceneseNumber1 = data['dl1']
-            profile.DrugLiceneseNumber2 = data['dl2']
+            
+            if pharmacy_name:
+                profile.MedicalShopName = pharmacy_name
+                
+            if dl1:
+                profile.DrugLiceneseNumber1 = dl1
+                
+            if dl2:
+                profile.DrugLiceneseNumber2 = dl2
+                
             profile.save()
             
             messages.success(request, "Data added successfully.")

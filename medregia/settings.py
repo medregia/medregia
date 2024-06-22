@@ -148,18 +148,18 @@ AUTH_USER_MODEL = 'authentication.CustomUser'
 LOGIN_REDIRECT_URL = '/index/'
 LOGIN_URL = reverse_lazy('login')
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'johnesli100@gmail.com'
-# EMAIL_HOST_PASSWORD = 'zxlj xlln ggol rokv'
-# DEFAULT_FROM_EMAIL = 'johnesli100@gmail.com'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'medregia12@gmail.com'
-EMAIL_HOST_PASSWORD = 'blxc mhom gwdu mpau'
-DEFAULT_FROM_EMAIL = 'medregia12@gmail.com'
+EMAIL_HOST_USER = 'johnesli100@gmail.com'
+EMAIL_HOST_PASSWORD = 'zxlj xlln ggol rokv'
+DEFAULT_FROM_EMAIL = 'johnesli100@gmail.com'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'medregia12@gmail.com'
+# EMAIL_HOST_PASSWORD = 'blxc mhom gwdu mpau'
+# DEFAULT_FROM_EMAIL = 'medregia12@gmail.com'

@@ -35,12 +35,43 @@
       </ul>
       <form action="#" method="post">
           {% csrf_token %}
-          <label for="pharmacy_name">Pharmacy Name</label>
-          <input type="text" name="pharmacy_name" id="pharmacy_name" required placeholder="Enter Your Pharmacy Name" autofocus >
-          <label for="dl1">Drug License Number 1</label>
-          <input type="text" name="dl1" id="dl1" required placeholder="Enter Your Drug License Number 1">
-          <label for="dl2">Drug License Number 2</label>
-          <input type="text" name="dl2" id="dl2" required placeholder="Enter Your Drug License Number 2">
+
+          {% if not is_medical_exists %}
+
+            <label for="pharmacy_name">Pharmacy Name</label>
+            <input type="text" name="pharmacy_name" id="pharmacy_name" required placeholder="Enter Your Pharmacy Name" autofocus >
+
+          {% else %}
+
+            <label for="pharmacy_name">Pharmacy Name</label>
+            <input type="text" name="pharmacy_name" id="pharmacy_name" required placeholder="Enter Your Pharmacy Name" value = "{{is_medical_exists}}" disabled style="background-color:#c2c2c2; cursor:not-allowed;">
+
+          {% endif %}
+
+          {% if not is_dl1_exists %}
+
+            <label for="dl1">Drug License Number 1</label>
+            <input type="text" name="dl1" id="dl1" placeholder="Enter Your Drug License Number 1" required >
+
+          {% else %}
+
+            <label for="dl1">Drug License Number 1</label>
+            <input type="text" name="dl1" id="dl1"  value = "{{is_dl1_exists}}" disabled style="background-color:#c2c2c2; cursor:not-allowed;">
+
+          {% endif %}
+
+          {% if not is_dl2_exists %}
+
+            <label for="dl2">Drug License Number 2</label>
+            <input type="text" name="dl2" id="dl2" required placeholder="Enter Your Drug License Number 2">
+
+          {% else %}
+
+            <label for="dl2">Drug License Number 2</label>
+            <input type="text" name="dl2" id="dl2"  value = "{{is_dl2_exists}}" disabled style="background-color:#c2c2c2; cursor:not-allowed;">
+
+          {% endif %}
+          
           <div class="content-btn">
               <button type="button" id="popup-btn">Save</button>
           </div>  
