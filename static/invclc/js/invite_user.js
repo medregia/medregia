@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
   
         // Send data to the server
-        fetch('/invite/', {
+        fetch('/process_invite/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
