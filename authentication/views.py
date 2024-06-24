@@ -467,6 +467,7 @@ def get_states(request):
 
 @login_required(login_url='/')
 def confirm_admin(request, uniqueid):
+    print("uniqueid : ",uniqueid)
     try:
         sender_uniqueId = Person.objects.get(UniqueId=uniqueid)
         receiver_Medical = Person.objects.get(user=request.user)
@@ -518,7 +519,7 @@ def confirm_admin(request, uniqueid):
             else:
                 messages.error(request, "No Invoice Found in this Name")
                 
-        get_ConnectMedicals = ConnectMedicals.objects.get(request_receiver=request.user, is_read=False, accept_status=True)
+        get_ConnectMedicals = ConnectMedicals.objects.filter(request_receiver=request.user, is_read=False, accept_status=True).first()
         get_ConnectMedicals.is_read = True
         get_ConnectMedicals.save()
         messages.success(request,"Colloborate Success ...")
@@ -527,7 +528,8 @@ def confirm_admin(request, uniqueid):
     except Invoice.DoesNotExist:
         messages.error(request, "Invoice does not exist for the logged-in user.")
     except Exception as e:
-        messages.error(request, f"An error occurred: {traceback.format_exc()}")
+        print("Outside Error : ",e)
+        messages.error(request, f"An error occurred: {e}")
     
     return redirect('index')
 
