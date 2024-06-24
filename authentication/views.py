@@ -93,11 +93,11 @@ def signup_view(request):
             user.groups.add(user_group)
             user.save()
             
-            # subject = 'Welcome to MedRegia !'
-            # message = render_to_string('authentication/welcome_email.html', {'user': user})
-            # email_from = settings.DEFAULT_FROM_EMAIL
-            # recipient_list = [user.email]
-            # send_mail(subject, message, email_from, recipient_list)
+            subject = 'Welcome to MedRegia !'
+            message = render_to_string('authentication/welcome_email.html', {'user': user})
+            email_from = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [user.email]
+            send_mail(subject, message, email_from, recipient_list)
 
             messages.success(request, "Signup Success")
             return redirect("/")
@@ -334,7 +334,6 @@ def profile_view(request):
                 profile.save()
                 return JsonResponse({'success': True})
             else:
-                # print(errors)
                 return JsonResponse({'errors': errors}, status=400)
 
         else:
@@ -471,72 +470,74 @@ def confirm_admin(request, uniqueid):
     try:
         sender_uniqueId = Person.objects.get(UniqueId=uniqueid)
         receiver_Medical = Person.objects.get(user=request.user)
-        
+
         get_selected_invoice = Invoice.objects.filter(user=sender_uniqueId.user, pharmacy_name=receiver_Medical.MedicalShopName)
         
-        if sender_uniqueId:
-            if get_selected_invoice.exists():
-                for idx, selected_invoice in enumerate(get_selected_invoice):
+        
+        if sender_uniqueId and get_selected_invoice.exists():
+            for idx, selected_invoice in enumerate(get_selected_invoice):
                 
-                    # Check if invoice_number already exists for the current user
-                    check_invoice_number = Invoice.objects.filter(invoice_number=selected_invoice.invoice_number).exists()
-                    
-                    # Ensure the fields are not None before creating a new Invoice object
-                    invoice_amount = selected_invoice.invoice_amount if selected_invoice.invoice_amount is not None else Decimal('0.00')
-                    balance_amount = selected_invoice.balance_amount if selected_invoice.balance_amount is not None else Decimal('0.00')
-                    payment_amount = selected_invoice.payment_amount if selected_invoice.payment_amount is not None else Decimal('0.00')
-                    
-                    # Create a new Invoice object only if the invoice_number doesn't exist for the current user
-                    if not check_invoice_number:
-                        fetch_invoice = Invoice.objects.create(
-                            user=request.user,
-                            pharmacy_name=selected_invoice.pharmacy_name,
-                            invoice_number=selected_invoice.invoice_number,
-                            invoice_date=selected_invoice.invoice_date,
-                            invoice_amount=invoice_amount,
-                            balance_amount=balance_amount,
-                            payment_amount=payment_amount,
-                            today_date=selected_invoice.today_date,
-                            current_time=selected_invoice.current_time,
-                            updated_by=selected_invoice.updated_by
-                        )
-                        fetch_invoice.save()
-                    else:
-                        # Modify the invoice_number if it already exists
-                        fetch_invoice = Invoice.objects.create(
-                            user=request.user,
-                            pharmacy_name=selected_invoice.pharmacy_name,
-                            invoice_number=f"Already Exist {idx + 1}",
-                            invoice_date=selected_invoice.invoice_date,
-                            invoice_amount=invoice_amount,
-                            balance_amount=balance_amount,
-                            payment_amount=payment_amount,
-                            today_date=selected_invoice.today_date,
-                            current_time=selected_invoice.current_time,
-                            updated_by=selected_invoice.updated_by
-                        )
-                        fetch_invoice.save()
-            else:
-                messages.error(request, "No Invoice Found in this Name")
+                # Ensure the fields are not None before creating a new Invoice object
+                invoice_amount = selected_invoice.invoice_amount if selected_invoice.invoice_amount is not None else Decimal('0.00')
+                balance_amount = selected_invoice.balance_amount if selected_invoice.balance_amount is not None else Decimal('0.00')
+                payment_amount = selected_invoice.payment_amount if selected_invoice.payment_amount is not None else Decimal('0.00')
                 
-        get_ConnectMedicals = ConnectMedicals.objects.filter(request_receiver=request.user, is_read=False, accept_status=True).first()
+                # Check if the invoice already exists for the current user
+                invoice_exists = Invoice.objects.filter(
+                    user=request.user,
+                    pharmacy_name=selected_invoice.pharmacy_name,
+                    invoice_number=selected_invoice.invoice_number,
+                    invoice_date=selected_invoice.invoice_date,
+                    invoice_amount=invoice_amount,
+                    balance_amount=balance_amount,
+                    payment_amount=payment_amount,
+                    today_date=selected_invoice.today_date,
+                    current_time=selected_invoice.current_time,
+                    updated_by=selected_invoice.updated_by
+                ).exists()
+                
+                if invoice_exists:
+                    continue  # Skip if the invoice already exists
+                
+                # Create a new Invoice object
+                Invoice.objects.create(
+                    user=request.user,
+                    pharmacy_name=selected_invoice.pharmacy_name,
+                    invoice_number=selected_invoice.invoice_number,
+                    invoice_date=selected_invoice.invoice_date,
+                    invoice_amount=invoice_amount,
+                    balance_amount=balance_amount,
+                    payment_amount=payment_amount,
+                    today_date=selected_invoice.today_date,
+                    current_time=selected_invoice.current_time,
+                    updated_by=selected_invoice.updated_by
+                )
+            messages.success(request, f"Collaboration Success with {sender_uniqueId.user.username}")
+        else:
+            messages.error(request, "No Invoice Found in this Name")
+
+        # Update the ConnectMedicals object to mark it as read
+        get_ConnectMedicals = ConnectMedicals.objects.get(request_receiver=request.user,request_sender = sender_uniqueId.user, is_read=False, accept_status=True)
+        print("get_ConnectMedicals : ",get_ConnectMedicals)
         get_ConnectMedicals.is_read = True
         get_ConnectMedicals.save()
-        messages.success(request,"Colloborate Success ...")
+
     except Person.DoesNotExist:
         messages.error(request, f"Person with UniqueId {uniqueid} does not exist.")
     except Invoice.DoesNotExist:
         messages.error(request, "Invoice does not exist for the logged-in user.")
     except Exception as e:
-        print("Outside Error : ",e)
+        print("Error :",e)
         messages.error(request, f"An error occurred: {e}")
     
     return redirect('index')
 
 @login_required(login_url='/')
-def admin_cancel(request):
+def admin_cancel(request,uniqueid):
+    print("uniqueid : ",uniqueid)
     try:
-        notification = get_object_or_404(ConnectMedicals, request_receiver=request.user, is_read=False, accept_status=True)
+        get_sender_name = Person.objects.get(UniqueId = uniqueid)
+        notification = get_object_or_404(ConnectMedicals, request_receiver=request.user, request_sender = get_sender_name.user, is_read=False, accept_status=True)
         notification.is_read = True
         notification.accept_status = False
         notification.save()

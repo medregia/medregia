@@ -14,7 +14,7 @@ from datetime import datetime
 import csv
 import json
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST,require_GET
 from django.core.management import call_command
 from decimal import Decimal
 from openpyxl import Workbook
@@ -29,6 +29,7 @@ from django.core.serializers import serialize
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
+from itsdangerous import URLSafeSerializer,BadSignature
 import openpyxl
 import logging
 from django.contrib.auth.hashers import make_password
@@ -528,6 +529,9 @@ def index_view(request):
     debt_paid = None
     delete_history = None
     modified_history = None
+    display_medicalname = None
+    display_dl1 = None
+    display_dl2 = None
     
     if checked_username == str(request.user):
         admin_invoices = Invoice.objects.filter(user=senderName)
@@ -542,6 +546,13 @@ def index_view(request):
         edit_paid = admin_invoices.filter().order_by('-id')
         partially_paid = admin_invoices.filter(~Q(balance_amount=0.00), ~Q(balance_amount=F('invoice_amount'))).order_by('-id')
         debt_paid = admin_invoices.filter(~Q(balance_amount=0.00), Q(payment_amount=0))
+        
+    get_medicalname = Person.objects.get(user = request.user)
+    if get_medicalname:
+        is_medical_exists :object = get_medicalname.MedicalShopName
+        is_dl1_exists :object = get_medicalname.DrugLiceneseNumber1
+        is_dl2_exists :object = get_medicalname.DrugLiceneseNumber2
+    
         
     if request.method == 'POST':
         try:
@@ -678,35 +689,34 @@ def index_view(request):
         'debt_paid': debt_paid,
         'coloborate_delete':delete_history,
         'colloborate_modified':modified_history,
+        'is_medical_exists':is_medical_exists,
+        'is_dl1_exists':is_dl1_exists,
+        'is_dl2_exists':is_dl2_exists,
     }
     return render(request, 'invclc/index.html', context)
 
-
+@require_POST
 def update_profile(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            required_fields = ['pharmacy_name', 'dl1', 'dl2']
             
-            missing_fields = [field for field in required_fields if not data.get(field)]
-            if missing_fields:
-                return JsonResponse({
-                    'success': False,
-                    'message': f'Missing fields: {", ".join(missing_fields)}'
-                }, status=400)
+            pharmacy_name = data.get('pharmacy_name', "")
+            dl1 = data.get('dl1', "")
+            dl2 = data.get('dl2', "")
 
             user_to_save = request.user
 
             # Check for duplicates
             duplicate_errors = []
 
-            if Person.objects.filter(MedicalShopName=data['pharmacy_name']).exists():
+            if Person.objects.exclude(user=request.user).filter(MedicalShopName=pharmacy_name).exists():
                 duplicate_errors.append('Pharmacy name already exists')
 
-            if Person.objects.filter(DrugLiceneseNumber1=data['dl1']).exists():
+            if Person.objects.exclude(user=request.user).filter(DrugLiceneseNumber1=dl1).exists():
                 duplicate_errors.append('Drug license number 1 already exists')
 
-            if Person.objects.filter(DrugLiceneseNumber2=data['dl2']).exists():
+            if Person.objects.exclude(user=request.user).filter(DrugLiceneseNumber2=dl2).exists():
                 duplicate_errors.append('Drug license number 2 already exists')
 
             if duplicate_errors:
@@ -715,11 +725,17 @@ def update_profile(request):
                     'message': ' '.join(duplicate_errors)
                 }, status=400)
 
-            # Assuming you have a Profile model linked to the User model
             profile = get_object_or_404(Person, user=user_to_save)
-            profile.MedicalShopName = data['pharmacy_name']
-            profile.DrugLiceneseNumber1 = data['dl1']
-            profile.DrugLiceneseNumber2 = data['dl2']
+            
+            if pharmacy_name:
+                profile.MedicalShopName = pharmacy_name
+                
+            if dl1:
+                profile.DrugLiceneseNumber1 = dl1
+                
+            if dl2:
+                profile.DrugLiceneseNumber2 = dl2
+                
             profile.save()
             
             messages.success(request, "Data added successfully.")
@@ -853,60 +869,6 @@ def check_view(request, id):
         'store': modifiedStore,
     }
     return render(request, 'invclc/check.html', context)
-
-
-
-# @login_required(login_url='/')
-# def edit_view(request, id):
-#     Invoice_edit = Invoice.objects.get(id=id)
-#     if request.method == 'POST':
-#         edit_form = InvoiceForm(request.POST, instance=Invoice_edit)
-#         if edit_form.is_valid():
-#             edit_form.save()
-#             messages.success(request,"You got it ")
-#             return redirect("home")
-#         else:   
-#             messages.error(request,"Please Make Sure You Select the today ")
-        
-#     # Convert the invoice_date to dd/mm/yyyy format
-#     invoice_date_str = Invoice_edit.invoice_date.strftime('%B %d, %Y')
-#     invoice_date_obj = datetime.strptime(invoice_date_str, '%B %d, %Y')
-#     formatted_invoice_date = invoice_date_obj.strftime('%d/%m/%Y')
-#     Invoice_edit.invoice_date = formatted_invoice_date
-    
-#     context = { 
-#         # 'today_date': formatted_today_date,
-#         'invoice': Invoice_edit
-#     }
-   
-#     return render(request, 'invclc/edit.html', context)
-
-
-
-# @login_required(login_url='/')
-# def create_view(request):
-#     form = InvoiceForm(request.POST or None)
-#     if request.method == 'POST':
-#         if form.is_valid():
-#             create_form = form.save(commit = False)
-#             create_form.user = request.user
-#             create_form.save()
-#             return redirect('index')
-#         else:
-#             messages.error(request,"Invoice Number Must be Unique")
-#     return render(request, 'invclc/create.html', {'form': form})
-
-
-# @login_required(login_url='/')
-# def delete_view(request, pk):
-#     invoice = get_object_or_404(Invoice,id=pk)
-#     invoice.delete()
-#     return redirect('index')
-        
-# class InvoiceResource(ModelResource):
-#     class Meta:
-#         model = Invoice
-#         fields = ('user', 'pharmacy_name', 'invoice_number', 'invoice_date', 'balance_amount', 'payment_amount')
 
 
 # TODO: Import View ...
@@ -1783,8 +1745,8 @@ def admin_access(request):
         
         try:
             current_user = get_object_or_404(CustomUser, username=user_data)
-            colaborator = Notification.objects.filter(sender=user_data,is_read = True)
-            AdminPosition = Notification.objects.filter(sender=user_data,receiver = request.user,is_read = True).first()
+            colaborator = Notification.objects.filter(sender=user_data, is_read=True)
+            AdminPosition = Notification.objects.filter(sender=user_data, receiver=request.user, is_read=True).first()
 
             context['user_phone'] = current_user.phone_num
             context['user_username'] = current_user.username
@@ -1830,7 +1792,7 @@ def admin_access(request):
                 check_dl1 = None
                 
                 try:
-                    check_data_medical = RegisterMedicals.objects.filter(Medical_name = invoice.pharmacy_name)
+                    check_data_medical = RegisterMedicals.objects.filter(Medical_name=invoice.pharmacy_name)
                     if check_data_medical:
                         for register_medical in check_data_medical:
                             check_Medical = register_medical.Medical_name
@@ -1870,12 +1832,12 @@ def admin_access(request):
         receiver_position = data.get('add_position')
 
         try:
-            if receiver_name :
+            if receiver_name:
                 if Invitation.objects.filter(mail_sendername=request.user, mail_receiver_name=receiver_name).exists():
                     response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
                     return JsonResponse({'error': response_data}, status=500)
                 else:
-                   invitation = Invitation(
+                    invitation = Invitation(
                         user=request.user,
                         mail_sendername=request.user,
                         mail_receiver_name=receiver_name,
@@ -1883,38 +1845,42 @@ def admin_access(request):
                         mail_receiver_phonenumber=receiver_phone,
                         mail_receiver_position=receiver_position
                     )
-                invitation.save()
+                    invitation.save()
 
-            subject = "Invitation to Join Our Platform"
-            text_message = f"Dear {receiver_name},\n\nYou have been invited to join our platform as {receiver_position}. Please use the following details to access your account.\n\nBest regards,\nThe Team"
-            base_signup_url = 'http://127.0.0.1:8000/invite/'
-            query_params = urlencode({
-                'sendername': request.user,
-                'username': receiver_name,
-                'useremail': receiver_email,
-                'userphonenumber': receiver_phone,
-                'userposition': receiver_position
-            })
-            invite_url = f"{base_signup_url}?{query_params}"
+                subject = "Invitation to Join Our Platform"
+                text_message = f"Dear {receiver_name},\n\nYou have been invited to join our platform as {receiver_position}. Please use the following details to access your account.\n\nBest regards,\nThe Team"
 
-            html_message = render_to_string('invitation_email.html', {
-                'user_name': receiver_name,
-                'sender_mail': settings.DEFAULT_FROM_EMAIL,
-                'sender_name': request.user,
-                'signup_url': invite_url,
-                'position':receiver_position,
-            })
+                signer = URLSafeSerializer(settings.SECRET_KEY)
+                data_to_sign = {
+                    'sendername': str(request.user),
+                    'username': receiver_name,
+                    'useremail': receiver_email,
+                    'userphonenumber': receiver_phone,
+                    'userposition': receiver_position
+                }
+                signed_data = signer.dumps(data_to_sign)
+                
+                base_signup_url = 'http://127.0.0.1:8000/invite/'
+                invite_url = f"{base_signup_url}?data={signed_data}"
 
-            # send_mail(
-            #     subject,
-            #     text_message,
-            #     settings.DEFAULT_FROM_EMAIL,
-            #     [receiver_email],
-            #     fail_silently=False,
-            #     html_message=html_message
-            # )
-            
-            return JsonResponse({'status': 'success', 'message': 'Email sent successfully', 'invite_link': invite_url})
+                html_message = render_to_string('invitation_email.html', {
+                    'user_name': receiver_name,
+                    'sender_mail': settings.DEFAULT_FROM_EMAIL,
+                    'sender_name': request.user,
+                    'signup_url': invite_url,
+                    'position': receiver_position,
+                })
+
+                send_mail(
+                    subject,
+                    text_message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [receiver_email],
+                    fail_silently=False,
+                    html_message=html_message
+                )
+                
+                return JsonResponse({'status': 'success', 'message': 'Email sent successfully', 'invite_link': invite_url})
         except Exception as e:
             response_data = {'message': str(e)}
             return JsonResponse({'error': response_data}, status=500)
@@ -1923,173 +1889,178 @@ def admin_access(request):
 
 
 
+@require_GET
 def invite_user(request):
-    user_position = request.GET.get('userposition')
-    sender_name = request.GET.get('sendername')
-    username = request.GET.get('username')
-    useremail = request.GET.get('useremail')
-    userphonenumber = request.GET.get('userphonenumber')
+    # Extract data from URL query parameters
+    encoded_data = request.GET.get('data', '')
 
+    try:
+        # Decode the encoded data using your secret key
+        signer = URLSafeSerializer(settings.SECRET_KEY)
+        decoded_data = signer.loads(encoded_data)
 
-    if request.method == "POST":
+        user_position = decoded_data.get('userposition')
+        sender_name = decoded_data.get('sendername')
+        username = decoded_data.get('username')
+        useremail = decoded_data.get('useremail')
+        userphonenumber = decoded_data.get('userphonenumber')
+
+        # Use these variables in your template or processing logic
+        context = {
+            'userposition': user_position,
+            'sendername': sender_name,
+            'username': username,
+            'useremail': useremail,
+            'userphonenumber': userphonenumber,
+        }
+
+        return render(request, 'invite_user.html', context)
+
+    except BadSignature:
+        return JsonResponse({'status': 'error', 'message': 'Invalid or expired invitation link'})
+
+@csrf_exempt
+@require_POST
+def process_invite(request):
+    try:
+        # Extract data from JSON request body
+        data = json.loads(request.body)
+        
+        new_username = data.get('new_username')
+        new_useremail = data.get('new_useremail')
+        new_userphonenumber = data.get('new_userphonenumber')
+        new_userpassword = data.get('new_userpassword')
+        new_userconfirmpassword = data.get('new_userconfirmpassword')
+        new_userpin_str = data.get('new_userpin')
+        new_usertype = data.get('new_usertype')
+        new_userothertype = data.get('new_userothertype')
+        new_userposition = data.get('new_userposition')
+        new_sendername = data.get('new_sendername')
+
+        # Validate PIN
         try:
-            # Extract data from JSON request body
-            data = json.loads(request.body)
-            
-            new_username = data.get('new_username')
-            new_useremail = data.get('new_useremail')
-            new_userphonenumber = data.get('new_userphonenumber')
-            new_userpassword = data.get('new_userpassword')
-            new_userconfirmpassword = data.get('new_userconfirmpassword')
-            new_userpin_str = data.get('new_userpin')
-            new_usertype = data.get('new_usertype')
-            new_userothertype = data.get('new_userothertype')
-            new_userposition = data.get('new_userposition')
-            new_sendername = data.get('new_sendername')
+            new_userpin = int(new_userpin_str)
+        except ValueError:
+            return JsonResponse({'status': 'error', 'message': "Field 'new_userpin' expected a number but got '{}'.".format(new_userpin_str)})
+        
+        # Validate password match
+        if new_userpassword != new_userconfirmpassword:
+            return JsonResponse({'status': 'error', 'field': 'new_userconfirmpassword', 'message': 'Passwords do not match'})
 
-            
-            try:
-                new_userpin = int(new_userpin_str)
-            except ValueError:
-                return JsonResponse({'status': 'error', 'message': "Field 'new_userpin' expected a number but got '{}'.".format(new_userpin_str)})
-            
-            # Validate password match
-            if new_userpassword != new_userconfirmpassword:
-                return JsonResponse({'status': 'error', 'field': 'new_userconfirmpassword', 'message': 'Passwords do not match'})
+        # Check if username or email already exists
+        if CustomUser.objects.filter(username=new_username).exists():
+            return JsonResponse({'status': 'error', 'field': 'new_username', 'message': 'Username already exists'})
 
-            # Check if username or email already exists
-            if CustomUser.objects.filter(username=new_username).exists():
-                return JsonResponse({'status': 'error', 'field': 'new_username', 'message': 'Username already exists'})
+        if CustomUser.objects.filter(email=new_useremail).exists():
+            return JsonResponse({'status': 'error', 'field': 'new_useremail', 'message': 'Email already exists'})
 
-            if CustomUser.objects.filter(email=new_useremail).exists():
-                return JsonResponse({'status': 'error', 'field': 'new_useremail', 'message': 'Email already exists'})
+        # Fetch the sender user object
+        try:
+            sender_user = CustomUser.objects.get(username=new_sendername)
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'status': 'error', 'field': 'new_sendername', 'message': 'Sender does not exist'})
 
-            # Fetch the sender user object
-            try:
-                sender_user = CustomUser.objects.get(username=new_sendername)
-            except CustomUser.DoesNotExist:
-                return JsonResponse({'status': 'error', 'field': 'new_sendername', 'message': 'Sender does not exist'})
+        # Hash the password
+        hashed_password = make_password(new_userconfirmpassword)
 
-            # Hash the password
-            hashed_password = make_password(new_userconfirmpassword)
+        # Create the new CustomUser object
+        new_user = CustomUser.objects.create(
+            username=new_username,
+            password=hashed_password,
+            email=new_useremail,
+            phone_num=new_userphonenumber,
+            pin=new_userpin,
+            store_type=new_usertype,
+            other_value=new_userothertype,
+            position=new_userposition,
+            is_staff=True if new_userposition == 'Admin' else False
+        )
 
-            # Create the new CustomUser object
-            new_user = CustomUser.objects.create(
-                username=new_username,
-                password=hashed_password,
-                email=new_useremail,
-                phone_num=new_userphonenumber,
-                pin=new_userpin,
-                store_type=new_usertype,
-                other_value=new_userothertype,
-                position=new_userposition,
-                is_staff= True if new_userposition == 'Admin' else False
-            )
+        # Save the new user
+        new_user.save()
+        
+        # Create notification
+        notify = Notification(
+            sender=sender_user,
+            receiver=new_user,
+            is_read=True,
+            request_status=True,
+            position=new_userposition,
+        )
+        notify.save()
 
-            # Save the new user
+        # Handle collaborator requests and group assignments
+        if new_userposition in ['Member', 'Senior']:
+            collaborator_requests = Notification.objects.filter(receiver=new_user, is_read=True)
+
+            if collaborator_requests:
+                for collaborator in collaborator_requests:
+                    receiver = collaborator.receiver
+                    sender = collaborator.sender
+
+                    if new_username == receiver.username:
+                        try:
+                            admin_group = Group.objects.get(name='Admin Group')
+                            receiver.groups.remove(admin_group)
+                            receiver.is_staff = False
+                            receiver.position = collaborator.position
+                            receiver.save()
+
+                            grand_accesses = Invoice.objects.filter(user=receiver)
+                            tracking_access = TrackingPayment.objects.filter(user=receiver)
+
+                            for grand_access in grand_accesses:
+                                grand_access.user = sender
+                                grand_access.save()
+
+                            for tracking in tracking_access:
+                                tracking.user = sender
+                                tracking.save()
+
+                            sender.save()
+                            collaborator.is_read = True
+                            collaborator.save()
+                        except Exception as e:
+                            messages.error(request, str(e))
+                    else:
+                        messages.error(request, "You are not authorized to become an admin.")
+            else:
+                messages.error(request, "There are no pending collaborator requests.")
+
+        # Assign user to admin group with specific permissions
+        if new_userposition == 'Admin' and new_user.is_staff:
+            user_group, created = Group.objects.get_or_create(name="Admin Group")
+
+            models_and_permissions = [
+                (DeletedInvoice, ['view_deletedinvoice', 'delete_deletedinvoice']),
+                (Invoice, ['add_invoice', 'view_invoice', 'change_invoice', 'delete_invoice']),
+                (ModifiedInvoice, ['view_modifiedinvoice', 'delete_modifiedinvoice']),
+                (TrackingPayment, ['view_trackingpayment', 'delete_trackingpayment']),
+            ]
+
+            for model, perms in models_and_permissions:
+                content_type = ContentType.objects.get_for_model(model)
+                for perm in perms:
+                    permission = Permission.objects.get(codename=perm)
+                    user_group.permissions.add(permission)
+
+            new_user.groups.add(user_group)
             new_user.save()
-            
-            try:
-                receiver_user = CustomUser.objects.get(username=new_username)
-            except CustomUser.DoesNotExist:
-                return JsonResponse({'status': 'error', 'field': 'new_username', 'message': 'Username does not exist'})
 
-            # Create notification
-            notify = Notification(
-                sender=sender_user,
-                receiver=receiver_user,
-                is_read=True,
-                request_status=True,
-                position = new_userposition,
-            )
-            notify.save()
-            
+        # Send welcome email
+        subject = 'Welcome to MedRegia!'
+        message = render_to_string('authentication/welcome_email.html', {'user': new_user})
+        email_from = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [new_user.email]
+        send_mail(subject, message, email_from, recipient_list)
 
-            # Handle collaborator requests and group assignments
-            
-            if new_userposition == 'Member' or new_userposition == 'Senior' :
-                collaborator_requests = Notification.objects.filter(receiver=receiver_user, is_read=True)
+        messages.success(request, f"Hey, {new_username}! Welcome to MedregiA.")
+        return JsonResponse({'status': 'success', 'redirect_url': reverse('login')})
 
-                if collaborator_requests:
-                    for collaborator in collaborator_requests:
-                        receiver = collaborator.receiver
-                        sender = collaborator.sender
-
-                        if new_username == receiver.username:
-                            try :
-                                admin_group = Group.objects.get(name='Admin Group')
-                                receiver.groups.remove(admin_group)
-                                receiver.is_staff = False
-                                receiver.position = collaborator.position
-                                receiver.save()
-
-                                grand_accesses = Invoice.objects.filter(user=receiver)
-                                tracking_access = TrackingPayment.objects.filter(user=receiver)
-
-                                for grand_access in grand_accesses:
-                                    grand_access.user = sender
-                                    grand_access.save()
-
-                                for tracking in tracking_access:
-                                    tracking.user = sender
-                                    tracking.save()
-
-                                sender.save()
-                                collaborator.is_read = True
-                                collaborator.save()
-                            except Exception as e:
-                                messages.error(request, str(e))
-
-                        else:
-                            messages.error(request, "You are not authorized to become an admin.")
-                else:
-                    messages.error(request, "There are no pending collaborator requests.")
-
-            # Assign user to admin group with specific permissions
-            if new_userposition == 'Admin' and new_user.is_staff == True:
-                user_group, created = Group.objects.get_or_create(name="Admin Group")
-
-                models_and_permissions = [
-                    (DeletedInvoice, ['view_deletedinvoice', 'delete_deletedinvoice']),
-                    (Invoice, ['add_invoice', 'view_invoice', 'change_invoice', 'delete_invoice']),
-                    (ModifiedInvoice, ['view_modifiedinvoice', 'delete_modifiedinvoice']),
-                    (TrackingPayment, ['view_trackingpayment', 'delete_trackingpayment']),
-                ]
-
-                for model, perms in models_and_permissions:
-                    content_type = ContentType.objects.get_for_model(model)
-                    for perm in perms:
-                        permission = Permission.objects.get(codename=perm)
-                        user_group.permissions.add(permission)
-
-                new_user.groups.add(user_group)
-                new_user.save()
-            
-            # Send welcome email
-            # subject = 'Welcome to MedRegia!'
-            # message = render_to_string('authentication/welcome_email.html', {'user': new_user})
-            # email_from = settings.DEFAULT_FROM_EMAIL
-            # recipient_list = [new_user.email]
-            # send_mail(subject, message, email_from, recipient_list)
-            messages.success(request, f"Hey ,{new_username} Get Started with MedregiA, this Username ")
-            return JsonResponse({'status': 'success', 'redirect_url': reverse('login')})
-            
-            # return JsonResponse({'status': 'success', 'message': 'User created successfully'})
-
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'})
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
-
-    # If GET or any other method, handle as needed
-    context = {
-        'userposition': user_position,
-        'sendername': sender_name,
-        'username': username,
-        'useremail': useremail,
-        'userphonenumber': userphonenumber,
-    }
-    return render(request, 'invite_user.html', context)
+    except json.JSONDecodeError:
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)})
 
 
 @require_POST
@@ -2104,18 +2075,33 @@ def connect_view(request):
         dl_number1 = data.get('dl1')
         dl_number2 = data.get('dl2')
         unique_number = data.get('UniqueNo')
+        
+        try:
+            check_currentuser_uniqueId = Person.objects.get(user=request.user)
+        except Person.DoesNotExist:
+            return JsonResponse({'message': 'User profile not found.', 'data': None}, status=404)
+
+        check_pending_requests = ConnectMedicals.objects.filter(request_sender=request.user, is_read=False, accept_status=True)
 
         if not dl_number1 or not dl_number2:
             return JsonResponse({'message': 'Both DL numbers are required.', 'data': data}, status=400)
+        
         if dl_number1 == 'None' and dl_number2 == 'None':
-            return JsonResponse({'message': 'Please enter DL numbers.', 'data': data, 'Inputpopup': True }, status=400)
+            return JsonResponse({'message': 'Please enter DL numbers.', 'data': data, 'Inputpopup': True}, status=400)
         elif dl_number1 == 'None':
-            return JsonResponse({'message': 'Please enter DL number 1.', 'data': data, 'Inputpopup': True }, status=400)
+            return JsonResponse({'message': 'Please enter DL number 1.', 'data': data, 'Inputpopup': True}, status=400)
         elif dl_number2 == 'None':
-            return JsonResponse({'message': 'Please enter DL number 2.', 'data': data, 'Inputpopup': True }, status=400)
+            return JsonResponse({'message': 'Please enter DL number 2.', 'data': data, 'Inputpopup': True}, status=400)
 
         try:
-            person = Person.objects.get(MedicalShopName__iexact=name, DrugLiceneseNumber1=dl_number1, DrugLiceneseNumber2=dl_number2)
+            person = Person.objects.get(MedicalShopName__iexact=name)
+            
+            # Check and update DL numbers if not set
+            if not person.DrugLiceneseNumber1 or not person.DrugLiceneseNumber2:
+                person.DrugLiceneseNumber1 = person.DrugLiceneseNumber1 or dl_number1
+                person.DrugLiceneseNumber2 = person.DrugLiceneseNumber2 or dl_number2
+                person.save()
+
         except Person.DoesNotExist:
             return JsonResponse({
                 'message': 'No medical shop found with the given name and DL numbers. Click OK to create a new record, or Cancel to abort.',
@@ -2124,21 +2110,29 @@ def connect_view(request):
                 'Inputpopup': True
             }, status=404)
 
+        if not check_currentuser_uniqueId.UniqueId:
+            return JsonResponse({'message':'Please Complete Your Profile then Send the request'}, status=403)
+
+        if check_pending_requests.exists():
+            pending_for_user = any(request for request in check_pending_requests if request.request_receiver == person.user)
+            if pending_for_user:
+                return JsonResponse({'message': "Request not sent until the user accepts the previous request."}, status=403)
+
         user_uniqueId = person.UniqueId
+        
         if user_uniqueId:
             if user_uniqueId == unique_number:
                 notification_message = 'Collaboration request sent successfully.'
                 send_notification(request.user, person.user, notification_message)
-                return JsonResponse({'message': notification_message,'Inputpopup':False})
+                return JsonResponse({'message': notification_message, 'Inputpopup': False})
             else:
                 return JsonResponse({'message': "Unique ID does not match with user's Unique ID.", 'data': data})
         else:
-            update_profile_message = 'Please update your profile.'
+            update_profile_message = f"{name} doesn't have a Unique Id, but request sent."
             send_notification(request.user, person.user, update_profile_message)
-            return JsonResponse({'message': update_profile_message, 'data': data,'Inputpopup':True})
+            return JsonResponse({'message': update_profile_message, 'data': data, 'Inputpopup': True}, status=403)
 
-    return JsonResponse({'message': 'Invalid request method.', 'data': None,'Inputpopup':False}, status=405)
-
+    return JsonResponse({'message': 'Invalid request method.', 'data': None, 'Inputpopup': False}, status=405)
 
 @require_POST
 def create_medical_record(request):
@@ -2170,5 +2164,3 @@ def create_medical_record(request):
         return JsonResponse({'message': 'New medical record created successfully.'})
 
     return JsonResponse({'message': 'Invalid request method.'}, status=405)
-
-    

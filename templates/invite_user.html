@@ -8,6 +8,10 @@
 {% endblock message %}
 
 {% block content %}
+<div id="loader" style="display: none;">
+  Loading...
+</div>
+
 <div class="container">
     <h1>Welcome to Medregia</h1>
     <p class="greeting-message">You have been invited to join Medregia by <span id="inviter-name">{{sendername}}</span> as {{userposition}}. Please review and complete your details below to get started.</p>

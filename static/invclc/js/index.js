@@ -572,7 +572,7 @@ function togglePopup() {
   const popupBody = document.querySelector(".overlay-content p");
 
   if (entryButton) {
-    popupMessages.textContent = "Invoice Update Failed ";
+    popupMessages.textContent = "Invoice Update Failed";
     popupMessages.style.color = "red";
     popupMsg.classList.add("active");
 
@@ -580,15 +580,19 @@ function togglePopup() {
       const pharmacyName = document.getElementById('pharmacy_name').value;
       const dl1 = document.getElementById('dl1').value;
       const dl2 = document.getElementById('dl2').value;
-      const message = document.querySelector('.overlay-content') 
       const csrf_token = document.querySelector("input[name='csrfmiddlewaretoken']").value;
 
       // Prepare data for the Django view
-      const profileData = {
-        pharmacy_name: pharmacyName,
-        dl1: dl1,
-        dl2: dl2,
-      };
+      const profileData = {};
+      if (pharmacyName) {
+        profileData.pharmacy_name = pharmacyName;
+      }
+      if (dl1) {
+        profileData.dl1 = dl1;
+      }
+      if (dl2) {
+        profileData.dl2 = dl2;
+      }
 
       try {
         const profileResponse = await fetch('/update_profile/', {
@@ -618,8 +622,12 @@ function togglePopup() {
         popupBody.textContent = "An error occurred while updating the profile.";
       }
     });
+  } else {
+    console.error('Entry button not found');
   }
 }
+
+
 
 
 

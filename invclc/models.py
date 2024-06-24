@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from authentication.models import CustomUser
-from simple_history.models import HistoricalRecords
 from datetime import timedelta
 from django.db.models.signals import pre_delete,pre_save,post_save, post_delete
 from django.dispatch import receiver

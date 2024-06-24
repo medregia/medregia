@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('user-details-form');
     const inviteBtn = document.getElementById('invite_userBtn');
+    const loader = document.getElementById('loader');
   
     const pinField = form.querySelector('input[name="new_userpin"]');
     pinField.addEventListener('input', function() {
@@ -47,6 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
   
+        loader.style.display = 'block';
+
         // Enable all disabled form fields before collecting data
         const disabledFields = form.querySelectorAll('input:disabled');
         disabledFields.forEach(field => field.disabled = false);
@@ -61,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
   
         // Send data to the server
-        fetch('/invite/', {
+        fetch('/process_invite/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -100,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .finally(() => {
             // Re-disable the fields after data is collected
+            loader.style.display = 'none';
             disabledFields.forEach(field => field.disabled = true);
         });
     });

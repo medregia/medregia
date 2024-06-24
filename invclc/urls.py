@@ -34,6 +34,9 @@ urlpatterns = [
     path('empty_xlsx/',views.empty_xlsx,name='empty_xlsx'),
     path('adminacess/',views.admin_access,name='adminacess'),
     path('invite/',views.invite_user,name='invite'),
+    
+    path('process_invite/',views.process_invite,name='process_invite'),
+    
     path('connect/',views.connect_view,name='connect'),
-    path('create_medical/',views.create_medical_record,name="create_medical")
+    path('create_medical/',views.create_medical_record,name="create_medical"),
 ]

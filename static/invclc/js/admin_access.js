@@ -247,6 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (status === 404 && popup) {
             normalPopupMessage(status, data);
         }
+        else{
+            MessageforUsers(data)
+        }
     }
     
     function MessageforUsers(message) {
