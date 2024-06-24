@@ -1712,6 +1712,7 @@ def admin_access(request):
     checked_username = None
     sender_name = None
     is_admin_user = None
+    unique_keys = set()  # Set to store unique keys
 
     try:
         # Get all notifications sent to the current user that have been read
@@ -1773,23 +1774,27 @@ def admin_access(request):
                 if user_position == "Admin":
                     is_admin_user = profile_data.user.username
 
-                table_data.append({
-                    's_no': idx,
-                    'name': profile_data.MedicalShopName,
-                    'dl_number1': profile_data.DrugLiceneseNumber1,
-                    'dl_number2': profile_data.DrugLiceneseNumber2,
-                    'admin_name': is_admin_user,
-                    'temp_no': None,
-                    'unique_no': unique_code,
-                    'uique_Faild': False,
-                    'generate_link': False,
-                    'status': 'Active'
-                })
+                unique_key = (profile_data.MedicalShopName, profile_data.DrugLiceneseNumber1, profile_data.DrugLiceneseNumber2, is_admin_user, unique_code)
+                
+                if unique_key not in unique_keys:
+                    unique_keys.add(unique_key)
+                    table_data.append({
+                        's_no': idx,
+                        'name': profile_data.MedicalShopName,
+                        'dl_number1': profile_data.DrugLiceneseNumber1,
+                        'dl_number2': profile_data.DrugLiceneseNumber2,
+                        'admin_name': is_admin_user,
+                        'temp_no': None,
+                        'unique_no': unique_code,
+                        'uique_Faild': False,
+                        'generate_link': False,
+                        'status': 'Active'
+                    })
             except Person.DoesNotExist:
                 temp_no = generate_tempno(invoice.pharmacy_name, invoice.id)
                 check_Medical = None
                 check_dl1 = None
-                check_dl1 = None
+                check_dl2 = None
                 
                 try:
                     check_data_medical = RegisterMedicals.objects.filter(Medical_name=invoice.pharmacy_name)
@@ -1807,22 +1812,26 @@ def admin_access(request):
                     check_Medical = invoice.pharmacy_name
                     check_dl1 = None
                     check_dl2 = None
-                     
-                table_data.append({
-                    's_no': idx,
-                    'name': check_Medical,
-                    'dl_number1': check_dl1,
-                    'dl_number2': check_dl2,
-                    'admin_name': None,
-                    'temp_no': temp_no,
-                    'unique_no': None,
-                    'generate_link': True,
-                    'status': 'Inactive'
-                })
+                
+                unique_key = (check_Medical, check_dl1, check_dl2, temp_no)
+                
+                if unique_key not in unique_keys:
+                    unique_keys.add(unique_key)
+                    table_data.append({
+                        's_no': idx,
+                        'name': check_Medical,
+                        'dl_number1': check_dl1,
+                        'dl_number2': check_dl2,
+                        'admin_name': None,
+                        'temp_no': temp_no,
+                        'unique_no': None,
+                        'generate_link': True,
+                        'status': 'Inactive'
+                    })
     except Exception as e:
         context['error'] = f"Error: {e}"
 
-    context['table_data'] = table_data
+    context['table_data'] = table_data   
 
     if request.method == "POST":
         data = json.loads(request.body)
