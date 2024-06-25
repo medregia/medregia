@@ -68,7 +68,7 @@
                 <div class="admin-submit">
                   <form method="post" action="{% url 'admin_cancel' sender_uniqueId %}" id="action_cancel">
                     {% csrf_token %}
-                    <button type="submit" class="cancel">Reject</button>
+                    <button type="submit" class="cancel" >Reject</button>
                   </form>
                   <form method="post" action="{% url 'confirm_admin' sender_uniqueId %}" id="admin_action">
                     {% csrf_token %}

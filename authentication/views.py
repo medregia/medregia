@@ -541,6 +541,8 @@ def admin_cancel(request,uniqueid):
         notification.is_read = True
         notification.accept_status = False
         notification.save()
+
+        messages.info(request,"coloboration Canceled")
         return redirect('index')
     except Exception as e:
         return messages.error(request,"Somthing Wrong in Admin Cancel Request",e)

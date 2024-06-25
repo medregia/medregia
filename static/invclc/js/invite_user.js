@@ -114,16 +114,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function validatePasswordStrength(password) {
         const suggestions = [];
         const hasUpperCase = /[A-Z]/.test(password);
-        const hasLowerCase = /[a-z]/.test(password);
         const hasNumbers = /\d/.test(password);
         const isLongEnough = password.length >= 8;
   
         if (!hasUpperCase) suggestions.push('Add an uppercase letter');
-        if (!hasLowerCase) suggestions.push('Add a lowercase letter');
         if (!hasNumbers) suggestions.push('Add a number');
         if (!isLongEnough) suggestions.push('Make it at least 8 characters long');
   
-        const isValid = hasUpperCase && hasLowerCase && hasNumbers && isLongEnough;
+        const isValid = hasUpperCase && hasNumbers && isLongEnough;
         return { isValid, suggestions };
     }
   
