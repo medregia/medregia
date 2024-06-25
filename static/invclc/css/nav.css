@@ -274,6 +274,31 @@ span.notify-alert{
   cursor: pointer;
   display: none;
 }
+
+/* button styles */
+.admin-submit button {
+  border: none; 
+  padding: 5px 10px; 
+  text-align: center; 
+  display: inline-block; 
+  font-size: 14px; 
+  margin: 4px 2px; 
+  cursor: pointer; 
+  border-radius: 4px; 
+  transition: background-color 0.3s; 
+}
+
+.admin-submit .cancel {
+  background-color: grey; 
+  color: white; 
+}
+
+/* Accept button styles */
+.admin-submit .confirm {
+  background-color: blue; 
+  color: white; 
+}
+
 /* mediaquery */
 
 @media(max-width:1000px){
