@@ -518,7 +518,7 @@ def confirm_admin(request, uniqueid):
 
         # Update the ConnectMedicals object to mark it as read
         get_ConnectMedicals = ConnectMedicals.objects.get(request_receiver=request.user,request_sender = sender_uniqueId.user, is_read=False, accept_status=True)
-        print("get_ConnectMedicals : ",get_ConnectMedicals)
+        # print("get_ConnectMedicals : ",get_ConnectMedicals)
         get_ConnectMedicals.is_read = True
         get_ConnectMedicals.save()
 
@@ -534,7 +534,7 @@ def confirm_admin(request, uniqueid):
 
 @login_required(login_url='/')
 def admin_cancel(request,uniqueid):
-    print("uniqueid : ",uniqueid)
+    # print("uniqueid : ",uniqueid)
     try:
         get_sender_name = Person.objects.get(UniqueId = uniqueid)
         notification = get_object_or_404(ConnectMedicals, request_receiver=request.user, request_sender = get_sender_name.user, is_read=False, accept_status=True)

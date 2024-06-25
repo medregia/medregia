@@ -1813,7 +1813,7 @@ def admin_access(request):
                     check_dl1 = None
                     check_dl2 = None
                 
-                unique_key = (check_Medical, check_dl1, check_dl2, temp_no)
+                unique_key = (check_Medical, check_dl1, check_dl2)
                 
                 if unique_key not in unique_keys:
                     unique_keys.add(unique_key)
