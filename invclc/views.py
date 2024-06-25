@@ -2091,6 +2091,10 @@ def connect_view(request):
             return JsonResponse({'message': 'User profile not found.', 'data': None}, status=404)
 
         check_pending_requests = ConnectMedicals.objects.filter(request_sender=request.user, is_read=False, accept_status=True)
+        check_request = Person.objects.get(user = request.user)
+
+        if name == check_request.MedicalShopName:
+            return JsonResponse({'message':'Cannot Sent Request to Yourself '},status = 403)
 
         if not dl_number1 or not dl_number2:
             return JsonResponse({'message': 'Both DL numbers are required.', 'data': data}, status=400)
