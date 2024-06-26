@@ -238,7 +238,12 @@ def profile_view(request):
         if profile and check_person:
             errors = []       
             if check_person.MedicalShopName != '' and data.get('MedicalShopName'):
-                profile.MedicalShopName = data.get('MedicalShopName')  
+                existing_profile = Person.objects.filter(MedicalShopName=data.get('MedicalShopName')).exclude(user=request.user).first()
+                if existing_profile:
+                    errors.append(f"MedicalShopName '{data.get('MedicalShopName')}' already exists in another record.")
+                    # return JsonResponse({'errors': errors}, status=405)
+                else:
+                    profile.MedicalShopName = data.get('MedicalShopName')  
 
             if check_person.ProprietaryName != '' and data.get('ProprietaryName'):
                 existing_profile = Person.objects.filter(ProprietaryName=data.get('ProprietaryName')).exclude(user=request.user).first()

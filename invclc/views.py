@@ -1425,7 +1425,7 @@ def update_invoice(request, invoice_id):
             modified_invoice = ModifiedInvoice(
                 user=senderName,
                 modified_pharmacy=invoice.pharmacy_name,
-                modified_Invoice_number=f"{invoice.invoice_number}_{timezone.now().timestamp()}",
+                modified_Invoice_number=f"{invoice.invoice_number}",
                 modified_Invoice_date=invoice.invoice_date,
                 modified_Total_amount=invoice.invoice_amount,
                 modified_balance=invoice.balance_amount,
@@ -1436,7 +1436,7 @@ def update_invoice(request, invoice_id):
             modified_invoice = ModifiedInvoice(
                 user=request.user,
                 modified_pharmacy=invoice.pharmacy_name,
-                modified_Invoice_number=f"{invoice.invoice_number}_{timezone.now().timestamp()}",
+                modified_Invoice_number=f"{invoice.invoice_number}",
                 modified_Invoice_date=invoice.invoice_date,
                 modified_Total_amount=invoice.invoice_amount,
                 modified_balance=invoice.balance_amount,
@@ -1525,7 +1525,7 @@ def delete_invoice(request, invoice_id):
             deleted_invoice = DeletedInvoice(
                 user=senderName,
                 pharmacy=invoice.pharmacy_name,
-                number=f"{invoice.invoice_number}_{timezone.now().timestamp()}",
+                number=f"{invoice.invoice_number}",
                 date=invoice.invoice_date,
                 amount=invoice.invoice_amount,
                 balance=invoice.balance_amount,
@@ -1536,7 +1536,7 @@ def delete_invoice(request, invoice_id):
             deleted_invoice = DeletedInvoice(
                 user=request.user,
                 pharmacy=invoice.pharmacy_name,
-                number=f"{invoice.invoice_number}_{timezone.now().timestamp()}",
+                number=f"{invoice.invoice_number}",
                 date=invoice.invoice_date,
                 amount=invoice.invoice_amount,
                 balance=invoice.balance_amount,

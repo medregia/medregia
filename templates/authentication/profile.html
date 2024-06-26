@@ -389,12 +389,14 @@
                 <div class="profile_admin-main">
                     <div class="profile_admin-name containers">
                         <label for="name">Name</label>
-                        <input type="text" value="{{ admin_name }}" id="user_name" disabled>
+                        <div id="user_name">{{ admin_name }}</div>
+                        <!-- <input type="text" value="{{ admin_name }}" id="user_name" disabled> -->
                     </div>
                 
                     <div class="profile_admin-contact containers">
                             <label for="name">Contact</label>
-                            <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled>
+                            <div id="Contact">{{ admin_ph}}</div>
+                            <!-- <input type="text"id="Contact"  name="Contact" value="{{ admin_ph}}" disabled> -->
                     </div>
                 </div>
             </div>
@@ -407,12 +409,14 @@
                 <div class="current_user-main-content">
                     <div class="current_user-main  bottom-containers">
                         <i class="fa-solid fa-user"></i>
-                        <input type="text"id="currentusername" value="{{request.user}}" name="currentusername" placeholder="Name" readonly>
+                        <div id="currentusername">{{request.user}}</div>
+                        <!-- <input type="text"id="currentusername" value="" name="currentusername" placeholder="Name" readonly> -->
                     </div>
                  
                     <div class="current_user-phone bottom-containers">
                         <i class="fa-solid fa-phone"></i>
-                        <input type="text"id="Currentphone" value="{{user_profile_data.phone_num}}" name="Currentphone" placeholder="Phone" readonly>
+                        <div id="Currentphone">{{user_profile_data.phone_num}}</div>
+                        <!-- <input type="text"id="Currentphone" value="{{user_profile_data.phone_num}}" name="Currentphone" placeholder="Phone" readonly> -->
                     </div>
                 </div>
             </div>
