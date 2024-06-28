@@ -18,12 +18,7 @@ from django.views.decorators.http import require_POST,require_GET
 from django.core.management import call_command
 from decimal import Decimal
 from openpyxl import Workbook
-from import_export.resources import ModelResource
-from import_export.fields import Field
 from tablib import Dataset
-from import_export.results import RowResult
-from import_export.formats.base_formats import DEFAULT_FORMATS,XLSX
-from import_export import resources
 from .forms import UploadFileForm
 from django.core.serializers import serialize
 from django.core.mail import send_mail

@@ -4,7 +4,6 @@ django-jazzmin
 requests
 pandas
 openpyxl
-django-import-export
 tablib
 dnspython
 itsdangerous 

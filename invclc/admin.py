@@ -1,7 +1,5 @@
 from django.contrib import admin
 from .models import Invoice, DeletedInvoice, ModifiedInvoice,TrackingPayment,Invitation
-from import_export import resources
-from import_export.admin import ImportExportModelAdmin
 
 class AdminDeletedInvoice(admin.ModelAdmin):
     list_display = ['today_date', 'pharmacy', 'payment', 'balance']
