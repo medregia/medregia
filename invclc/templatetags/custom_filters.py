@@ -2,6 +2,8 @@ from django import template
 from invclc.models import ModifiedInvoice
 from authentication.models import CustomUser,Person
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib import messages
+from authentication.models import ConnectMedicals,Notification
 
 register = template.Library()
 
@@ -20,18 +22,17 @@ def convert_medical(value):
         return "####"
 
 @register.filter
-def medical_signup(medicals):
+def medical_signup(medicals,user):
     try:
         medical_exists = Person.objects.filter(MedicalShopName=medicals).exists()
         person = Person.objects.get(MedicalShopName=medicals)
-        user = person.user.username
-        person_check = CustomUser.objects.filter(username=user).exists()
+        userId = person.UniqueId
 
-        if medical_exists:
+        if "#" not in userId:
             return "green"
         else:
-            return "yellow"
-        
+            return "red"
+
     except Person.DoesNotExist:
         return "red"
 

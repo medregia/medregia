@@ -213,16 +213,18 @@
                         <td><input type="text" value="{{ data.invoice_number }}" disabled></td>
                         <td class="medicalstatus">
                             <input type="text" value="{{ MedicalStatus }} Accepted" disabled>
-                            <span class="status"></span>
+                            <span class="tick-box">&#10003;</span>
                         </td>
                         <td class="pharmacystatus">
                             {% if data.pharmacy_name %}
                                 {% if request.user.is_authenticated %}
                                     <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                    <span class="loginstatus"></span>
+                                    {% comment %} <span class="loginstatus"></span> {% endcomment %}
+                                    <span class="tick-box">&#10003;</span>
+
                                 {% else %}
                                     <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                    <span class="statusfailed">{{ data.pharmacy_name|medical_signup}}</span>
+                                    {% comment %} <span class="statusfailed">{{ data.pharmacy_name|medical_signup}}</span> {% endcomment %}
                                 {% endif %}
                             {% else %}
                                 <input type="text" value="Not Found" disabled>
@@ -238,7 +240,7 @@
                         <td><input type="text" value="{{ data.invoice_number }}" disabled></td>
                         <td class="medicalstatus">
                           <div class="input-container">
-                              <input type="text" value="{{ MedicalStatus }} Accepted" disabled>
+                              <input type="text" value="{{ MedicalStatus }} Accepted" disabled style="color:green;">
                               <span class="tick-box">&#10003;</span>
                           </div>
                       </td>
@@ -247,13 +249,9 @@
                           <div class="input-container">
                             {% if data.pharmacy_name %}
                             {% if request.user.is_authenticated %}
-                                <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                <!-- <span class="loginstatus" style="background-color:{{data.pharmacy_name|medical_signup}};"></span> -->
-                                <span class="tick-box">&#10003;</span>
-                            {% else %}
-                                <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                <!-- <span style="background-color:{{data.pharmacy_name|medical_signup}};"></span> -->
-                                <span class="tick-box">&#10003;</span>
+                                <input type="text" value="{{ data.pharmacy_name|convert_medical}}" disabled style="color:{% if data.pharmacy_name|medical_signup:request.user == 'green' %} green {% else %} red {% endif %}">
+                                <span class="tick-box" style="color:{{ data.pharmacy_name|medical_signup:request.user }};" title="{% if data.pharmacy_name|medical_signup:request.user == 'green' %}Medical has Unique id{% else %}Medical Does not have Unique Id{% endif %}">&#10003;</span>
+                                
                             {% endif %}
                         {% else %}
                             <input type="text" value="Not Found" disabled>
