@@ -742,19 +742,48 @@ button.editBtn,button.deleteBtn,button.saveBtn{
   background-color: rgba(186, 180, 180,0.5);
 }
 
-/* .medicalstatus span,
-.pharmacystatus span{
-  height:30px;
-  width:40px;
-  background-color:rgba(4, 176, 4,0.9);
+/* .medicalstatus ,
+.pharmacystatus {
+  display: flex;
+}  */
+/* .medicalstatus{
+  height: 30px;
+  width: 50px;
+  background-color: #0056b3;
+  display: flex;
+  justify-content: space-evenly;
+  
 } */
-
 span.status{
-  display: inline-block;
+  display: inline;
   height: 15px;
   width: 35px;
   background-color:rgba(4, 176, 4,0.9);
 }
+.input-container {
+  display: flex;
+  align-items: center;
+  
+}
+
+.input-container input {
+  margin-right: 10px; /* Adjust this value as needed */
+}
+
+.tick-box {
+  color: green; /* Customize the color as needed */
+  font-size: 14px; /* Adjust the font size as needed */
+  display: inline-block;
+  width: 20px;
+  height: 18px;
+  border: 1px solid black;
+  text-align: center;
+  line-height: 15px;
+  margin-right: 8px;
+  padding: 2px;
+  font-weight: 600;
+}
+
 
 span.loginstatus{
   display: inline-block;
@@ -818,6 +847,10 @@ span.header-error{
 .overall-message.warning {
   background-color: orange;
 }
+
+
+
+
 
 /* mediaquery */
 /* @media (min-width:1300px) and (max-width:1351px){
