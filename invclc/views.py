@@ -1474,53 +1474,46 @@ def parse_date(date_string):
 def delete_invoice(request, invoice_id):
     try:
         # Check if the invoice exists
-        invoice = Invoice.objects.get(pk=invoice_id)
-        
-        checked_username = None  # Define check_user here
+        invoice = Invoice.objects.get(pk=invoice_id,user=request.user)
+        checked_username = None
         senderName = None
-        
+
         try:
             # Get all notifications sent to the current user that have been read
             read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
-            
+
             # Loop through each read notification
             for notification in read_notifications:
-                # Get the username of the sender of the notification
                 sender_username = notification.sender.username
-                # Get the username of the receiver of the notification (current user)
                 receiver_username = notification.receiver.username
-                
+
                 # Find all staff users with the same username as the sender
                 staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
-                # Get the non-staff user (current user) with the specified username
                 normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
-                
-                # Loop through each staff user with the sender's username
+
                 for user in staff_senders:
                     sender = user.username
 
                     try:
-                        # Get the staff user with the current username
                         senderName = CustomUser.objects.get(username=sender, is_staff=True)
-                        # Get the non-staff user (current user)
                         receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
 
                         if receiverName and senderName:
-                            # Store the username of the current non-staff user
                             checked_username = receiverName.username
+                    except CustomUser.DoesNotExist:
+                        messages.error(request, "User not found.")
                     except Exception as user_error:
-                        # Handle exceptions that occur while processing a specific user
-                        messages.error(request, user_error)
+                        messages.error(request, f"Error processing user: {str(user_error)}")
+
         except Exception as general_error:  
-            # Handle exceptions that occur while processing notifications
-            messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
+            messages.error(request, f"Something went wrong while processing notifications: {str(general_error)}")
 
         # Create a DeletedInvoice object with a unique number (using timestamp)
         if checked_username == str(request.user):
             deleted_invoice = DeletedInvoice(
                 user=senderName,
                 pharmacy=invoice.pharmacy_name,
-                number=f"{invoice.invoice_number}",
+                number=invoice.invoice_number,
                 date=invoice.invoice_date,
                 amount=invoice.invoice_amount,
                 balance=invoice.balance_amount,
@@ -1531,7 +1524,7 @@ def delete_invoice(request, invoice_id):
             deleted_invoice = DeletedInvoice(
                 user=request.user,
                 pharmacy=invoice.pharmacy_name,
-                number=f"{invoice.invoice_number}",
+                number=invoice.invoice_number,
                 date=invoice.invoice_date,
                 amount=invoice.invoice_amount,
                 balance=invoice.balance_amount,
@@ -1545,16 +1538,16 @@ def delete_invoice(request, invoice_id):
         # Delete the Invoice object
         invoice.delete()
 
-        messages.success(request,"Deleted Success")
-        return JsonResponse({'message': 'Invoice deleted successfully'})
+        messages.success(request, "Deleted Success")
+        return JsonResponse({'message': 'Invoice deleted successfully'},status=200)
     
     except Invoice.DoesNotExist:
-        messages.erroe(request,"Deletion Failed ")
+        messages.error(request, "Deletion Failed: Invoice not found")
         return JsonResponse({'error': 'Invoice not found'}, status=404)
 
     except Exception as e:      
-        messages.error(request,f'Error deleting invoice: {str(e)}')
-        return JsonResponse({'error': f'Error deleting invoice: {str(e)}'}, status=500)
+        messages.error(request, f"Error deleting invoice: {str(e)}")
+        return JsonResponse({'error': f"Error deleting invoice: {str(e)}"}, status=500)
 
     
 @require_POST
@@ -1563,6 +1556,7 @@ def pay_invoice(request, invoice_id):
     # TODO: For more Details Check Logic.txt File
     try:
         invoice = get_object_or_404(Invoice, id=invoice_id)
+        
 
         data = json.loads(request.body)
         updated_payment_amount = Decimal(data.get('payment_amount', invoice.payment_amount))
@@ -1596,6 +1590,31 @@ def pay_invoice(request, invoice_id):
         )
         
         tracking_payment.save()
+        
+        try:
+            coloborator_invoices = Invoice.objects.get(id=invoice_id,user=request.user)
+            invoice_sender = Invoice.objects.get(user = invoice.user,id=invoice_id)
+            print("invoice_sender : ",invoice_sender)
+            print("True or False : ",invoice_sender.user == request.user)
+            print(str(request.user))
+            
+            if coloborator_invoices.collaborator_invoice:
+                print("coloborator_invoice : ",coloborator_invoices.collaborator_invoice)
+                get_sender_invoice = Invoice.objects.filter(user = coloborator_invoices.collaborator_invoice)
+                print("get_sender_invoice : ",get_sender_invoice)
+                
+                for sender_invoice in get_sender_invoice:
+                    sender_invoice.payment_amount = invoice.payment_amount
+                    sender_invoice.balance_amount = invoice.balance_amount
+                    
+                    sender_invoice.save()
+                
+            elif invoice_sender.user == request.user:
+                print("request User ",request.user)
+                print("True or False : ",coloborator_invoices.collaborator_invoice == str(request.user))
+        except Exception as e:
+            print("Error in Pay  Invoice : ",e)
+            
         messages.success(request,"payment Success")
 
         # Check the action type (Pay or Save)
@@ -1608,6 +1627,7 @@ def pay_invoice(request, invoice_id):
 
     except Exception as e:
         messages.error(request,"Payment Falied")
+        print("Error : ",e)
         return JsonResponse({'error': 'Internal Server Error'}, status=500)
 
 @require_POST

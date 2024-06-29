@@ -222,11 +222,9 @@
                             {% if data.pharmacy_name %}
                             {% if request.user.is_authenticated %}
                                 <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                <!-- <span class="loginstatus" style="background-color:{{data.pharmacy_name|medical_signup}};"></span> -->
                                 <span class="tick-box">&#10003;</span>
                             {% else %}
                                 <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                <!-- <span style="background-color:{{data.pharmacy_name|medical_signup}};"></span> -->
                                 <span class="tick-box">&#10003;</span>
                             {% endif %}
                         {% else %}

@@ -8,30 +8,30 @@ from django.dispatch import receiver
 
 
 class Invoice(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='invoices')
     pharmacy_name = models.CharField(max_length=100)
     invoice_number = models.CharField(max_length=50)
     invoice_date = models.DateField(default=timezone.now)
     invoice_amount = models.DecimalField(max_digits=10, decimal_places=2)
     balance_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    payment_amount = models.DecimalField(max_digits=10, decimal_places=2 ,null=True)
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     today_date = models.DateField(default=timezone.now)
-    # current_time = models.TimeField(default=(timezone.now() + timedelta(hours=5, minutes=30)).time())
-    current_time = models.TimeField(null=True,blank=True)
-    updated_by = models.CharField(max_length=20,null=True,blank=True)
+    current_time = models.TimeField(null=True, blank=True)
+    updated_by = models.CharField(max_length=20, null=True, blank=True)
+    collaborator_invoice = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='collaborator_invoices')
 
     def save(self, *args, **kwargs):
         self.balance_amount = self.invoice_amount - self.payment_amount
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user} - {self.pharmacy_name}"
+        return f"{self.user}"
 
     
 class DeletedInvoice(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True)
     pharmacy = models.CharField(max_length=100)
-    number = models.CharField(max_length=50, unique=True)
+    number = models.CharField(max_length=50)
     date = models.DateField(default=timezone.now)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     balance = models.DecimalField(max_digits=10, decimal_places=2 ,null=True, blank=True)
@@ -44,7 +44,7 @@ class DeletedInvoice(models.Model):
 class ModifiedInvoice(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True)
     modified_pharmacy = models.CharField(max_length=100)
-    modified_Invoice_number = models.CharField(max_length=50, unique=True)
+    modified_Invoice_number = models.CharField(max_length=5)
     modified_Invoice_date = models.DateField(default=timezone.now)
     modified_Total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     modified_balance = models.DecimalField(max_digits=10, decimal_places=2 ,null=True, blank=True)

@@ -471,13 +471,13 @@ def get_states(request):
 
 @login_required(login_url='/')
 def confirm_admin(request, uniqueid):
-    print("uniqueid : ",uniqueid)
     try:
         sender_uniqueId = Person.objects.get(UniqueId=uniqueid)
         receiver_Medical = Person.objects.get(user=request.user)
 
         get_selected_invoice = Invoice.objects.filter(user=sender_uniqueId.user, pharmacy_name=receiver_Medical.MedicalShopName)
-        
+        sender_username = CustomUser.objects.get(username = sender_uniqueId.user)
+        receiver_username = Invoice.objects.filter(user = sender_uniqueId.user)
         
         if sender_uniqueId and get_selected_invoice.exists():
             for idx, selected_invoice in enumerate(get_selected_invoice):
@@ -515,8 +515,10 @@ def confirm_admin(request, uniqueid):
                     payment_amount=payment_amount,
                     today_date=selected_invoice.today_date,
                     current_time=selected_invoice.current_time,
-                    updated_by=selected_invoice.updated_by
+                    updated_by=selected_invoice.updated_by,
+                    collaborator_invoice = sender_username,
                 )
+                    
             messages.success(request, f"Collaboration Success with {sender_uniqueId.user.username}")
         else:
             messages.error(request, "No Invoice Found in this Name")
