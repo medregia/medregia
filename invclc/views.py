@@ -1593,25 +1593,17 @@ def pay_invoice(request, invoice_id):
         
         try:
             coloborator_invoices = Invoice.objects.get(id=invoice_id,user=request.user)
-            invoice_sender = Invoice.objects.get(user = invoice.user,id=invoice_id)
-            print("invoice_sender : ",invoice_sender)
-            print("True or False : ",invoice_sender.user == request.user)
-            print(str(request.user))
-            
+
+            # print("invoice_sender : ",invoice_sender)
             if coloborator_invoices.collaborator_invoice:
-                print("coloborator_invoice : ",coloborator_invoices.collaborator_invoice)
-                get_sender_invoice = Invoice.objects.filter(user = coloborator_invoices.collaborator_invoice)
-                print("get_sender_invoice : ",get_sender_invoice)
-                
-                for sender_invoice in get_sender_invoice:
-                    sender_invoice.payment_amount = invoice.payment_amount
-                    sender_invoice.balance_amount = invoice.balance_amount
-                    
-                    sender_invoice.save()
-                
-            elif invoice_sender.user == request.user:
-                print("request User ",request.user)
-                print("True or False : ",coloborator_invoices.collaborator_invoice == str(request.user))
+                get_sender_invoice = Invoice.objects.get(user = coloborator_invoices.collaborator_invoice,invoice_number = invoice.invoice_number)
+                get_sender_invoice.payment_amount = invoice.payment_amount
+                get_sender_invoice.balance_amount = invoice.balance_amount
+                get_sender_invoice.save()
+
+            # elif invoice_sender.user == request.user:
+            #     print("request User ",request.user)
+            #     print("True or False : ",coloborator_invoices.collaborator_invoice == str(request.user))
         except Exception as e:
             print("Error in Pay  Invoice : ",e)
             

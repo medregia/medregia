@@ -29,7 +29,7 @@ class AdminTrackingPayments(admin.ModelAdmin):
             return queryset.filter(user=request.user)
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('user', 'pharmacy_name', 'invoice_date', 'invoice_amount')
+    list_display = ('id','user', 'pharmacy_name', 'invoice_date', 'invoice_amount')
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
