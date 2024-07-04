@@ -2107,6 +2107,7 @@ def connect_view(request):
 
         check_pending_requests = ConnectMedicals.objects.filter(request_sender=request.user, is_read=False, accept_status=True)
         check_request = Person.objects.get(user = request.user)
+        
 
         if name == check_request.MedicalShopName:
             return JsonResponse({'message':'Cannot Sent Request to Yourself '},status = 403)
@@ -2116,11 +2117,13 @@ def connect_view(request):
         
         if dl_number1 == 'None' and dl_number2 == 'None':
             return JsonResponse({'message': 'Please enter DL numbers.', 'data': data, 'Inputpopup': True}, status=400)
+        
         elif dl_number1 == 'None':
             return JsonResponse({'message': 'Please enter DL number 1.', 'data': data, 'Inputpopup': True}, status=400)
+        
         elif dl_number2 == 'None':
             return JsonResponse({'message': 'Please enter DL number 2.', 'data': data, 'Inputpopup': True}, status=400)
-
+        
         try:
             person = Person.objects.get(MedicalShopName__iexact=name)
             
@@ -2129,7 +2132,7 @@ def connect_view(request):
                 person.DrugLiceneseNumber1 = person.DrugLiceneseNumber1 or dl_number1
                 person.DrugLiceneseNumber2 = person.DrugLiceneseNumber2 or dl_number2
                 person.save()
-
+                                                                                    
         except Person.DoesNotExist:
             return JsonResponse({
                 'message': 'No medical shop found with the given name and DL numbers. Click OK to create a new record, or Cancel to abort.',
@@ -2179,9 +2182,17 @@ def create_medical_record(request):
         check_register = RegisterMedicals.objects.filter(Medical_name = name , dl_number1 = dl_number1, dl_number2 = dl_number2, UniqueId = unique_number)
 
         if check_register.exists():
-            return JsonResponse({'message':"This Medical Already Register in our Records "})
+            return JsonResponse({'message':"This Medical Already Register in our Records "},status=405)
+
+        if RegisterMedicals.objects.exclude(user=request.user).filter(dl_number1=dl_number1).exists():
+            return JsonResponse({'message':'Drug license number 1 already exists'},status=405)
+
+        if RegisterMedicals.objects.exclude(user=request.user).filter(dl_number2=dl_number2).exists():
+            return JsonResponse({'message':'Drug license number 2 already exists'},status=405)
+
 
         person = RegisterMedicals.objects.create(
+            user=request.user,
             Medical_name=name,
             dl_number1=dl_number1,
             dl_number2=dl_number2,

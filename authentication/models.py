@@ -129,6 +129,7 @@ class ConnectMedicals(models.Model):
         return f"Notification from {self.request_sender.username} to {self.request_receiver.username}"
     
 class RegisterMedicals(models.Model):
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='register_medicals',null=True)
     Medical_name = models.CharField(max_length=50)
     dl_number1 = models.CharField(max_length=30)
     dl_number2 = models.CharField(max_length=30)
