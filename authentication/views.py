@@ -511,9 +511,8 @@ def confirm_admin(request, uniqueid):
                 if invoice_exists:
                     continue  # Skip if the invoice already exists
                 
-                receiver_names = Invoice.objects.get(user = selected_invoice)
-                print("receiver_names : ",receiver_names)
-                receiver_names.collaborator_invoice = receiver_username
+                selected_invoice.collaborator_invoice = receiver_username
+                selected_invoice.save()
                 
                 # Create a new Invoice object
                 Invoice.objects.create(

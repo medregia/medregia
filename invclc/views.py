@@ -1595,11 +1595,9 @@ def pay_invoice(request, invoice_id):
         try:
             # Fetch the collaborator's invoice
             collaborator_invoice = Invoice.objects.get(id=invoice_id, user=request.user)
-            print(f"Collaborator's invoice number: {collaborator_invoice.invoice_number}")
 
             # Fetch the sender's invoice
             sender_invoice = Invoice.objects.get(user=request.user, invoice_number=collaborator_invoice.invoice_number)
-            print(f"Sender's invoice: {sender_invoice}")
 
             # Update the collaborator's invoice if it exists
             if collaborator_invoice.collaborator_invoice:
@@ -1607,26 +1605,18 @@ def pay_invoice(request, invoice_id):
                 sender_collaborator_invoice.payment_amount = collaborator_invoice.payment_amount
                 sender_collaborator_invoice.balance_amount = collaborator_invoice.balance_amount
                 sender_collaborator_invoice.save()
-                print("Updated collaborator's invoice")
 
             # Update the sender's invoice if the current user is the sender 
             elif sender_invoice.user == request.user:
-                sender_invoice_data = Invoice.objects.exclude(user=request.user).filter( invoice_number=collaborator_invoice.invoice_number)
-
-                for invoice_data in sender_invoice_data:
-                    invoice_data.payment_amount = collaborator_invoice.payment_amount
-                    invoice_data.balance_amount = collaborator_invoice.balance_amount
-                    invoice_data.save()
-
-                    print("Updated sender's invoice")
-                    print(f"Payment amount: {sender_invoice.payment_amount}, Balance amount: {sender_invoice.balance_amount}")
+                sender_invoice.payment_amount = collaborator_invoice.payment_amount
+                sender_invoice.balance_amount = collaborator_invoice.balance_amount
+                sender_invoice.save()
 
         except Invoice.DoesNotExist:
             print("Error: Invoice not found.")
         except Exception as e:
             print(f"Error in processing invoice: {e}")
 
-            
         messages.success(request,"payment Success")
 
         # Check the action type (Pay or Save)
@@ -1682,6 +1672,34 @@ def payment_invoice(request,payment_id):
         )
         
         tracking_payment.save()
+
+
+        try:
+            # Fetch the collaborator's invoice
+            collaborator_invoice = Invoice.objects.get(id=payment_id, user=request.user)
+
+            # Fetch the sender's invoice
+            sender_invoice = Invoice.objects.get(user=request.user, invoice_number=collaborator_invoice.invoice_number)
+
+            # Update the collaborator's invoice if it exists
+            if collaborator_invoice.collaborator_invoice:
+                sender_collaborator_invoice = Invoice.objects.get(user=collaborator_invoice.collaborator_invoice, invoice_number=collaborator_invoice.invoice_number)
+                sender_collaborator_invoice.payment_amount = collaborator_invoice.payment_amount
+                sender_collaborator_invoice.balance_amount = collaborator_invoice.balance_amount
+                sender_collaborator_invoice.save()
+
+            # Update the sender's invoice if the current user is the sender 
+            elif sender_invoice.user == request.user:
+                sender_invoice.payment_amount = collaborator_invoice.payment_amount
+                sender_invoice.balance_amount = collaborator_invoice.balance_amount
+                sender_invoice.save()
+
+
+        except Invoice.DoesNotExist:
+            print("Error: Invoice not found.")
+        except Exception as e:
+            print(f"Error in processing invoice: {e}")
+
         messages.success(request,"payment Success")
         
         # Check the action type (Pay or Save)
