@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (data.status === 'success') {
                 // Redirect on success
                 window.location.href = data.redirect_url;
+               
             }
         })
         .catch((error) => {
