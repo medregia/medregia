@@ -22,7 +22,7 @@
         <a href="{% url 'admin:index' %}">Admin</a>
       {% endif %}
 
-      <a href="{% url 'profile' %}"><span class="profile-content"><img src="{% static 'authentication/images/profile.png'%}" class="user-pic" alt="profile" title="{{request.user}}"></span></a>
+      <a href="{% url 'profile' %}"><span class="profile-content"><img src="{% static 'authentication/images/profile.png'%}" class="user-pic" alt="profile" title="Profile - {{request.user}}"></span></a>
 
       <a href="{% url 'logout' %}">Logout</a>
   </div>

@@ -102,7 +102,18 @@
                         <td><div class="input-container"><input type="text" value="{{ row.admin_name }}" disabled></div></td>
                         <td><div class="input-container"><input type="text" value="{{ row.temp_no }}" disabled></div></td>
                         <td><div class="input-container"><input type="text" value="{{ row.unique_no }}" title="{{row.unique_no}}" disabled></div></td>
-                        <td><button type="button" class="inviteUser link-btn">Invite</button></td>
+                        {% if position == 'Admin' %}
+                            <td>
+                                <button type="button" class="inviteUser link-btn">Invite</button>
+                            </td>
+                        {% else %}
+                            <td>
+                                <button type="button" class="inviteUser link-btn" disabled 
+                                        title="You are a {{position}} so you are not able to send an invite request" 
+                                        style="background-color: #b7b7b7; cursor: progress;">Invite</button>
+                            </td>
+                        {% endif %}
+
                         <td><div class="input-container"><input type="text" value="{{ row.status }}" disabled></div></td>
                     </tr>
                     {% endfor %}

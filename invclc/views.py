@@ -1810,12 +1810,17 @@ def admin_access(request):
 
         if not get_all_invoice.exists():
             context['error'] = "No invoices found for the user."
+        
+        get_current_user_position = CustomUser.objects.get(username=request.user)
+        context['position']=get_current_user_position.position
 
         for idx, invoice in enumerate(get_all_invoice, start=1):
             try:
                 profile_data = Person.objects.get(MedicalShopName=invoice.pharmacy_name)
                 unique_code = profile_data.UniqueId
                 user_position = profile_data.user.position
+
+                
                 if user_position == "Admin":
                     is_admin_user = profile_data.user.username
 
@@ -1833,14 +1838,14 @@ def admin_access(request):
                         'unique_no': unique_code,
                         'uique_Faild': False,
                         'generate_link': False,
-                        'status': 'Active'
+                        'status': 'Active',
                     })
             except Person.DoesNotExist:
                 temp_no = generate_tempno(invoice.pharmacy_name, invoice.id)
                 check_Medical = None
                 check_dl1 = None
                 check_dl2 = None
-                
+
                 try:
                     check_data_medical = RegisterMedicals.objects.filter(Medical_name=invoice.pharmacy_name)
                     if check_data_medical:
@@ -1871,7 +1876,7 @@ def admin_access(request):
                         'temp_no': temp_no,
                         'unique_no': None,
                         'generate_link': True,
-                        'status': 'Inactive'
+                        'status': 'Inactive',
                     })
     except Exception as e:
         context['error'] = f"Error: {e}"
