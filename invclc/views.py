@@ -1919,7 +1919,7 @@ def admin_access(request):
                 }
                 signed_data = signer.dumps(data_to_sign)
                 
-                base_signup_url = 'http://127.0.0.1:8000/invite/'
+                base_signup_url = 'https://medregia.com/invite/'
                 invite_url = f"{base_signup_url}?data={signed_data}"
 
                 html_message = render_to_string('invitation_email.html', {
