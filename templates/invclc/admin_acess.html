@@ -103,9 +103,17 @@
                         <td><div class="input-container"><input type="text" value="{{ row.temp_no }}" disabled></div></td>
                         <td><div class="input-container"><input type="text" value="{{ row.unique_no }}" title="{{row.unique_no}}" disabled></div></td>
                         {% if position == 'Admin' %}
-                            <td>
-                                <button type="button" class="inviteUser link-btn">Invite</button>
-                            </td>
+                            {% if row.checked %}
+                                <td>
+                                    <button type="button" class="inviteUser link-btn" disabled title = "Already Coloborated " 
+                                    style ="background-color: transparent; cursor: progress; color:#3498db; font-size:18px" >&#10003</button>
+                                </td>
+                            {% else %}
+                                <td>
+                                    <button type="button" class="inviteUser link-btn">Invite</button>
+                                </td>
+                            {% endif %}
+                            
                         {% else %}
                             <td>
                                 <button type="button" class="inviteUser link-btn" disabled 

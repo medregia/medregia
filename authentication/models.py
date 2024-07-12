@@ -120,13 +120,20 @@ class Notification(models.Model):
 class ConnectMedicals(models.Model):
     request_sender = models.ForeignKey(CustomUser, related_name='request_sender', on_delete=models.CASCADE)
     request_receiver = models.ForeignKey(CustomUser, related_name='request_receiver', on_delete=models.CASCADE)
-    is_read = models.BooleanField(default = False)
-    accept_status = models.BooleanField(default = True)
-    request_message = models.TextField(null= True , blank=True)
+    sender_name = models.CharField(max_length=30, editable=True, null=True)  # New field to store sender's username
+    is_read = models.BooleanField(default=False)
+    accept_status = models.BooleanField(default=True)
+    request_message = models.TextField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    
+
+    def save(self, *args, **kwargs):
+        # Set the sender_name before saving the model
+        self.sender_name = self.request_sender.username
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Notification from {self.request_sender.username} to {self.request_receiver.username}"
+
     
 class RegisterMedicals(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='register_medicals',null=True)

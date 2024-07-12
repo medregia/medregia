@@ -1448,11 +1448,11 @@ def update_invoice(request, invoice_id):
         return JsonResponse({'status': 'success', 'message': 'Invoice updated successfully'})
     except json.JSONDecodeError:
         # Handle JSON decoding error
-        messages.error(request, "Failed to modify invoice: Invalid JSON data")
+        messages.error(request, "Failed to modify invoice 1: Invalid JSON data")
         return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'})
     except Exception as e:
         # Handle other exceptions
-        messages.error(request, f"Failed to modify invoice: {str(e)}")
+        messages.error(request, f"Failed to modify invoice 2: {str(e)}")
         return JsonResponse({'status': 'error', 'message': str(e)})
 
 
@@ -1758,6 +1758,7 @@ def admin_access(request):
     sender_name = None
     is_admin_user = None
     unique_keys = set()  # Set to store unique keys
+    checked = None  # Initialize the checked variable
 
     try:
         # Get all notifications sent to the current user that have been read
@@ -1777,8 +1778,8 @@ def admin_access(request):
                     receiver_name = CustomUser.objects.get(username=normal_user.username, is_staff=False)
                     if receiver_name and sender_name:
                         checked_username = receiver_name.username
-                except Exception as user_error:
-                    messages.error(request, user_error)
+                except CustomUser.DoesNotExist as user_error:
+                    messages.error(request, f"User error: {user_error}")
     except Exception as general_error:
         messages.error(request, f"Something went wrong while exporting JSON: {general_error}")
 
@@ -1802,7 +1803,7 @@ def admin_access(request):
             if AdminPosition:
                 context['admin_position'] = AdminPosition.sender.position
 
-        except Exception as e:
+        except CustomUser.DoesNotExist as e:
             context['user_phone'] = None
             context['user_username'] = None
             context['user_position'] = None
@@ -1812,7 +1813,7 @@ def admin_access(request):
             context['error'] = "No invoices found for the user."
         
         get_current_user_position = CustomUser.objects.get(username=request.user)
-        context['position']=get_current_user_position.position
+        context['position'] = get_current_user_position.position
 
         for idx, invoice in enumerate(get_all_invoice, start=1):
             try:
@@ -1820,12 +1821,55 @@ def admin_access(request):
                 unique_code = profile_data.UniqueId
                 user_position = profile_data.user.position
 
-                
                 if user_position == "Admin":
                     is_admin_user = profile_data.user.username
 
                 unique_key = (profile_data.MedicalShopName, profile_data.DrugLiceneseNumber1, profile_data.DrugLiceneseNumber2, is_admin_user, unique_code)
-                
+
+                is_collaborate_medical = ConnectMedicals.objects.filter(request_receiver=request.user, is_read=True, accept_status=True)
+
+                if not is_collaborate_medical.exists():
+                    # Second filter query
+                    is_collaborate_medical = ConnectMedicals.objects.filter(request_sender=request.user, is_read=True, accept_status=True)
+
+                for medical in is_collaborate_medical:
+                    sender_medical = medical.sender_name
+                    try:
+                        sender_username_object = CustomUser.objects.get(username=sender_medical)
+                    except CustomUser.DoesNotExist:
+                        messages.error(request, f"Person {sender_medical} does not exist.")
+                        print(f"Sender user {sender_medical} does not exist.")
+                        continue
+                    
+                    try:
+                        get_sender_medicals = ConnectMedicals.objects.filter(request_receiver=request.user, request_sender=sender_username_object, is_read=True, accept_status=True)
+
+                        if not get_sender_medicals.exists():
+                            get_sender_medicals = ConnectMedicals.objects.filter(request_sender=sender_username_object, is_read=True, accept_status=True)
+
+                        for sender_medical_item in get_sender_medicals:
+                            try:
+                                sender_profile = Person.objects.get(user=sender_medical_item.request_sender)
+                                receiver_profile = Person.objects.get(user=sender_medical_item.request_receiver)
+
+                                if profile_data.MedicalShopName in [sender_profile.MedicalShopName, receiver_profile.MedicalShopName]:
+                                    checked = True
+                                    break  # Exit the loop early if a match is found
+                                else:
+                                    checked = False
+                            except Person.DoesNotExist as e:
+                                messages.error(request, f"Person {e} does not exist.")
+                                print(f"Person does not exist: {e}")
+
+                        if checked:
+                            break  # Exit the outer loop early if a match is found
+
+                    except ConnectMedicals.DoesNotExist as e:
+                        messages.error(request, f"Error: {e}")
+                        print(f"Get Error: {e}")
+
+
+
                 if unique_key not in unique_keys:
                     unique_keys.add(unique_key)
                     table_data.append({
@@ -1839,6 +1883,7 @@ def admin_access(request):
                         'uique_Faild': False,
                         'generate_link': False,
                         'status': 'Active',
+                        'checked': checked,
                     })
             except Person.DoesNotExist:
                 temp_no = generate_tempno(invoice.pharmacy_name, invoice.id)
@@ -1848,7 +1893,7 @@ def admin_access(request):
 
                 try:
                     check_data_medical = RegisterMedicals.objects.filter(Medical_name=invoice.pharmacy_name)
-                    if check_data_medical:
+                    if check_data_medical.exists():
                         for register_medical in check_data_medical:
                             check_Medical = register_medical.Medical_name
                             check_dl1 = register_medical.dl_number1
@@ -1877,6 +1922,7 @@ def admin_access(request):
                         'unique_no': None,
                         'generate_link': True,
                         'status': 'Inactive',
+                        'checked': None,
                     })
     except Exception as e:
         context['error'] = f"Error: {e}"
@@ -1945,7 +1991,6 @@ def admin_access(request):
             return JsonResponse({'error': response_data}, status=500)
 
     return render(request, 'invclc/admin_acess.html', context)
-
 
 
 @require_GET
