@@ -475,19 +475,13 @@ def confirm_admin(request, uniqueid):
         sender_uniqueId = Person.objects.get(UniqueId=uniqueid)
         receiver_Medical = Person.objects.get(user=request.user)
 
-        print("sender_uniqueId : ",sender_uniqueId)
-        print("receiver_Medical : ",receiver_Medical)
-
         get_selected_invoice = Invoice.objects.filter(user=sender_uniqueId.user, pharmacy_name=receiver_Medical.MedicalShopName)
         sender_username = CustomUser.objects.get(username = sender_uniqueId.user)
         receiver_username = CustomUser.objects.get(username= request.user)
 
-        print("receiver_username : ",receiver_username)
+
         if sender_uniqueId and get_selected_invoice.exists():
             for idx, selected_invoice in enumerate(get_selected_invoice):
-                
-                print("selected_invoice : ",selected_invoice)
-                print("selected_invoice.collaborator_invoice : ",selected_invoice.collaborator_invoice)
 
                 # Ensure the fields are not None before creating a new Invoice object
                 invoice_amount = selected_invoice.invoice_amount if selected_invoice.invoice_amount is not None else Decimal('0.00')

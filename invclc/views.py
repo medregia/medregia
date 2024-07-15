@@ -1892,6 +1892,7 @@ def admin_access(request):
         for idx, invoice in enumerate(get_all_invoice, start=1):
             try:
                 profile_data = Person.objects.get(MedicalShopName=invoice.pharmacy_name)
+                current_medicalname = Person.objects.get(user = request.user)
                 unique_code = profile_data.UniqueId
                 user_position = profile_data.user.position
 
@@ -1900,47 +1901,57 @@ def admin_access(request):
 
                 unique_key = (profile_data.MedicalShopName, profile_data.DrugLiceneseNumber1, profile_data.DrugLiceneseNumber2, is_admin_user, unique_code)
 
-                is_collaborate_medical = ConnectMedicals.objects.filter(request_receiver=request.user, is_read=True, accept_status=True)
+                is_collaborate_medical = ConnectMedicals.objects.filter(request_receiver=request.user,request_sender = profile_data.user ,is_read=True, accept_status=True)
 
                 if not is_collaborate_medical.exists():
                     # Second filter query
-                    is_collaborate_medical = ConnectMedicals.objects.filter(request_sender=request.user, is_read=True, accept_status=True)
+                    is_collaborate_medical = ConnectMedicals.objects.filter(request_sender=request.user, request_receiver = profile_data.user ,is_read=True, accept_status=True)
 
+                checked = False
                 for medical in is_collaborate_medical:
-                    sender_medical = medical.sender_name
-                    try:
-                        sender_username_object = CustomUser.objects.get(username=sender_medical)
-                    except CustomUser.DoesNotExist:
-                        messages.error(request, f"Person {sender_medical} does not exist.")
-                        print(f"Sender user {sender_medical} does not exist.")
-                        continue
+                    if medical:
+                        checked = True
+                        break
+                    continue
                     
-                    try:
-                        get_sender_medicals = ConnectMedicals.objects.filter(request_receiver=request.user, request_sender=sender_username_object, is_read=True, accept_status=True)
+                if current_medicalname.MedicalShopName == invoice.pharmacy_name:
+                    checked = True
 
-                        if not get_sender_medicals.exists():
-                            get_sender_medicals = ConnectMedicals.objects.filter(request_sender=sender_username_object, is_read=True, accept_status=True)
 
-                        for sender_medical_item in get_sender_medicals:
-                            try:
-                                sender_profile = Person.objects.get(user=sender_medical_item.request_sender)
-                                receiver_profile = Person.objects.get(user=sender_medical_item.request_receiver)
+                    # sender_medical = medical.request_sender
+                    # try:
+                    #     sender_username_object = CustomUser.objects.get(username=sender_medical)
+                    # except CustomUser.DoesNotExist:
+                    #     messages.error(request, f"Person {sender_medical} does not exist.")
+                    #     print(f"Sender user {sender_medical} does not exist.")
+                    #     continue
+                    
+                    # try:
+                    #     get_sender_medicals = ConnectMedicals.objects.filter(request_receiver=request.user, request_sender=sender_username_object, is_read=True, accept_status=True)
 
-                                if profile_data.MedicalShopName in [sender_profile.MedicalShopName, receiver_profile.MedicalShopName]:
-                                    checked = True
-                                    break  # Exit the loop early if a match is found
-                                else:
-                                    checked = False
-                            except Person.DoesNotExist as e:
-                                messages.error(request, f"Person {e} does not exist.")
-                                print(f"Person does not exist: {e}")
+                    #     if not get_sender_medicals.exists():
+                    #         get_sender_medicals = ConnectMedicals.objects.filter(request_sender=sender_username_object, is_read=True, accept_status=True)
 
-                        if checked:
-                            break  # Exit the outer loop early if a match is found
+                    #     for sender_medical_item in get_sender_medicals:
+                    #         try:
+                    #             sender_profile = Person.objects.get(user=sender_medical_item.request_sender)
+                    #             receiver_profile = Person.objects.get(user=sender_medical_item.request_receiver)
 
-                    except ConnectMedicals.DoesNotExist as e:
-                        messages.error(request, f"Error: {e}")
-                        print(f"Get Error: {e}")
+                    #             if profile_data.MedicalShopName in [sender_profile.MedicalShopName, receiver_profile.MedicalShopName]:
+                    #                 checked = True
+                    #                 break  # Exit the loop early if a match is found
+                    #             else:
+                    #                 checked = False
+                    #         except Person.DoesNotExist as e:
+                    #             messages.error(request, f"Person {e} does not exist.")
+                    #             print(f"Person does not exist: {e}")
+
+                    #     if checked:
+                    #         break  # Exit the outer loop early if a match is found
+
+                    # except ConnectMedicals.DoesNotExist as e:
+                    #     messages.error(request, f"Error: {e}")
+                    #     print(f"Get Error: {e}")
 
 
 
