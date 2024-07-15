@@ -652,6 +652,80 @@ def index_view(request):
                 paying_amount = payment_amount
             )
             tracking_payment.save()
+
+            try:
+                # Fetch the medical details
+                is_medical = Person.objects.get(MedicalShopName__iexact=invoice_data.pharmacy_name)
+                receiver_invoice_data = Invoice.objects.filter(user=request.user, pharmacy_name=invoice_data.pharmacy_name)
+
+                # Check if there is a connection between the users
+                is_connected = ConnectMedicals.objects.filter(
+                    request_sender=request.user,
+                    request_receiver=is_medical.user,
+                    is_read=True,
+                    accept_status=True
+                ).exists()
+
+                if not is_connected:
+                    is_connected = ConnectMedicals.objects.filter(
+                        request_sender=is_medical.user,
+                        request_receiver=request.user,
+                        is_read=True,
+                        accept_status=True
+                    ).exists()
+
+                if is_connected:
+                    for selected_invoice in receiver_invoice_data:
+                        # Check if the invoice already exists
+                        invoice_exists = Invoice.objects.filter(
+                            user=is_medical.user,
+                            pharmacy_name=selected_invoice.pharmacy_name,
+                            invoice_number=selected_invoice.invoice_number,
+                            invoice_date=selected_invoice.invoice_date,
+                            invoice_amount=selected_invoice.invoice_amount,
+                            balance_amount=selected_invoice.balance_amount,
+                            payment_amount=selected_invoice.payment_amount,
+                            today_date=selected_invoice.today_date,
+                            current_time=selected_invoice.current_time,
+                            updated_by=selected_invoice.updated_by
+                        ).exists()
+
+                        if invoice_exists:
+                            continue 
+
+                        # Set collaborator and save
+                        selected_invoice.collaborator_invoice = is_medical.user
+                        selected_invoice.save()
+
+                        # Create a new invoice for the connected user
+                        Invoice.objects.create(
+                            user=is_medical.user,
+                            pharmacy_name=selected_invoice.pharmacy_name,
+                            invoice_number=selected_invoice.invoice_number,
+                            invoice_date=selected_invoice.invoice_date,
+                            invoice_amount=selected_invoice.invoice_amount,
+                            balance_amount=selected_invoice.balance_amount,
+                            payment_amount=selected_invoice.payment_amount,
+                            today_date=selected_invoice.today_date,
+                            current_time=selected_invoice.current_time,
+                            updated_by=selected_invoice.updated_by,
+                            collaborator_invoice=request.user,
+                        )
+
+            except Person.DoesNotExist:
+                messages.error(request, 'Medical shop not found')
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Medical shop not found'
+                }, status=404)
+            except Exception as e:
+                messages.error(request, f'An error occurred: {str(e)}')
+                return JsonResponse({
+                    'success': False,
+                    'message': f'An error occurred: {str(e)}'
+                }, status=500)
+
+
             
             messages.success(request,'Invoice saved successfully!')
             return JsonResponse({'success': True, 'message': 'Invoice saved successfully!'})
