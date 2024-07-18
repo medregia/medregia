@@ -1,4 +1,4 @@
 from .models import ConnectMedicals
 
-def send_notification(sender, recipient, message):
-    ConnectMedicals.objects.create(request_sender=sender, request_receiver=recipient, request_message=message)
+def SendNotification(sender, recipient, message,status):
+    ConnectMedicals.objects.create(request_sender=sender, request_receiver=recipient, request_message=message,status_message = status)

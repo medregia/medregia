@@ -123,6 +123,7 @@ class ConnectMedicals(models.Model):
     sender_name = models.CharField(max_length=30, editable=True, null=True)  # New field to store sender's username
     is_read = models.BooleanField(default=False)
     accept_status = models.BooleanField(default=True)
+    status_message = models.CharField(max_length=30,null=True,blank=True)
     request_message = models.TextField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 

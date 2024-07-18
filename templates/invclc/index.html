@@ -573,25 +573,39 @@
           </thead>
 
           <tbody>
-            {% if ModifiedHistory == "No Updatation Found" %}
-            <tr>
-              <td colspan="6">
-                <h2>No notification Details Here ...</h2>
-              </td>
-            </tr>
+            {% if notification_history == "No Notification Found !!" %}
+              <tr>
+                <td colspan="6">
+                  <h2>No notification details found...</h2>
+                </td>
+              </tr>
             {% else %}
-            {% for Modified in ModifiedHistory %}
-            <tr>
-              <td>{{ Modified.modified_today_date }}</td>
-              <td>{{ Modified.modified_pharmacy }}</td>
-              <td>{{ Modified.modified_Invoice_number }}</td>
-              <td>{{ Modified.modified_Invoice_date }}</td>
-              <td>{{ Modified.modified_Total_amount }}</td>
-              <td>{{ Modified.modified_payment }}</td>
-            </tr>
-            {% endfor %}
+              {% for notification in notification_history %}
+                <tr>
+                  <td>{{ notification.id }}</td>
+                  <td>{{ notification.timestamp }}</td>
+                  <td>{{ notification.request_sender }}</td>
+                  <td>{{ notification.request_receiver }}</td>
+                  <td>{{ notification.request_message }}</td>
+                  <td>
+                    {% if notification.is_read and notification.accept_status and notification.status_message == 'Request Accepted' %}
+                      <span style="color: green;">Request Accepted</span>
+                    {% elif notification.status_message == 'Pending' %}
+                      <span style="color: orange;">Request Pending</span>
+
+                    {% elif notification.status_message == 'No UniqueId' %}
+                      <span style="color: blue;">Receiver Don't Have UniqueId But Request Sended</span>
+
+                    {% elif notification.status_message == 'Request Rejected' %}
+                      <span style="color: red;">Request Rejected</span>
+                    {% else %}
+                      <span style="color: red;">Request Rejected</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
             {% endif %}
-          </tbody>
+          </tbody>          
         </table>
 
       </div>

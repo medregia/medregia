@@ -27,6 +27,7 @@ from django.db.utils import IntegrityError
 from django import forms
 from decimal import Decimal
 import traceback
+from .service import SendNotification
 
 def signup_view(request):
     form = SignUpForm()
@@ -527,10 +528,13 @@ def confirm_admin(request, uniqueid):
         else:
             messages.error(request, "No Invoice Found in this Name")
 
+        notification_message = f"{request.user} Attcepted the Request "
         # Update the ConnectMedicals object to mark it as read
         get_ConnectMedicals = ConnectMedicals.objects.get(request_receiver=request.user,request_sender = sender_uniqueId.user, is_read=False, accept_status=True)
         # print("get_ConnectMedicals : ",get_ConnectMedicals)
         get_ConnectMedicals.is_read = True
+        get_ConnectMedicals.request_message = notification_message
+        get_ConnectMedicals.status_message = "Request Accepted"
         get_ConnectMedicals.save()
 
     except Person.DoesNotExist:
@@ -548,9 +552,12 @@ def admin_cancel(request,uniqueid):
     # print("uniqueid : ",uniqueid)
     try:
         get_sender_name = Person.objects.get(UniqueId = uniqueid)
+        reject_message = f"{request.user} Reject the Colloboration Request "
         notification = get_object_or_404(ConnectMedicals, request_receiver=request.user, request_sender = get_sender_name.user, is_read=False, accept_status=True)
         notification.is_read = True
         notification.accept_status = False
+        notification.request_message = reject_message
+        notification.status_message = "Request Rejected"
         notification.save()
 
         messages.info(request,"coloboration Canceled")

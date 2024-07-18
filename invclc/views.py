@@ -31,7 +31,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from .utils import generate_tempno,RegisterUserTempNo
-from authentication.service import send_notification
+from authentication.service import SendNotification
 
 logger = logging.getLogger(__name__)
 def upload_csv(request):
@@ -450,6 +450,7 @@ def index_view(request):
     except Person.DoesNotExist:
         unique_id = f"'{request.user}' Please Update Your Profile"
 
+    # Set Deleted Invoice History
 
     if str(request.user) == checked_username:
         DeleteHistory = DeletedInvoice.objects.filter(user=senderName).order_by('-id')
@@ -459,6 +460,7 @@ def index_view(request):
     if not DeleteHistory.exists():
         DeleteHistory = "No Deletion Found"
         
+    # Set Modified Invoice History
     if str(request.user) == checked_username:
         ModifiedHistory = ModifiedInvoice.objects.filter(user = senderName).order_by('-id')
     else:
@@ -466,6 +468,16 @@ def index_view(request):
         
     if not ModifiedHistory.exists():
         ModifiedHistory = "No Updatation Found"
+
+    
+    # Set NOtification Histor
+
+    notification_history = ConnectMedicals.objects.filter(request_sender = request.user).order_by('-id')
+    if not notification_history:
+        notification_history = ConnectMedicals.objects.filter(request_receiver = request.user).order_by('-id')
+    
+    if not notification_history.exists():
+        notification_history :str = "No Notification Found !!"
         
     Storename = None
     admin_invoices = None
@@ -761,6 +773,7 @@ def index_view(request):
         'is_medical_exists':is_medical_exists,
         'is_dl1_exists':is_dl1_exists,
         'is_dl2_exists':is_dl2_exists,
+        'notification_history':notification_history,
     }
     return render(request, 'invclc/index.html', context)
 
@@ -2298,13 +2311,15 @@ def connect_view(request):
         if user_uniqueId:
             if user_uniqueId == unique_number:
                 notification_message = 'Collaboration request sent successfully.'
-                send_notification(request.user, person.user, notification_message)
+                status = "Pending"
+                SendNotification(request.user, person.user, notification_message,status)
                 return JsonResponse({'message': notification_message, 'Inputpopup': False})
             else:
                 return JsonResponse({'message': "Unique ID does not match with user's Unique ID.", 'data': data})
         else:
             update_profile_message = f"{name} doesn't have a Unique Id, but request sent."
-            send_notification(request.user, person.user, update_profile_message)
+            status_failed = "No UniqueId"
+            SendNotification(request.user, person.user, update_profile_message,status_failed)
             return JsonResponse({'message': update_profile_message, 'data': data, 'Inputpopup': True}, status=403)
 
     return JsonResponse({'message': 'Invalid request method.', 'data': None, 'Inputpopup': False}, status=405)
