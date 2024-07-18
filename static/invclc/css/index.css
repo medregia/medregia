@@ -664,7 +664,7 @@ button.editBtn,button.deleteBtn,button.saveBtn{
   background-color:blue;
 }
 
-.deleted-history,.updated-history{
+.deleted-history,.updated-history,.Notification-history{
   display:flex;
   gap:10px;
   flex-direction:column;
@@ -678,11 +678,12 @@ button.editBtn,button.deleteBtn,button.saveBtn{
   overflow-y: scroll;
   height: 300px;
 }
-.deleted-history table ,.updated-history table{
+.deleted-history table ,.updated-history table,.Notification-history table{
   background-color: #fff;
 }
 .deleted-history .delete-heading,
-.updated-history .update-heading{
+.updated-history .update-heading,
+.Notification-history .Notification-heading{
   height:40px;
   width:100%;
   display:flex;
@@ -695,7 +696,8 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 }
 
 .deleted-history .delete-table,
-.updated-history .update-table{
+.updated-history .update-table,
+.Notification-history .Notification-table{
   height: 53vh;
   width: 100%;
   display:flex;
@@ -707,14 +709,16 @@ button.editBtn,button.deleteBtn,button.saveBtn{
  
 /* Styling for the delete history heading */
 .delete-heading h3,
-.update-heading h3  {
+.update-heading h3,
+.Notification-heading h3 {
   color: #333;
   font-size: 24px;
 }
 
 /* Styling for the delete history table */
 .delete-table table,
-.update-table table {
+.update-table table,
+.Notification-table table{
   width: 100%;
   border-collapse: collapse;
 }
@@ -722,14 +726,17 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 .delete-table th,
 .delete-table td ,
 .update-table th,
-.update-table td{
+.update-table td,
+.Notification-table th,
+.Notification-table td{
   border: 1px solid #000;
   padding: 8px;
   text-align: center;
 }
 
 .delete-table th ,
-.update-table th{
+.update-table th,
+.Notification-table th{
   background-color: #cfc8c8;
   position: sticky;
   top: -20px;
@@ -738,7 +745,8 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 }
 
 .delete-table tr:nth-child(even),
-.update-table tr:nth-child(even) {
+.update-table tr:nth-child(even),
+.Notification-table tr:nth-child(even){
   background-color: rgba(186, 180, 180,0.5);
 }
 
