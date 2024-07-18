@@ -472,9 +472,9 @@ def index_view(request):
     
     # Set NOtification Histor
 
-    notification_history = ConnectMedicals.objects.filter(request_sender = request.user).order_by('-id')
+    notification_history :object = ConnectMedicals.objects.filter(request_sender = request.user).order_by('-id')
     if not notification_history:
-        notification_history = ConnectMedicals.objects.filter(request_receiver = request.user).order_by('-id')
+        notification_history :object = ConnectMedicals.objects.filter(request_receiver = request.user).order_by('-id')
     
     if not notification_history.exists():
         notification_history :str = "No Notification Found !!"
@@ -2308,7 +2308,7 @@ def connect_view(request):
 
         user_uniqueId = person.UniqueId
         
-        if user_uniqueId:
+        if not "###" in user_uniqueId:
             if user_uniqueId == unique_number:
                 notification_message = 'Collaboration request sent successfully.'
                 status = "Pending"

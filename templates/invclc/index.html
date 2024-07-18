@@ -590,11 +590,11 @@
                   <td>
                     {% if notification.is_read and notification.accept_status and notification.status_message == 'Request Accepted' %}
                       <span style="color: green;">Request Accepted</span>
-                    {% elif notification.status_message == 'Pending' %}
-                      <span style="color: orange;">Request Pending</span>
-
                     {% elif notification.status_message == 'No UniqueId' %}
                       <span style="color: blue;">Receiver Don't Have UniqueId But Request Sended</span>
+                      
+                    {% elif notification.status_message == 'Pending' %}
+                      <span style="color: orange;">Request Pending</span>
 
                     {% elif notification.status_message == 'Request Rejected' %}
                       <span style="color: red;">Request Rejected</span>

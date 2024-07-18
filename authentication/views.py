@@ -528,7 +528,7 @@ def confirm_admin(request, uniqueid):
         else:
             messages.error(request, "No Invoice Found in this Name")
 
-        notification_message = f"{request.user} Attcepted the Request "
+        notification_message = f"{request.user} Accepted the Request "
         # Update the ConnectMedicals object to mark it as read
         get_ConnectMedicals = ConnectMedicals.objects.get(request_receiver=request.user,request_sender = sender_uniqueId.user, is_read=False, accept_status=True)
         # print("get_ConnectMedicals : ",get_ConnectMedicals)
