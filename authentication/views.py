@@ -492,7 +492,7 @@ def confirm_admin(request, uniqueid):
                 # Check if the invoice already exists for the current user
                 invoice_exists = Invoice.objects.filter(
                     user=request.user,
-                    pharmacy_name=selected_invoice.pharmacy_name,
+                    pharmacy_name=sender_uniqueId.MedicalShopName,
                     invoice_number=selected_invoice.invoice_number,
                     invoice_date=selected_invoice.invoice_date,
                     invoice_amount=invoice_amount,
@@ -512,7 +512,7 @@ def confirm_admin(request, uniqueid):
                 # Create a new Invoice object
                 Invoice.objects.create(
                     user=request.user,
-                    pharmacy_name=selected_invoice.pharmacy_name,
+                    pharmacy_name=sender_uniqueId.MedicalShopName,
                     invoice_number=selected_invoice.invoice_number,
                     invoice_date=selected_invoice.invoice_date,
                     invoice_amount=invoice_amount,

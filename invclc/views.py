@@ -669,6 +669,7 @@ def index_view(request):
                 # Fetch the medical details
                 is_medical = Person.objects.get(MedicalShopName__iexact=invoice_data.pharmacy_name)
                 receiver_invoice_data = Invoice.objects.filter(user=request.user, pharmacy_name=invoice_data.pharmacy_name)
+                current_user_medical = Person.objects.get(user = request.user)
 
                 # Check if there is a connection between the users
                 is_connected = ConnectMedicals.objects.filter(
@@ -691,7 +692,7 @@ def index_view(request):
                         # Check if the invoice already exists
                         invoice_exists = Invoice.objects.filter(
                             user=is_medical.user,
-                            pharmacy_name=selected_invoice.pharmacy_name,
+                            pharmacy_name=current_user_medical.MedicalShopName,
                             invoice_number=selected_invoice.invoice_number,
                             invoice_date=selected_invoice.invoice_date,
                             invoice_amount=selected_invoice.invoice_amount,
@@ -712,7 +713,7 @@ def index_view(request):
                         # Create a new invoice for the connected user
                         Invoice.objects.create(
                             user=is_medical.user,
-                            pharmacy_name=selected_invoice.pharmacy_name,
+                            pharmacy_name=current_user_medical.MedicalShopName,
                             invoice_number=selected_invoice.invoice_number,
                             invoice_date=selected_invoice.invoice_date,
                             invoice_amount=selected_invoice.invoice_amount,
