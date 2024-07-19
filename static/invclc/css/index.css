@@ -857,7 +857,65 @@ span.header-error{
 }
 
 
+.medical-not-found{
+  display: none;
+}
 
+/* Styling for the background overlay */
+.hide-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 999;
+  display: none;
+}
+
+/* Styling for the content box */
+.content404 {
+  z-index: 1001;
+  width: 50%;
+  max-width: 500px;
+  background-color: #ffffff;
+  margin: auto;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Styling for the paragraph inside the content box */
+.content404 p {
+  font-size: 18px;
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+/* Styling for the button inside the content box */
+.content404 button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.content404 button:hover {
+  background-color: #0056b3;
+}
 
 
 /* mediaquery */

@@ -729,7 +729,8 @@ def index_view(request):
                 messages.error(request, 'Medical shop not found')
                 return JsonResponse({
                     'success': False,
-                    'message': 'Medical shop not found'
+                    'message': 'Medical shop not found',
+                    'status':404,
                 }, status=404)
             except Exception as e:
                 messages.error(request, f'An error occurred: {str(e)}')

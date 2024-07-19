@@ -548,7 +548,11 @@ document.getElementById('saveButton').addEventListener('click', async function()
           messages.textContent = result.message;
           messages.classList.add('header-message');
           location.reload();
-      } else {
+      } 
+      else if(response.status == 404){
+        popup404(result)
+      }
+      else {
           console.error('Error:', result);
           togglePopup();
           messages.textContent = result.message;
@@ -562,6 +566,26 @@ document.getElementById('saveButton').addEventListener('click', async function()
       messages.classList.add('error-message');
   }
 });
+
+function popup404(message) {
+  const medicalNotFound = document.getElementById('medicalnotfound');
+  const contentPtag = document.querySelector('#content404 p');
+  const overlay = document.querySelector('.hide-background');
+  const acceptButton = document.getElementById('AcceptButton');
+
+  if (medicalNotFound && contentPtag && overlay) {
+    overlay.style.display = "block";
+    medicalNotFound.style.display = "flex";
+    contentPtag.textContent = message.message;
+  }
+
+  acceptButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    overlay.style.display = "none";
+    medicalNotFound.style.display = "none";
+    location.reload()
+  });
+}
 
 // Define the togglePopup function
 function togglePopup() {
