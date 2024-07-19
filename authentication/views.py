@@ -584,3 +584,5 @@ from django.contrib.auth.views import LoginView
 class CustomLoginView(LoginView):
     template_name = 'authentication/login.html'
     
+def all_notification(request):  # Ensure this function is present
+    return render(request, 'authentication/all_notification.html')

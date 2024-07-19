@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %} MedRegiA || All Notifications {% endblock title %}
+{% block nav_footer %}{% static 'nav_footer.css' %} {% endblock nav_footer %}
+{% block link2 %}{% static 'authentication/css/all_notification.css' %} {% endblock link2 %}
+{% block side %}{% static 'authentication/css/sidebar.css' %}{% endblock side %}
+{% block link_footer %}{% static 'footer.css' %} {% endblock link_footer %}
+
+{% block navbar %}
+{% include 'nav.html' %}
+{% endblock navbar %}
+
+
+{% block sidebar %}
+{% include 'sidebar.html' %}
+{% endblock sidebar %}
+
+{% block message %}
+{% include 'invoice_message.html' %}
+{% endblock message %}
+
+{% block content %}
+
+<div class="notification-body">
+    <h1>Page Under Maintance <br>
+        Coming soon...</h1>
+</div>
+
+{% endblock content%}
