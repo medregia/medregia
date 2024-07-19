@@ -729,7 +729,7 @@ def index_view(request):
                 messages.error(request, 'Medical shop not found')
                 return JsonResponse({
                     'success': False,
-                    'message': 'Medical shop not found',
+                    'message': invoice_data.pharmacy_name,
                     'status':404,
                 }, status=404)
             except Exception as e:

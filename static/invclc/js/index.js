@@ -576,7 +576,7 @@ function popup404(message) {
   if (medicalNotFound && contentPtag && overlay) {
     overlay.style.display = "block";
     medicalNotFound.style.display = "flex";
-    contentPtag.textContent = message.message;
+    contentPtag.innerHTML = `<span style="color:red">Note</span> No Medical Found in this Name <span style="color:green">${message.message}</span>`;
   }
 
   acceptButton.addEventListener('click', (e) => {

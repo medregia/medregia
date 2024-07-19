@@ -82,7 +82,8 @@
   <div class="medical-not-found" id="medicalnotfound">
     <div class="hide-background"></div>
     <div class="content404" id="content404">
-        <p>404 content</p>
+        <h2></h2>
+        <p></p>
         <button type="button" id="AcceptButton">Ok Fine!</button>
     </div>
   </div>
@@ -183,7 +184,6 @@
             <button class="tablinks" onclick="openpanel(event, 'Payment Details')" data-panel="Payment Details">Payment Details</button>
             <button class="tablinks active" onclick="openpanel(event, 'DeleteHistory')">Delete History</button>
             <button class="tablinks" onclick="openpanel(event, 'UpdateHistory')">Modified History</button>
-            <button class="tablinks" onclick="openpanel(event, 'NotificationHistory')">Notification History</button>
           </div>  
         </div>
   
@@ -565,63 +565,6 @@
       </div>
 
     </div>
-
-    <div id="NotificationHistory" class="tabcontent Notification-history">
-      <div class="Notification-heading">
-        <h3>Notification History</h3>
-      </div>
-
-      <div class="Notification-table">
-        <table>
-          <thead>
-            <th>S NO</th>
-            <th>Date</th>
-            <th>Sender</th>
-            <th>Receiver</th>
-            <th>Message</th>
-            <th>Status</th>
-          </thead>
-
-          <tbody>
-            {% if notification_history == "No Notification Found !!" %}
-              <tr>
-                <td colspan="6">
-                  <h2>No notification details found...</h2>
-                </td>
-              </tr>
-            {% else %}
-              {% for notification in notification_history %}
-                <tr>
-                  <td>{{ notification.id }}</td>
-                  <td>{{ notification.timestamp }}</td>
-                  <td>{{ notification.request_sender }}</td>
-                  <td>{{ notification.request_receiver }}</td>
-                  <td>{{ notification.request_message }}</td>
-                  <td>
-                    {% if notification.is_read and notification.accept_status and notification.status_message == 'Request Accepted' %}
-                      <span style="color: green;">Request Accepted</span>
-                    {% elif notification.status_message == 'No UniqueId' %}
-                      <span style="color: blue;">Receiver Don't Have UniqueId But Request Sended</span>
-                      
-                    {% elif notification.status_message == 'Pending' %}
-                      <span style="color: orange;">Request Pending</span>
-
-                    {% elif notification.status_message == 'Request Rejected' %}
-                      <span style="color: red;">Request Rejected</span>
-                    {% else %}
-                      <span style="color: red;">Request Rejected</span>
-                    {% endif %}
-                  </td>
-                </tr>
-              {% endfor %}
-            {% endif %}
-          </tbody>          
-        </table>
-
-      </div>
-
-    </div>
-
   </div>
 </div>
 
