@@ -101,9 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleInviteUserClick(event) {
         const row = event.target.closest('tr');
         const MedicalName = row.querySelector('td:nth-child(2) input').value;
-        const dlNumber1 = row.querySelector('td:nth-child(3) input').value;
-        const dlNumber2 = row.querySelector('td:nth-child(4) input').value;
-        const unique_number = row.querySelector('td:nth-child(7) input').value;
+        const dlNumber1 = row.querySelector('td:nth-child(4) input').value;
+        const dlNumber2 = row.querySelector('td:nth-child(5) input').value;
+        const unique_number = row.querySelector('td:nth-child(8) input').value;
     
         medicalNameInput.value = MedicalName;
         uniquenoInput.value = unique_number;
@@ -119,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function sendData(url, data) {
+        console.log("Data : ",data)
         fetch(url, {
             method: 'POST',
             headers: {
@@ -167,6 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     dl2: dl2, 
                     UniqueNo: UniqueNo,
                 };
+
+                console.log(data)
                 sendData('/connect/', data);
             } else {
                 alert('Please enter both DL numbers.');

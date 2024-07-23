@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     closePopupBtn.addEventListener('click', function() {
         notificationPopup.classList.remove('show');
         popupBackdrop.classList.remove('show');
-        mainContent.classList.remove('blurred-background');
+        // mainContent.classList.remove('blurred-background');
         
         setTimeout(() => {
             popupBackdrop.style.display = 'none';
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.target == popupBackdrop) {
             notificationPopup.classList.remove('show');
             popupBackdrop.classList.remove('show');
-            mainContent.classList.remove('blurred-background');
+            // mainContent.classList.remove('blurred-background');
             
             setTimeout(() => {
                 popupBackdrop.style.display = 'none';
