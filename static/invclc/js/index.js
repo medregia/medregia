@@ -548,20 +548,18 @@ document.getElementById('saveButton').addEventListener('click', async function()
           messages.textContent = result.message;
           messages.classList.add('header-message');
           location.reload();
-      } 
-      else if(response.status == 404){
-        popup404(result)
-      }
-      else {
+      } else if (response.status === 404) {
+          popup404(result);
+      } else {
           console.error('Error:', result);
-          togglePopup();
+          togglePopup(data);
           messages.textContent = result.message;
           messages.style.color = "red";
           messages.classList.add('error-message');
       }
   } catch (error) {
       console.error('Error:', error);
-      togglePopup();
+      togglePopup(data);
       messages.textContent = 'An error occurred. Please try again';
       messages.classList.add('error-message');
   }
@@ -574,21 +572,20 @@ function popup404(message) {
   const acceptButton = document.getElementById('AcceptButton');
 
   if (medicalNotFound && contentPtag && overlay) {
-    overlay.style.display = "block";
-    medicalNotFound.style.display = "flex";
-    contentPtag.innerHTML = `<span style="color:red">Note</span> No Medical Found in this Name <span style="color:green">${message.message}</span>`;
+      overlay.style.display = "block";
+      medicalNotFound.style.display = "flex";
+      contentPtag.innerHTML = `<span style="color:red">Note :</span> No Medical Found in this Name <span style="color:green">${message.message}</span>`;
   }
 
   acceptButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    overlay.style.display = "none";
-    medicalNotFound.style.display = "none";
-    location.reload()
+      e.preventDefault();
+      overlay.style.display = "none";
+      medicalNotFound.style.display = "none";
+      location.reload();
   });
 }
 
-// Define the togglePopup function
-function togglePopup() {
+function togglePopup(data) {
   const entryButton = document.getElementById('not_accessable_profile');
   const closeBtn = document.getElementById("popup-btn");
   const popupMsg = document.getElementById("popup-1");
@@ -596,60 +593,61 @@ function togglePopup() {
   const popupBody = document.querySelector(".overlay-content p");
 
   if (entryButton) {
-    popupMessages.textContent = "Invoice Update Failed";
-    popupMessages.style.color = "red";
-    popupMsg.classList.add("active");
+      popupMessages.textContent = "Invoice Update Failed";
+      popupMessages.style.color = "red";
+      popupMsg.classList.add("active");
 
-    closeBtn.addEventListener("click", async () => {
-      const pharmacyName = document.getElementById('pharmacy_name').value;
-      const dl1 = document.getElementById('dl1').value;
-      const dl2 = document.getElementById('dl2').value;
-      const csrf_token = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+      closeBtn.addEventListener("click", async () => {
+          const pharmacyName = document.getElementById('pharmacy_name').value;
+          const dl1 = document.getElementById('dl1').value;
+          const dl2 = document.getElementById('dl2').value;
+          const csrf_token = document.querySelector("input[name='csrfmiddlewaretoken']").value;
 
-      // Prepare data for the Django view
-      const profileData = {};
-      if (pharmacyName) {
-        profileData.pharmacy_name = pharmacyName;
-      }
-      if (dl1) {
-        profileData.dl1 = dl1;
-      }
-      if (dl2) {
-        profileData.dl2 = dl2;
-      }
+          // Prepare data for the Django view
+          const profileData = {
+              pharmacy_name: pharmacyName,
+              dl1: dl1,
+              dl2: dl2,
+              medicalName: data.pharmacy_name,
+              invoice_number: data.invoice_number,
+              invoice_date: data.invoice_date,
+              invoice_amount: data.invoice_amount,
+              payment_amount: data.payment_amount
+          };
 
-      try {
-        const profileResponse = await fetch('/update_profile/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrf_token
-          },
-          body: JSON.stringify(profileData)
-        });
+          try {
+              const profileResponse = await fetch('/update_profile/', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': csrf_token
+                  },
+                  body: JSON.stringify(profileData)
+              });
 
-        const profileResult = await profileResponse.json();
-        if (profileResponse.ok) {
-          console.log(profileResult);
-          popupMsg.classList.remove("active");
-          location.reload();
-        } else {
-          console.error('Profile Update Error:', profileResult);
-          popupMessages.textContent = "Profile Update Failed";
-          popupBody.classList.add('error-message');
-          popupBody.textContent = profileResult.message || "An error occurred while updating the profile.";
-        }
-      } catch (error) {
-        console.error('Profile Update Error:', error);
-        popupMessages.textContent = "Profile Update Failed";
-        popupBody.classList.add('error-message');
-        popupBody.textContent = "An error occurred while updating the profile.";
-      }
-    });
+              const profileResult = await profileResponse.json();
+              if (profileResponse.ok) {
+                  console.log(profileResult);
+                  popupMsg.classList.remove("active");
+                  location.reload();
+              } else {
+                  console.error('Profile Update Error:', profileResult);
+                  popupMessages.textContent = "Profile Update Failed";
+                  popupBody.classList.add('error-message');
+                  popupBody.textContent = profileResult.message || "An error occurred while updating the profile.";
+              }
+          } catch (error) {
+              console.error('Profile Update Error:', error);
+              popupMessages.textContent = "Profile Update Failed";
+              popupBody.classList.add('error-message');
+              popupBody.textContent = "An error occurred while updating the profile.";
+          }
+      });
   } else {
-    console.error('Entry button not found');
+      console.error('Entry button not found');
   }
 }
+
 
 
 
