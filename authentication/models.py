@@ -2,10 +2,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-from django.dispatch import receiver
-from django.contrib.auth.signals import user_logged_in
-from django.contrib.auth.models import Permission
-from django.core.exceptions import ValidationError
+import pytz
 
 class StateModel(models.Model):
     Pid = models.IntegerField(primary_key=True)
@@ -123,13 +120,18 @@ class ConnectMedicals(models.Model):
     sender_name = models.CharField(max_length=30, editable=True, null=True)  # New field to store sender's username
     is_read = models.BooleanField(default=False)
     accept_status = models.BooleanField(default=True)
-    status_message = models.CharField(max_length=30,null=True,blank=True)
+    status_message = models.CharField(max_length=30, null=True, blank=True)
     request_message = models.TextField(null=True, blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True,null=True)
 
     def save(self, *args, **kwargs):
         # Set the sender_name before saving the model
         self.sender_name = self.request_sender.username
+
+        # Set the timestamp to the desired timezone
+        ist = pytz.timezone('Asia/Kolkata')
+        self.timestamp = timezone.now().astimezone(ist)
+
         super().save(*args, **kwargs)
 
     def __str__(self):

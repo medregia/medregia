@@ -66,6 +66,7 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'authentication.context_processors.nav_message',
+                'authentication.context_processors.all_notifications',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',

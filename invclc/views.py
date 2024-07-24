@@ -785,9 +785,16 @@ def update_profile(request):
         try:
             data = json.loads(request.body)
             
+            print(data)
+
             pharmacy_name = data.get('pharmacy_name', "")
             dl1 = data.get('dl1', "")
             dl2 = data.get('dl2', "")
+            medical_name = data.get('medicalName',"")
+            invoice_number = data.get('invoice_number',"")
+            # invoice_date = data.get('invoice_date',"")
+            # invoice_amount = data.get('invoice_amount',"")
+            # payment_amount = data.get('payment_amount',"")
 
             user_to_save = request.user
 
@@ -802,6 +809,39 @@ def update_profile(request):
 
             if Person.objects.exclude(user=request.user).filter(DrugLiceneseNumber2=dl2).exists():
                 duplicate_errors.append('Drug license number 2 already exists')
+
+
+            try:
+                invoiceAmount = float(data['invoice_amount'])
+                paymentAmount = float(data['payment_amount'])
+                
+                if paymentAmount > invoiceAmount:
+                    messages.error(request,'Payment Not Valid')
+                    return JsonResponse({
+                        'success':False,
+                        'message':'Payment Not Valid '
+                        },status=400)
+                    
+            except ValueError:
+                messages.error(request,'Invoice amount and payment amount must be numeric')
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invoice amount and payment amount must be numeric'
+                }, status=400)
+
+            
+            # Convert invoice_date to YYYY-MM-DD format
+            try:
+                invoiceDate = datetime.strptime(data['invoice_date'], '%d/%m/%Y').date()
+            except ValueError:
+                messages.error(request,'Invoice date must be in DD/MM/YYYY format')
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Invoice date must be in DD/MM/YYYY format'
+                }, status=400)
+
+            if Invoice.objects.filter(user=request.user,invoice_number =invoice_number).exists():
+                duplicate_errors.append('Invoice Number Already Exist in Your Medical click Cancel to close')
 
             if duplicate_errors:
                 return JsonResponse({
@@ -821,7 +861,16 @@ def update_profile(request):
                 profile.DrugLiceneseNumber2 = dl2
                 
             profile.save()
-            
+
+            Invoice.objects.create(
+                user = request.user,
+                pharmacy_name = medical_name,
+                invoice_number = invoice_number,
+                invoice_date = invoiceDate,
+                invoice_amount = invoiceAmount,
+                payment_amount = paymentAmount
+            )
+
             messages.success(request, "Data added successfully.")
             return JsonResponse({'success': True, 'message': 'Profile updated successfully!'})
 
@@ -1848,6 +1897,7 @@ def admin_access(request):
     is_admin_user = None
     unique_keys = set()  # Set to store unique keys
     checked = None  # Initialize the checked variable
+    user_type = None
 
     try:
         # Get all notifications sent to the current user that have been read
@@ -1914,7 +1964,12 @@ def admin_access(request):
                 if user_position == "Admin":
                     is_admin_user = profile_data.user.username
                 else:
-                    is_admin_user = None  # Ensure this variable is defined
+                    is_admin_user = None  # Ensure this variable is define
+
+                get_user = CustomUser.objects.get(username = profile_data.user)
+                user_type = get_user.store_type
+                if user_type == 'others':
+                    user_type = get_user.other_value
 
                 unique_key = (
                     profile_data.MedicalShopName, 
@@ -1963,12 +2018,22 @@ def admin_access(request):
                         'generate_link': False,
                         'status': 'Active',
                         'checked': checked,
+                        'user_type':user_type,
                     })
             except Person.DoesNotExist:
                 temp_no = generate_tempno(invoice.pharmacy_name, invoice.id)
                 check_Medical = None
                 check_dl1 = None
                 check_dl2 = None
+
+                try:
+                    user_data = Person.objects.get(MedicalShopName=invoice.pharmacy_name)
+                    get_user = CustomUser.objects.get(user = user_data.user)
+                    user_type = get_user.store_type
+                    if user_type == 'others':
+                        user_type = get_user.other_value
+                except Exception as e:
+                    user_type = None
 
                 try:
                     check_data_medical = RegisterMedicals.objects.filter(Medical_name=invoice.pharmacy_name)
@@ -2002,6 +2067,7 @@ def admin_access(request):
                         'generate_link': True,
                         'status': 'Inactive',
                         'checked': None,
+                        'user_type':user_type,
                     })
     except Exception as e:
         context['error'] = f"Error: {e}"
