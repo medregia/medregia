@@ -166,90 +166,47 @@ def exports_to_csv(request):
         # Get all notifications sent to the current user that have been read
         read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
 
-        # Loop through each read notification
         for notification in read_notifications:
-            # Get the username of the sender of the notification
             sender_username = notification.sender.username
-            # Get the username of the receiver of the notification (current user)
             receiver_username = notification.receiver.username
-            
-            # Find all staff users with the same username as the sender
+
             staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
-            # Get the non-staff user (current user) with the specified username
-            normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
-            
-            # Loop through each staff user with the sender's username
+            normal_user = get_object_or_404(CustomUser, username=receiver_username, is_staff=False)
+
             for user in staff_senders:
                 sender = user.username
 
                 try:
-                    # Get the staff user with the current username
-                    senderName = CustomUser.objects.get(username=sender, is_staff=True)
-                    # Get the non-staff user (current user)
-                    receiverName = CustomUser.objects.get(username=normal_user.username, is_staff=False)
+                    senderName = get_object_or_404(CustomUser, username=sender, is_staff=True)
+                    receiverName = get_object_or_404(CustomUser, username=normal_user.username, is_staff=False)
 
                     if receiverName and senderName:
-                        # Store the username of the current non-staff user
                         checked_username = receiverName.username
                 except Exception as user_error:
-                    # Handle exceptions that occur while processing a specific user
-                    messages.error(request, str(user_error))
-    except Exception as general_error:  
-        # Handle exceptions that occur while processing notifications
-        messages.error(request, "Something went wrong while exporting CSV: " + str(general_error))
+                    return HttpResponse(status=500)
 
-    if checked_username == str(request.user):
-        try:
-            currentuser = request.user
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
-                
-            writer = csv.writer(response)
-            writer.writerow(['invoice_number', 'invoice_amount', 'payment_amount', 'updated_by', 'updated_date', 'Paid/Pending Status'])
+        if checked_username == str(request.user):
+            target_user = senderName
+        else:
+            target_user = request.user
 
-            for obj in Invoice.objects.filter(user=senderName):
-                check_invoice_number = Invoice.objects.filter(user=senderName, invoice_number=obj.invoice_number)
-                if check_invoice_number.exists():
-                    messages.error(request, "This Invoice Number already exists")
-                    return HttpResponse(status=400)  # Return an error response
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{request.user}.csv"'
 
-                if obj.balance_amount == 0:
-                    status = 'paid'
-                else:
-                    status = 'pending'
+        writer = csv.writer(response)
+        writer.writerow(['invoice_number', 'invoice_amount', 'payment_amount', 'updated_by', 'updated_date', 'Paid/Pending Status'])
 
-                writer.writerow([obj.invoice_number, obj.invoice_amount, obj.payment_amount, obj.updated_by, obj.today_date, status])
+        for obj in Invoice.objects.filter(user=target_user):
+            status = 'paid' if obj.balance_amount == 0 else 'pending'
+            writer.writerow([obj.invoice_number, obj.invoice_amount, obj.payment_amount, obj.updated_by, obj.today_date, status])
 
-            return response
-        except Exception as e:
-            messages.error(request, "Error while exporting data: " + str(e))
-            return HttpResponse(status=500)  # Return an error response
-    else:
-        try:
-            currentuser = request.user
-            response = HttpResponse(content_type='text/csv')
-            response['Content-Disposition'] = f'attachment; filename="Import_DataCSV_{currentuser}.csv"'
+        return response
+    except Exception as e:
+        return HttpResponse(status=500)
 
-            writer = csv.writer(response)
-            writer.writerow(['invoice_number', 'invoice_amount', 'payment_amount', 'updated_by', 'updated_date', 'Paid/Pending Status'])
 
-            for obj in Invoice.objects.filter(user=currentuser):
-                check_invoice = Invoice.objects.filter(user=currentuser, invoice_number=obj.invoice_number)
-                if check_invoice.exists():
-                    messages.error(request, "This Invoice Number already exists")
-                    return HttpResponse(status=400)  # Return an error response
 
-                if obj.balance_amount == 0:
-                    status = 'paid'
-                else:
-                    status = 'pending'
 
-                writer.writerow([obj.invoice_number, obj.invoice_amount, obj.payment_amount, obj.updated_by, obj.today_date, status])
-
-            return response
-        except Exception as a:
-            messages.error(request, "Error while exporting data: " + str(a))
-            return HttpResponse(status=500)  # Return an error response
 
 
 def exports_to_xlsx(request):   
