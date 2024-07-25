@@ -122,17 +122,20 @@ class ConnectMedicals(models.Model):
     accept_status = models.BooleanField(default=True)
     status_message = models.CharField(max_length=30, null=True, blank=True)
     request_message = models.TextField(null=True, blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True,null=True)
+    timestamp = models.DateTimeField(null=True, blank=True)
+    
 
     def save(self, *args, **kwargs):
         # Set the sender_name before saving the model
         self.sender_name = self.request_sender.username
 
-        # Set the timestamp to the desired timezone
-        ist = pytz.timezone('Asia/Kolkata')
-        self.timestamp = timezone.now().astimezone(ist)
+        # Set the timestamp to the desired timezone if not already set
+        if not self.timestamp:
+            ist = pytz.timezone('Asia/Kolkata')
+            self.timestamp = timezone.now().astimezone(ist)
 
         super().save(*args, **kwargs)
+        print(self.timestamp)
 
     def __str__(self):
         return f"Notification from {self.request_sender.username} to {self.request_receiver.username}"
