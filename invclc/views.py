@@ -2398,7 +2398,7 @@ def medical_search(request):
         if medicalNameSearch == "":
             response_data = {"message": "No Results Found"}
         else:
-            results = Invoice.objects.filter(pharmacy_name__icontains=medicalNameSearch)
+            results = Invoice.objects.filter(user = request.user ,pharmacy_name__icontains=medicalNameSearch)
             if results.exists():
                 response_data = {
                     "message": "Results Found",
