@@ -49,12 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function hidePopup() {
         notificationPopup.classList.remove('show');
         popupBackdrop.classList.remove('show');
-<<<<<<< HEAD
         mainContent.classList.remove('blurred-background');
-=======
-        // mainContent.classList.remove('blurred-background');
-        
->>>>>>> 322b90efb9ce8820d4ef301688c7c083e5391677
         setTimeout(() => {
             popupBackdrop.style.display = 'none';
         }, 300); // Match the transition duration
@@ -64,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
         notificationIcon.addEventListener('click', showPopup);
     }
 
-<<<<<<< HEAD
     if (closePopupBtn) {
         closePopupBtn.addEventListener('click', hidePopup);
     }
@@ -72,15 +66,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (popupBackdrop) {
         popupBackdrop.addEventListener('transitionend', function(event) {
             if (!popupBackdrop.classList.contains('show')) {
-=======
-    window.addEventListener('click', function(event) {
-        if (event.target == popupBackdrop) {
-            notificationPopup.classList.remove('show');
-            popupBackdrop.classList.remove('show');
-            // mainContent.classList.remove('blurred-background');
-            
-            setTimeout(() => {
->>>>>>> 322b90efb9ce8820d4ef301688c7c083e5391677
                 popupBackdrop.style.display = 'none';
             }
         });

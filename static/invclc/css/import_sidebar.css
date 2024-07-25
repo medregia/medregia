@@ -209,15 +209,22 @@
     align-items: center;
   }
 
-span.notify-alert{
-  display:inline-block;
-  height:10px;
-  width:10px;
-  border-radius:50%;
-  background-color:red;
-  position:absolute;
-  top:2px;
-  right:2px;
+  #notification-icon span.notify-alert{
+    display:inline-block;
+    height:10px;
+    width:10px;
+    border-radius:50%;
+    background-color:red;
+    position:absolute;
+    top:235px;
+    right:2px;
+  }
+.admin-submit form{
+  height: 30px;
+  /* background-color: red; */
+  margin-top: 60px;
+  width: 70px;
+
 }
 
   @media (min-width: 320px) and (max-width: 420px){
