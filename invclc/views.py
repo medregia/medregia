@@ -204,11 +204,6 @@ def exports_to_csv(request):
     except Exception as e:
         return HttpResponse(status=500)
 
-
-
-
-
-
 def exports_to_xlsx(request):   
     checked_username = None
     senderName = None
