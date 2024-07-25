@@ -39,4 +39,5 @@ urlpatterns = [
     
     path('connect/',views.connect_view,name='connect'),
     path('create_medical/',views.create_medical_record,name="create_medical"),
+    path('search/',views.medical_search,name="medical_search")
 ]

@@ -258,8 +258,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
   });
-
-
 });
 
 // TODO:  Partially Paid Pannel
@@ -647,6 +645,70 @@ function togglePopup(data) {
       console.error('Entry button not found');
   }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const searchMedicalName = document.getElementById('id_pharmacy_name');
+  const dbData = document.getElementById('db_data');
+  const resultsList = document.createElement('ul'); // Create a list for results
+  dbData.appendChild(resultsList); // Add the list to the dbData container
+  const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+
+  if (searchMedicalName && dbData) {
+    // Initially hide dbData
+    dbData.classList.remove('show');
+    dbData.classList.add('hide');
+
+    searchMedicalName.addEventListener('input', (e) => {
+      e.preventDefault();
+      const query = searchMedicalName.value.trim(); // Get the input value and trim whitespace
+      
+      if (query === "") {
+        dbData.classList.remove('show');
+        dbData.classList.add('hide');
+        resultsList.innerHTML = ''; // Clear previous results
+      } else {
+        // Show the dbData div and perform the search
+        dbData.classList.add('show');
+        dbData.classList.remove('hide');
+
+        // Perform the search request
+        fetch('/search/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+          },
+          body: JSON.stringify({ medicalNameSearch: query }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          resultsList.innerHTML = ''; // Clear previous results
+          if (data.message === 'Results Found') {
+            data.results.forEach(result => {
+              const listItem = document.createElement('li');
+              // listItem.textContent = `Pharmacy Name: ${result.pharmacy_name}, Invoice Number: ${result.invoice_number}, Amount: ${result.invoice_amount}, Payment: ${result.payment_amount}`;
+              listItem.textContent = `${result.pharmacy_name}, ${result.invoice_number}, ${result.invoice_amount}, ${result.payment_amount}`;
+              resultsList.appendChild(listItem);
+            });
+          } else {
+            resultsList.innerHTML = `<li>${data.message}</li>`;
+          }
+        })
+        .catch(err => {
+          console.error(err);
+        });
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      // Check if the click was outside of searchMedicalName and dbData
+      if (!searchMedicalName.contains(e.target) && !dbData.contains(e.target)) {
+        dbData.classList.remove('show');
+        dbData.classList.add('hide');
+      }
+    });
+  }
+});
 
 
 

@@ -4,7 +4,7 @@ from django.utils.http import urlencode
 from .models import Invoice,DeletedInvoice,ModifiedInvoice,TrackingPayment,Invitation
 from .forms import InvoiceForm
 from django.http import JsonResponse,HttpResponseServerError,HttpResponse,HttpResponseBadRequest,HttpResponseRedirect
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt ,csrf_protect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q,F
@@ -2430,3 +2430,44 @@ def create_medical_record(request):
         return JsonResponse({'message': 'New medical record created successfully.'})
 
     return JsonResponse({'message': 'Invalid request method.'}, status=405)
+
+
+@login_required
+@require_POST
+def medical_search(request):
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'message': 'Invalid JSON.'}, status=400)
+
+    medicalNameSearch = data.get('medicalNameSearch', '')
+
+    try:
+        if medicalNameSearch == "":
+            response_data = {"message": "No Results Found"}
+        else:
+            results = Invoice.objects.filter(pharmacy_name__icontains=medicalNameSearch)
+            if results.exists():
+                response_data = {
+                    "message": "Results Found",
+                    "results": [
+                        {
+                            "pharmacy_name": result.pharmacy_name,
+                            "invoice_number": result.invoice_number,
+                            "invoice_amount": result.invoice_amount,
+                            "payment_amount": result.payment_amount
+                        }
+                        for result in results
+                    ]
+                }
+            else:
+                response_data = {"message": "No Results Found"}
+
+        return JsonResponse(response_data)
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({"message": "An error occurred"}, status=500)
+
+
+
