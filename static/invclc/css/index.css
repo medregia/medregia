@@ -920,8 +920,8 @@ span.header-error{
 .relative-data {
   height: 120px;
   width: 15%;
-  background-color: transparent;
-  box-shadow: 0px 0px 10px 0px black;
+  background-color: white; /* Changed to white for better visibility, adjust as needed */
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2); /* Slightly transparent shadow */
   border-radius: 5px;
   backdrop-filter: blur(10px);
   z-index: 999;
@@ -929,11 +929,37 @@ span.header-error{
   left: 80px;
   top: 220px;
   max-height: 150px;
-  overflow-y: scroll;
+  overflow-y: auto; /* Auto-scroll when content overflows */
   font-size: 14px;
   padding: 5px 10px;
+  box-sizing: border-box; /* Ensures padding does not affect width */
 }
 
+.relative-data ul {
+  list-style-type: none; /* Removes default list bullets */
+  padding: 0; /* Removes default padding */
+  margin: 0; /* Removes default margin */
+}
+
+.relative-data li {
+  padding: 10px; /* Adds space inside each list item */
+  margin-bottom: 5px; /* Adds space between items */
+  border: 1px solid #ddd; /* Light border for each item */
+  border-radius: 5px; /* Rounded corners for each item */
+  background-color: #f9f9f9; /* Light background for better readability */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth background color transition on hover */
+}
+
+.relative-data li:hover {
+  background-color: #e0e0e0; /* Slightly darker background on hover */
+}
+
+
+.relative-data span{
+  color: #0000ff;
+  font-weight: bold;
+}
 .show{
   display: block;
 }

@@ -2406,6 +2406,7 @@ def medical_search(request):
                         {
                             "pharmacy_name": result.pharmacy_name,
                             "invoice_number": result.invoice_number,
+                            "invoice_date":result.invoice_date,
                             "invoice_amount": result.invoice_amount,
                             "payment_amount": result.payment_amount
                         }

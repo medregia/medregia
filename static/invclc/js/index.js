@@ -646,6 +646,9 @@ function togglePopup(data) {
   }
 }
 
+
+//  Serach Result
+
 document.addEventListener('DOMContentLoaded', () => {
   const searchMedicalName = document.getElementById('id_pharmacy_name');
   const dbData = document.getElementById('db_data');
@@ -661,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchMedicalName.addEventListener('input', (e) => {
       e.preventDefault();
       const query = searchMedicalName.value.trim(); // Get the input value and trim whitespace
-      
+
       if (query === "") {
         dbData.classList.remove('show');
         dbData.classList.add('hide');
@@ -686,8 +689,13 @@ document.addEventListener('DOMContentLoaded', () => {
           if (data.message === 'Results Found') {
             data.results.forEach(result => {
               const listItem = document.createElement('li');
-              // listItem.textContent = `Pharmacy Name: ${result.pharmacy_name}, Invoice Number: ${result.invoice_number}, Amount: ${result.invoice_amount}, Payment: ${result.payment_amount}`;
-              listItem.textContent = `${result.pharmacy_name}, ${result.invoice_number}, ${result.invoice_amount}, ${result.payment_amount}`;
+              listItem.innerHTML = `<b>Pharmacy Name:</b> <span>${result.pharmacy_name}</span>, <b>Invoice Number:</b> <span>${result.invoice_number}</span>, <b>Date:</b> <span>${result.invoice_date}</span>, <b>Amount:</b> <span>${result.invoice_amount}</span>, <b>Payment:</b> <span>${result.payment_amount}</span>`;
+              // Add data attributes to store the full result data
+              listItem.dataset.pharmacyName = result.pharmacy_name;
+              listItem.dataset.invoiceNumber = result.invoice_number;
+              listItem.dataset.invoiceDate = result.invoice_date;
+              listItem.dataset.invoiceAmount = result.invoice_amount;
+              listItem.dataset.paymentAmount = result.payment_amount;
               resultsList.appendChild(listItem);
             });
           } else {
@@ -700,6 +708,24 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
+    // Handle clicks on result items
+    resultsList.addEventListener('click', (e) => {
+      const listItem = e.target.closest('li');
+      if (listItem) {
+        // Populate the input fields with data from the clicked item
+        document.getElementById('id_pharmacy_name').value = listItem.dataset.pharmacyName;
+        document.getElementById('id_invoice_number').value = listItem.dataset.invoiceNumber;
+        // document.getElementById('id_invoice_date').value = listItem.dataset.invoiceDate;
+        document.getElementById('id_invoice_amount').value = listItem.dataset.invoiceAmount;
+        // document.getElementById('id_payment_amount').value = listItem.dataset.paymentAmount;
+
+        // Optionally hide the results div after selection
+        dbData.classList.remove('show');
+        dbData.classList.add('hide');
+        resultsList.innerHTML = ''; // Clear results if needed
+      }
+    });
+
     document.addEventListener('click', (e) => {
       // Check if the click was outside of searchMedicalName and dbData
       if (!searchMedicalName.contains(e.target) && !dbData.contains(e.target)) {
@@ -709,6 +735,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
 
 
 
