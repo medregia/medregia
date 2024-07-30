@@ -90,12 +90,14 @@ DATABASES = {
         'NAME': 'medregia',
         'USER': 'root',
         'PASSWORD': '',
-        'HOST': 'localhost',
+        # 'HOST': 'db',
+        # 'PORT': '3306',  # Port inside the container
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES,STRICT_ALL_TABLES'",
         },
     }
 }
+
 
 
 # Password validation

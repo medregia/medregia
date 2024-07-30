@@ -8,3 +8,4 @@ __pycache__ /
 /authentication/__pycache__ /
 /invclc/__pycache__ /
 /invclc/templatetags/__pycache__ /
+.venv/
