@@ -653,7 +653,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchMedicalName = document.getElementById('id_pharmacy_name');
   const dbData = document.getElementById('db_data');
   const resultsList = document.createElement('ul'); // Create a list for results
-  dbData.appendChild(resultsList); // Add the list to the dbData container
+
+  if (dbData) {
+    dbData.appendChild(resultsList); // Add the list to the dbData container
+  }
+
   const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
 
   if (searchMedicalName && dbData) {
@@ -689,13 +693,11 @@ document.addEventListener('DOMContentLoaded', () => {
           if (data.message === 'Results Found') {
             data.results.forEach(result => {
               const listItem = document.createElement('li');
-              listItem.innerHTML = `<b>Pharmacy Name:</b> <span>${result.pharmacy_name}</span>, <b>Invoice Number:</b> <span>${result.invoice_number}</span>, <b>Date:</b> <span>${result.invoice_date}</span>, <b>Amount:</b> <span>${result.invoice_amount}</span>, <b>Payment:</b> <span>${result.payment_amount}</span>`;
+              listItem.innerHTML = `<b>Medical Name:</b> <span>${result.medicals_name}</span>, <b>DL Number 1:</b> <span>${result.dlnumber_1}</span>, <b>DL Number 2:</b> <span>${result.dlnumber_2}</span>`;
               // Add data attributes to store the full result data
-              listItem.dataset.pharmacyName = result.pharmacy_name;
-              listItem.dataset.invoiceNumber = result.invoice_number;
-              listItem.dataset.invoiceDate = result.invoice_date;
-              listItem.dataset.invoiceAmount = result.invoice_amount;
-              listItem.dataset.paymentAmount = result.payment_amount;
+              listItem.dataset.medicalName = result.medicals_name;
+              listItem.dataset.dlnumber1 = result.dlnumber_1;
+              listItem.dataset.dlnumber2 = result.dlnumber_2;
               resultsList.appendChild(listItem);
             });
           } else {
@@ -713,10 +715,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const listItem = e.target.closest('li');
       if (listItem) {
         // Populate the input fields with data from the clicked item
-        document.getElementById('id_pharmacy_name').value = listItem.dataset.pharmacyName;
-        document.getElementById('id_invoice_number').value = listItem.dataset.invoiceNumber;
+        searchMedicalName.value = listItem.dataset.medicalName;
+        // Uncomment and update if you need these fields
+        // document.getElementById('id_invoice_number').value = listItem.dataset.invoiceNumber;
         // document.getElementById('id_invoice_date').value = listItem.dataset.invoiceDate;
-        document.getElementById('id_invoice_amount').value = listItem.dataset.invoiceAmount;
+        // document.getElementById('id_invoice_amount').value = listItem.dataset.invoiceAmount;
         // document.getElementById('id_payment_amount').value = listItem.dataset.paymentAmount;
 
         // Optionally hide the results div after selection

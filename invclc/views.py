@@ -2398,29 +2398,28 @@ def medical_search(request):
         if medicalNameSearch == "":
             response_data = {"message": "No Results Found"}
         else:
-            results = Invoice.objects.filter(user = request.user ,pharmacy_name__icontains=medicalNameSearch)
-            if results.exists():
+            results = Invoice.objects.filter(user=request.user, pharmacy_name__icontains=medicalNameSearch)
+            get_medical_profile = Person.objects.filter(MedicalShopName__icontains=medicalNameSearch)
+
+            if get_medical_profile.exists():
                 response_data = {
                     "message": "Results Found",
                     "results": [
                         {
-                            "pharmacy_name": result.pharmacy_name,
-                            "invoice_number": result.invoice_number,
-                            "invoice_date":result.invoice_date,
-                            "invoice_amount": result.invoice_amount,
-                            "payment_amount": result.payment_amount
+                            "medicals_name": profile.MedicalShopName,
+                            "dlnumber_1": profile.DrugLiceneseNumber1,
+                            "dlnumber_2": profile.DrugLiceneseNumber2,
                         }
-                        for result in results
+                        for profile in get_medical_profile 
                     ]
                 }
             else:
-                response_data = {"message": "No Results Found"}
+                response_data = {"message": "New"}
 
         return JsonResponse(response_data)
 
     except Exception as e:
         print(e)
         return JsonResponse({"message": "An error occurred"}, status=500)
-
 
 
