@@ -447,14 +447,16 @@ body {
   height:40vh;
   width:100%;
   background-color:transparent;
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: scroll;
   background-color: #fff;
 }
 .table-cover-right{
   height:40vh;
   width:100%;
   background-color:transparent;
-  overflow: hidden;
+  overflow-y: hidden;
+  overflow-x: scroll;
   background-color: white;
 }
 
@@ -1036,6 +1038,10 @@ span.header-error{
   .delete-heading h3, .update-heading h3{
     font-size: 15px;
   }
+  .table-content-left table,
+  .table-content-right table {
+    min-width: 550px;
+  }
 }
 
 @media (max-width:996px){
@@ -1296,7 +1302,8 @@ cursor: pointer;
   }
 
   .header-bottom {
-    display:none;
+    display:block;
+    overflow-x: scroll;
   }
 
   .main-container .main-header{
@@ -1305,7 +1312,7 @@ cursor: pointer;
   }
 
   .main-container .main-header .header-top{
-    height:18vh;
+    height:10vh;
     width:100%;
   }
 
@@ -1320,6 +1327,10 @@ cursor: pointer;
   }
   .main-container{
     width:82%;
+  }
+
+  .main-body{
+    margin-top: 50px;
   }
 }
 
@@ -1336,7 +1347,8 @@ cursor: pointer;
   }
 
   .header-bottom {
-    display:none;
+    display:block;
+    overflow-x: scroll;
   }
 
   .main-container .main-header{
@@ -1345,7 +1357,7 @@ cursor: pointer;
   }
 
   .main-container .main-header .header-top{
-    height:18vh;
+    height:15vh;
   }
 
   .table-panel form input{
@@ -1366,7 +1378,7 @@ cursor: pointer;
   } */
 
   .main-body{
-    margin-top:15px;
+    margin-top:90px;
   }
 
   .unique-code {
@@ -1416,6 +1428,10 @@ cursor: pointer;
   }
   .main-container{
     width:82%;
+  }
+
+  .table-content-left table, .table-content-right table{
+    min-width: 550px;
   }
 }
 @media (min-width:320px) and (max-width:369px){
