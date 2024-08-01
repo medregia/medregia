@@ -957,8 +957,8 @@ span.header-error{
 
 
 .relative-data span{
-  color: #0000ff;
-  font-weight: bold;
+  color: black;
+  /* font-weight: bold; */
 }
 .show{
   display: block;

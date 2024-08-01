@@ -693,7 +693,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (data.message === 'Results Found') {
             data.results.forEach(result => {
               const listItem = document.createElement('li');
-              listItem.innerHTML = `<b>Medical Name:</b> <span>${result.medicals_name}</span>, <b>DL Number 1:</b> <span>${result.dlnumber_1}</span>, <b>DL Number 2:</b> <span>${result.dlnumber_2}</span>`;
+              listItem.innerHTML = `<span style="font-weight:700">${result.medicals_name}</span style="font-weight:300">,<span>${result.dlnumber_1}</span style="font-weight:300">,<span>${result.dlnumber_2}</span>`;
               // Add data attributes to store the full result data
               listItem.dataset.medicalName = result.medicals_name;
               listItem.dataset.dlnumber1 = result.dlnumber_1;
