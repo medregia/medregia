@@ -254,6 +254,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+
 }
 .header-bottom form {
   height: 15vh;
@@ -269,6 +270,7 @@ body {
   border-radius: 5px;
   /* box-shadow: 0px 0px 10px 0px black; */
   border-collapse: collapse;
+  overflow-x: auto;
 }
 .header-bottom form table td,
 .header-bottom form table th {
@@ -584,7 +586,7 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 }
  
 /* Scroll bar */
-::-webkit-scrollbar-thumb {
+/* ::-webkit-scrollbar-thumb {
   background: #7d7d7d;
   border-radius: 10px;
   cursor: pointer;
@@ -604,7 +606,7 @@ button.editBtn,button.deleteBtn,button.saveBtn{
 ::-webkit-scrollbar {
   cursor: pointer;
   width: 10px;
-}
+} */
 
 .balance_amount {
   cursor: not-allowed;
@@ -967,6 +969,10 @@ span.header-error{
   display: none;
 }
 
+.tableCreate {
+  width: 100%;
+  min-width: 700px; /* Adjust as needed */
+}
 /* mediaquery */
 /* @media (min-width:1300px) and (max-width:1351px){
   .tabcontent {
@@ -998,7 +1004,11 @@ span.header-error{
 } */
 @media(max-width:1025px){
   .header-bottom form {
-    height: 12vh;
+    height: 15vh;
+}
+.unique-code span{
+  margin-right: 11px;
+  font-size: 12px;
 }
 }
 
@@ -1078,6 +1088,9 @@ span.header-error{
     background-color:orange;
     font-weight:bold;
     color:black;
+  }
+  .main-body{
+    margin-top: 20px;
   }
 }
 
@@ -1161,6 +1174,7 @@ span.header-error{
     height:auto;
     flex-wrap:wrap;
     max-width:800px;
+    min-width: 800px;
   }
 }
 
@@ -1205,6 +1219,9 @@ cursor: pointer;
     align-items:center;
     /* height: 55vh; */
   }
+  footer{
+    width: 93%;
+  }
 }
 
 @media (min-width: 425px) and (max-width: 627px){
@@ -1234,16 +1251,17 @@ cursor: pointer;
   }
 
   .header-bottom {
-    display:none;
+    display:block;
+    overflow-x: scroll;
   }
 
   .main-container .main-header{
-    height:20vh;
+    height:10vh;
     width:100%;
   }
 
   .main-container .main-header .header-top{
-    height:18vh;
+    height:10vh;
     width:100%;
   }
 
@@ -1255,6 +1273,10 @@ cursor: pointer;
     min-width: 10%;
     width: 20%;
     max-width: 24%;
+  }
+
+  .main-body{
+    margin-top: 150px;
   }
 }   
 
