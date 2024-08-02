@@ -3,69 +3,96 @@
     padding: 0;
     box-sizing: border-box;
 }
-body{
+
+body {
     height: 100vh;
     width: 100%;
     font-family: 'Times New Roman';
 }
-.checkmore-container{
+
+.checkmore-container {
     height: 100vh;
     width: 100%;
     position: absolute;
 }
-.checkmore-container-update{
+
+.checkmore-container-update {
     height: 100vh;
     width: 100%;
     /* background-color: red; */
-    
 }
-.checkmore-container-btn{
-    height: 50px;
+
+.checkmore-container-btn {
+    height: 5vh;
     width: 100%;
     /* background-color: red; */
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
 }
-.checkmore-container .csvBtn{
-    /* color: red; */
-    height: 40px;
-    width: 70px;
-    cursor: pointer;
-    margin-right: 20px;
 
+.checkmore-container .csvBtn {
+    /* color: red; */
+    height: 35px;
+    padding: 5px 10px;
+    width: 80px;
+    cursor: pointer;
 }
-h3{
-    text-align: center;
+
+.csv-button-container {
+    height: 4vh;
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: orange; */
+}
+
+h3.checkmore-h3 {
+    /* text-align: center; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 25px;
-    
+    width: 90%;
+    height: 4vh;
+    /* background-color: red; */
 }
-.checkmoreTable{
+
+.table-container {
+    width: 100%;
+}
+
+.checkmoreTable {
     /* height: 100vh; */
     width: 97%;
-    position: absolute;
     border-collapse: collapse;
     margin-left: 40px;
 }
 
-.checkmoreTable tr{
-    border-bottom: 1px solid #a39f9f ;
+.checkmoreTable tr {
+    border-bottom: 1px solid #a39f9f;
 }
- .checkmoreTable td{
-    padding:0px;
+
+.checkmoreTable td {
+    padding: 0px;
     text-align: center;
-    border-right: 1px solid #bdb8b8 ;
+    border-right: 1px solid #bdb8b8;
 }
-.checkmoreTable th{
+
+.checkmoreTable th {
     padding: 10px 10px;
     text-align: center;
-    border-right: 1px solid #bdb8b8 ;
+    border-right: 1px solid #bdb8b8;
     background-color: #a6a6a6;
     color: #000;
 }
-.checkmoreTable tr:nth-child(even){
+
+.checkmoreTable tr:nth-child(even) {
     background-color: #eeeeee;
 }
-button.edit_btn{
+
+button.edit_btn {
     height: 40px;
     width: 60px;
     background-color: blue;
@@ -75,26 +102,40 @@ button.edit_btn{
     cursor: pointer;
 }
 
-.checkmore-container table tbody tr td input{
-    height:30px;
-    width:100px;
-    border:none;
+.checkmore-container table tbody tr td input {
+    height: 30px;
+    width: 100px;
+    border: none;
     font-weight: bold;
-    /* background-color:red; */
-  }
-  .border-active {
+    /* background-color: red; */
+}
+
+.border-active {
     border: 1px solid #3498db;
     outline: 1px solid #3498db
-  }   
-  .checkmore-container button{
-    height:25px;
+}
+
+.checkmore-container button {
+    height: 25px;
     width: 50px;
-    background-color:blue;
+    background-color: blue;
     color: #FFF;
+    border: none;
     border-radius: 3px;
     transition: all 0.7s ease;
-  }
-  .checkmore-container table tbody tr td #check{
+}
+
+.checkmore-container table tbody tr td #check {
     height: 13px;
     width: 13px;
+}
+
+@media (min-width: 320px) and (max-width: 1150px) {
+    .checkmoreTable {
+        overflow-x: scroll;
+    }
+    .table-container{
+        max-width: 100%;
+        overflow-x: scroll;
+    }
 }

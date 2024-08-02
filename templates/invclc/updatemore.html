@@ -19,51 +19,58 @@
 {% endblock sidebar %}
 
 {% block content %}
-    <div class=" checkmore-container">
-        <h3>Update More details</h3> 
-        <div class="checkmore-container-update">
-          <div class="checkmore-container-btn"><button type="button" class="csvBtn">Print CSV</button></div>
+<div class="checkmore-container">
+  <div class="checkmore-container-update">
+      <div class="checkmore-container-btn">
+          <h3 class="checkmore-h3">Update More details</h3> 
+          <div class="csv-button-container">
+              <button type="button" class="csvBtn">Print CSV</button>
+          </div>
+      </div>
+      <div class="table-container">
           <table class="checkmoreTable">
-            <thead>
-              <th><input type="checkbox"></th>
-              <th>Name</th>
-              <th>Invoice Date</th>
-              <th>Updated on</th>
-              <th>Updated by</th>
-              <th>Invoice Amount</th>
-              <th>Paid Amount</th>
-              <th>Paid Date</th>
-              <th>Pending Amount</th>
-              <th>Action</th>
-            </thead>
-            <tbody id="updatePaymentTable">
-              <form action="" method="post" id="update_delete_id">
-                {% csrf_token %}
-                {% for data in invoices %}
-                <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
-                    <td><input type="checkbox" id="check"></td>
-                    <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
-                    <td><input type="text" value="{{ data.invoice_date}}" disabled name="invoice_date"></td>
-                    <td><span id="paymentCurrentTime">{{data.current_time}}</span></td>
-                    <td><span id="paymentCurrentUser">{{data.updated_by}}</span></td>
-                    <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
-                    <td><span id="paymentAmountList">{{data.payment_amount}}</span></td>
-                    <td><span id="paymentTodayDate">{{data.today_date}}</span></td>
-                    <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" name="balance_amount" readonly disabled></td>
-                    <input type="hidden" class="updatePay" value="{{data.payment_amount}}">
-                    <td>
-                        <button type="button" class="editBtn">Edit</button>
-                        <button type="button" class="deleteBtn">Delete</button>
-                        <button type="button" class="saveBtn" data-invoice-id="{{ data.id }}" style="display: none;">Save</button>
-                        <button type="button" class="cancelBtn" style="display: none;">Cancel</button>
-                    </td>
-                </tr>
-                {% endfor %}
-              </form> 
-            </tbody>
+              <thead>
+                  <th><input type="checkbox"></th>
+                  <th>Name</th>
+                  <th>Invoice Date</th>
+                  <th>Updated on</th>
+                  <th>Updated by</th>
+                  <th>Invoice Amount</th>
+                  <th>Paid Amount</th>
+                  <th>Paid Date</th>
+                  <th>Pending Amount</th>
+                  <th>Action</th>
+              </thead>
+              <tbody id="updatePaymentTable">
+                  <form action="" method="post" id="update_delete_id">
+                      {% csrf_token %}
+                      {% for data in invoices %}
+                      <tr id="row_{{ data.id }}" data-invoice-id="{{ data.id }}">
+                          <td><input type="checkbox" id="check"></td>
+                          <td><input type="text" value="{{ data.pharmacy_name }}" disabled name="pharmacy_name"></td>
+                          <td><input type="text" value="{{ data.invoice_date}}" disabled name="invoice_date"></td>
+                          <td><span id="paymentCurrentTime">{{data.current_time}}</span></td>
+                          <td><span id="paymentCurrentUser">{{data.updated_by}}</span></td>
+                          <td><input type="text" class="updatePayment" value="{{ data.invoice_amount }}" disabled name="invoice_amount"></td>
+                          <td><span id="paymentAmountList">{{data.payment_amount}}</span></td>
+                          <td><span id="paymentTodayDate">{{data.today_date}}</span></td>
+                          <td><input type="text" class="updateBalance" value="{{ data.balance_amount }}" name="balance_amount" readonly disabled></td>
+                          <input type="hidden" class="updatePay" value="{{data.payment_amount}}">
+                          <td>
+                              <button type="button" class="editBtn">Edit</button>
+                              <button type="button" class="deleteBtn">Delete</button>
+                              <button type="button" class="saveBtn" data-invoice-id="{{ data.id }}" style="display: none;">Save</button>
+                              <button type="button" class="cancelBtn" style="display: none;">Cancel</button>
+                          </td>
+                      </tr>
+                      {% endfor %}
+                  </form> 
+              </tbody>
           </table>
-        </div>
-    </div>
+      </div>
+  </div>
+</div>
+
     <script src="{% static 'invclc/js/updatemore.js' %}"></script>
     <script src="{% static 'invclc/js/updatemore_sidebar.js' %}"></script>
 {% endblock content %}
