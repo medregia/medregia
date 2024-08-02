@@ -59,8 +59,8 @@ h3{
     padding: 10px 10px;
     text-align: center;
     border-right: 1px solid #bdb8b8 ;
-    background-color: #6b6060;
-    color: white;
+    background-color: #a6a6a6;
+    color: #000;
 }
 .checkmoreTable tr:nth-child(even){
     background-color: #eeeeee;
@@ -87,7 +87,7 @@ button.edit_btn{
     outline: 1px solid #3498db
   }   
   .checkmore-container button{
-    height:20px;
+    height:25px;
     width: 50px;
     background-color:blue;
     color: #FFF;
