@@ -39,5 +39,11 @@ urlpatterns = [
     
     path('connect/',views.connect_view,name='connect'),
     path('create_medical/',views.create_medical_record,name="create_medical"),
-    path('search/',views.medical_search,name="medical_search")
+    path('search/',views.medical_search,name="medical_search"),
+
+    path('get_yearly_data/', views.get_yearly_data, name='get_yearly_data'),
+    path('get_monthly_data/', views.get_monthly_data, name='get_monthly_data'), 
+    path('get_total_sum/', views.get_total_sum, name='get_total_sum'),
+    path('api/data', views.get_data, name='get_data'),
+
 ]

@@ -953,6 +953,8 @@ span.header-error{
   background-color: #f9f9f9; /* Light background for better readability */
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease; /* Smooth background color transition on hover */
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .relative-data li:hover {
@@ -1004,6 +1006,27 @@ span.header-error{
   height: 4vh;
 }
 } */
+@media (min-width:1026px) and (max-width:1400px){
+  .relative-data{
+    left: 75px;
+    top: 210px;
+  }
+}
+
+@media (min-width:780px) and (max-width:1025px){
+  .relative-data{
+    left: 63px;
+    top: 210px;
+  }
+}
+
+@media (min-width:425px) and (max-width:779px){
+  .relative-data{
+    left: 63px;
+    top: 210px;
+  }
+}
+
 @media (min-width:767px) and (max-width:1025px){
   .header-bottom form {
     height: 15vh;
@@ -1229,7 +1252,7 @@ cursor: pointer;
 
   .main-container{
     width:90%;
-    margin-left: 55px;
+    margin-left: 70px;
   }
 
   .table-panel form input{
