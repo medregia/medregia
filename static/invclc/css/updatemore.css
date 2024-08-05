@@ -145,3 +145,49 @@ body {
         margin-left: 50px;
     }
 }
+
+
+
+/* Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .checkmore-container, .checkmore-container * {
+        visibility: visible;
+    }
+
+    .checkmore-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        border: 1px solid #000; 
+    }
+    .table-container {
+        border: 1px solid black;
+    }
+
+    .checkmore-container-btn, .csvBtn, .check_btn, h3 {
+        display: none;
+    }
+
+    .checkmoreTable, .checkmoreTable thead, .checkmoreTable tbody, .checkmoreTable th, .checkmoreTable td {
+        border: 1px solid black; 
+    }
+
+    .checkmoreTable {
+        width: 100%;
+        border-collapse: collapse; 
+    }
+
+    .checkmoreTable th, .checkmoreTable td {
+        padding: 8px; 
+    }
+}
+
