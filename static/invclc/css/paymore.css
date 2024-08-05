@@ -1,126 +1,173 @@
-*{
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
     margin: 0;
     padding: 0;
+}
+
+/* Container Styles */
+.paymore-container {
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-x: scroll;
+}
+
+/* Header Styles */
+.paymore-header {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
+}
+
+/* Button Styles */
+.paymore-button-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.csvBtn, .payBtn, .cancelBtn {
+    /* padding: 10px 20px; */
+    height: 40px;
+    max-width: 200px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.paymore-container-btn{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.csvBtn {
+    background-color: #28a745;
+    color: white;
+    height: 40px;
+    padding: 12px;
+}
+
+.paymore-container h3{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.payBtn {
+    background-color: #007bff;
+    color: white;
+}
+
+.cancelBtn {
+    background-color: #6c757d;
+    color: white;
+    display: none; /* Adjust display property based on need */
+}
+
+.csvBtn:hover, .payBtn:hover, .cancelBtn:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+}
+
+.paymoreTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.paymoreTable thead {
+    background-color: #007bff;
+    color: white;
+}
+
+.paymoreTable th, .paymoreTable td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.paymoreTable th {
+    position: sticky;
+    top: 0;
+    font-size: 14px;
+    text-align: center;
+}
+
+.paymoreTable tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.paymoreTable input[type="text"] {
+    width: 100px;
+    padding: 8px;
+    /* border: 1px solid #ccc; */
+    border: none; 
+    border-radius: 4px;
+    /* background-color: #f8f9fa; */
+    background-color: transparent;
     box-sizing: border-box;
 }
 
-body{
-    height: 100vh;
-    width: 100%;
-    font-family: 'Times New Roman';
-}
-.paymore-container{
-    height: 100vh;
-    width: 100%;
-    position: absolute;  
-}
-.paymore-container-paid{
-    /* height: 100vh; */
-    width: 100%;
-    /* background-color: red; */
-    
-}
-.paymore-container-btn{
-    height: 50px;
-    width: 100%;
-    /* background-color: red; */
-    display: flex;
-    justify-content: flex-end;
-}
-.paymore-container .csvBtn{
-    /* color: red; */
-    height: 40px;
-    width: 70px;
-    cursor: pointer;
-    margin-right: 20px;
-
-}
-h3{
-    text-align: center;
-    font-size: 25px;
-    
-}
-.paymoreTable{
-    /* height: 100vh; */
-    width: 97%;
-    position: absolute;
-    border-collapse: collapse;
-    margin-left: 40px;
+.paymoreTable input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
 }
 
-.paymoreTable tr{
-    border-bottom: 1px solid #a39f9f ;
-}
-.paymoreTable td{
-    padding: 0px;
-    text-align: center;
-    border-right: 1px solid #bdb8b8 ;
-}
-.paymoreTable th{
-    padding: 10px 10px;
-    text-align: center;
-    border-right: 1px solid #bdb8b8 ;
-    background-color: #6b6060;
-    color: white;
-}
-.paymoreTable tr:nth-child(even){
-    background-color: #eeeeee;
-}
-button.pay_btn{
-    height: 40px;
-    width: 60px;
-    background-color: blue;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    cursor: pointer;
+/* Responsive Design */
+@media (max-width: 768px) {
+    .paymore-container {
+        padding: 10px;
+        margin: 10px;
+    }
+
+    .csvBtn, .payBtn, .cancelBtn {
+        font-size: 12px;
+        padding: 8px 15px;
+    }
+
+    .paymore-header {
+        font-size: 20px;
+    }
+
+    .paymoreTable th, .paymoreTable td {
+        padding: 10px;
+    }
 }
 
-
-.paymore-container table tbody tr td input{
-    height:30px;
-    width:100px;
-    border:none;
-    font-weight: bold;
-    /* background-color:red; */
-  }
-  .border-active {
-    border: 1px solid #3498db;
-    outline: 1px solid #3498db
-  }
-  .paymore-container table tbody tr td input{
-    height:30px;
-    width:130px;
-    border:none;
-    font-weight: bold;
-    /* background-color:red; */
-    background: transparent;
-  }
-    
-  .paymore-container button{
-    height:20px;
-    width: 50px;
-    background-color:blue;
-    color: #FFF;
-    border-radius: 3px;
-    transition: all 0.7s ease;
-  }
-  .paymore-container table tbody tr td #check{
-    height: 13px;
-    width: 13px;
+@media (min-width:1700px){
+    .paymoreTable input[type="text"]{
+        width: 100%;
+    }
 }
 
 .scrollable-cell {
-    max-height: 40px;
-    max-width: 100px;
-    margin-left: auto;
+    max-height: 25px;
     overflow-y: scroll;
-    overflow-x:hidden;
-    text-align:center;
+    max-width: 75px;
+    min-width: 100px;
+    text-align: center;
 }
 
-.expand{
-    margin-left: auto;
-    max-width: 120px;
+.scrollable-cell.expand {
+    max-height: 25px;
+    max-width: 100px;
+    min-width: 100px;
+    overflow-y: scroll;
     text-align: center;
 }

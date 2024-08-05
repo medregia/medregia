@@ -4,28 +4,28 @@
         {% comment %} <h3 id="medregiaHeader">Medregia</h3> {% endcomment %}
         <a href="{% url 'index' %}" class="logo">
             <!-- <img src="{% static 'authentication/images/invoice1.png' %}" alt=""> -->
-            <i class="fa-solid fa-file-invoice-dollar"></i>
+            <i class="fa-solid fa-file-invoice-dollar" title="Invoice"></i>
             <!-- <span class="nav-item">Invoice</span>  -->
             <p class="nav-item"> Invoice</p>
         </a>
 
         <a href="{% url 'statics' %}" class="logo">
             <!-- <img src="{% static 'authentication/images/static.png' %}" alt=""> -->
-            <i class="fa-solid fa-chart-pie"></i>
+            <i class="fa-solid fa-chart-pie" title="Static"></i>
             <!-- <span class="nav-item">Static</span>  -->
             <p class="nav-item"> Static</p>
         </a>
 
         <a href="{% url 'clinic' %}" class="logo">
             <!-- <img src="{% static 'authentication/images/clinic.png' %}" alt=""> -->
-            <i class="fa-solid fa-house-chimney-medical"></i>
+            <i class="fa-solid fa-house-chimney-medical" title="Clinic"></i>
             <!-- <span class="nav-item">Clinic</span>  -->
             <p class="nav-item"> Clinic</p>
         </a>
 
         <a href="{% url 'import-export' %}" class="logo expo">
             <!-- <img src="{% static 'authentication/images/import.png' %}" alt=""> -->
-            <i class="fa-solid fa-boxes-packing"></i>
+            <i class="fa-solid fa-boxes-packing" title="Export/Import"></i>
             <!-- <span class="nav-item">Export/Import</span>  -->
             <p class="nav-item ">Export/Import</p>
         </a>
@@ -34,7 +34,7 @@
             {% if notifications|length >= 1 %}
                 <span class="bell"><i class="fa fa-commenting"></i><span class="notify-alert"></span></span>  
             {% else %}
-                <span class="bell"><i class="fa fa-commenting"></i></span>  
+                <span class="bell"><i class="fa fa-commenting" title="Notification"></i></span>  
             {% endif %}
             
             <p class="nav-item">Notification</p>
