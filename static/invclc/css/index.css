@@ -1243,6 +1243,7 @@ cursor: pointer;
   }
   footer{
     width: 91%;
+    margin-top: 80px;
   }
   .heading h2 a{
     font-size: 14px;
@@ -1365,6 +1366,9 @@ cursor: pointer;
   .main-body{
     margin-top: 50px;
   }
+  footer{
+    margin-top: 80px;
+  }
 }
 
 @media (min-width: 320px) and (max-width: 424px) {
@@ -1465,6 +1469,9 @@ cursor: pointer;
 
   .table-content-left table, .table-content-right table{
     min-width: 550px;
+  }
+  footer{
+    margin-top: 80px;
   }
 }
 @media (min-width:320px) and (max-width:369px){
