@@ -10,7 +10,6 @@
 
 {% block side %}{% static 'invclc/css/static_sidebar.css' %}{% endblock side %}
 
-
 {% block navbar %} 
     {% include 'nav.html' %} 
 {% endblock navbar%} 
@@ -24,68 +23,66 @@
         <h3> Paid record More details</h3>
         <div class="checkmore-container-paid">
             <div class="checkmore-container-btn"><button type="button" class="csvBtn">Print CSV</button></div>
-            <table class="checkmoreTable">
-                <thead>
-                    <tr>
-                        <th><input type="checkbox"></th>
-                        <th>Pharmacy Name</th>
-                        <th>Invoice Number</th>
-                        <th>Invoice Date</th>
-                        <th>Updated Date</th>
-                        <th>Invoice Ammount</th>
-                        <th>Paid Details</th>
-                        <th>Paid Date</th>
-                        <th colspan="2">Status</th>
-                        <th>Records</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for data in invoices %}
+            <div class="table-container">
+                <table class="checkmoreTable">
+                    <thead>
                         <tr>
-                            <td><input type="checkbox" id="check"></td>
-                            <td>{{ data.pharmacy_name }}</td>
-                            <td>{{ data.invoice_number }}</td>
-                            <td>{{ data.invoice_date }}</td>
-                            <td>{{ data.today_date }}</td>
-                            <td>{{ data.invoice_amount }}</td>
-                            <td>
-                                <div class="scrollable-cell">
-                                    {% for tracking_invoice in tracking_invoices %}
-                                        {% if tracking_invoice.Bill_no == data.invoice_number %}
-                                            {{ tracking_invoice.paying_amount }}
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </td>
-                            <td>
-                                <div class="scrollable-cell expand">
-                                    {% for tracking_invoice in tracking_invoices %}
-                                        {% if tracking_invoice.Bill_no == data.invoice_number %}
-                                            {{ tracking_invoice.payment_date }}
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </td>
-                            <td class="medicalstatus">{{ MedicalStatus }} <span class="status"></span></td>
-                            <td class="pharmacystatus">
-                                {% if data.pharmacy_name %}
-                                    {{ data.pharmacy_name|convert_medical }}<span class="loginstatus"></span>
-                                {% else %}
-                                    Not Found
-                                {% endif %}
-                            </td>
-                            <td><a href="../check/{{ data.id }}"><button type="button" class="check_btn">Check</button></a></td>
+                            <th><input type="checkbox"></th>
+                            <th>Pharmacy Name</th>
+                            <th>Invoice Number</th>
+                            <th>Invoice Date</th>
+                            <th>Updated Date</th>
+                            <th>Invoice Amount</th>
+                            <th>Paid Details</th>
+                            <th>Paid Date</th>
+                            <th colspan="2">Status</th>
+                            <th>Records</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-                
-           </table>
+                    </thead>
+                    <tbody>
+                        {% for data in invoices %}
+                            <tr>
+                                <td><input type="checkbox" id="check"></td>
+                                <td>{{ data.pharmacy_name }}</td>
+                                <td>{{ data.invoice_number }}</td>
+                                <td>{{ data.invoice_date }}</td>
+                                <td>{{ data.today_date }}</td>
+                                <td class="invoice-amount">{{ data.invoice_amount }}</td>
+                                <td class="paid-details">
+                                    <div class="scrollable-cell">
+                                        {% for tracking_invoice in tracking_invoices %}
+                                            {% if tracking_invoice.Bill_no == data.invoice_number %}
+                                                {{ tracking_invoice.paying_amount }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td class="paid-details">
+                                    <div class="scrollable-cell expand">
+                                        {% for tracking_invoice in tracking_invoices %}
+                                            {% if tracking_invoice.Bill_no == data.invoice_number %}
+                                                {{ tracking_invoice.payment_date }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td class="medicalstatus">{{ MedicalStatus }} <span class="status"></span></td>
+                                <td class="pharmacystatus">
+                                    {% if data.pharmacy_name %}
+                                        {{ data.pharmacy_name|convert_medical }}<span class="loginstatus"></span>
+                                    {% else %}
+                                        Not Found
+                                    {% endif %}
+                                </td>
+                                <td><a href="../check/{{ data.id }}"><button type="button" class="check_btn">Check</button></a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script src="{% static 'invclc/js/checkmore.js' %}"></script>
     <script src="{% static 'invclc/js/checkmore_sidebar.js' %}"></script>
-
-
-
 {% endblock content %}
