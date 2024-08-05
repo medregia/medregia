@@ -1,110 +1,152 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
 }
 
-body{
-    height: 100vh;
-    width: 100%;
-    font-family: 'Times New Roman';
+/* Container Styles */
+.unpaid-container {
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.unpaid-container{
-    height: 100vh;
-    width: 100%;
-    position: absolute;
+
+/* Header Styles */
+.unpaid-header {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+    text-align: center;
 }
-.unpaid-container-payment{
-    /* height: 100vh; */
-    width: 100%;
-    /* background-color: red; */
-    
+
+/* Button Styles */
+.unpaid-button-container {
+    text-align: center;
+    margin-bottom: 20px;
 }
-.unpaid-container-btn{
-    height: 50px;
-    width: 100%;
-    /* background-color: red; */
-    display: flex;
-    justify-content: flex-end;
-}
-.unpaid-container .csvBtn{
-    /* color: red; */
-    height: 40px;
-    width: 70px;
+
+.csvBtn, .payBtn, .cancelBtn {
+    /* padding: 10px 20px; */
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    margin-right: 20px;
-
-}
-h3{
-    text-align: center;
-    font-size: 25px;
-    
-}
-.unpaid-container table{
-    /* height: 100vh; */
-    width: 97%;
-    position: absolute;
-    border-collapse: collapse;
-    margin-left: 40px;
+    font-size: 14px;
+    margin: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.unpaid-container table tr{
-    border-bottom: 1px solid #a39f9f ;
+.csvBtn {
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
 }
-.unpaid-container table td{
-    padding: 0px;
-    text-align: center;
-    border-right: 1px solid #bdb8b8 ;
-}
-.unpaid-container table th{
-    padding: 10px 10px;
-    text-align: center;
-    border-right: 1px solid #bdb8b8 ;
-    background-color: #6b6060;
+
+.payBtn {
+    background-color: #007bff;
     color: white;
 }
-.unpaid-container table tr:nth-child(even){
-    background-color: #eeeeee;
+
+.cancelBtn {
+    background-color: #6c757d;
+    color: white;
+    display: none;
 }
-button.pay_btn{
-    height: 40px;
-    width: 60px;
-    background-color: blue;
+
+.csvBtn:hover, .payBtn:hover, .cancelBtn:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+}
+
+.unpaidmoretable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    min-width: 1024px; /* Minimum width to ensure horizontal scroll */
+}
+
+.unpaidmoretable thead {
+    background-color: #007bff;
+    color: white;
+}
+
+.unpaidmoretable th, .unpaidmoretable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.unpaidmoretable th {
+    position: sticky;
+    top: 0;
+    font-size: 14px;
+    text-align: center;
+}
+
+.unpaidmoretable tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.unpaidmoretable input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    /* border: 1px solid #ccc; */
     border: none;
     border-radius: 4px;
-    color: #fff;
-    cursor: pointer;
+    /* background-color: #f8f9fa; */
+    background-color: transparent;
+    box-sizing: border-box;
 }
 
+.unpaidmoretable input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
 
-.unpaid-container table tbody tr td input{
-    height:30px;
-    width:100px;
-    border:none;
-    font-weight: bold;
-    /* background-color:red; */
-  }
-  .border-active {
-    border: 1px solid #3498db;
-    outline: 1px solid #3498db
-  }
-  .unpaid-container table tbody tr td input{
-    height:30px;
-    width:100px;
-    border:none;
-    font-weight: bold;
-    /* background-color:red; */
-  }
-    
-  .unpaid-container button{
-    height:20px;
-    width: 50px;
-    background-color:blue;
-    color: #FFF;
-    border-radius: 3px;
-    transition: all 0.7s ease;
-  }
-  .unpaid-container table tbody tr td #check{
-    height: 13px;
-    width: 13px;
+/* Responsive Design */
+@media (max-width: 768px) {
+    .unpaid-container {
+        padding: 10px;
+        margin: 10px;
+    }
+
+    .csvBtn, .payBtn, .cancelBtn {
+        font-size: 12px;
+        /* padding: 8px 15px; */
+    }
+
+    .unpaid-header {
+        font-size: 20px;
+    }
+
+    .unpaidmoretable th, .unpaidmoretable td {
+        padding: 10px;
+    }
+
+    /* Ensure table is scrollable on smaller screens */
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .unpaidmoretable {
+        width: 100%;
+        min-width: 800px; /* Ensure horizontal scroll */
+    }
+}
+
+@media (max-width:1299px){
+    .unpaid-container{
+        margin-left: 50px;
+    }
 }

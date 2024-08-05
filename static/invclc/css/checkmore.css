@@ -157,3 +157,9 @@ body {
         padding: 10px;
     }
 }
+
+@media (max-width:1299px){
+    .checkmore-container{
+        margin-left: 50px;
+    }
+}

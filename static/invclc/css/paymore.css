@@ -20,11 +20,16 @@ body {
 
 /* Header Styles */
 .paymore-header {
+    /* background-color: red; */
     margin-bottom: 20px;
     font-size: 24px;
     font-weight: bold;
     color: #007bff;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 /* Button Styles */
@@ -58,7 +63,22 @@ body {
     padding: 12px;
 }
 
+.paymore-header h3{
+    height: 30px;
+    width: 50%;
+    /* background-color: blue; */
+}
+
+.paymore-header .paymore-container-btn{
+    height: 40px;
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
 .paymore-container h3{
+    height: 40px;
+    width: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -152,6 +172,19 @@ body {
 
 @media (min-width:1700px){
     .paymoreTable input[type="text"]{
+        width: 100%;
+    }
+}
+
+@media (max-width:1299px){
+    .paymore-container{
+        margin-left: 50px;
+    }
+}
+
+@media (max-width:579px){
+    .paymore-header h3{
+        font-size: 18px;
         width: 100%;
     }
 }
