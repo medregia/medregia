@@ -204,3 +204,46 @@ body {
     overflow-y: scroll;
     text-align: center;
 }
+
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .paymore-container, .paymore-container * {
+        visibility: visible;
+    }
+
+    .paymore-container{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        border: 1px solid #000; 
+    }
+    table{
+        border: 1px solid black;
+    }
+
+    .paymore-container-btn, .csvBtn, .check_btn, h3 {
+        display: none;
+    }
+
+    .paymoreTable, .paymoreTable thead, .paymoreTable tbody, .paymoreTable th, .paymoreTable td {
+        border: 1px solid black; 
+    }
+
+    .paymoreTable {
+        width: 100%;
+        border-collapse: collapse; 
+    }
+
+    .paymoreTable th, .paymoreTable td {
+        padding: 8px; 
+    }
+}

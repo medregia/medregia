@@ -150,3 +150,48 @@ body {
         margin-left: 50px;
     }
 }
+
+
+
+/* Print Styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .unpaid-container, .unpaid-container * {
+        visibility: visible;
+    }
+
+    .unpaid-container{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        border: 1px solid #000; 
+    }
+    .table-container {
+        border: 1px solid black;
+    }
+
+    .unpaid-container-btn, .csvBtn, .check_btn, h3 {
+        display: none;
+    }
+
+    .unpaidmoretable, .unpaidmoretable thead, .unpaidmoretable tbody, .unpaidmoretable th, .unpaidmoretable td {
+        border: 1px solid black; 
+    }
+
+    .unpaidmoretable{
+        width: 100%;
+        border-collapse: collapse; 
+    }
+
+    .unpaidmoretable th, .unpaidmoretable td {
+        padding: 8px; 
+    }
+}
