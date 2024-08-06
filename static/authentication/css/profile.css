@@ -894,3 +894,41 @@ input[type="text"]:disabled, input[type="text"]:readonly {
 
 
 
+@media (min-width: 500px) and (max-width: 855px){
+  h3{
+    font-size: 14px;
+  }
+  .profile-left-full .profile-main-left .profile-main-left-top,
+  .profile-right-full .profile-main-right-top,
+  .profile-main-left .profile-main-left-bottom .profile-left-bottom-main,
+  .profile-right-bottom ,
+  .profile-left-bottom-main .left-bottom-unique-id input{
+    font-size: 12px;
+  }
+  input::placeholder
+  {
+    font-size: 10px;
+  }
+
+  .profile-right-bottom input[type="text"]{
+    font-size: 12px;
+  }
+
+  .button-paper{
+    width: 100%;
+  }  
+  
+}
+
+@media (min-width: 500px) and (max-width:654px){
+  .button-paper{
+    font-size: 0.6rem;
+  }  
+}
+
+@media (max-width:645px) {
+  .profile-main{
+    height: auto;
+    flex-direction: column;
+  }
+}
