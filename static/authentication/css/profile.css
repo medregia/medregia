@@ -78,7 +78,7 @@ body{
 }
 
 .profile-container{
-    min-height: 100vh;
+    min-height: 80vh;
     width: 100%;
     /* background-color: blue; */
 }
@@ -230,7 +230,7 @@ body{
 
 .profile-left-bottom-main .left-bottom-unique-id input{
   height: 40px;
-  width: 36%;
+  width: 40%;
   padding: 2px;
 }
 
@@ -764,7 +764,7 @@ span.importent{
 .profile_content {
   height: 100vh;
   width: 100%;
-  display: flex;
+  display: none;
 }
 
 .profile_content-left {
@@ -784,7 +784,7 @@ span.importent{
 
 h3 {
   margin: 0;
-  font-size: 1.5em;
+  font-size: 1.1rem;
 }
 
 /* Admin Details Section */
@@ -894,7 +894,7 @@ input[type="text"]:disabled, input[type="text"]:readonly {
 
 
 
-@media (min-width: 500px) and (max-width: 855px){
+@media (min-width: 320px) and (max-width: 855px){
   h3{
     font-size: 14px;
   }
@@ -920,15 +920,59 @@ input[type="text"]:disabled, input[type="text"]:readonly {
   
 }
 
-@media (min-width: 500px) and (max-width:654px){
+@media (min-width: 427px) and (max-width:654px){
   .button-paper{
     font-size: 0.6rem;
   }  
 }
+@media (min-width: 320px) and (max-width:427px){
+  .button-paper{
+    font-size: 0.5rem;
+    font-weight:bold;
+    width: 80%;
+  }  
+}
 
-@media (max-width:645px) {
+@media (max-width:768px) {
   .profile-main{
     height: auto;
     flex-direction: column;
+  }
+  .profile-container .profile-main .profile-left-full,
+  .profile-container .profile-main .profile-right-full{
+    width: 100%;
+  }
+  body{
+    overflow: auto;
+  }
+  .profile_content{
+    display: none;
+  }
+
+  .profile-left-bottom-main .left-bottom-unique-id{
+    position: absolute;
+    bottom: -610px;
+  }
+  .submit_btn {
+    position: absolute;
+    bottom: -650px;
+  }
+
+  span.cover-importent{
+    position: absolute;
+    bottom: -550px;
+  }
+
+  .profile-main-left .profile-main-left-bottom .profile-left-bottom-main {
+    height: 35vh;
+  }
+  input#id_PharmacistEmail{
+    height: 40px;
+  }
+}
+
+@media (min-width:400px) and (max-width:768px){
+  .button-paper {
+    width: 50%;
   }
 }
