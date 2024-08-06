@@ -278,6 +278,28 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSendButtonListener();
     
     
+    const openArrow = document.getElementById('open_arrow');
+    const hideArrow = document.getElementById('hide_arrow');
+    const openAdminAccess = document.querySelector('.open-admin-access');
+    const adminAccess = document.querySelector('.admin-access');
+    const adminContainer = document.querySelector('.admin-container');
+    
+    if (openArrow && hideArrow && openAdminAccess && adminAccess && adminContainer) {
+        openArrow.addEventListener('click', (e) => {
+            e.preventDefault();
+            openAdminAccess.style.display = "none";
+            adminAccess.style.display = "flex";
+        });
+    
+        hideArrow.addEventListener('click', (e) => {
+            e.preventDefault();
+            openAdminAccess.style.display = "flex"; // Use "flex" if it was initially "flex"
+            adminAccess.style.display = "none"; // Hide adminAccess when openAdminAccess is shown
+        });
+    } else {
+        console.error('One or more elements were not found.');
+    }
+    
     
 });
 

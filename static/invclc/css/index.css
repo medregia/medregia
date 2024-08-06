@@ -931,7 +931,7 @@ span.header-error{
   z-index: 999;
   position: absolute; /* Ensure the element is positioned relative to its normal position */
   left: 80px;
-  top: 220px;
+  top: 190px;
   max-height: 150px;
   overflow-y: auto; /* Auto-scroll when content overflows */
   font-size: 14px;

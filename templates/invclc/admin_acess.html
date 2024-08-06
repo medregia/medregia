@@ -70,70 +70,76 @@
     <main class="admin-main-container"> 
         <div class="admin-container">
             <h2>General Access</h2>
-            <table class="table-content">
-                <thead>
-                    <tr>
-                        <th>S No.</th>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>DL Number</th>
-                        <th>DL Number2</th>
-                        <th>Admin Name</th>
-                        <th>Temp Number</th>
-                        <th>Unique Number</th>
-                        <th>Generate Link</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in table_data %}
-                    <tr>
-                        <td>{{ row.s_no }}</td>
-                        <td><div class="input-container"><input type="text" value="{{ row.name }}" disabled></div></td>
-                        <td><div class="input-container"><input type="text" value="{{ row.user_type }}" disabled></td>
-                        <td>
-                            <div class="input-container">
-                                <input type="text" value="{{ row.dl_number1 }}" disabled>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="input-container">
-                                <input type="text" value="{{ row.dl_number2 }}" disabled>
-                            </div>
-                        </td>
-                        <td><div class="input-container"><input type="text" value="{{ row.admin_name }}" disabled></div></td>
-                        <td><div class="input-container"><input type="text" value="{{ row.temp_no }}" disabled></div></td>
-                        <td><div class="input-container"><input type="text" value="{{ row.unique_no }}" title="{{row.unique_no}}" disabled></div></td>
-                        {% if position == 'Admin' %}
-                            {% if row.checked %}
-                                <td>
-                                    <button type="button" class="inviteUser link-btn" disabled title = "Already Collaborated " 
-                                    style ="background-color: transparent; cursor: progress; color:#3498db; font-size:18px" >&#10003</button>
-                                </td>
+            <div class="make-table-scrollable">
+                <table class="table-content">
+                    <thead>
+                        <tr>
+                            <th>S No.</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>DL Number</th>
+                            <th>DL Number2</th>
+                            <th>Admin Name</th>
+                            <th>Temp Number</th>
+                            <th>Unique Number</th>
+                            <th>Generate Link</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in table_data %}
+                        <tr>
+                            <td>{{ row.s_no }}</td>
+                            <td><div class="input-container"><input type="text" value="{{ row.name }}" disabled></div></td>
+                            <td><div class="input-container"><input type="text" value="{{ row.user_type }}" disabled></td>
+                            <td>
+                                <div class="input-container">
+                                    <input type="text" value="{{ row.dl_number1 }}" disabled>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-container">
+                                    <input type="text" value="{{ row.dl_number2 }}" disabled>
+                                </div>
+                            </td>
+                            <td><div class="input-container"><input type="text" value="{{ row.admin_name }}" disabled></div></td>
+                            <td><div class="input-container"><input type="text" value="{{ row.temp_no }}" disabled></div></td>
+                            <td><div class="input-container"><input type="text" value="{{ row.unique_no }}" title="{{row.unique_no}}" disabled></div></td>
+                            {% if position == 'Admin' %}
+                                {% if row.checked %}
+                                    <td>
+                                        <button type="button" class="inviteUser link-btn" disabled title = "Already Collaborated " 
+                                        style ="background-color: transparent; cursor: progress; color:#3498db; font-size:18px" >&#10003</button>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <button type="button" class="inviteUser link-btn" title="Invite to Collaborate">Invite</button>
+                                    </td>
+                                {% endif %}
+                                
                             {% else %}
                                 <td>
-                                    <button type="button" class="inviteUser link-btn" title="Invite to Collaborate">Invite</button>
+                                    <button type="button" class="inviteUser link-btn" disabled 
+                                            title="You are a {{position}} so you are not able to send an invite request" 
+                                            style="background-color: #b7b7b7; cursor: progress;">Invite</button>
                                 </td>
                             {% endif %}
-                            
-                        {% else %}
-                            <td>
-                                <button type="button" class="inviteUser link-btn" disabled 
-                                        title="You are a {{position}} so you are not able to send an invite request" 
-                                        style="background-color: #b7b7b7; cursor: progress;">Invite</button>
-                            </td>
-                        {% endif %}
-
-                        <td><div class="input-container"><input type="text" value="{{ row.status }}" disabled></div></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    
+                            <td><div class="input-container"><input type="text" value="{{ row.status }}" disabled></div></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
         </div>
     
-
+        <div class="open-admin-access">
+            <div class="open-arrow" id="open_arrow">&#9664;</div>
+        </div>
             
         <aside class="admin-access">
+            <div class="hide-arrow" id="hide_arrow">&#9664;</div>
             <h2>Admin Access</h2>
             <div class="form-group">
                 <label for="adminUser">Admin User</label>
