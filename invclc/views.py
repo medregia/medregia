@@ -33,6 +33,9 @@ from django.contrib.contenttypes.models import ContentType
 from .utils import generate_tempno,RegisterUserTempNo
 from authentication.service import SendNotification
 
+from django.db.models import Sum
+from calendar import month_name
+
 logger = logging.getLogger(__name__)
 def upload_csv(request):
     
@@ -1202,25 +1205,248 @@ def import_view(request):
 
 @login_required(login_url='/')
 def staticspage_view(request):
-    current_user = Invoice.objects.filter(user=request.user)
-    # Total Amomunt Calculation ..
-    all_invoice_amounts = current_user.values_list('invoice_amount', flat=True)
-    total_amount = sum(all_invoice_amounts)
-    
-    # Total Paid Amount Calculation ..
-    all_paid_amount = current_user.values_list('payment_amount', flat=True)
-    payment_amount = sum(all_paid_amount)
-    
-    # Total Balance Amount
-    all_balance_amount = current_user.values_list('balance_amount', flat=True)
-    balance_amount = sum(all_balance_amount)
-    
+    check_user = None
+    plots_data = None
+    plot_data = None
+    error_message = None  # Variable to hold error messages
+
+    try:
+        current_user_invoices = Invoice.objects.filter(user=request.user)
+        collaborator_requests = Notification.objects.filter(sender=request.user, is_read=True)
+        
+        for notification in collaborator_requests:
+            collaborator_request_username = notification.sender.username
+            get_admin_name = notification.receiver.username
+            
+            collaborator_request_sender = CustomUser.objects.filter(username=collaborator_request_username, is_staff=False)
+            collaborator_admin = CustomUser.objects.get(username=get_admin_name, is_staff=True)
+            
+            for user in collaborator_request_sender:
+                collaborator_sender_username = user.username
+                try:
+                    current_user = CustomUser.objects.get(username=collaborator_sender_username, is_staff=False)
+                    if current_user and collaborator_admin:
+                        check_user = current_user.username
+                except Exception as a:
+                    error_message = f"Something went wrong: {a}"
+                    continue
+
+        total_amount = current_user_invoices.aggregate(Sum('invoice_amount'))['invoice_amount__sum'] or 0
+        payment_amount = current_user_invoices.aggregate(Sum('payment_amount'))['payment_amount__sum'] or 0
+        balance_amount = current_user_invoices.aggregate(Sum('balance_amount'))['balance_amount__sum'] or 0
+
+        # Note: You might want to do something with plots_data and plot_data variables here
+        
+    except Exception as e:
+        error_message = f"Something went wrong: {e}"
+
+    if str(request.user) == check_user:
+        if request.method == 'GET' and 'from_date' in request.GET and 'to_date' in request.GET:
+            try:
+                from_date_str = request.GET.get('from_date')
+                to_date_str = request.GET.get('to_date')
+                from_date = datetime.strptime(from_date_str, '%Y-%m-%d').date()
+                to_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
+                
+                invoices = Invoice.objects.filter(user=collaborator_admin, invoice_date__gte=from_date, invoice_date__lte=to_date)
+                total_amount = invoices.aggregate(total=Sum('invoice_amount'))['total'] or 0
+                payment_amount = invoices.aggregate(total=Sum('payment_amount'))['total'] or 0
+                balance_amount = invoices.aggregate(total=Sum('balance_amount'))['total'] or 0
+                
+                return JsonResponse({'total_amount': total_amount, 
+                                     'payment_amount': payment_amount, 
+                                     'balance_amount': balance_amount, 
+                                     })
+            except Exception as e:
+                error_message = f"Something went wrong: {e}"
+                return JsonResponse({"error": error_message}, status=500)
+        else:
+            current_user = Invoice.objects.filter(user=collaborator_admin)
+            total_amount = current_user.aggregate(total=Sum('invoice_amount'))['total'] or 0
+            payment_amount = current_user.aggregate(total=Sum('payment_amount'))['total'] or 0
+            balance_amount = current_user.aggregate(total=Sum('balance_amount'))['total'] or 0
+    else:
+        if request.method == 'GET' and 'from_date' in request.GET and 'to_date' in request.GET:
+            try:
+                from_date_str = request.GET.get('from_date')
+                to_date_str = request.GET.get('to_date')
+                from_date = datetime.strptime(from_date_str, '%Y-%m-%d').date()
+                to_date = datetime.strptime(to_date_str, '%Y-%m-%d').date()
+                
+                invoices = Invoice.objects.filter(user=request.user, invoice_date__gte=from_date, invoice_date__lte=to_date)
+                total_amount = invoices.aggregate(total=Sum('invoice_amount'))['total'] or 0
+                payment_amount = invoices.aggregate(total=Sum('payment_amount'))['total'] or 0
+                balance_amount = invoices.aggregate(total=Sum('balance_amount'))['total'] or 0
+                
+                return JsonResponse({'total_amount': total_amount,
+                                     'payment_amount': payment_amount, 
+                                     'balance_amount': balance_amount, 
+                                      })
+            except Exception as e:
+                error_message = f"Something went wrong: {e}"
+                return JsonResponse({"error": error_message}, status=500)
+        else:
+            current_user = Invoice.objects.filter(user=request.user)
+            total_amount = current_user.aggregate(total=Sum('invoice_amount'))['total'] or 0
+            payment_amount = current_user.aggregate(total=Sum('payment_amount'))['total'] or 0
+            balance_amount = current_user.aggregate(total=Sum('balance_amount'))['total'] or 0
+
     context = {
         'total_amount': total_amount,
-        'payment_amount':payment_amount,
+        'payment_amount': payment_amount,
         'balance_amount': balance_amount,
+        'plots_data': plots_data,
+        'error_message': error_message,  # Include error message in the context
+    }
+    return render(request, 'invclc/static.html', context)
+
+@login_required(login_url='/')
+def get_yearly_data(request):
+    if request.method == 'GET' and 'year' in request.GET:
+        selected_year = request.GET.get('year')
+        try:
+            # Filter invoices for the selected year
+            invoices = Invoice.objects.filter(user=request.user, invoice_date__year=selected_year)
+            
+            # Calculate total amount, total paid amount, and balance amount for the year
+            total_amount = invoices.aggregate(total=Sum('invoice_amount'))['total'] or 0
+            payment_amount = invoices.aggregate(total=Sum('payment_amount'))['total'] or 0
+            balance_amount = invoices.aggregate(total=Sum('balance_amount'))['total'] or 0
+            
+            # Aggregate monthly data for the selected year
+            monthly_data = invoices.values('invoice_date__month').annotate(
+                total_amount=Sum('invoice_amount'),
+                total_payment=Sum('payment_amount'),
+                total_balance=Sum('balance_amount')
+            )
+            
+            # Convert queryset to a list of dictionaries
+            monthly_data_list = [{'month': entry['invoice_date__month'], 
+                                  'total_amount': entry['total_amount'],
+                                  'total_payment': entry['total_payment'],
+                                  'total_balance': entry['total_balance']} 
+                                 for entry in monthly_data]
+
+            # Construct the response data
+            response_data = {
+                'total_amount': total_amount,
+                'payment_amount': payment_amount,
+                'balance_amount': balance_amount,
+                'monthlyData': monthly_data_list
+            }
+            
+            return JsonResponse(response_data)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request"}, status=400)
+    
+
+@login_required(login_url='/')
+def get_monthly_data(request):
+    if request.method == 'GET' and 'month' in request.GET:
+        selected_month = request.GET.get('month')
+        selected_year = request.GET.get('year')
+        try:
+            month_number = list(month_name).index(selected_month)
+            if selected_year:
+                invoices = Invoice.objects.filter(user=request.user, invoice_date__month=month_number, invoice_date__year=selected_year)
+            else:
+                invoices = Invoice.objects.filter(user=request.user, invoice_date__month=month_number)
+            
+            total_amount = invoices.aggregate(total=Sum('invoice_amount'))['total'] or 0
+            payment_amount = invoices.aggregate(total=Sum('payment_amount'))['total'] or 0
+            balance_amount = invoices.aggregate(total=Sum('balance_amount'))['total'] or 0
+            
+            invoice_data = invoices.values('invoice_date', 'invoice_amount', 'payment_amount', 'balance_amount')
+
+            return JsonResponse({
+                'total_amount': total_amount,
+                'payment_amount': payment_amount,
+                'balance_amount': balance_amount,
+                'invoice_data': list(invoice_data)
+            })
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request"}, status=400)
+    
+
+@login_required(login_url='/')
+def get_total_sum(request):
+    try:
+        year = request.GET.get('year')
+        month = request.GET.get('month')
+        
+        if not year or not month:
+            return JsonResponse({'error': 'Year and month are required.'}, status=400)
+        
+        month = int(month)
+        year = int(year)
+        
+        # Assuming invoice_date is a DateTimeField
+        invoices = Invoice.objects.filter(
+            user=request.user,
+            invoice_date__year=year,
+            invoice_date__month=month
+        )
+        
+        total_amount = invoices.aggregate(Sum('invoice_amount'))['invoice_amount__sum'] or 0
+        payment_amount = invoices.aggregate(Sum('payment_amount'))['payment_amount__sum'] or 0
+        balance_amount = invoices.aggregate(Sum('balance_amount'))['balance_amount__sum'] or 0
+        
+        invoice_data = invoices.values('invoice_date', 'invoice_amount', 'payment_amount', 'balance_amount')
+        
+        response_data = {
+            'total_amount': total_amount,
+            'payment_amount': payment_amount,
+            'balance_amount': balance_amount,
+            'invoice_data': list(invoice_data)
         }
-    return render(request, 'invclc/static.html',context)
+        
+        return JsonResponse(response_data)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+
+
+@require_GET
+def get_data(request):
+    from_date_str = request.GET.get('fromDate')
+    to_date_str = request.GET.get('toDate')
+
+    try:
+        from_date = datetime.strptime(from_date_str, '%Y-%m-%d')
+        to_date = datetime.strptime(to_date_str, '%Y-%m-%d')
+    except ValueError:
+        return JsonResponse({'error': 'Invalid date format'}, status=400)
+
+    try:
+
+
+        # Fetch total amounts for the entire date range
+        invoices = Invoice.objects.filter(invoice_date__range=[from_date, to_date])
+        total_amount = invoices.aggregate(total_amount=Sum('invoice_amount'))['total_amount'] or 0
+        payment_amount = invoices.aggregate(payment_amount=Sum('payment_amount'))['payment_amount'] or 0
+        balance_amount = invoices.aggregate(balance_amount=Sum('balance_amount'))['balance_amount'] or 0
+
+        monthly_data = []
+        for month in range(from_date.month, to_date.month + 1):
+            invoices_in_month = Invoice.objects.filter(invoice_date__month=month, invoice_date__year=from_date.year)
+            total_amount_monthly = invoices_in_month.aggregate(total_amount=Sum('invoice_amount'))['total_amount'] or 0
+            payment_amount_monthly = invoices_in_month.aggregate(total_amount=Sum('payment_amount'))['total_amount'] or 0
+            balance_amount_monthly = invoices_in_month.aggregate(total_amount=Sum('balance_amount'))['total_amount'] or 0
+            monthly_data.append({'month': month, 'totalAmount': total_amount_monthly,'paymentAmount': payment_amount_monthly, 'balanceAmount': balance_amount_monthly})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({ 
+        'total_amount' : total_amount,
+        'payment_amount' : payment_amount,
+        'balance_amount' : balance_amount,
+        'monthlyData': monthly_data
+        })
+
 
 @login_required(login_url='/')
 def checkmore_view(request):

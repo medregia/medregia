@@ -2,22 +2,24 @@
 
 {% load static %}
 
-{% block title %} MedregiA || Static {% endblock title %} 
+{% block title %} MedregiA || Static {% endblock title %}
 
 {% block nav_footer %}{% static 'invclc/css/nav.css' %} {% endblock nav_footer %}
 {% block link2 %}{% static 'invclc/css/static.css' %} {% endblock link2 %}
 {% block side %}{% static 'invclc/css/static_sidebar.css' %}{% endblock side %}
 
-{% block navbar %} 
-  {% include 'nav.html' %}
+{% block navbar %}
+{% include 'nav.html' %}
 {% endblock navbar %}
- 
+
 {% block sidebar %}
-  {% include 'sidebar.html' %}
+{% include 'sidebar.html' %}
 {% endblock sidebar %}
 
+
+
 {% block content %}
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="static-container" id="staticcontent">
     <div class="left-side">
@@ -26,36 +28,39 @@
                 <h3 class="static_head">DURATION BASED</h3>
                 <div class="firstbox">
                     <div class="dates">
-                        <input type="checkbox">
-                        <select name="year">
-                            <option>_year_</option>
+                        <input type="checkbox" id="yearCheckbox">
+                        <select name="year" id="yearSelect" class="hidden">
+                            {% for year in available_years %}
+                            <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="dates">
+                        <input type="checkbox" id="showMonthsCheckbox">
+                        <select name="month" id="monthDropdown">
+                            <option value="">_month_</option>
                         </select>
                     </div>
                     <div class="dates">
-                        <input type="checkbox">
-                        <select name="month">
-                            <option>_month_</option>
-                        </select>
-                    </div>
-                    <div class="dates">
-                        <input type="checkbox">
-                        <select name="week">
+                        <input type="checkbox" id="showWeeksCheckbox">
+                        <select name="week" id="weeksDropdown">
                             <option>_week_</option>
                         </select>
                     </div>
-                </div> 
+                </div>
                 <div class="firstbox1">
                     <div class="from">
                         <!-- <input type="checkbox"> -->
                         <label for="">Datewise :</label>
                     </div>
                     <div class="from">
-                        <label for="">From :</label>
-                        <input type="date">
+                        <label for="from-date">From :</label>
+                        <input type="date" id="from-date" name="from_date" onchange="updateValues()">
                     </div>
                     <div class="from">
-                        <label for="">to :</label>
-                        <input type="date">
+                        <label for="to-date">to :</label>
+                        <input type="date" id="to-date" name="to_date" onchange="updateValues()">
                     </div>
                 </div>
             </div>
@@ -74,7 +79,7 @@
                         <input type="checkbox">
                         <label>Agency</label>
                     </div>
-                </div> 
+                </div>
                 <div class="firstbox1">
                     <div class="other">
                         <label>Others :</label>
@@ -86,16 +91,17 @@
         <div class="left-box">
             <div class="mainbox3">
                 <div class="">
-                    <label for="">Total Purches :</label>
-                    <input type="text" value="{{total_amount}}">
+                    <label for="total-purchases">Total Purches :</label>
+                    <input type="number" id="total-purchases" class="totalPurchases" value="{{ total_amount }}" disable>
                 </div>
                 <div class="">
-                    <label for="">total Paid Amount :</label>
-                    <input type="text" value="{{payment_amount}}">
+                    <label for="total-paid-amount">total Paid Amount :</label>
+                    <input type="number" id="total-paid-amount" class="totalPaidAmount" value="{{payment_amount}}"
+                        disable>
                 </div>
                 <div class="">
-                    <label for="">Remaining Pay :</label>
-                    <input type="text" value="{{balance_amount}}">
+                    <label for="remaining-pay">Remaining Pay :</label>
+                    <input type="text" id="remaining-pay" class="remainingPay" value="{{balance_amount}}" disable>
                 </div>
                 <div class="">
                     <label for=""> Selling Amount :</label>
@@ -116,14 +122,35 @@
             </div>
         </div>
     </div>
+    
     <div class="right-side">
-        <div id="piechart"></div>
-        <div id="chart_div"></div>
+        <div class="donut-container">
+            <div id="chart-container">
+                <canvas id="myDonutChart"></canvas>
+                <div class="round"><span>Total <b>03</b></span></div>
+            </div>
+
+            <div id="area-container">
+                <div class="chart-legend">
+                    <div class="label">Total Purchase:</div>
+                    <div class="label">Total Paid Amount:</div>
+                    <div class="label">Remaining Pay:</div>
+                </div>
+                <div class="chart-legend">
+                    <div class="value" id="total-purchase-value"></div>
+                    <div class="value" id="total-paid-value"></div>
+                    <div class="value" id="balance-value"></div>
+                </div>
+                <canvas id="myAreaChart"></canvas>
+            </div>
+        </div>
+        
     </div>
+
 </div>
 
-<script src="{% static 'invclc/js/static.js' %}"></script> 
-<script src="{% static 'authentication/js/static_sidebar.js' %}"></script>  
-    
+
+<script src="{% static 'invclc/js/static.js' %}"></script>
+<script src="{% static 'authentication/js/static_sidebar.js' %}"></script>
 
 {% endblock %}
