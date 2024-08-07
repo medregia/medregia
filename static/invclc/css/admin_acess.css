@@ -794,3 +794,9 @@ label {
         width: 100%;
     }
 }
+
+@media (min-width:684px) and (max-width:880px){
+    .make-table-scrollable {
+        margin-left: 80px;
+    }
+}
