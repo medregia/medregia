@@ -68,8 +68,15 @@
 
 
     <main class="admin-main-container"> 
+        
         <div class="admin-container">
-            <h2>General Access</h2>
+            <div class="admin-header">
+                <h2>General Access</h2>
+
+                {% comment %} <div class="open-admin-access">
+                    <div class="open-arrow" id="open_arrow"><p style="font-size: 10px;">Admin Access</p> &#43</div>
+                </div> {% endcomment %}
+            </div>
             <div class="make-table-scrollable">
                 <table class="table-content">
                     <thead>
@@ -133,13 +140,9 @@
             </div>
             
         </div>
-    
-        <div class="open-admin-access">
-            <div class="open-arrow" id="open_arrow">&#9664;</div>
-        </div>
             
         <aside class="admin-access">
-            <div class="hide-arrow" id="hide_arrow">&#9664;</div>
+            {% comment %} <div class="hide-arrow" id="hide_arrow">&#9664;</div> {% endcomment %}
             <h2>Admin Access</h2>
             <div class="form-group">
                 <label for="adminUser">Admin User</label>
@@ -154,7 +157,7 @@
                 <input type="password" id="password" name="password">
             </div>
             <div class="form-group">
-                <label for="pin">Pin</label>
+                <label for="pin">Pin</label>    
                 <input type="text" id="pin" name="pin">
             </div> {% endcomment %}
 

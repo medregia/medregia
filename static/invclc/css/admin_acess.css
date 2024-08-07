@@ -27,12 +27,12 @@ main {
     margin-left: 35px;
     font-family: Arial, sans-serif;
     color: #333;
+    overflow-x: scroll;
 }
 
 .make-table-scrollable{
     height: auto;
-    width: 100%;
-    max-width: 100%;
+    /* width: 100%; */
     overflow-x: auto;
 }
 
@@ -158,8 +158,8 @@ tr:nth-child(even) {
 }
 
 .link-btn{
-    height:20px;
-    width:40%;
+    height: 25px;
+    width: 50%;
     background-color: #3498db;
     color:#fff;
     border: none;
@@ -210,6 +210,8 @@ tr:nth-child(even) {
     flex-direction: column;
     justify-content:space-evenly ;
     margin-top: 10px;
+    display: flex;
+    flex-direction: column;
     
 }
 .Details-data{
@@ -369,10 +371,10 @@ h2 {
     font-weight: 600;
 }
 
-.Details {
+/* .Details {
     display: flex;
     flex-direction: column;
-}
+} */
 
 .Details-data {
     margin-bottom: 15px;
@@ -481,16 +483,17 @@ label {
     flex-direction: column;
     align-items: center;
     padding: 5px 10px;
+    overflow-x: scroll;
   }
   
   .users_table {
     max-height: 20vh;
-    width: 90%;
+    /* width: 90%; */
     overflow-y: auto; /* Change to 'auto' to only show scrollbar when needed */
   }
   
   .users_table table {
-    width: 100%;
+    max-width: 100%;
     border-collapse: collapse;
   }
   
@@ -737,35 +740,57 @@ label {
 }
 
 .open-admin-access{
-    min-height: 100vh;
+    /* min-height: 100vh; */
     width: 50px;
-    background-color: #e0dede;
+    /* background-color: #e0dede; */
     display: none;
 }
 
-.hide-arrow{
-    display: none;
-    position: absolute;
+@media (min-width:1100px) and (max-width:1300px){
+    .make-table-scrollable{
+        margin-left: 140px
+    }
 }
-@media (max-width:1290px){
+
+@media (max-width:1100px){
+    .make-table-scrollable{
+        margin-left: 100px
+    }
+}
+
+@media (max-width:932px){
+    .admin-access h2{
+        font-size: 16px;
+    }
+}
+
+@media (max-width:880px){
+    .current-user-pass{
+        flex-direction: column;
+    }
+    .Details-data{
+        margin: 5px;
+        height: auto;
+        /* background-color: red; */
+        flex-direction: column;
+    }
+    .Details-data label{
+        width: 150px;
+        margin-right: 1px;
+    }
+    .Details-data input{
+        width: 100%;
+    }
+    .Details-data select {
+        width: 100%;
+    }
+    #copy_button{
+        top: 10px;
+    }
+}
+
+@media (max-width:650px){
     .admin-access{
-        display: none;
-    }
-    .admin-container{
-        width: 95% ;
-    }
-    .input-container input{
-        width: 95px;
-    }
-
-    .open-admin-access{
-        display: block;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-    }
-
-    .hide-arrow{
-        display: block;
+        width: 100%;
     }
 }
