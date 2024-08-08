@@ -1513,3 +1513,10 @@ cursor: pointer;
   }
 
 }
+
+
+@media (min-width:1450px){
+  .relative-data {
+    top: 220px;
+  }
+}

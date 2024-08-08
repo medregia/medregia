@@ -690,10 +690,13 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
           resultsList.innerHTML = ''; // Clear previous results
-          if (data.message === 'Results Found') {
+          if (data.message === 'Results Found' || data.message === "Medical name found, but DL numbers not found") {
             data.results.forEach(result => {
               const listItem = document.createElement('li');
-              listItem.innerHTML = `<span style="font-weight:700">${result.medicals_name}</span style="font-weight:300">,<span>${result.dlnumber_1}</span style="font-weight:300">,<span>${result.dlnumber_2}</span>`;
+              listItem.innerHTML = `
+                <span style="font-weight: 700;">${result.medicals_name}</span>,
+                <span style="font-weight: 300;">${result.dlnumber_1}</span>,
+                <span style="font-weight: 300;">${result.dlnumber_2}</span>`;
               // Add data attributes to store the full result data
               listItem.dataset.medicalName = result.medicals_name;
               listItem.dataset.dlnumber1 = result.dlnumber_1;

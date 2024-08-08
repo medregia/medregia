@@ -2621,24 +2621,42 @@ def medical_search(request):
     medicalNameSearch = data.get('medicalNameSearch', '')
 
     try:
-        if medicalNameSearch == "":
+        if not medicalNameSearch:
             response_data = {"message": "No Results Found"}
         else:
+            # Filter invoices based on user and search term
             results = Invoice.objects.filter(user=request.user, pharmacy_name__icontains=medicalNameSearch)
-            get_medical_profile = Person.objects.filter(MedicalShopName__icontains=medicalNameSearch)
 
-            if get_medical_profile.exists():
-                response_data = {
-                    "message": "Results Found",
-                    "results": [
-                        {
-                            "medicals_name": profile.MedicalShopName,
-                            "dlnumber_1": profile.DrugLiceneseNumber1,
-                            "dlnumber_2": profile.DrugLiceneseNumber2,
-                        }
-                        for profile in get_medical_profile 
-                    ]
-                }
+            if results.exists():
+                # Extract pharmacy names from the filtered invoices
+                pharmacy_names = results.values_list('pharmacy_name', flat=True)
+                # Filter persons based on the pharmacy names
+                get_medical_profile = Person.objects.filter(MedicalShopName__in=pharmacy_names)
+
+                if get_medical_profile.exists():
+                    response_data = {
+                        "message": "Results Found",
+                        "results": [
+                            {
+                                "medicals_name": profile.MedicalShopName,
+                                "dlnumber_1": profile.DrugLiceneseNumber1,
+                                "dlnumber_2": profile.DrugLiceneseNumber2,
+                            }
+                            for profile in get_medical_profile 
+                        ]
+                    }
+                else:
+                    response_data = {
+                        "message": "Medical name found, but DL numbers not found",
+                        "results": [
+                            {
+                                "medicals_name": name,
+                                "dlnumber_1": "Not Found",
+                                "dlnumber_2": "Not Found",
+                            }
+                            for name in pharmacy_names
+                        ]
+                    }
             else:
                 response_data = {"message": "New"}
 
