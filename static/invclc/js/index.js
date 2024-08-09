@@ -516,6 +516,8 @@ document.getElementById('saveButton').addEventListener('click', async function()
   // Gather form data
   const data = {
       pharmacy_name: formData.get('pharmacy_name'),
+      dl_num1:formData.get('dlnum1'),
+      dl_num2:formData.get('dlnum2'),
       invoice_number: formData.get('invoice_number'),
       invoice_date: formData.get('invoice_date'),
       invoice_amount: formData.get('invoice_amount'),
@@ -719,6 +721,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (listItem) {
         // Populate the input fields with data from the clicked item
         searchMedicalName.value = listItem.dataset.medicalName;
+        document.getElementById('id_dlnum1').value = listItem.dataset.dlnumber1;
+        document.getElementById('id_dlnum2').value = listItem.dataset.dlnumber2;
         // Uncomment and update if you need these fields
         // document.getElementById('id_invoice_number').value = listItem.dataset.invoiceNumber;
         // document.getElementById('id_invoice_date').value = listItem.dataset.invoiceDate;

@@ -128,6 +128,8 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Dl Number 1</th>
+                        <th>Dl Number 2</th>
                         <th>Invoice Number</th>
                         <th>Invoice Date</th>
                         <th>Invoice Amount</th>
@@ -139,12 +141,15 @@
                 <tbody>
                   {% if entryDisable %}
                     <tr id="not_accessable_profile">
-                      <td><input type="text" name="pharmacy_name" placeholder="Pharmacy Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name" autofocus ></td>
+                      <td><input type="text" name="pharmacy_name" placeholder="Pharmacy Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name" autofocus autocomplete = "off"></td>
+                      <td><input type="text" name="dlnum1" placeholder="Dl Number 1" class="pharmacy_name" maxlength="100" required id="id_dlnum1"></td>
+                      <td><input type="text" name="dlnum2" placeholder="Dl Number 2" class="pharmacy_name" maxlength="100" required id="id_dlnum2"></td>
                       <td><input type="text" name="invoice_number" placeholder="Invoice Number" class="invoice_number" maxlength="50" required id="id_invoice_number"></td>
                       <td><input type="text" name="invoice_date" placeholder="DD/MM/YYYY" required id="id_invoice_date"></td>
                       <td><input type="number" name="invoice_amount" placeholder="Invoice Amount" class="invoice_amount" step="0.01" required id="id_invoice_amount"></td>
                       <td><input type="text" name="balance_amount" placeholder="Balance Amount" disabled class="balance_amount" id="id_balance_amount"></td>
                       <td><input type="number" name="payment_amount" placeholder="0" value = 0 title="Default 0 " class="payment_amount" step="0.01" required id="id_payment_amount"></td>
+                      
                       <td>
                           <input type="hidden" name="today_date" id="id_today_date">
                           <input type="hidden" name="current_time" id="id_current_time">
@@ -154,7 +159,9 @@
                     </tr>
                   {% else %}
                     <tr>
-                        <td><input type="text" name="pharmacy_name" placeholder="Pharmacy Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name" autofocus></td>
+                        <td><input type="text" name="pharmacy_name" placeholder="Pharmacy Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name" autofocus autocomplete = "off"></td>
+                        <td><input type="text" name="dlnum1" placeholder="Dl Number 1" class="pharmacy_name" maxlength="100" required id="id_dlnum1"></td>
+                        <td><input type="text" name="dlnum2" placeholder="Dl Number 2" class="pharmacy_name" maxlength="100" required id="id_dlnum2"></td>
                         <td><input type="text" name="invoice_number" placeholder="Invoice Number" class="invoice_number" maxlength="50" required id="id_invoice_number"></td>
                         <td><input type="text" name="invoice_date" placeholder="DD/MM/YYYY" required id="id_invoice_date"></td>
                         <td><input type="number" name="invoice_amount" placeholder="Invoice Amount" class="invoice_amount" step="0.01" required id="id_invoice_amount"></td>

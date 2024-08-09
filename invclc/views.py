@@ -521,7 +521,7 @@ def index_view(request):
             data = json.loads(request.body)
             required_fields = [
                 'pharmacy_name', 'invoice_number', 'invoice_date',
-                'invoice_amount', 'payment_amount'
+                'invoice_amount', 'payment_amount','dl_num1','dl_num2'
             ]
             
             missing_fields = [field for field in required_fields if not data.get(field)]
@@ -572,6 +572,8 @@ def index_view(request):
                 invoice_data = Invoice(
                     user=senderName,
                     pharmacy_name=data['pharmacy_name'],  # Keep as string
+                    dl_number1 = data['dl_num1'],
+                    dl_number2 = data['dl_num2'],
                     invoice_number=data['invoice_number'],
                     invoice_date=invoice_date,  # Use converted date
                     invoice_amount=invoice_amount,  # Convert to float or int
@@ -590,6 +592,8 @@ def index_view(request):
                 invoice_data = Invoice(
                     user=request.user,
                     pharmacy_name=data['pharmacy_name'],  # Keep as string
+                    dl_number1 = data['dl_num1'],
+                    dl_number2 = data['dl_num2'],
                     invoice_number=data['invoice_number'],
                     invoice_date=invoice_date,  # Use converted date
                     invoice_amount=invoice_amount,  # Convert to float or int
@@ -622,7 +626,7 @@ def index_view(request):
 
             try:
                 # Fetch the medical details
-                is_medical = Person.objects.get(MedicalShopName__iexact=invoice_data.pharmacy_name)
+                is_medical = Person.objects.get(DrugLiceneseNumber1__iexact=invoice_data.dl_number1,DrugLiceneseNumber2__iexact=invoice_data.dl_number2)
                 receiver_invoice_data = Invoice.objects.filter(user=request.user, pharmacy_name=invoice_data.pharmacy_name)
                 current_user_medical = Person.objects.get(user = request.user)
 
@@ -739,8 +743,6 @@ def update_profile(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            
-            print(data)
 
             pharmacy_name = data.get('pharmacy_name', "")
             dl1 = data.get('dl1', "")
@@ -2134,7 +2136,7 @@ def admin_access(request):
 
         for idx, invoice in enumerate(get_all_invoice, start=1):
             try:
-                profile_data = Person.objects.get(MedicalShopName=invoice.pharmacy_name)
+                profile_data = Person.objects.get(DrugLiceneseNumber1=invoice.dl_number1,DrugLiceneseNumber2=invoice.dl_number2)
                 current_medicalname = Person.objects.get(user=request.user)
                 unique_code = profile_data.UniqueId
                 user_position = profile_data.user.position
@@ -2177,18 +2179,25 @@ def admin_access(request):
                 if is_collaborate_medical.exists():
                     checked = True
 
+
                 if current_medicalname.MedicalShopName == invoice.pharmacy_name:
                     checked = True
 
-
+                dl_number1 = None
+                dl_number2 = None
+                if is_collaborate_medical.exists():
+                    dl_number1 = profile_data.DrugLiceneseNumber1
+                    dl_number2 = profile_data.DrugLiceneseNumber2
 
                 if unique_key not in unique_keys:
                     unique_keys.add(unique_key)
                     table_data.append({
                         's_no': idx,
                         'name': profile_data.MedicalShopName,
-                        'dl_number1': profile_data.DrugLiceneseNumber1,
-                        'dl_number2': profile_data.DrugLiceneseNumber2,
+                        # 'dl_number1': profile_data.DrugLiceneseNumber1,
+                        # 'dl_number2': profile_data.DrugLiceneseNumber2,
+                        'dl_number1': dl_number1,
+                        'dl_number2': dl_number2,
                         'admin_name': is_admin_user,
                         'temp_no': None,
                         'unique_no': unique_code,
@@ -2528,10 +2537,10 @@ def connect_view(request):
             return JsonResponse({'message': 'Please enter DL number 2.', 'data': data, 'Inputpopup': True}, status=400)
         
         try:
-            person = Person.objects.get(MedicalShopName__iexact=name)
+            person = Person.objects.get(DrugLiceneseNumber1__iexact=dl_number1,DrugLiceneseNumber2__iexact=dl_number2,MedicalShopName = name)
             
             # Check and update DL numbers if not set
-            if not person.DrugLiceneseNumber1 or not person.DrugLiceneseNumber2:
+            if not person.DrugLiceneseNumber1 or not person.DrugLiceneseNumber2:    
                 person.DrugLiceneseNumber1 = person.DrugLiceneseNumber1 or dl_number1
                 person.DrugLiceneseNumber2 = person.DrugLiceneseNumber2 or dl_number2
                 person.save()

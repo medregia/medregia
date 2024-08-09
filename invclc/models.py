@@ -20,6 +20,9 @@ class Invoice(models.Model):
     updated_by = models.CharField(max_length=20, null=True, blank=True)
     collaborator_invoice = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='collaborator_invoices')
 
+    dl_number1 = models.CharField(max_length=100, blank=True, null=True)
+    dl_number2 = models.CharField(max_length=100, blank=True, null=True)
+
     def save(self, *args, **kwargs):
         self.balance_amount = self.invoice_amount - self.payment_amount
         super().save(*args, **kwargs)

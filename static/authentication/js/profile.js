@@ -179,21 +179,31 @@ document.getElementById('submit_button').addEventListener('click', function(even
     sendingData(formData, csrfToken, districtId);
 });
 
-function togglePopup() {
+function togglePopup(data) {
     const closebtn = document.getElementById("popup-btn");
     const popupMsg = document.getElementById("popup-1");
     const popupMessages = document.querySelector(".overlay-content h2");
     const popupBody = document.querySelector(".overlay-content p");
 
+    // Default popup message
     popupMessages.textContent = "Profile Updated Successfully";
-
     popupBody.innerHTML = "<span>Note:</span> You are unable to modify your data. Should you wish to update your user profile, please contact the administrator.";
     popupMsg.classList.add("active");
+
+    // Check if the data is valid and contains the required fields
+    if (data && data.success === true && data.dl1 && data.dl2 && data.sender) {
+        popupMessages.textContent = "Check if the DL Number is Yours";
+        popupBody.innerHTML = `<span style="color:orangered"> DL Number 1</span>: <span style="color:blue">${data.dl1} <span>,<span style="color:orangered"> DL Number 2:</span> <span style="color:blue">${data.dl2}</style>. <span style="color:blue">${data.sender}</span> has expressed interest in registering your medical facility for collaboration. If you are interested, please reach out to <span style="color:blue">${data.sender}</span>.`;
+    }
+
+    // Event listener to close the popup and reload the page
     closebtn.addEventListener("click", () => {
         popupMsg.classList.remove("active");
         window.location.reload();
     });
 }
+
+
 
 function closePopup(errors) {
     const closebtn = document.getElementById("popup-btn");
@@ -234,7 +244,7 @@ function sendingData(formData, csrf, districtId) {
     .then(data => {
         // Handle response from backend if needed
         console.log(data);
-        togglePopup();
+        togglePopup(data);
     })
     .catch(error => {
         // Handle errors

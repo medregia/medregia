@@ -5,7 +5,7 @@ from .models import CustomUser
 from django.core.validators import MaxValueValidator
 
 class SignUpForm(UserCreationForm):
-    username = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'placeholder':'Enter Your Username'}))
+    username = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'placeholder':'Enter Your Username','autocomplete':'off'}))
     phone_num = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'Enter your phone number'}))
     pin = forms.IntegerField(
         widget=forms.NumberInput(attrs={'placeholder': 'Enter your pin'}),

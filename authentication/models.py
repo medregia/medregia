@@ -72,7 +72,7 @@ class CustomUser(AbstractUser):
     
 class Person(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
-    MedicalShopName = models.CharField(max_length=100, blank=True, null=True ,unique = True)
+    MedicalShopName = models.CharField(max_length=100, blank=True, null=True )
     ProprietaryName = models.CharField(max_length=100, blank=True, null=True ,unique = True)
     ProprietaryNumber = models.CharField(max_length=100, blank=True, null=True ,unique = True)
     ProprietaryContact = models.CharField(max_length=100, blank=True, null=True ,unique = True)
