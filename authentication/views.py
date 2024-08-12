@@ -31,78 +31,84 @@ from .service import SendNotification
 import os 
 
 def signup_view(request):
-    form = SignUpForm()
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_staff = True  # Grant staff status to new users
-            store_type = form.cleaned_data.get('store_type')
-            if store_type == 'other':
-                other_value = form.cleaned_data.get('other_value')
-                user.other_value = other_value
-            user.save()
+    try:
+        form = SignUpForm()
+        if request.method == 'POST':
+            form = SignUpForm(request.POST)
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.is_staff = True  # Grant staff status to new users
+                store_type = form.cleaned_data.get('store_type')
+                if store_type == 'other':
+                    other_value = form.cleaned_data.get('other_value')
+                    user.other_value = other_value
+                user.save()
 
-            # Create a group for the user (optional)
-            user_group, created = Group.objects.get_or_create(name="Admin Group")
-            
-            deleted_invoice_content_type = ContentType.objects.get_for_model(DeletedInvoice)
-            
-            view_deleted_invoice_permission = Permission.objects.get(codename='view_deletedinvoice')
-            delete_deleted_invoice_permission = Permission.objects.get(codename='delete_deletedinvoice')
-            
-            user_group.permissions.add(view_deleted_invoice_permission)
-            user_group.permissions.add(delete_deleted_invoice_permission)
-            
-            
+                # Create a group for the user (optional)
+                user_group, created = Group.objects.get_or_create(name="Admin Group")
+                
+                deleted_invoice_content_type = ContentType.objects.get_for_model(DeletedInvoice)
+                
+                view_deleted_invoice_permission = Permission.objects.get(codename='view_deletedinvoice')
+                delete_deleted_invoice_permission = Permission.objects.get(codename='delete_deletedinvoice')
+                
+                user_group.permissions.add(view_deleted_invoice_permission)
+                user_group.permissions.add(delete_deleted_invoice_permission)
+                
+                
 
-            # Get the content type for the Invoice model
-            invoice_content_type = ContentType.objects.get_for_model(Invoice)
-            
-            add_invoice_permission = Permission.objects.get(codename='add_invoice')
-            view_invoice_permission = Permission.objects.get(codename='view_invoice')
-            change_invoice_permission = Permission.objects.get(codename='change_invoice')
-            delete_invoice_permission = Permission.objects.get(codename='delete_invoice')
-            
-            user_group.permissions.add(add_invoice_permission)
-            user_group.permissions.add(view_invoice_permission)
-            user_group.permissions.add(change_invoice_permission)
-            user_group.permissions.add(delete_invoice_permission)
-            
-            
-            modified_invoice_content_type = ContentType.objects.get_for_model(ModifiedInvoice)
-            
-            # Define permissions for ModifiedInvoice model
-            view_modified_invoice_permission = Permission.objects.get(codename='view_modifiedinvoice')
-            delete_modified_invoice_permission = Permission.objects.get(codename='delete_modifiedinvoice')
-            
-            # Add permissions for ModifiedInvoice model to the group
-            user_group.permissions.add(view_modified_invoice_permission)
-            user_group.permissions.add(delete_modified_invoice_permission)
+                # Get the content type for the Invoice model
+                invoice_content_type = ContentType.objects.get_for_model(Invoice)
+                
+                add_invoice_permission = Permission.objects.get(codename='add_invoice')
+                view_invoice_permission = Permission.objects.get(codename='view_invoice')
+                change_invoice_permission = Permission.objects.get(codename='change_invoice')
+                delete_invoice_permission = Permission.objects.get(codename='delete_invoice')
+                
+                user_group.permissions.add(add_invoice_permission)
+                user_group.permissions.add(view_invoice_permission)
+                user_group.permissions.add(change_invoice_permission)
+                user_group.permissions.add(delete_invoice_permission)
+                
+                
+                modified_invoice_content_type = ContentType.objects.get_for_model(ModifiedInvoice)
+                
+                # Define permissions for ModifiedInvoice model
+                view_modified_invoice_permission = Permission.objects.get(codename='view_modifiedinvoice')
+                delete_modified_invoice_permission = Permission.objects.get(codename='delete_modifiedinvoice')
+                
+                # Add permissions for ModifiedInvoice model to the group
+                user_group.permissions.add(view_modified_invoice_permission)
+                user_group.permissions.add(delete_modified_invoice_permission)
 
 
-            # Get the content type for the TrackingPayment model
-            tracking_payment_content_type = ContentType.objects.get_for_model(TrackingPayment)
-            
-            # Define permissions for TrackingPayment model
-            view_tracking_payment_permission = Permission.objects.get(codename='view_trackingpayment')
-            delete_tracking_payment_permission = Permission.objects.get(codename='delete_trackingpayment')
-            
-            # Add permissions for TrackingPayment model to the group
-            user_group.permissions.add(view_tracking_payment_permission)
-            user_group.permissions.add(delete_tracking_payment_permission)
-            # Assign the user to the group
-            user.groups.add(user_group)
-            user.save()
-            
-            subject = 'Welcome to MedRegia !'
-            message = render_to_string('authentication/welcome_email.html', {'user': user})
-            email_from = settings.DEFAULT_FROM_EMAIL
-            recipient_list = [user.email]
-            send_mail(subject, message, email_from, recipient_list)
-
-            messages.success(request, "Signup Success")
-            return redirect("/")
+                # Get the content type for the TrackingPayment model
+                tracking_payment_content_type = ContentType.objects.get_for_model(TrackingPayment)
+                
+                # Define permissions for TrackingPayment model
+                view_tracking_payment_permission = Permission.objects.get(codename='view_trackingpayment')
+                delete_tracking_payment_permission = Permission.objects.get(codename='delete_trackingpayment')
+                
+                # Add permissions for TrackingPayment model to the group
+                user_group.permissions.add(view_tracking_payment_permission)
+                user_group.permissions.add(delete_tracking_payment_permission)
+                # Assign the user to the group
+                user.groups.add(user_group)
+                user.save()
+                
+                try:
+                    subject = 'Welcome to MedRegia!'
+                    message = render_to_string('authentication/welcome_email.html', {'user': user})
+                    email_from = settings.DEFAULT_FROM_EMAIL
+                    recipient_list = [user.email]
+                    send_mail(subject, message, email_from, recipient_list)
+                except Exception as email_error:
+                    messages.warning(request, "Signup successful, but failed to send the welcome email.")
+                
+                messages.success(request, "Signup successful")
+                return redirect("/")
+    except Exception as e:
+        print("Error in Signup : ",e)
     return render(request, 'authentication/signup.html', {'form': form})
 
 
@@ -283,7 +289,7 @@ def profile_view(request):
         'admin_name': admin_data.username,
         'admin_ph': admin_data.phone_num,
         'admin_position': admin_data.position,
-        'sendShopName': (profile.state and profile.state.capitalize()) or (profile.district and profile.district.capitalize()),
+        'sendShopName': profile_data.other_value and profile_data.other_value.capitalize() if profile_data.store_type == "others" else profile_data.store_type and profile_data.store_type.capitalize() ,
         'colaborator': Notification.objects.filter(sender=checked_username if checked_username == str(request.user) else request.user, is_read=True)
     }
 

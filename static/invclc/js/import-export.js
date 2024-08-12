@@ -559,6 +559,7 @@ document.getElementById("uploadBtn").addEventListener("click", function() {
         } else {
             uploadMsg.textContent = data.message;
             uploadMsg.style.color = "green";
+            window.location.href = "/index/";
         }
     })
     .catch(error => {

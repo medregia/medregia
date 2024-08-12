@@ -38,10 +38,9 @@ from calendar import month_name
 
 logger = logging.getLogger(__name__)
 def upload_csv(request):
-    
-    checked_username= None
+    checked_username = None
     senderName = None
-        
+
     try:
         # Get all notifications sent to the current user that have been read
         read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
@@ -77,87 +76,92 @@ def upload_csv(request):
     except Exception as general_error:  
         # Handle exceptions that occur while processing notifications
         messages.error(request, "Something went wrong while exporting JSON: " + str(general_error))
-            
+        return JsonResponse({'error': "Something went wrong while processing notifications"}, status=500)
 
-            
-        if request.method == 'POST' and request.FILES.get('file'):
-            form = UploadFileForm(request.POST, request.FILES)
-            if form.is_valid():
-                file = request.FILES['file']
-                if file.name.endswith(('.csv')):
-                    try:
-                        csv_data = file.read().decode('utf-8').splitlines()
-                        csv_reader = csv.DictReader(csv_data)
-                        
-                        current_user = request.user
-                        
-                        for row in csv_reader:
-                            # Convert date string to datetime object
-                            try:
-                                invoice_date = datetime.strptime(row['invoice_date'], '%d/%m/%Y').date()
-                            except ValueError:
-                                invoice_date = datetime.strptime(row['invoice_date'], '%d-%m-%Y').date()
-                            
-                            # Convert string values to integers
-                            invoice_amount = int(row['invoice_amount'])
-                            payment_amount = int(row['payment_amount'])
-                            invoice_numbers :str = row['invoice_number']
+    if request.method == 'POST' and request.FILES.get('file'):
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = request.FILES['file']
+            if file.name.endswith('.csv'):
+                try:
+                    csv_data = file.read().decode('utf-8').splitlines()
+                    csv_reader = csv.DictReader(csv_data)
 
-                            
-                            # Calculate balance amount
-                            balance_amount = invoice_amount - payment_amount
-                            
-                            # Get the current date and time
-                            current_date = datetime.now().date()
-                            current_time = datetime.now().time()
-                            
-                            # Create Invoice object for each row in the CSV file
-                            if str(request.user) == checked_username :
-                                check_invoice_number = Invoice.objects.filter(user = senderName ,invoice_number = invoice_numbers)
-                                if check_invoice_number.exists():
-                                    return JsonResponse({'error':'This Invoice Already Exists in Your Medical '},status = 400)
-                                
-                                invoice = Invoice.objects.create(
-                                    user=senderName ,
-                                    pharmacy_name=row['pharmacy_name'],
-                                    invoice_number=row['invoice_number'],
-                                    invoice_date=invoice_date,
-                                    invoice_amount=invoice_amount,
-                                    payment_amount=payment_amount,
-                                    balance_amount=balance_amount,
-                                    today_date=current_date,  # Use current date
-                                    current_time=current_time,  # Use current time
-                                    updated_by=row['updated_by']
-                                )
-                            else:
-                                check_invoice = Invoice.objects.filter(user = current_user ,invoice_number = invoice_numbers)
-                                if check_invoice.exists():
-                                    return JsonResponse({'error':'This Invoice Already Exists in Your Medical '},status = 400)
-                                
-                                invoice = Invoice.objects.create(
-                                    user=current_user,
-                                    pharmacy_name=row['pharmacy_name'],
-                                    invoice_number=row['invoice_number'],
-                                    invoice_date=invoice_date,
-                                    invoice_amount=invoice_amount,
-                                    payment_amount=payment_amount,
-                                    balance_amount=balance_amount,
-                                    today_date=current_date,  # Use current date
-                                    current_time=current_time,  # Use current time
-                                    updated_by=row['updated_by']
-                                )
+                    current_user = request.user
 
-                        invoice.save()
-                        return JsonResponse({'message': 'CSV Data uploaded successfully'})
-                    except Exception as e:
-                        logger.exception("Error processing CSV file")
-                        return JsonResponse({'error': f'Error processing CSV file: {str(e)}'}, status=500)
-                else:
-                    return JsonResponse({'error': 'File format not supported. Please upload a CSV file.'}, status=400)
+                    for row in csv_reader:
+                        # Convert date string to datetime object
+                        try:
+                            invoice_date = datetime.strptime(row['invoice_date'], '%d/%m/%Y').date()
+                        except ValueError:
+                            invoice_date = datetime.strptime(row['invoice_date'], '%d-%m-%Y').date()
+
+                        # Convert string values to integers
+                        invoice_amount = int(row['invoice_amount'])
+                        payment_amount = int(row['payment_amount'])
+                        invoice_numbers = row['invoice_number']
+                        invoice_dl_number1 = int(row['dl_number1'])
+                        invoice_dl_number2 = int(row['dl_number2'])
+
+                        # Calculate balance amount
+                        balance_amount = invoice_amount - payment_amount
+
+                        # Get the current date and time
+                        current_date = datetime.now().date()
+                        current_time = datetime.now().time()
+
+                        # Create Invoice object for each row in the CSV file
+                        if str(request.user) == checked_username:
+                            check_invoice_number = Invoice.objects.filter(user=senderName, invoice_number=invoice_numbers)
+                            if check_invoice_number.exists():
+                                return JsonResponse({'error': 'This Invoice Already Exists in Your Medical'}, status=400)
+
+                            invoice = Invoice.objects.create(
+                                user=senderName,
+                                pharmacy_name=row['pharmacy_name'],
+                                invoice_number=row['invoice_number'],
+                                invoice_date=invoice_date,
+                                dl_number1=invoice_dl_number1,
+                                dl_number2=invoice_dl_number2,
+                                invoice_amount=invoice_amount,
+                                payment_amount=payment_amount,
+                                balance_amount=balance_amount,
+                                today_date=current_date,  # Use current date
+                                current_time=current_time,  # Use current time
+                                updated_by=row['updated_by']
+                            )
+                        else:
+                            check_invoice = Invoice.objects.filter(user=current_user, invoice_number=invoice_numbers)
+                            if check_invoice.exists():
+                                return JsonResponse({'error': 'This Invoice Already Exists in Your Medical'}, status=400)
+
+                            invoice = Invoice.objects.create(
+                                user=current_user,
+                                pharmacy_name=row['pharmacy_name'],
+                                invoice_number=row['invoice_number'],
+                                invoice_date=invoice_date,
+                                dl_number1=invoice_dl_number1,
+                                dl_number2=invoice_dl_number2,
+                                invoice_amount=invoice_amount,
+                                payment_amount=payment_amount,
+                                balance_amount=balance_amount,
+                                today_date=current_date,  # Use current date
+                                current_time=current_time,  # Use current time
+                                updated_by=row['updated_by']
+                            )
+
+                    invoice.save()
+                    return JsonResponse({'message': 'CSV Data uploaded successfully'}, status=200)
+                except Exception as e:
+                    logger.exception("Error processing CSV file")
+                    return JsonResponse({'error': f'Error processing CSV file: {str(e)}'}, status=500)
             else:
-                return JsonResponse({'error': 'Form is not valid'}, status=400)
+                return JsonResponse({'error': 'File format not supported. Please upload a CSV file.'}, status=400)
         else:
-            return JsonResponse({'error': 'Invalid request'}, status=400)
+            return JsonResponse({'error': 'Form is not valid'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 
 @login_required(login_url='/')
@@ -626,7 +630,7 @@ def index_view(request):
 
             try:
                 # Fetch the medical details
-                is_medical = Person.objects.get(DrugLiceneseNumber1__iexact=invoice_data.dl_number1,DrugLiceneseNumber2__iexact=invoice_data.dl_number2)
+                is_medical = Person.objects.get(MedicalShopName = invoice_data.pharmacy_name,DrugLiceneseNumber1__iexact=invoice_data.dl_number1,DrugLiceneseNumber2__iexact=invoice_data.dl_number2)
                 receiver_invoice_data = Invoice.objects.filter(user=request.user, pharmacy_name=invoice_data.pharmacy_name)
                 current_user_medical = Person.objects.get(user = request.user)
 
@@ -653,6 +657,8 @@ def index_view(request):
                             user=is_medical.user,
                             pharmacy_name=current_user_medical.MedicalShopName,
                             invoice_number=selected_invoice.invoice_number,
+                            dl_number1 = selected_invoice.dl_number1,
+                            dl_number2 = selected_invoice.dl_number2,
                             invoice_date=selected_invoice.invoice_date,
                             invoice_amount=selected_invoice.invoice_amount,
                             balance_amount=selected_invoice.balance_amount,
@@ -660,6 +666,7 @@ def index_view(request):
                             today_date=selected_invoice.today_date,
                             current_time=selected_invoice.current_time,
                             updated_by=selected_invoice.updated_by
+                            
                         ).exists()
 
                         if invoice_exists:
@@ -673,6 +680,8 @@ def index_view(request):
                         Invoice.objects.create(
                             user=is_medical.user,
                             pharmacy_name=current_user_medical.MedicalShopName,
+                            dl_number1 = selected_invoice.dl_number1,
+                            dl_number2 = selected_invoice.dl_number2,
                             invoice_number=selected_invoice.invoice_number,
                             invoice_date=selected_invoice.invoice_date,
                             invoice_amount=selected_invoice.invoice_amount,
@@ -758,9 +767,6 @@ def update_profile(request):
             # Check for duplicates
             duplicate_errors = []
 
-            if Person.objects.exclude(user=request.user).filter(MedicalShopName=pharmacy_name).exists():
-                duplicate_errors.append('Pharmacy name already exists')
-
             if Person.objects.exclude(user=request.user).filter(DrugLiceneseNumber1=dl1).exists():
                 duplicate_errors.append('Drug license number 1 already exists')
 
@@ -825,7 +831,12 @@ def update_profile(request):
                 invoice_number = invoice_number,
                 invoice_date = invoiceDate,
                 invoice_amount = invoiceAmount,
-                payment_amount = paymentAmount
+                payment_amount = paymentAmount,
+                dl_number1 = profile.DrugLiceneseNumber1,
+                dl_number2 = profile.DrugLiceneseNumber2,
+                updated_by = request.user,
+                today_date=datetime.now().date(),
+                current_time=datetime.now().time(), 
             )
 
             messages.success(request, "Data added successfully.")
@@ -2035,7 +2046,7 @@ def payment_invoice(request,payment_id):
 
 def empty_csv(request):
     # Define header row
-    header = ['pharmacy_name', 'invoice_number', 'invoice_date', 'invoice_amount', 'payment_amount', 'updated_by']
+    header = ['pharmacy_name', 'invoice_number','dl_number1','dl_number2','invoice_date', 'invoice_amount', 'payment_amount', 'updated_by']
     
     # Create CSV response
     response = HttpResponse(content_type='text/csv')
@@ -2079,6 +2090,7 @@ def admin_access(request):
     checked = None  # Initialize the checked variable
     user_type = None
 
+    print("Entered")
     try:
         # Get all notifications sent to the current user that have been read
         read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
@@ -2136,7 +2148,7 @@ def admin_access(request):
 
         for idx, invoice in enumerate(get_all_invoice, start=1):
             try:
-                profile_data = Person.objects.get(DrugLiceneseNumber1=invoice.dl_number1,DrugLiceneseNumber2=invoice.dl_number2)
+                profile_data = Person.objects.get(MedicalShopName = invoice.pharmacy_name,DrugLiceneseNumber1=invoice.dl_number1,DrugLiceneseNumber2=invoice.dl_number2)
                 current_medicalname = Person.objects.get(user=request.user)
                 unique_code = profile_data.UniqueId
                 user_position = profile_data.user.position
@@ -2191,6 +2203,7 @@ def admin_access(request):
 
                 if unique_key not in unique_keys:
                     unique_keys.add(unique_key)
+                    print(unique_keys)
                     table_data.append({
                         's_no': idx,
                         'name': profile_data.MedicalShopName,
@@ -2319,6 +2332,7 @@ def admin_access(request):
                 
                 return JsonResponse({'status': 'success', 'message': 'Email sent successfully', 'invite_link': invite_url})
         except Exception as e:
+            print(e)
             response_data = {'message': str(e)}
             return JsonResponse({'error': response_data}, status=500)
 
