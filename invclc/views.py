@@ -2090,7 +2090,6 @@ def admin_access(request):
     checked = None  # Initialize the checked variable
     user_type = None
 
-    print("Entered")
     try:
         # Get all notifications sent to the current user that have been read
         read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
@@ -2187,10 +2186,10 @@ def admin_access(request):
                         accept_status=True
                     )
 
+
                 checked = False
                 if is_collaborate_medical.exists():
                     checked = True
-
 
                 if current_medicalname.MedicalShopName == invoice.pharmacy_name:
                     checked = True
@@ -2203,14 +2202,13 @@ def admin_access(request):
 
                 if unique_key not in unique_keys:
                     unique_keys.add(unique_key)
-                    print(unique_keys)
                     table_data.append({
                         's_no': idx,
                         'name': profile_data.MedicalShopName,
-                        # 'dl_number1': profile_data.DrugLiceneseNumber1,
-                        # 'dl_number2': profile_data.DrugLiceneseNumber2,
-                        'dl_number1': dl_number1,
-                        'dl_number2': dl_number2,
+                        'dl_number1': profile_data.DrugLiceneseNumber1,
+                        'dl_number2': profile_data.DrugLiceneseNumber2,
+                        # 'dl_number1': dl_number1,
+                        # 'dl_number2': dl_number2,
                         'admin_name': is_admin_user,
                         'temp_no': None,
                         'unique_no': unique_code,
@@ -2259,8 +2257,10 @@ def admin_access(request):
                     table_data.append({
                         's_no': idx,
                         'name': check_Medical,
-                        'dl_number1': check_dl1,
-                        'dl_number2': check_dl2,
+                        # 'dl_number1': check_dl1,
+                        # 'dl_number2': check_dl2,
+                        'dl_number1': None,
+                        'dl_number2': None,
                         'admin_name': None,
                         'temp_no': temp_no,
                         'unique_no': None,
@@ -2554,10 +2554,10 @@ def connect_view(request):
             person = Person.objects.get(DrugLiceneseNumber1__iexact=dl_number1,DrugLiceneseNumber2__iexact=dl_number2,MedicalShopName = name)
             
             # Check and update DL numbers if not set
-            if not person.DrugLiceneseNumber1 or not person.DrugLiceneseNumber2:    
-                person.DrugLiceneseNumber1 = person.DrugLiceneseNumber1 or dl_number1
-                person.DrugLiceneseNumber2 = person.DrugLiceneseNumber2 or dl_number2
-                person.save()
+            # if not person.DrugLiceneseNumber1 or not person.DrugLiceneseNumber2:    
+            #     person.DrugLiceneseNumber1 = person.DrugLiceneseNumber1 or dl_number1
+            #     person.DrugLiceneseNumber2 = person.DrugLiceneseNumber2 or dl_number2
+            #     person.save()
                                                                                     
         except Person.DoesNotExist:
             return JsonResponse({

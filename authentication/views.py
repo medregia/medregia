@@ -226,7 +226,7 @@ def profile_view(request):
         check_person = Person.objects.get(user=request.user)
 
         errors = []
-        fields_to_check = ['MedicalShopName', 'ProprietaryName', 'ProprietaryNumber', 'ProprietaryContact', 'DrugLiceneseNumber2', 'DrugLiceneseNumber1', 'City', 'Pincode', 'StreetNumber', 'DoorNumber', 'PharmacistName', 'RegisteredNumber', 'ContactNumber', 'PharmacistEmail']
+        fields_to_check = ['ProprietaryNumber', 'ProprietaryContact', 'DrugLiceneseNumber2', 'DrugLiceneseNumber1','RegisteredNumber']
         
         for field in fields_to_check:
             if data.get(field):
