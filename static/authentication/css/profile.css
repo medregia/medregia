@@ -140,10 +140,19 @@ body{
   justify-content: space-evenly;
   border-bottom: 1px solid black;
 }
+.left-profile,.right-profile{
+  height: 35vh;
+  width: 45%;
+  /* background-color: #0a032b; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
 
 .profile-main-left .profile-main-left-top .left-top-containers{
   height: 10vh;
-  width: 45%;
+  width: 100%;
   /* background-color: #0a032b; */
   display: flex;
   flex-direction: column;

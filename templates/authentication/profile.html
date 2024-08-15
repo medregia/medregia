@@ -46,88 +46,80 @@
                 
                     <div class="profile-main-left">
                         <div class="profile-main-left-top">
-                            <div class="left-medical-name left-top-containers">
-                                <label for="Medicalshop Name">{{sendShopName}} Name:</label>
-                                {% if data.MedicalShopName and data.MedicalShopName != "" %}
-                                    <div class="profile-data">
-                                        {{data.MedicalShopName}}
-                                    </div>
-                                {% else %}
-                                    <input type="text" name="MedicalShopName" placeholder="Medical Shop Name" id="id_MedicalShopName">
-                                {% endif %}
-                                <span>
+                            <div class="left-profile">
+                                <div class="left-medical-name left-top-containers">
+                                    <label for="Medicalshop Name">{{sendShopName}} Name:</label>
+                                    {% if data.MedicalShopName and data.MedicalShopName != "" %}
+                                        <div class="profile-data">
+                                            {{data.MedicalShopName}}
+                                        </div>
+                                    {% else %}
+                                        <input type="text" name="MedicalShopName" placeholder="Medical Shop Name" id="id_MedicalShopName">
+                                    {% endif %}
+                                    
+                                </div>                            
+
+                                <div class="left-drug-1 left-top-containers">
+                                    <label for="Medicalshop Name">Drug Licenese Number1 <span class="importent">*</span>:</label>
+                                    {% if data.DrugLiceneseNumber1 and data.DrugLiceneseNumber1 != "" %}
+                                        <div class="profile-data">
+                                            {{data.DrugLiceneseNumber1 }}
+                                        </div>
+                                    {% else %}
+                                        <input type="text" name="DrugLiceneseNumber1" placeholder="Drug License Number 1" id="id_DrugLiceneseNumber1">
+                                    {% endif %}
+                                    
+                                </div>
+
+                                <div class="left-drug-2 left-top-containers">
+                                    <label for="Medicalshop Name">Drug Licenese Number2 <span class="importent">*</span>:</label>
+                                    {% if data.DrugLiceneseNumber2 and data.DrugLiceneseNumber2 != "" %}
+                                        <div class="profile-data">
+                                            {{data.DrugLiceneseNumber2 }}
+                                        </div>
+                                    {% else %}
+                                        <input type="text" name="DrugLiceneseNumber2" placeholder="Drug License Number 2" id="id_DrugLiceneseNumber2">
+                                    {% endif %}
                                    
-                                </span>
-                            </div>                            
-
-                            <div class="left-pharmacy-name left-top-containers">
-                                <label for="Medicalshop Name">Proprietary Name <span class="importent">*</span>:</label>
-                                {% if data.ProprietaryName and data.ProprietaryName != "" %}
-                                    <div class="profile-data">
-                                        {{data.ProprietaryName }}
-                                    </div>
-                                {% else %}
-                                    <input type="text" name="ProprietaryName" placeholder="ProprietaryName" id="id_ProprietaryName">
-                                {% endif %}
-                                <span>
-                                   
-                                </span>
+                                </div>
                             </div>
 
-                            <div class="left-drug-1 left-top-containers">
-                                <label for="Medicalshop Name">Drug Licenese Number1 <span class="importent">*</span>:</label>
-                                {% if data.DrugLiceneseNumber1 and data.DrugLiceneseNumber1 != "" %}
-                                    <div class="profile-data">
-                                        {{data.DrugLiceneseNumber1 }}
-                                    </div>
-                                {% else %}
-                                    <input type="text" name="DrugLiceneseNumber1" placeholder="Drug License Number 1" id="id_DrugLiceneseNumber1">
-                                {% endif %}
-                                <span>
-                                
-                                </span>
-                            </div>
+                            <div class="right-profile">
+                                <div class="left-pharmacy-name left-top-containers">
+                                    <label for="Medicalshop Name">Proprietary Name <span class="importent">*</span>:</label>
+                                    {% if data.ProprietaryName and data.ProprietaryName != "" %}
+                                        <div class="profile-data">
+                                            {{data.ProprietaryName }}
+                                        </div>
+                                    {% else %}
+                                        <input type="text" name="ProprietaryName" placeholder="ProprietaryName" id="id_ProprietaryName">
+                                    {% endif %}
+                                    
+                                </div>
 
-                            <div class="left-proprietary-number left-top-containers">
-                                <label for="Medicalshop Name">Proprietary Number <span class="importent">*</span>:</label>
-                                {% if data.ProprietaryNumber and data.ProprietaryNumber != "" %}
-                                    <div class="profile-data">
-                                        {{data.ProprietaryNumber }}
-                                    </div>
-                                {% else %}
-                                    <input type="text" name="ProprietaryNumber" placeholder="Proprietary Number" id="id_ProprietaryNumber">
-                                {% endif %}
-                                <span>
-                                  
-                                </span>
-                            </div>
+                                <div class="left-proprietary-number left-top-containers">
+                                    <label for="Medicalshop Name">Proprietary Number <span class="importent">*</span>:</label>
+                                    {% if data.ProprietaryNumber and data.ProprietaryNumber != "" %}
+                                        <div class="profile-data">
+                                            {{data.ProprietaryNumber }}
+                                        </div>
+                                    {% else %}
+                                        <input type="text" name="ProprietaryNumber" placeholder="Proprietary Number" id="id_ProprietaryNumber">
+                                    {% endif %}
+                                    
+                                </div>
 
-                            <div class="left-drug-2 left-top-containers">
-                                <label for="Medicalshop Name">Drug Licenese Number2 <span class="importent">*</span>:</label>
-                                {% if data.DrugLiceneseNumber2 and data.DrugLiceneseNumber2 != "" %}
-                                    <div class="profile-data">
-                                        {{data.DrugLiceneseNumber2 }}
-                                    </div>
-                                {% else %}
-                                    <input type="text" name="DrugLiceneseNumber2" placeholder="Drug License Number 2" id="id_DrugLiceneseNumber2">
-                                {% endif %}
-                                <span>
-
-                                </span>
-                            </div>
-
-                            <div class="left-proprietary-contact left-top-containers">
-                                <label for="id_ProprietaryContact">Proprietary Contact Number <span class="importent">*</span>:</label>
-                                {% if data.ProprietaryContact and data.ProprietaryContact != "" %}
-                                    <div class="profile-data">
-                                        {{data.ProprietaryContact }}
-                                    </div>
-                                {% else %}
-                                    <input type="text" name="ProprietaryContact" placeholder="Proprietary Contact" id="id_ProprietaryContact">
-                                {% endif %}
-                                <span>
-
-                                </span>
+                                <div class="left-proprietary-contact left-top-containers">
+                                    <label for="id_ProprietaryContact">Proprietary Contact Number <span class="importent">*</span>:</label>
+                                    {% if data.ProprietaryContact and data.ProprietaryContact != "" %}
+                                        <div class="profile-data">
+                                            {{data.ProprietaryContact }}
+                                        </div>
+                                    {% else %}
+                                        <input type="text" name="ProprietaryContact" placeholder="Proprietary Contact" id="id_ProprietaryContact">
+                                    {% endif %}
+                                    
+                                </div>
                             </div>
 
                         </div>

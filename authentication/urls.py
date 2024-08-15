@@ -21,6 +21,9 @@ urlpatterns = [
 
     path('clinic/', views.clinic_page, name='clinic'),
 
+    #admin
+    path('admin/', views.admin_page, name='admin'),
+
     # password change
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),

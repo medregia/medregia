@@ -2,8 +2,16 @@
 {% load static %}
 {% block title %} MedRegiA || Clinic {% endblock title %}
 {% block link %} {% static 'authentication/css/clinic.css' %} {% endblock link %}
+{% block side %}{% static 'authentication/css/sidebar.css' %}{% endblock side %}
+{% block nav_footer %}{% static 'nav_footer.css' %} {% endblock nav_footer %}
 
+{% block navbar %}
+{% include 'nav.html' %}
+{% endblock navbar %}
 
+{% block sidebar %}
+{% include 'sidebar.html' %}
+{% endblock sidebar %}
 
 {% block content %}
 <div class="vh">

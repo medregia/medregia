@@ -25,6 +25,11 @@
       <div class="login-header-medregia">
         <a href="{% url 'login' %}"> MedRegiA</a>
       </div>
+
+      <div class="login-header-admin">
+        <a href="{% url 'admin' %}"> Admin Site<span><i class="fa-solid fa-arrow-right"></i></span></a>
+      </div>
+
     </div>
 
     <div class="login-container-body">
@@ -64,7 +69,7 @@
           
               <div class="login-password">
                 <label for="login-pswd"for="id_password">Pin Number</label>
-                <input id="login-pswd" type="number" name="pin" placeholder="Pin">
+                <input id="login-pswd" type="password" name="pin" placeholder="Pin">
               </div>
           
               <div class="login-buttons">

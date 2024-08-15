@@ -18,9 +18,9 @@
         <span class="bell"><i id="bell" class="fa-regular fa-bell"></i></span>  
       {% endif %}
 
-      {% if request.user.is_superuser or request.user.is_staff %}
+      {% comment %} {% if request.user.is_superuser or request.user.is_staff %}
         <a href="{% url 'admin:index' %}">Admin</a>
-      {% endif %}
+      {% endif %} {% endcomment %}
 
       <a href="{% url 'profile' %}"><span class="profile-content"><img src="{% static 'authentication/images/profile.png'%}" class="user-pic" alt="profile" title="Profile - {{request.user}}"></span></a>
 

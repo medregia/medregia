@@ -30,6 +30,10 @@ import traceback
 from .service import SendNotification
 import os 
 
+
+def admin_page(request):
+    return redirect('/admin/')
+
 def signup_view(request):
     try:
         form = SignUpForm()
