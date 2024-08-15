@@ -232,19 +232,25 @@
                         <td><input type="text" value="{{ data.invoice_number }}" disabled></td>
                         <td class="medicalstatus">
                           <div class="input-container">
-                            <input type="text" value="{{ MedicalStatus }} Accepted" disabled>
+                            <input type="text" value="{{ MedicalStatus }} - {{request.user}}" disabled>
                             <span class="tick-box">&#10003;</span>
-                        </div>
+                          </div>
                         </td>
                         <td class="pharmacystatus">
                           <div class="input-container">
                             {% if data.pharmacy_name %}
                             {% if request.user.is_authenticated %}
-                                <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                <span class="tick-box">&#10003;</span>
+                                <input type="text" value="{{ data.dl_number1|convert_medical:data.dl_number2 }}" disabled 
+                                style="color: {{ data.dl_number1|medical_signup:data.dl_number2 }}">
+
+                                <span class="tick-box" style="color:{{ data.dl_number1|medical_signup:data.dl_number2 }};" title="{% if data.dl_number1|medical_signup:data.dl_number2 == 'green' %}Medical has Unique id{% else %}Medical Does not have Unique Id{% endif %}">&#10003;</span>
+
                             {% else %}
-                                <input type="text" value="{{ data.pharmacy_name|convert_medical }}" disabled>
-                                <span class="tick-box">&#10003;</span>
+                                <input type="text" value="{{ data.dl_number1|convert_medical:data.dl_number2 }}" disabled 
+                                style="color: {{ data.dl_number1|medical_signup:data.dl_number2 }}">
+                                
+                                <span class="tick-box" style="color:{{ data.dl_number1|medical_signup:data.dl_number2 }};" title="{% if data.dl_number1|medical_signup:data.dl_number2 == 'green' %}Medical has Unique id{% else %}Medical Does not have Unique Id{% endif %}">&#10003;</span>
+
                             {% endif %}
                         {% else %}
                             <input type="text" value="Not Found" disabled>
@@ -261,17 +267,19 @@
                         <td><input type="text" value="{{ data.invoice_number }}" disabled></td>
                         <td class="medicalstatus">
                           <div class="input-container">
-                              <input type="text" value="{{ MedicalStatus }} Accepted" disabled style="color:green;">
+                              <input type="text" value="{{ MedicalStatus }} - {{request.user}}" disabled style="color:green;">
                               <span class="tick-box">&#10003;</span>
                           </div>
-                      </td>
+                        </td>
                       
                         <td class="pharmacystatus">
                           <div class="input-container">
                             {% if data.pharmacy_name %}
                             {% if request.user.is_authenticated %}
-                                <input type="text" value="{{ data.pharmacy_name|convert_medical}}" disabled style="color:{% if data.pharmacy_name|medical_signup:request.user == 'green' %} green {% else %} red {% endif %}">
-                                <span class="tick-box" style="color:{{ data.pharmacy_name|medical_signup:request.user }};" title="{% if data.pharmacy_name|medical_signup:request.user == 'green' %}Medical has Unique id{% else %}Medical Does not have Unique Id{% endif %}">&#10003;</span>
+                            <input type="text" value="{{ data.dl_number1|convert_medical:data.dl_number2 }}" disabled 
+                            style="color: {{ data.dl_number1|medical_signup:data.dl_number2 }}">
+                     
+                            <span class="tick-box" style="color:{{ data.dl_number1|medical_signup:data.dl_number2 }};" title="{% if data.dl_number1|medical_signup:data.dl_number2 == 'green' %}Medical has Unique id{% else %}Medical Does not have Unique Id{% endif %}">&#10003;</span>
                                 
                             {% endif %}
                         {% else %}

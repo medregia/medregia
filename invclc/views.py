@@ -356,6 +356,7 @@ def index_view(request):
     check_admin = None
     unique_code_id = None
     checked_username = None
+    
 
     try:
         # Get all notifications sent to the current user that have been read
@@ -627,6 +628,8 @@ def index_view(request):
                 paying_amount = payment_amount
             )
             tracking_payment.save()
+            
+            
 
             try:
                 # Fetch the medical details

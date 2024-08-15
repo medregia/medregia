@@ -6,11 +6,6 @@ document.addEventListener("DOMContentLoaded", function() {
   const userPic = document.querySelector('.user-pic')
   const profileContent = document.querySelector('.profile-content')
   // Check if bell_icon exists before adding event listener
-  if (bell_icon) {
-    bell_icon.addEventListener("click", () => {
-      notify.classList.remove("hide");
-    });
-  }
 
   // Check if notify exists before adding event listener
   if (notify) {
