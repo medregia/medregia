@@ -436,23 +436,45 @@ def confirm_admin(request, uniqueid):
     
     return redirect('index')
 
+
 @login_required(login_url='/')
-def admin_cancel(request,uniqueid):
-    # print("uniqueid : ",uniqueid)
+def admin_cancel(request, uniqueid):
     try:
-        get_sender_name = Person.objects.get(UniqueId = uniqueid)
-        reject_message = f"{request.user} Reject the Colloboration Request "
-        notification = get_object_or_404(ConnectMedicals, request_receiver=request.user, request_sender = get_sender_name.user, is_read=False, accept_status=True)
+        # Retrieve the sender's details using the unique ID
+        get_sender_name = Person.objects.get(UniqueId=uniqueid)
+        
+        # Prepare the rejection message
+        reject_message = f"{request.user} Reject the Collaboration Request"
+
+        # Retrieve the specific notification from the ConnectMedicals model
+        notification = get_object_or_404(
+            ConnectMedicals,
+            request_receiver=request.user,
+            request_sender=get_sender_name.user,
+            is_read=False,
+            accept_status=True
+        )
+
+        # Update the notification status to reflect rejection
         notification.is_read = True
         notification.accept_status = False
         notification.request_message = reject_message
         notification.status_message = "Request Rejected"
         notification.save()
 
-        messages.info(request,"coloboration Canceled")
+        # Display an informational message to the user
+        messages.info(request, "Collaboration Canceled")
         return redirect('index')
+
+    except Person.DoesNotExist:
+        # Handle the case where the person with the given UniqueId does not exist
+        messages.error(request, "Person with the provided UniqueId does not exist.")
+        return redirect('index')
+
     except Exception as e:
-        return messages.error(request,"Somthing Wrong in Admin Cancel Request",e)
+        # Handle any other exceptions and display an error message
+        messages.error(request, f"Something went wrong in Admin Cancel Request: {e}")
+        return redirect('index')
         
 @login_required(login_url='/')
 def colaborator_list(request):
