@@ -44,10 +44,10 @@
                         <div class="address-details">
                             {% if admin_person is not None %}
                             {% comment %} <h2>Admin Address Details</h2> {% endcomment %}
-                            <p style="text-align: center;"> <span style="font-weight:lighter"> {{admin_person}}</span>,</p>
+                            <p style="text-align: center;font-size: 20px;"> <span style="font-weight:800"> {{admin_person}}</span>,</p>
                             {% endif %}
                             {% if admin_email is not None %}
-                            <p> <span style="font-weight:lighter"> {{admin_email}}</span>,</p>
+                            <p style="text-align: center;font-size: 15px;"> <span style="font-weight:600"> {{admin_email}}</span>,</p>
                             {% endif %}
                             {% if admin_city is not None and admin_street is not None and admin_pincode is not None %}
                             <p> Address : <span style="font-weight:lighter">{{admin_street}} ,{{ admin_city }} - {{admin_pincode}}.</span>,</p>
@@ -64,11 +64,11 @@
                         </div>
                         <div class="address-details">
                             {% if user.username is not None %}
-                            <h2 style="font-weight:lighter">User Details</h2>
-                            <p> <span style="font-weight:lighter"> {{user.username}}</span>,</p>
+                            <h2 style="font-weight:bolder">User Details</h2>
+                            <p style="text-align: center;font-size: 20px;"> <span style="font-weight:800">{{user.username}}</span>,</p>
                             {% endif %}
                             {% if user_email is not None %}
-                            <p> <span style="font-weight:lighter">{{user_email}}</span>,</p>
+                            <p style="text-align: center;font-size: 15px;"> <span style="font-weight:600">{{user_email}}</span>,</p>
                             {% endif %}
                             {% if user_city is not None and user_street is not None and user_pincode is not None %}
                             <p> Address : <span style="font-weight:lighter">{{user_street}} ,{{ user_city }} - {{user_pincode}}.</span>,</p>
