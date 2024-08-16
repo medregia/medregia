@@ -221,12 +221,14 @@ a i{
   max-width: 85vh;
   overflow-y: hidden;
   padding: 5px;
+  color: black;
   /* background-color: red; */
 }
 .notification-scrollcontent:hover{
   overflow-y: scroll;
 
 }
+
 
 .collaborate-message{
   height: 50px;
@@ -259,6 +261,9 @@ a i{
   border-bottom: 1px solid black;
 }
 
+.admin-message-header h4{
+  color: black;
+}
 @media (min-width: 320px) and (max-width: 420px){
   .sidebar-closed .arrow {
     display:none
