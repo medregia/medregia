@@ -401,3 +401,8 @@ button.export-reset{
     width: 100%;
   }
 }
+
+.test{
+  font-size: 15px;
+  font-weight: bold;
+}
