@@ -336,41 +336,32 @@ def profile_view(request):
 
             if check_person.PharmacistEmail != '' and data.get('PharmacistEmail') :     
                 profile.PharmacistEmail = data.get('PharmacistEmail')  
-            # Assign the district_instance to a different field, assuming profile.district is the appropriate fiel
+
+            checked = True
             if not errors:
                 profile.save()
-                return JsonResponse({'success': True})
+                if checked:
+                    check_medical_register = RegisterMedicals.objects.filter(
+                        Medical_name=data.get('MedicalShopName'),
+                        # dl_number1=data.get('DrugLiceneseNumber1'),
+                        # dl_number2=data.get('DrugLiceneseNumber2')
+                    ).first()
+                    if check_medical_register and profile.MedicalShopName == check_medical_register.Medical_name:
+                        return JsonResponse({
+                            'success': True,
+                            'dl1': f'{check_medical_register.dl_number1}',
+                            'dl2': f'{check_medical_register.dl_number2}',
+                            'sender': check_medical_register.user.username  # Use a serializable field
+                        }, status=200)
+                return JsonResponse({'success': True}, status=200)
             else:
-                return JsonResponse({'errors': errors}, status=400)
-
+                return JsonResponse({'errors': errors}, status=400)            
         else:
             return JsonResponse({'success': False})
         # messages.error(request, "Error: Duplicate entry for Drug License Number")
         # return redirect("profile") 
         
-    checked = True
-    try:
-        if not errors:
-            profile.save()
-            if checked:
-                check_medical_register = RegisterMedicals.objects.filter(
-                    Medical_name=data.get('MedicalShopName'),
-                    # dl_number1=data.get('DrugLiceneseNumber1'),
-                    # dl_number2=data.get('DrugLiceneseNumber2')
-                ).first()
-                if check_medical_register and profile.MedicalShopName == check_medical_register.Medical_name:
-                    return JsonResponse({
-                        'success': True,
-                        'dl1': f'{check_medical_register.dl_number1}',
-                        'dl2': f'{check_medical_register.dl_number2}',
-                        'sender': check_medical_register.user.username  # Use a serializable field
-                    }, status=200)
-            return JsonResponse({'success': True}, status=200)
-        else:
-            return JsonResponse({'errors': errors}, status=400)
-
-    except Exception as e:
-        print(e)
+    
 
     checked = False
     admin_position = None
