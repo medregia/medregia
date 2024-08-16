@@ -2172,7 +2172,7 @@ def admin_access(request):
                     is_admin_user, 
                     unique_code
                 )
-
+                
                 is_collaborate_medical = ConnectMedicals.objects.filter(
                     request_receiver=request.user,
                     request_sender=profile_data.user,
@@ -2260,10 +2260,10 @@ def admin_access(request):
                     table_data.append({
                         's_no': idx,
                         'name': check_Medical,
-                        # 'dl_number1': check_dl1,
-                        # 'dl_number2': check_dl2,
-                        'dl_number1': None,
-                        'dl_number2': None,
+                        'dl_number1': check_dl1,
+                        'dl_number2': check_dl2,
+                        # 'dl_number1': None,
+                        # 'dl_number2': None,
                         'admin_name': None,
                         'temp_no': temp_no,
                         'unique_no': None,
@@ -2559,7 +2559,7 @@ def connect_view(request):
         check_request = Person.objects.get(user = request.user)
         
 
-        if name == check_request.MedicalShopName:
+        if dl_number1 == check_request.DrugLiceneseNumber1 and dl_number2 == check_request.DrugLiceneseNumber2 and name == check_request.MedicalShopName:
             return JsonResponse({'message':'Cannot Sent Request to Yourself '},status = 403)
 
         if not dl_number1 or not dl_number2:
