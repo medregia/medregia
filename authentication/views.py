@@ -156,35 +156,46 @@ def phone_login_view(request):
 
 @login_required(login_url='/')
 def profile_view(request):
+
     checked_username = None
+
     BASE_DIR = settings.BASE_DIR
 
     try:
         # Load and process states data
-        with open(os.path.join(BASE_DIR, 'india_locations.json'), 'r') as json_file:
+        with open(BASE_DIR / 'india_locations.json', 'r') as json_file:
             data = json.load(json_file)
             for item in data:
                 if item['LocationType'] == 'State':
-                    StateModel.objects.get_or_create(
+                    state_instance, created = StateModel.objects.get_or_create(
                         Pid=item['Pid'],
                         LocationType=item['LocationType'],
                         Pname=item['Pname']
                     )
 
         # Load and process districts data
-        with open(os.path.join(BASE_DIR, 'india_district.json'), 'r') as json_file:
+        with open(BASE_DIR / 'india_district.json', 'r') as json_file:
             district_data = json.load(json_file)
             for items in district_data:
                 if items['LocationType'] == 'District':
                     state_instance = StateModel.objects.get(Pid=items['Pid'])
-                    # Check if the district already exists, if not, create it
-                    DistrictModel.objects.get_or_create(
+                    # Check if the district already exists
+                    district_instance = DistrictModel.objects.filter(
                         id=items['ID'],
                         Pid=items['Pid'],
                         LocationType=items['LocationType'],
                         districtname=items['districtname'],
                         state=state_instance
-                    )
+                    ).first()
+                    if not district_instance:
+                        # District does not exist, create it
+                        district_instance = DistrictModel.objects.create(
+                            id=items['ID'],
+                            Pid=items['Pid'],
+                            LocationType=items['LocationType'],
+                            districtname=items['districtname'],
+                            state=state_instance
+                        )
 
     except FileNotFoundError:
         print("JSON file not found.")
@@ -197,65 +208,148 @@ def profile_view(request):
     profile_data = CustomUser.objects.get(username=current_user)
     district_data = DistrictModel.objects.all()
 
-    profile, created = Person.objects.get_or_create(user=current_user)
+    profile , created =  Person.objects.get_or_create(user=current_user)
 
     user_data = User_code(profile)
-    profile.UniqueId = user_data.display()
+    unique_id = user_data.display()
+
+    profile.UniqueId = unique_id
     profile.save()
+    existing_admin = None
+    
+    profile = Person.objects.get(user=current_user)
 
     try:
-        # Notifications handling
+        # Get all notifications sent to the current user that have been read
         read_notifications = Notification.objects.filter(receiver=request.user, is_read=True)
         for notification in read_notifications:
             sender_username = notification.sender.username
             receiver_username = notification.receiver.username
+            
             staff_senders = CustomUser.objects.filter(username=sender_username, is_staff=True)
             if staff_senders.exists():
                 normal_user = CustomUser.objects.get(username=receiver_username, is_staff=False)
                 for user in staff_senders:  
-                    sender_name = user.username
+                    sender = user.username
                     try:
-                        CustomUser.objects.get(username=sender_name, is_staff=True)
+                        sender_name = CustomUser.objects.get(username=sender, is_staff=True)
                         receiver_name = CustomUser.objects.get(username=normal_user.username, is_staff=False)
-                        if receiver_name:
+
+                        if receiver_name and sender_name:
                             checked_username = receiver_name.username
-                    except CustomUser.DoesNotExist as user_error:
+                    except Exception as user_error:
                         messages.error(request, user_error)
 
     except Exception as general_error:  
         messages.error(request, f"Something went wrong while exporting JSON: {general_error}")
-
-    if request.method == "POST":
+    
+    if request.method == "POST": 
         data = json.loads(request.body)
+                    
         check_person = Person.objects.get(user=request.user)
+        if profile and check_person:
+            errors = []       
+            if check_person.MedicalShopName != '' and data.get('MedicalShopName'):
+                profile.MedicalShopName = data.get('MedicalShopName')  
 
-        errors = []
-        fields_to_check = ['ProprietaryNumber', 'ProprietaryContact', 'DrugLiceneseNumber2', 'DrugLiceneseNumber1','RegisteredNumber']
-        
-        for field in fields_to_check:
-            if data.get(field):
-                existing_profile = Person.objects.filter(**{field: data.get(field)}).exclude(user=request.user).first()
+            if check_person.ProprietaryName != '' and data.get('ProprietaryName'):
+                profile.ProprietaryName = data.get('ProprietaryName')  
+
+            if check_person.ProprietaryNumber != '' and data.get('ProprietaryNumber'):
+                existing_profile = Person.objects.filter(ProprietaryNumber=data.get('ProprietaryNumber')).exclude(user=request.user).first()
                 if existing_profile:
-                    errors.append(f"{field} '{data.get(field)}' already exists in another record.")
+                    errors.append(f"ProprietaryNumber '{data.get('ProprietaryNumber')}' already exists in another record.")
+                    # return JsonResponse({'errors': errors}, status=405)
                 else:
-                    setattr(profile, field, data.get(field))
+                    profile.ProprietaryNumber = data.get('ProprietaryNumber')  
 
-        state_id = data.get('state')
-        district_id = data.get('district')
-        districtKey = data.get('districtkey')
+            if check_person.ProprietaryContact != '' and data.get('ProprietaryContact'):
+                existing_profile = Person.objects.filter(ProprietaryContact=data.get('ProprietaryContact')).exclude(user=request.user).first()
+                if existing_profile:
+                    errors.append(f"ProprietaryContact '{data.get('ProprietaryContact')}' already exists in another record.")
+                    # return JsonResponse({'errors': errors}, status=405)
+                else:
+                    profile.ProprietaryContact = data.get('ProprietaryContact') 
 
-        if state_id:
-            state_instance = StateModel.objects.get(Pid=state_id)
-            profile.state = state_instance
+            if check_person.DrugLiceneseNumber2 != '' and data.get('DrugLiceneseNumber2'): 
+                existing_profile = Person.objects.filter(DrugLiceneseNumber2=data.get('DrugLiceneseNumber2')).exclude(user=request.user).first()
+                if existing_profile:
+                    errors.append(f"DrugLiceneseNumber2 '{data.get('DrugLiceneseNumber2')}' already exists in another record.")
+                    # return JsonResponse({'errors': errors}, status=405)
+                else:
+                    profile.DrugLiceneseNumber2 = data.get('DrugLiceneseNumber2') 
 
-        if district_id and districtKey:
-            try:
-                district_instance = DistrictModel.objects.get(Pid=district_id, id=districtKey)
-                profile.district = district_instance
-            except DistrictModel.DoesNotExist:
-                messages.error(request, "DistrictModel with the provided districtKey does not exist.")
+            if check_person.DrugLiceneseNumber1 != '' and data.get('DrugLiceneseNumber1') : 
+                existing_profile = Person.objects.filter(DrugLiceneseNumber1=data.get('DrugLiceneseNumber1')).exclude(user=request.user).first()
+                if existing_profile:
+                    errors.append(f"DrugLiceneseNumber1 '{data.get('DrugLiceneseNumber1')}' already exists in another record.")
+                    # return JsonResponse({'errors': errors}, status=405)
+                else:
+                    profile.DrugLiceneseNumber1 = data.get('DrugLiceneseNumber1')  
 
-        checked = True
+                    
+            state_id = data.get('state')
+            district_id = data.get('district')
+            districtKey = data.get('districtkey')
+            # print("districtKey : ",districtKey)
+            # print(data)
+            # print("State : ",state_id)
+            # print("District : ",district_id)
+            state_id = data.get('state')
+            if check_person.state != '' and state_id:
+                state_instance = StateModel.objects.get(Pid=state_id)
+                # print("state_instance: ", state_instance)
+                profile.state = state_instance
+            if district_id and districtKey:  # Check if both district_id and districtKey are present
+                try:
+                    district_instance = DistrictModel.objects.get(Pid=district_id, id=districtKey)
+                    # print("district_instance: ", district_instance)
+                    profile.district = district_instance
+                except DistrictModel.DoesNotExist:
+                    messages.error(request,"DistrictModel with the provided districtKey does not exist.")
+
+            if check_person.City != '' and data.get('City') :
+                profile.City = data.get('City')  
+
+            if check_person.Pincode != '' and data.get('Pincode') : 
+                profile.Pincode = data.get('Pincode')  
+
+            if check_person.StreetNumber != '' and data.get('StreetNumber') :
+                profile.StreetNumber = data.get('StreetNumber')  
+
+            if check_person.DoorNumber != '' and data.get('DoorNumber') :
+                profile.DoorNumber = data.get('DoorNumber')  
+
+            if check_person.PharmacistName != '' and data.get('PharmacistName') : 
+                profile.PharmacistName = data.get('PharmacistName')
+
+            if check_person.RegisteredNumber != '' and data.get('RegisteredNumber') : 
+                existing_profile = Person.objects.filter(RegisteredNumber=data.get('RegisteredNumber')).exclude(user=request.user).first()
+                if existing_profile:
+                    errors.append(f"RegisteredNumber '{data.get('RegisteredNumber')}' already exists in another record.")
+                    # return JsonResponse({'errors': errors}, status=405)
+                else:
+                    profile.RegisteredNumber = data.get('RegisteredNumber')
+
+            if check_person.ContactNumber != '' and data.get('ContactNumber') :     
+                profile.ContactNumber = data.get('ContactNumber') 
+
+            if check_person.PharmacistEmail != '' and data.get('PharmacistEmail') :     
+                profile.PharmacistEmail = data.get('PharmacistEmail')  
+            # Assign the district_instance to a different field, assuming profile.district is the appropriate fiel
+            if not errors:
+                profile.save()
+                return JsonResponse({'success': True})
+            else:
+                return JsonResponse({'errors': errors}, status=400)
+
+        else:
+            return JsonResponse({'success': False})
+        # messages.error(request, "Error: Duplicate entry for Drug License Number")
+        # return redirect("profile") 
+        
+    checked = True
+    try:
         if not errors:
             profile.save()
             if checked:
@@ -264,7 +358,6 @@ def profile_view(request):
                     # dl_number1=data.get('DrugLiceneseNumber1'),
                     # dl_number2=data.get('DrugLiceneseNumber2')
                 ).first()
-
                 if check_medical_register and profile.MedicalShopName == check_medical_register.Medical_name:
                     return JsonResponse({
                         'success': True,
@@ -276,27 +369,75 @@ def profile_view(request):
         else:
             return JsonResponse({'errors': errors}, status=400)
 
+    except Exception as e:
+        print(e)
+
     checked = False
+    admin_position = None
+    existing_admin = Notification.objects.filter(receiver=request.user,is_read=True, request_status=True)
+    existing_admin_optional = Notification.objects.filter(sender=request.user,is_read=True, request_status=False)
 
+    checkUser = sender_name if checked_username == str(request.user) else request.user
+    colaborator = Notification.objects.filter(sender=checkUser,is_read = True)
+    
+    if existing_admin.exists():
+        admin_data = CustomUser.objects.get(username=existing_admin.first().sender)
+        admin_name = admin_data.username
+        admin_ph = admin_data.phone_num
+        admin_position = admin_data.position
+        
+    elif existing_admin_optional.exists():
+        admin_data = CustomUser.objects.get(username=request.user)  
+        admin_name = admin_data.username
+        admin_ph = admin_data.phone_num
+    else:
+        admin_data = CustomUser.objects.get(username=request.user)
+        admin_name = admin_data.username
+        admin_ph = admin_data.phone_num
+        
+    try:
+        hide_colaborator = Notification.objects.filter(receiver=request.user, is_read=True, request_status=True).exists()
+    except Notification.DoesNotExist:
+        hide_colaborator = None
 
+    get_shop_name = None
+    sendShopName = None
 
-    # Admin Data Logic
-    existing_admin = Notification.objects.filter(receiver=request.user, is_read=True, request_status=True).first()
-    admin_data = CustomUser.objects.get(username=existing_admin.sender if existing_admin else request.user)
+    try:
+        # Fetch the CustomUser instance for the current user
+        userShopName = CustomUser.objects.get(username=request.user)
+        
+        # Extract values from the user instance
+        get_shop_name = userShopName.store_type
+        get_other_value = userShopName.other_value
 
+        if get_shop_name and get_shop_name != "others":
+            sendShopName = get_shop_name.capitalize()
+            
+        elif get_other_value and get_other_value != "store_type":
+            sendShopName = get_other_value.capitalize()
+
+    except CustomUser.DoesNotExist:
+        userShopName = None
+        sendShopName = None
+
+        
+    
+        
+    # Define the context dictionary
     context = {
-        'hide_colaborator': Notification.objects.filter(receiver=request.user, is_read=True, request_status=True).exists(),
+        'hide_colaborator': hide_colaborator,
         'user_profile_data': profile_data,
         'district_data': district_data,
-        'unique_code': profile.UniqueId,
+        'unique_code': profile.UniqueId, 
         'data': profile,
-        'admin_name': admin_data.username,
-        'admin_ph': admin_data.phone_num,
-        'admin_position': admin_data.position,
-        'sendShopName': profile_data.other_value and profile_data.other_value.capitalize() if profile_data.store_type == "others" else profile_data.store_type and profile_data.store_type.capitalize() ,
-        'colaborator': Notification.objects.filter(sender=checked_username if checked_username == str(request.user) else request.user, is_read=True)
+        'admin_name': admin_name,
+        'admin_ph': admin_ph,
+        'admin_position':admin_position,
+        'sendShopName': sendShopName,
+        'colaborator':colaborator,
     }
-
+    
     return render(request, 'authentication/profile.html', context)
 
 
