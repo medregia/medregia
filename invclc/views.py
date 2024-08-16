@@ -2279,64 +2279,85 @@ def admin_access(request):
 
     if request.method == "POST":
         data = json.loads(request.body)
-        receiver_name = data.get('add_name')
-        receiver_email = data.get('add_email')
-        receiver_phone = data.get('add_number')
-        receiver_position = data.get('add_position')
+        receiver_name = data.get('add_name', '')
+        receiver_email = data.get('add_email', '')
+        receiver_phone = data.get('add_number', '')
+        receiver_position = data.get('add_position', '')
+        receiver_other_position = data.get('other_position', '')
+
+        if not receiver_name:
+            return JsonResponse({'error': 'Receiver name is required.'}, status=400)
 
         try:
-            if receiver_name:
-                if Invitation.objects.filter(mail_sendername=request.user, mail_receiver_name=receiver_name).exists():
-                    response_data = {'message': 'You have already sent a request to this receiver', 'adminName': receiver_name}
-                    return JsonResponse({'error': response_data}, status=500)
-                else:
-                    invitation = Invitation(
-                        user=request.user,
-                        mail_sendername=request.user,
-                        mail_receiver_name=receiver_name,
-                        mail_receiver_email=receiver_email,
-                        mail_receiver_phonenumber=receiver_phone,
-                        mail_receiver_position=receiver_position
-                    )
-                    invitation.save()
+            # Check if an invitation has already been sent
+            if Invitation.objects.filter(mail_sendername=request.user, mail_receiver_name=receiver_name).exists():
+                return JsonResponse({
+                    'error': {
+                        'message': 'You have already sent a request to this receiver',
+                        'adminName': receiver_name
+                    }
+                }, status=400)
 
-                subject = "Invitation to Join Our Platform"
-                text_message = f"Dear {receiver_name},\n\nYou have been invited to join our platform as {receiver_position}. Please use the following details to access your account.\n\nBest regards,\nThe Team"
+            # Create and save the invitation
+            invitation = Invitation(
+                user=request.user,
+                mail_sendername=request.user,
+                mail_receiver_name=receiver_name,
+                mail_receiver_email=receiver_email,
+                mail_receiver_phonenumber=receiver_phone,
+                mail_receiver_position=receiver_other_position if receiver_position == "others" else receiver_position
+            )
+            invitation.save()
 
-                signer = URLSafeSerializer(settings.SECRET_KEY)
-                data_to_sign = {
-                    'sendername': str(request.user),
-                    'username': receiver_name,
-                    'useremail': receiver_email,
-                    'userphonenumber': receiver_phone,
-                    'userposition': receiver_position
-                }
-                signed_data = signer.dumps(data_to_sign)
-                
-                base_signup_url = 'https://medregia.com/invite/'
-                invite_url = f"{base_signup_url}?data={signed_data}"
+            # Prepare and send the email
+            subject = "Invitation to Join Our Platform"
+            text_message = (
+                f"Dear {receiver_name},\n\n"
+                f"You have been invited to join our platform as {receiver_position}. "
+                f"Please use the following details to access your account.\n\n"
+                f"Best regards,\nThe Team"
+            )
 
-                html_message = render_to_string('invitation_email.html', {
-                    'user_name': receiver_name,
-                    'sender_mail': settings.DEFAULT_FROM_EMAIL,
-                    'sender_name': request.user,
-                    'signup_url': invite_url,
-                    'position': receiver_position,
-                })
+            signer = URLSafeSerializer(settings.SECRET_KEY)
+            data_to_sign = {
+                'sendername': str(request.user),
+                'username': receiver_name,
+                'useremail': receiver_email,
+                'userphonenumber': receiver_phone,
+                'userposition': receiver_position
+            }
+            signed_data = signer.dumps(data_to_sign)
 
-                send_mail(
-                    subject,
-                    text_message,
-                    settings.DEFAULT_FROM_EMAIL,
-                    [receiver_email],
-                    fail_silently=False,
-                    html_message=html_message
-                )
-                
-                return JsonResponse({'status': 'success', 'message': 'Email sent successfully', 'invite_link': invite_url})
+            base_signup_url = 'https://medregia.com/invite/'
+            invite_url = f"{base_signup_url}?data={signed_data}"
+
+            html_message = render_to_string('invitation_email.html', {
+                'user_name': receiver_name,
+                'sender_mail': settings.DEFAULT_FROM_EMAIL,
+                'sender_name': request.user,
+                'signup_url': invite_url,
+                'position': receiver_position,
+            })
+
+            send_mail(
+                subject,
+                text_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [receiver_email],
+                fail_silently=False,
+                html_message=html_message
+            )
+
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Email sent successfully',
+                'invite_link': invite_url
+            })
+
         except Exception as e:
+            # Log the exception and return a response with the error message
             print(e)
-            response_data = {'message': str(e)}
+            response_data = {'message':str(e)}
             return JsonResponse({'error': response_data}, status=500)
 
     return render(request, 'invclc/admin_acess.html', context)

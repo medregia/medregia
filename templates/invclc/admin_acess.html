@@ -229,7 +229,7 @@
                                 </div>
                                 <div class="Details-data">
                                     <label for="id_phone">Phone:</label>
-                                    <input type="tel" id="id_addphone" name="add_number" class="input-field">
+                                    <input type="number" id="id_addphone" name="add_number" class="input-field">
                                 </div>
                                 <div class="Details-data">
                                     <label for="id_position">Position:</label>
@@ -239,6 +239,10 @@
                                         <option value="Senior">Senior</option>
                                         <option value="Member">Member</option>  
                                     </select>
+                                </div>
+                                <div class="Details-data hide">
+                                    <label for="other_position">Other Position</label>
+                                    <input type="text" placeholder = "Enter the Position " id="other_position" name = "other_position" class="input-field">
                                 </div>
                                 <div class="Details-data">
                                     <label for="id_Whatsapp_link">Link</label>
@@ -281,6 +285,11 @@
                                 </select>
                             </div>
 
+                            <div class="Details-data hide">
+                                <label for="other_position">Other Position</label>
+                                <input type="text" placeholder = "Enter the Position " id="other_position" name = "other_position" class="input-field">
+                            </div>
+
                             <div class="Details-data">
                                 <label for="id_Whatsapp_link">Link</label>
                                 <input type="text" id="id_Whatsapp_link"  placeholder="Link" class="input-field" disabled>
@@ -321,10 +330,10 @@
                             </select>
                         </div>
 
-                        {% comment %} <div class="Details-data hide">
-                            <label for="other_position">Other Position</label>
+                        <div id="id_user_position" class="Details-data hidden ">
+                            <label for="other_position">Other Position  </label>
                             <input type="text" placeholder = "Enter the Position " id="other_position" name = "other_position" class="input-field">
-                        </div> {% endcomment %}
+                        </div>
 
                         <div class="Details-data">
                             <label for="id_Whatsapp_link">Link</label>

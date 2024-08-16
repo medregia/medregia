@@ -743,6 +743,14 @@ label {
     display: none;
 }
 
+.hidden{
+    display: none;
+}
+
+.show-position{
+    display: block;
+}
+
 @media (min-width:1100px) and (max-width:1300px){
     .make-table-scrollable{
         margin-left: 140px

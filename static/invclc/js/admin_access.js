@@ -3,6 +3,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const whatsappLink = document.getElementById('id_Whatsapp_link');
     const messages = document.querySelector('.alert-message');
 
+    const otherPositionDiv = document.getElementById('id_user_position');
+    const addPosition = document.getElementById('id_addposition');
+
+    // Function to toggle visibility of otherPositionDiv
+    const toggleOtherPositionDiv = () => {
+        if (addPosition.value === 'others') {
+            otherPositionDiv.classList.remove('hidden');
+        } else {
+            otherPositionDiv.classList.add('hidden');
+        }
+    };
+
+    // Initial setup
+    toggleOtherPositionDiv(); // Ensure correct initial visibility
+
+    // Add change event listener to the select element
+    addPosition.addEventListener('change', toggleOtherPositionDiv);
+
     messages.textContent = "";
     addBtn.addEventListener('click', async (e) => {
         e.preventDefault();
@@ -17,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messages.classList.remove('alert-success', 'alert-error', 'shake');
 
         for (const [key, value] of Object.entries(data)) {
-            if (!value) {
+            if (!value && key !== 'other_position') {
                 messages.textContent = `${key.replace('_', ' ')} cannot be empty.`;
                 messages.style.color = "red";
                 return;
@@ -40,13 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const responseData = await response.json();
                 whatsappLink.value = responseData.invite_link;
-                messages.textContent = "Link Generated "
+                messages.textContent = "Link Generated ";
                 messages.classList.add('alert-success');
                 messages.classList.remove('shake');
             } else {
                 console.error("Failed");
                 const errorData = await response.json();
-                // console.error('Error:', errorData);
                 messages.textContent = `Mail sending failed. Please try again. ${errorData.error.message}`;
                 messages.classList.add('alert-error', 'shake');
                 messages.classList.remove('alert-success');
@@ -57,7 +74,9 @@ document.addEventListener('DOMContentLoaded', () => {
             messages.classList.add('alert-error', 'shake');
             messages.classList.remove('alert-success');
         }
-    });
+        });
+
+
 
     document.getElementById('copy_button').addEventListener('click', function() {
     const input = document.getElementById('id_Whatsapp_link');
