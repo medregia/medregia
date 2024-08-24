@@ -705,9 +705,8 @@ document.addEventListener('DOMContentLoaded', () => {
               listItem.dataset.dlnumber2 = result.dlnumber_2;
               resultsList.appendChild(listItem);
             });
-          } else {
-            resultsList.innerHTML = `<li>${data.message}</li>`;
-          }
+          } 
+          resultsList.innerHTML += `<li>New</li>`;
         })
         .catch(err => {
           console.error(err);
@@ -718,7 +717,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle clicks on result items
     resultsList.addEventListener('click', (e) => {
       const listItem = e.target.closest('li');
-      if (listItem) {
+      if (listItem.textContent == "New") {
+        document.getElementById('id_dlnum1').focus();
+        resultsList.innerHTML = '';
+      }
+      else {
         // Populate the input fields with data from the clicked item
         searchMedicalName.value = listItem.dataset.medicalName;
         document.getElementById('id_dlnum1').value = listItem.dataset.dlnumber1;

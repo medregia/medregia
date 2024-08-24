@@ -2245,8 +2245,8 @@ def admin_access(request):
                             check_dl2 = register_medical.dl_number2
                     else:
                         check_Medical = invoice.pharmacy_name
-                        check_dl1 = None                        
-                        check_dl2 = None
+                        check_dl1 = invoice.dl_number1                        
+                        check_dl2 = invoice.dl_number2
 
                 except RegisterMedicals.DoesNotExist:
                     check_Medical = invoice.pharmacy_name
