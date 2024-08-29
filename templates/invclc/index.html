@@ -88,7 +88,6 @@
     </div>
   </div>
 
-
   <div class="main-header">
     <div class="header-top">
       <div class="header-top-btn">
@@ -128,8 +127,8 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Dl Number 1</th>
-                        <th>Dl Number 2</th>
+                        <th>DL Number 1</th>
+                        <th>DL Number 2</th>
                         <th>Invoice Number</th>
                         <th>Invoice Date</th>
                         <th>Invoice Amount</th>
@@ -141,9 +140,9 @@
                 <tbody>
                   {% if entryDisable %}
                     <tr id="not_accessable_profile">
-                      <td><input type="text" name="pharmacy_name" placeholder="Pharmacy Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name" autofocus autocomplete = "off"></td>
-                      <td><input type="text" name="dlnum1" placeholder="Dl Number 1" class="pharmacy_name" maxlength="100" required id="id_dlnum1"></td>
-                      <td><input type="text" name="dlnum2" placeholder="Dl Number 2" class="pharmacy_name" maxlength="100" required id="id_dlnum2"></td>
+                      <td><input type="text" name="pharmacy_name" placeholder="Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name" autofocus autocomplete = "off"></td>
+                      <td><input type="text" name="dlnum1" placeholder="Drug license Number 1" class="pharmacy_name" maxlength="100" required id="id_dlnum1"></td>
+                      <td><input type="text" name="dlnum2" placeholder="Drug license Number 2" class="pharmacy_name" maxlength="100" required id="id_dlnum2"></td>
                       <td><input type="text" name="invoice_number" placeholder="Invoice Number" class="invoice_number" maxlength="50" required id="id_invoice_number"></td>
                       <td><input type="text" name="invoice_date" placeholder="DD/MM/YYYY" required id="id_invoice_date"></td>
                       <td><input type="number" name="invoice_amount" placeholder="Invoice Amount" class="invoice_amount" step="0.01" required id="id_invoice_amount"></td>
@@ -159,9 +158,9 @@
                     </tr>
                   {% else %}
                     <tr>
-                        <td><input type="text" name="pharmacy_name" placeholder="Pharmacy Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name" autofocus autocomplete = "off"></td>
-                        <td><input type="text" name="dlnum1" placeholder="Dl Number 1" class="pharmacy_name" maxlength="100" required id="id_dlnum1"></td>
-                        <td><input type="text" name="dlnum2" placeholder="Dl Number 2" class="pharmacy_name" maxlength="100" required id="id_dlnum2"></td>
+                        <td><input type="text" name="pharmacy_name" placeholder="Name" class="pharmacy_name" maxlength="100" required id="id_pharmacy_name" autofocus autocomplete = "off"></td>
+                        <td><input type="text" name="dlnum1" placeholder="Drug license Number 1" class="pharmacy_name" maxlength="100" required id="id_dlnum1"></td>
+                        <td><input type="text" name="dlnum2" placeholder="Drug license Number 2" class="pharmacy_name" maxlength="100" required id="id_dlnum2"></td>
                         <td><input type="text" name="invoice_number" placeholder="Invoice Number" class="invoice_number" maxlength="50" required id="id_invoice_number"></td>
                         <td><input type="text" name="invoice_date" placeholder="DD/MM/YYYY" required id="id_invoice_date"></td>
                         <td><input type="number" name="invoice_amount" placeholder="Invoice Amount" class="invoice_amount" step="0.01" required id="id_invoice_amount"></td>
@@ -200,18 +199,13 @@
           <div class="table-content-left">
             <div class="table-panel">
               <h2 class="panel-heading">Paid Records</h2>
-  
-              <!-- <form action="" method="post">
-                  {% csrf_token %}
-                  <input type="text" name="payed" id="payment_list" placeholder="Search" title= "Search 'all' to get Full Data">
-                  <button type="submit">Search</button>
-              </form> -->
             </div>
+
             <div class="table-cover-left">
               <table>
                 <thead>
                   <tr class="table_tr">
-                    <th>Pharmacy Name</th>
+                    <th> Name</th>
                     <th>Invoice Number</th>
                     <th colspan="2">Status</th> 
                     <th>Records</th>
@@ -315,7 +309,7 @@
             <div class="table-cover-right">
               <table>
                 <thead>
-                  <th>Pharmacy Name</th>
+                  <th> Name</th>
                   <th>Invoice Number</th>
                   <th>Invoice Amount</th>
                   <th>Paid Date</th>
